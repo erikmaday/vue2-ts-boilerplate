@@ -1,29 +1,35 @@
-# README #
+# charterup-operators
 
-This README would normally document whatever steps are necessary to get your application up and running.
+## Project setup
 
-### What is this repository for? ###
+```
+npm install
+```
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Compiles and hot-reloads for development
 
-### How do I get set up? ###
+```
+npm run serve
+```
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### Compiles and minifies for production
 
-### Contribution guidelines ###
+```
+npm run build
+```
 
-* Writing tests
-* Code review
-* Other guidelines
+### Run your unit tests
 
-### Who do I talk to? ###
+```
+npm run test:unit
+```
 
-* Repo owner or admin
-* Other community or team contact
+### Lints and fixes files
+
+```
+npm run lint
+```
+
+### Customize configuration
+
+See [Configuration Reference](https://cli.vuejs.org/config/).

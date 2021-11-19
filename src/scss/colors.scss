@@ -1,0 +1,55 @@
+// NOTE TO FUTURE DEVELOPERS
+// IF YOU ADD OR REMOVE A COLOR, MAKE THE CORRESPONDING CHANGE TO EXPORT STATEMENT BELOW
+// CHANGING THE VALUE OF A COLOR REQUIRES NO ACTION BEYOND CHANGING IT IN THE TOP OF THE FILE
+
+$black: #434343;
+$gray-light: #9C9C9C;
+$gray-mid-light: #CACDD3;
+$gray-lighter: #F5F7F8;
+$gray-border: #E6E8EA;
+$white: #FFFFFF;
+$black-true: #000000;
+$red: #FF3C50;
+$orange: #EA7721;
+$yellow: #F7B100;
+$green: #00DD9C;
+$blue: #00A6F2;
+$purple: #6808F0;
+$primary: $blue;
+$success: $green;
+$success-background: desaturate(lighten($success, 54%), 40%);
+$warning: $orange;
+$error: $red;
+$error-background: desaturate(lighten($error, 36%), 50%);
+
+$info: $primary;
+$secondary: #F2FAFE;
+$action: #459FB1;
+$accent: #D4E3F2;
+
+
+:export {
+    black: $black;
+    grayLight: $gray-light;
+    grayMidLight: $gray-mid-light;
+    grayLighter: $gray-lighter;
+    white: $white;
+    blackTrue: $black-true;
+    red: $red;
+    orange: $orange;
+    yellow: $yellow;
+    green: $green;
+    blue: $blue;
+    purple: $purple;
+    primary: $primary;
+    success: $success;
+    warning: $warning;
+    error: $error;
+    errorBackground: $error-background;
+    successBackground: $success-background;
+    grayBorder: $gray-border;
+    info: $info;
+    secondary: $secondary;
+    action: $action;
+    accent: $accent;
+}

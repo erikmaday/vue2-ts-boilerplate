@@ -4,7 +4,7 @@
 // https://vuetifyjs.com/en/customization/sass-variables#variable-api
 $body-font-family: Airbnb Cereal App Book, sans-serif;
 $heading-font-family: Airbnb Cereal App Medium, sans-serif;
-$border-radius-root: 5px !default;
+$border-radius-root: 4px !default;
 
 // padding, spacing, layout
 $spacer: 4px;
@@ -12,7 +12,8 @@ $grid-gutter: $spacer * 6;
 $container-padding-x: $grid-gutter;
 
 // text
-$text-field-outlined-fieldset-border: 1px solid currentColor;
+$text-field-outlined-fieldset-border: 2px solid currentColor;
+$border-width: 2px;
 
 $headings: (
   'h1': (

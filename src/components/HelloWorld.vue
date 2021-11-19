@@ -14,6 +14,7 @@
         <h1 class="display-2 font-weight-bold mb-3">
           The Future Home of CharterUp for Operators
         </h1>
+        <v-text-field outlined>Test Button</v-text-field>
       </v-col>
     </v-row>
   </v-container>

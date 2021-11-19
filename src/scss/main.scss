@@ -1,0 +1,26 @@
+@import './colors';
+@import './fonts';
+@import './variables';
+
+.v-btn {
+    font-family: Airbnb Cereal App Bold;
+    text-transform: none;
+    box-shadow: none;
+
+    &.primary {
+      color: $white;
+      font-family: Airbnb Cereal App Bold;
+    }
+
+    &:focus:before {
+      opacity: 0;
+    }
+
+    &:active {
+      box-shadow: none;
+    }
+}
+
+.v-btn--outlined {
+    border-width: 2px;
+}

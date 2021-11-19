@@ -299,18 +299,18 @@ body,
 
       .v-data-table__mobile-row__header {
         font-family: Airbnb Cereal App Medium, sans-serif;
-        color: $gray;
+        color: $gray-border;
       }
 
       .v-data-table__mobile-row__cell {
         font-family: Airbnb Cereal App Book, sans-serif;
-        color: $gray;
+        color: $gray-border;
       }
     }
   }
 
   .v-data-table__selected {
-    background-color: $blue-light !important;
+    // background-color: $blue-light !important;
   }
 
   .v-data-footer__select {

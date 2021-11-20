@@ -7,8 +7,9 @@
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from 'axios'
 import Vue from 'vue'
-import { Address, Stop } from './models/dto'
+import { AddressApiResult, Address, Stop } from './models/dto'
 import { HttpService } from './services/HttpService'
 
 export default Vue.extend({
@@ -21,10 +22,12 @@ export default Vue.extend({
     const httpService: HttpService = new HttpService()
     const a = {} as unknown as Address
     const fakeStop = { orderIndex: 1, active: true, address: a }
-    const response = await httpService
-      .post<Address, Stop>('http://something', fakeStop)
+    const response: AxiosResponse<AddressApiResult> = await httpService
+      .post<AddressApiResult, Stop>('http://something', fakeStop)
       .catch((f) => f.data)
-    console.log(response?.data?.street1 || 'nothing to see here')
+    if (!response?.data?.successful) {
+      console.log(response?.data || 'nothing to see here')
+    }
   },
 })
 </script>

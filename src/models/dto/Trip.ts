@@ -1,6 +1,14 @@
 import dayjs from 'dayjs'
 import { Stop } from '.'
 
+export enum TripTypeKeys {
+  ONE_WAY = 'one_way',
+  ROUND_TRIP = 'round_trip',
+  HOURLY = 'hourly',
+  DAILY = 'daily',
+  SHUTTLE = 'shuttle',
+}
+
 export type Trip = {
   tripStatusId?: number
   checkoutTypeId?: number

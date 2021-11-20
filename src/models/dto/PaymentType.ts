@@ -18,3 +18,10 @@ const PaymentTypeKeys = {
 }
 
 export type PaymentTypeKeys = BasePaymentTypeKeys | ExtendedPaymentTypeKeys
+
+export type PaymentType = {
+  id: number
+  key: PaymentTypeKeys
+  label?: string
+  description?: string
+}

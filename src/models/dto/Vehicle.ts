@@ -9,3 +9,10 @@ export enum VehicleTypeKeys {
   TROLLEY = 'Trolley',
   SCHOOL_BUS = 'school_bus',
 }
+
+export type VehicleType = {
+  id: number
+  key: VehicleTypeKeys
+  label?: string
+  description?: string
+}

@@ -3,3 +3,10 @@ export enum PaymentMethodKeys {
   ACH = 'ach',
   CHECK = 'check',
 }
+
+export type PaymentMethod = {
+  id: number
+  key: PaymentMethodKeys
+  label?: string
+  description?: string
+}

@@ -1,5 +1,107 @@
+@import '~@/scss/colors';
+@import '~@/scss/fonts';
+@import '~@/scss/mixins';
 // ALL HELPER CLASSES LIVE HERE
 
-.pointer {
-  cursor: pointer;
+// FONT WEIGHTS
+.font {
+  @include map-to-helpers($fonts, 'font-family', false);
+}
+
+// Z-INDEX
+.z {
+  @for $i from 1 through 100 {
+    @include create-helper($i, $i, 'z-index');
+  }
+  @include create-helper('auto', 'auto', 'z-index');
+}
+
+// CURSOR
+.cursor {
+  &-pointer {
+    cursor: pointer;
+  }
+  &-default {
+    cursor: default;
+  }
+}
+
+// BOX SHADOW
+.shadow {
+  &-none {
+    box-shadow: 0 0 0 rgba($black-true, 0);
+  }
+}
+
+// BORDER WIDTH AND STYLE
+$border-styles: 'solid', 'dashed', 'dotted', 'double', 'none';
+$border-widths: 0, 2, 4;
+$border-directions: (
+  'bottom': 'b',
+  'top': 't',
+  'left': 'l',
+  'right': 'r',
+);
+.border {
+  border-width: 1px;
+  @each $border-width in $border-widths {
+    @include create-helper($border-width, #{$border-width}px, 'border-width');
+    @each $border-direction,
+      $border-direction-abbreviation in $border-directions
+    {
+      @include create-helper(
+        $border-width,
+        #{$border-width}px,
+        'border-#{$border-direction}-width',
+        false,
+        '-#{$border-direction-abbreviation}-'
+      );
+    }
+  }
+  @each $border-direction, $border-direction-abbreviation in $border-directions
+  {
+    @include create-helper(
+      $border-direction-abbreviation,
+      1px,
+      'border-#{$border-direction}-width'
+    );
+  }
+  &-y-0 {
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+  }
+  &-y-2 {
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+  }
+  &-y {
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+  }
+  &-x-0 {
+    border-right-width: 0px;
+    border-left-width: 0px;
+  }
+  &-x-2 {
+    border-right-width: 2px;
+    border-left-width: 2px;
+  }
+  &-x {
+    border-right-width: 1px;
+    border-left-width: 1px;
+  }
+  @each $style in $border-styles {
+    @include create-helper($style, #{unquote($style)}, 'border-style');
+  }
+  @include map-to-helpers($colors, 'border-color', true);
+}
+
+// BACKGROUND
+.background {
+  @include map-to-helpers($colors, 'background-color', true);
+}
+
+// TEXT
+.text {
+  @include map-to-helpers($colors, 'color', true);
 }

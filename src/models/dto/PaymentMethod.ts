@@ -4,9 +4,17 @@ export enum PaymentMethodKeys {
   CHECK = 'check',
 }
 
-export type PaymentMethod = {
+export interface PaymentMethodType {
   id: number
   key: PaymentMethodKeys
   label?: string
   description?: string
+}
+
+export interface PaymentMethod {
+  tripPaymentMethodId: number
+  isAllowed: number
+  tripId: number
+  paymentMethodTypeId: number
+  paymentMethodType: PaymentMethodType
 }

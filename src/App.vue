@@ -10,7 +10,7 @@
 import { AxiosResponse } from 'axios'
 import Vue from 'vue'
 import { AddressApiResult, Address, Stop } from './models/dto'
-import { HttpService } from './services/HttpService'
+import { HttpService } from './services/common/HttpService'
 
 export default Vue.extend({
   name: 'App',
@@ -21,7 +21,7 @@ export default Vue.extend({
   async mounted() {
     const httpService: HttpService = new HttpService()
     const a = {} as Address
-    const fakeStop = { orderIndex: 1, active: true, address: a }
+    const fakeStop = { orderIndex: 1, active: true, address: a } as Stop
     const response: AxiosResponse<AddressApiResult> = await httpService
       .post<AddressApiResult, Stop>('http://something', fakeStop)
       .catch((f) => f.data)

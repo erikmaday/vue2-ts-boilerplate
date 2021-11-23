@@ -87,16 +87,17 @@ export default class CUIcon extends Vue {
   }
 
   get style(): string {
-    const hexRegex = new RegExp('#([A-F]|[0-9]){6}', 'g')
-
+    const hexRegex = new RegExp('#[0-9a-fA-F]{3,6}', 'g')
+     console.log("> color:", this.color)
     if (this.color && hexRegex.test(this.color)) {
+      console.log("> Passed")
       return `--color: ${this.color}`
     }
     return '--color: currentColor'
   }
 
   get classes(): string {
-    const hexRegex = new RegExp('#([A-F]|[0-9]){6}', 'g')
+    const hexRegex = new RegExp('#[0-9a-fA-F]{3,6}', 'g')
 
     if (this.color && !hexRegex.test(this.color)) {
       return `text-${this.color}`

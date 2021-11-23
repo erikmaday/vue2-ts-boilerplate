@@ -1,0 +1,22 @@
+@mixin create-helper(
+  $name,
+  $value,
+  $properties,
+  $important: false,
+  $prefix: '-'
+) {
+  $i: if($important, ' !important', '');
+  &#{$prefix}#{$name} {
+    // @debug '&#{$prefix}#{$name}';
+    @each $property in $properties {
+      #{$property}: $value #{$i};
+      // @debug '#{$property}: #{$value}#{$i};';
+    }
+  }
+}
+
+@mixin map-to-helpers($map, $properties, $important: false, $prefix: '-') {
+  @each $name, $value in $map {
+    @include create-helper($name, $value, $properties, $important, $prefix);
+  }
+}

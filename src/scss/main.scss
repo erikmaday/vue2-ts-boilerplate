@@ -1,6 +1,7 @@
-@import './colors';
-@import './fonts';
-@import './variables';
+@import '~@/scss/colors';
+@import '~@/scss/fonts';
+@import '~@/scss/variables';
+@import '~@/scss/helper';
 
 body {
   background-color: $white;
@@ -65,10 +66,6 @@ a {
   }
 }
 
-.v-app-bar {
-  border-bottom: 1px solid $gray-border;
-}
-
 body,
 .v-application {
   background: $white;
@@ -113,26 +110,26 @@ body,
 }
 
 .v-btn {
+  font-family: Airbnb Cereal App Bold;
+  text-transform: none;
+  box-shadow: none;
+
+  &.primary {
+    color: $white;
     font-family: Airbnb Cereal App Bold;
-    text-transform: none;
+  }
+
+  &:focus:before {
+    opacity: 0;
+  }
+
+  &:active {
     box-shadow: none;
+  }
 
-    &.primary {
-      color: $white;
-      font-family: Airbnb Cereal App Bold;
-    }
-
-    &:focus:before {
-      opacity: 0;
-    }
-
-    &:active {
-      box-shadow: none;
-    }
-
-    &--outlined {
-      border-width: $border-width;
-    }
+  &--outlined {
+    border-width: $border-width;
+  }
 }
 
 .v-text-field {
@@ -234,9 +231,9 @@ body,
 }
 
 .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.1s;
-  }
+.fade-leave-active {
+  transition: opacity 0.1s;
+}
 
 .fade-enter,
 .fade-leave-to {
@@ -299,18 +296,18 @@ body,
 
       .v-data-table__mobile-row__header {
         font-family: Airbnb Cereal App Medium, sans-serif;
-        color: $gray-border;
+        color: $black;
       }
 
       .v-data-table__mobile-row__cell {
         font-family: Airbnb Cereal App Book, sans-serif;
-        color: $gray-border;
+        color: $black;
       }
     }
   }
 
   .v-data-table__selected {
-    // background-color: $blue-light !important;
+    background-color: rgba($primary, 0.1);
   }
 
   .v-data-footer__select {

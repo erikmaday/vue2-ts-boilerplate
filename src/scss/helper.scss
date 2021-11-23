@@ -1,5 +1,110 @@
+@import '~@/scss/colors';
+@import '~@/scss/fonts';
+@import '~@/scss/mixins';
+@import '~@/scss/_dimensions';
 // ALL HELPER CLASSES LIVE HERE
 
-.pointer {
-  cursor: pointer;
+// FONT WEIGHTS
+// .font-light, .font-book, .font-medium, .font-extrabold, .font-black
+.font {
+  @include map-to-helpers($fonts, 'font-family', false);
+}
+
+// Z-INDEX
+// .z-0, .z-1, ..., .z-100
+.z {
+  @for $i from 1 through 100 {
+    @include create-helper($i, $i, 'z-index');
+  }
+  @include create-helper('auto', 'auto', 'z-index');
+}
+
+// CURSOR
+.cursor {
+  &-pointer {
+    cursor: pointer;
+  }
+  &-default {
+    cursor: default;
+  }
+}
+
+// BOX SHADOW
+.shadow {
+  &-none {
+    box-shadow: 0 0 0 rgba($black-true, 0);
+  }
+}
+
+// BORDER WIDTH AND STYLE
+$border-styles: 'solid', 'dashed', 'dotted', 'double', 'none';
+$border-widths: 0, 2, 4;
+$border-directions: (
+  'bottom': 'b',
+  'top': 't',
+  'left': 'l',
+  'right': 'r',
+);
+.border {
+  border-width: 1px;
+  @each $border-width in $border-widths {
+    @include create-helper($border-width, #{$border-width}px, 'border-width');
+    @include create-helper(
+      'x',
+      #{$border-width}px,
+      ('border-left-width', 'border-right-width')
+    );
+    @include create-helper(
+      'y',
+      #{$border-width}px,
+      ('border-top-width', 'border-bottom-width')
+    );
+    @each $border-direction,
+      $border-direction-abbreviation in $border-directions
+    {
+      @include create-helper(
+        $border-width,
+        #{$border-width}px,
+        'border-#{$border-direction}-width',
+        false,
+        '-#{$border-direction-abbreviation}-'
+      );
+    }
+  }
+  @each $border-direction, $border-direction-abbreviation in $border-directions
+  {
+    @include create-helper(
+      $border-direction-abbreviation,
+      1px,
+      'border-#{$border-direction}-width'
+    );
+  }
+  @each $style in $border-styles {
+    @include create-helper($style, #{unquote($style)}, 'border-style');
+  }
+  @include map-to-helpers($colors, 'border-color', true);
+}
+
+// BACKGROUND
+// .background-#{color} for every color in our color library
+.background {
+  @include map-to-helpers($colors, 'background-color', true);
+}
+
+// TEXT
+// .text-#{color} for every color in our color library
+.text {
+  @include map-to-helpers($colors, 'color', true);
+}
+
+// WIDTH
+// .w-0, .w-1,..., .w-16, .w-20, .w-24, ... , .w-200
+.w {
+  @include map-to-helpers($dimensions, 'width', false);
+}
+
+// HEIGHT
+// .h-0, .h-1,..., .h-16, .h-20, .h-24, ... , .h-200
+.h {
+  @include map-to-helpers($dimensions, 'height', false);
 }

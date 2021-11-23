@@ -1,20 +1,21 @@
 // NOTE TO FUTURE DEVELOPERS
-// IF YOU ADD OR REMOVE A COLOR, MAKE THE CORRESPONDING CHANGE TO EXPORT STATEMENT BELOW
+// IF YOU ADD OR REMOVE A COLOR, MAKE THE CORRESPONDING CHANGE TO THE MAP BELOW
 // CHANGING THE VALUE OF A COLOR REQUIRES NO ACTION BEYOND CHANGING IT IN THE TOP OF THE FILE
 
 $black: #434343;
-$gray-light: #9C9C9C;
-$gray-mid-light: #CACDD3;
-$gray-lighter: #F5F7F8;
-$gray-border: #E6E8EA;
-$white: #FFFFFF;
+$gray-light: #9c9c9c;
+$gray-mid-light: #cacdd3;
+$gray-lighter: #f5f7f8;
+$gray-border: #e6e8ea;
+$gray-header: #fafafc;
+$white: #ffffff;
 $black-true: #000000;
-$red: #FF3C50;
-$orange: #EA7721;
-$yellow: #F7B100;
-$green: #00DD9C;
-$blue: #00A6F2;
-$purple: #6808F0;
+$red: #ff3c50;
+$orange: #ea7721;
+$yellow: #f7b100;
+$green: #00dd9c;
+$blue: #00a6f2;
+$purple: #6808f0;
 $primary: $blue;
 $success: $green;
 $success-background: desaturate(lighten($success, 54%), 40%);
@@ -23,33 +24,39 @@ $error: $red;
 $error-background: desaturate(lighten($error, 36%), 50%);
 
 $info: $primary;
-$secondary: #F2FAFE;
-$action: #459FB1;
-$accent: #D4E3F2;
+$secondary: #f2fafe;
+$action: #459fb1;
+$accent: #d4e3f2;
 
+$colors: (
+  'black': $black,
+  'gray-light': $gray-light,
+  'gray-mid-light': $gray-mid-light,
+  'gray-lighter': $gray-lighter,
+  'gray-border': $gray-border,
+  'gray-header': $gray-header,
+  'white': $white,
+  'black-true': $black-true,
+  'red': $red,
+  'orange': $orange,
+  'yellow': $yellow,
+  'green': $green,
+  'blue': $blue,
+  'purple': $purple,
+  'primary': $blue,
+  'success': $green,
+  'success-background': $success-background,
+  'warning': $orange,
+  'error': $red,
+  'error-background': $error-background,
+  'info': $primary,
+  'secondary': $secondary,
+  'action': $action,
+  'accent': $accent,
+);
 
 :export {
-    black: $black;
-    grayLight: $gray-light;
-    grayMidLight: $gray-mid-light;
-    grayLighter: $gray-lighter;
-    white: $white;
-    blackTrue: $black-true;
-    red: $red;
-    orange: $orange;
-    yellow: $yellow;
-    green: $green;
-    blue: $blue;
-    purple: $purple;
-    primary: $primary;
-    success: $success;
-    warning: $warning;
-    error: $error;
-    errorBackground: $error-background;
-    successBackground: $success-background;
-    grayBorder: $gray-border;
-    info: $info;
-    secondary: $secondary;
-    action: $action;
-    accent: $accent;
+  @each $key, $value in $colors {
+    #{unquote($key)}: $value;
+  }
 }

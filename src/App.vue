@@ -3,8 +3,27 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { AxiosResponse } from 'axios'
+import Vue from 'vue'
+import { AddressApiResult, Address, Stop } from './models/dto'
+import { HttpService } from './services/common/HttpService'
 
-@Component
-export default class App extends Vue {}
+export default Vue.extend({
+  name: 'App',
+
+  data: () => ({
+    //
+  }),
+  async mounted() {
+    const httpService: HttpService = new HttpService()
+    const a = {} as Address
+    const fakeStop = { orderIndex: 1, active: true, address: a } as Stop
+    const response: AxiosResponse<AddressApiResult> = await httpService
+      .post<AddressApiResult, Stop>('http://something', fakeStop)
+      .catch((f) => f.data)
+    if (!response?.data?.successful) {
+      console.log(response?.data || 'nothing to see here')
+    }
+  },
+})
 </script>

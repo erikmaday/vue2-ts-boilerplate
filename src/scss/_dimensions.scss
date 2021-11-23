@@ -1,0 +1,57 @@
+$dimensions: (
+  'auto': 'auto',
+  'one-half': '50%',
+  'one-third': '33.333333%',
+  'two-thirds': '66.666667%',
+  'one-fourth': '25%',
+  'two-fourths': '50%',
+  'three-fourths': '75%',
+  'one-fifth': '20%',
+  'two-fifths': '40%',
+  'three-fifths': '60%',
+  'fourth-fifths': '80%',
+  'one-sixth': '16.666667%',
+  'two-sixths': '33.333333%',
+  'three-sixths': '50%',
+  'four-sixths': '66.666667%',
+  'five-sixths': '83.333333%',
+  'one-twelth': '8.333333%',
+  'two-twelths': '16.666667%',
+  'three-twelths': '25%',
+  'four-twelths': '33.333333%',
+  'five-twelths': '41.666667%',
+  'six-twelths': '50%',
+  'seven-twelths': '58.333333%',
+  'eight-twelths': '66.666667%',
+  'nine-twelths': '75%',
+  'ten-twelths': '83.333333%',
+  'eleven-twelths': '91.666667%',
+  'full': '100%',
+  'screen': '100vw',
+  'min': 'min-content',
+  'max': 'max-content',
+);
+@for $i from 1 through 12 {
+  $dimensions: map-merge(
+    $dimensions,
+    (
+      '#{$i}': '#{$i}px',
+    )
+  );
+}
+$dimensions: map-merge(
+  $dimensions,
+  (
+    '14': '14px',
+  )
+);
+$i: 16;
+@while $i <= 200 {
+  $dimensions: map-merge(
+    $dimensions,
+    (
+      '#{$i}': '#{$i}px',
+    )
+  );
+  $i: $i + 4;
+}

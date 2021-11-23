@@ -1,14 +1,17 @@
 @import '~@/scss/colors';
 @import '~@/scss/fonts';
 @import '~@/scss/mixins';
+@import '~@/scss/_dimensions';
 // ALL HELPER CLASSES LIVE HERE
 
 // FONT WEIGHTS
+// .font-light, .font-book, .font-medium, .font-extrabold, .font-black
 .font {
   @include map-to-helpers($fonts, 'font-family', false);
 }
 
 // Z-INDEX
+// .z-0, .z-1, ..., .z-100
 .z {
   @for $i from 1 through 100 {
     @include create-helper($i, $i, 'z-index');
@@ -46,6 +49,16 @@ $border-directions: (
   border-width: 1px;
   @each $border-width in $border-widths {
     @include create-helper($border-width, #{$border-width}px, 'border-width');
+    @include create-helper(
+      'x',
+      #{$border-width}px,
+      ('border-left-width', 'border-right-width')
+    );
+    @include create-helper(
+      'y',
+      #{$border-width}px,
+      ('border-top-width', 'border-bottom-width')
+    );
     @each $border-direction,
       $border-direction-abbreviation in $border-directions
     {
@@ -66,30 +79,6 @@ $border-directions: (
       'border-#{$border-direction}-width'
     );
   }
-  &-y-0 {
-    border-top-width: 0px;
-    border-bottom-width: 0px;
-  }
-  &-y-2 {
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-  }
-  &-y {
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-  }
-  &-x-0 {
-    border-right-width: 0px;
-    border-left-width: 0px;
-  }
-  &-x-2 {
-    border-right-width: 2px;
-    border-left-width: 2px;
-  }
-  &-x {
-    border-right-width: 1px;
-    border-left-width: 1px;
-  }
   @each $style in $border-styles {
     @include create-helper($style, #{unquote($style)}, 'border-style');
   }
@@ -97,11 +86,25 @@ $border-directions: (
 }
 
 // BACKGROUND
+// .background-#{color} for every color in our color library
 .background {
   @include map-to-helpers($colors, 'background-color', true);
 }
 
 // TEXT
+// .text-#{color} for every color in our color library
 .text {
   @include map-to-helpers($colors, 'color', true);
+}
+
+// WIDTH
+// .w-0, .w-1,..., .w-16, .w-20, .w-24, ... , .w-200
+.w {
+  @include map-to-helpers($dimensions, 'width', false);
+}
+
+// HEIGHT
+// .h-0, .h-1,..., .h-16, .h-20, .h-24, ... , .h-200
+.h {
+  @include map-to-helpers($dimensions, 'height', false);
 }

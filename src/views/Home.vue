@@ -1,16 +1,20 @@
 <template>
-  <hello-world />
+  <v-app>
+    <TheAppBar />
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HelloWorld from "../components/HelloWorld.vue";
+import { Component, Vue } from 'vue-property-decorator'
+import TheAppBar from '@/components/TheAppBar.vue'
 
-export default Vue.extend({
-  name: "Home",
-
+@Component({
   components: {
-    HelloWorld,
+    TheAppBar,
   },
-});
+})
+export default class Home extends Vue {}
 </script>

@@ -1,19 +1,20 @@
 import dayjs from 'dayjs'
 
-export type Address = {
-  addressId?: number
+export interface Address {
+  addressId: number
   name: string
   street1: string
   street2?: string
   city: string
   state: string
   postalCode: string
-  createdOn?: dayjs.Dayjs
-  updatedOn?: dayjs.Dayjs
-  lat?: string | number
-  lng?: string | number
-  timeZone?: string
+  createdOn: dayjs.Dayjs
+  updatedOn: dayjs.Dayjs
+  lat: number
+  lng: number
+  timeZone: string
   title?: string
-  nearestMarketId?: number
-  companyId?: number
+  nearestMarketId: number
+  companyId: number
+  addressName: string
 }

@@ -21,7 +21,7 @@ export default Vue.extend({
   async mounted() {
     const httpService: HttpService = new HttpService()
     const a = {} as Address
-    const fakeStop = { orderIndex: 1, active: true, address: a }
+    const fakeStop = { orderIndex: 1, active: true, address: a } as Stop
     const response: AxiosResponse<AddressApiResult> = await httpService
       .post<AddressApiResult, Stop>('http://something', fakeStop)
       .catch((f) => f.data)

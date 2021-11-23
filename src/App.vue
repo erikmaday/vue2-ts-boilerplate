@@ -10,7 +10,7 @@
 import { AxiosResponse } from 'axios'
 import Vue from 'vue'
 import { AddressApiResult, Address, Stop } from './models/dto'
-import { HttpService } from './services/HttpService'
+import { HttpService } from './services/common/HttpService'
 
 export default Vue.extend({
   name: 'App',

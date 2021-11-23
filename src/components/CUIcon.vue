@@ -5,7 +5,7 @@
       xmlns="http://www.w3.org/2000/svg"
       :height="height"
       :width="width"
-      :viewBox="iconViewBox"
+      :viewBox="viewBox"
       :class="classes"
       :style="style"
       role="presentation"
@@ -38,10 +38,7 @@ export default class CUIcon extends Vue {
   readonly height: string | number = 24
 
   @Prop(String)
-  readonly viewBox: string = '0 0 32 32'
-
-  @Prop(Boolean)
-  readonly icomoon: boolean = false
+  readonly viewBox: string = '0 0 24 24'
 
   @Prop(Boolean)
   readonly decorative: boolean = false
@@ -69,13 +66,6 @@ export default class CUIcon extends Vue {
 
   get icon() {
     return () => import(`../assets/icons/${this.iconFileName}.vue`)
-  }
-
-  get iconViewBox(): string {
-    if (this.icomoon) {
-      return '0 0 24 24'
-    }
-    return this.viewBox
   }
 
   get ariaLabelledBy(): string {

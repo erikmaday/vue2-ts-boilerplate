@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <TheAppBar />
+    <!-- <TheAppBar /> -->
     <v-main>
       <router-view />
     </v-main>
@@ -9,12 +9,13 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import TheAppBar from '@/components/TheAppBar.vue'
+// import TheAppBar from '@/components/TheAppBar.vue'
 
-@Component({
-  components: {
-    TheAppBar,
-  },
-})
+@Component
+// ({
+//   components: {
+//     TheAppBar,
+//   },
+// })
 export default class Home extends Vue {}
 </script>

@@ -101,6 +101,12 @@ $border-directions: (
   @include map-to-helpers($dimensions, 'width', false);
 }
 
+// MAX-WIDTH
+// .max-w-0, .max-w-1,..., .max-w-16, .max-w-20, .max-w-24, ... , .max-w-200
+.max-w {
+  @include map-to-helpers($dimensions, 'max-width', true);
+}
+
 // HEIGHT
 // .h-0, .h-1,..., .h-16, .h-20, .h-24, ... , .h-200
 .h {
@@ -110,4 +116,13 @@ $border-directions: (
 //FLEX
 .shrink {
   flex-shrink: 1 !important;
+}
+
+//OPACITY
+.opacity {
+  $percent: 0;
+  @while $percent <= 100 {
+    @include create-helper($percent, $percent / 100, 'opacity');
+    $percent: $percent + 5;
+  }
 }

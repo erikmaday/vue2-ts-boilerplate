@@ -46,11 +46,11 @@ $dimensions: map-merge(
   )
 );
 $i: 16;
-@while $i <= 200 {
+@while $i <= 404 {
   $dimensions: map-merge(
     $dimensions,
     (
-      '#{$i}': '#{$i}px',
+      '#{$i}': #{$i}px,
     )
   );
   $i: $i + 4;

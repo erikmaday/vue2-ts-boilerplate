@@ -54,13 +54,14 @@
 
 <script lang="ts">
 import { Prop, Vue, Component } from 'vue-property-decorator'
-import CUIcon from '@/components/CUIcon.vue'
+// import CUIcon from '@/components/CUIcon.vue'
 
-@Component({
-  components: {
-    CUIcon,
-  },
-})
+@Component
+// ({
+//   components: {
+//     CUIcon,
+//   },
+// })
 export default class MainWithNavigation extends Vue {
   @Prop({ default: 400 })
   sidebarWidth!: number

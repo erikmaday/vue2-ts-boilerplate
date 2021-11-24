@@ -1,22 +1,68 @@
 @mixin create-helper(
-  $name,
+  $base-class,
+  $sub-class,
   $value,
   $properties,
   $important: false,
   $prefix: '-'
 ) {
   $i: if($important, ' !important', '');
-  &#{$prefix}#{$name} {
-    // @debug '&#{$prefix}#{$name}';
+  .#{$base-class}#{$prefix}#{$sub-class} {
     @each $property in $properties {
-      #{$property}: $value #{$i};
-      // @debug '#{$property}: #{$value}#{$i};';
+      #{$property}: $value#{$i};
     }
   }
 }
 
-@mixin map-to-helpers($map, $properties, $important: false, $prefix: '-') {
-  @each $name, $value in $map {
-    @include create-helper($name, $value, $properties, $important, $prefix);
+@mixin create-helper-with-pseudo-classes(
+  $base-class,
+  $sub-class,
+  $value,
+  $properties,
+  $pseudo-classes,
+  $important: false,
+  $prefix: '-'
+) {
+  $i: if($important, ' !important', '');
+  @each $pseudo-class in $pseudo-classes {
+    .#{$pseudo-class}\:#{$base-class}#{$prefix}#{$sub-class}:#{$pseudo-class} {
+      @each $property in $properties {
+        #{$property}: $value#{$i};
+      }
+    }
+  }
+}
+
+@mixin map-to-helpers(
+  $base-class,
+  $map,
+  $properties,
+  $pseudo-classes: (),
+  $important: false,
+  $prefix: '-'
+) {
+  @if length($pseudo-classes) >= 1 {
+    @each $sub-class, $value in $map {
+      @include create-helper-with-pseudo-classes(
+        $base-class,
+        $sub-class,
+        $value,
+        $properties,
+        $pseudo-classes,
+        $important,
+        $prefix
+      );
+    }
+  } @else {
+    @each $sub-class, $value in $map {
+      @include create-helper(
+        $base-class,
+        $sub-class,
+        $value,
+        $properties,
+        $important,
+        $prefix
+      );
+    }
   }
 }

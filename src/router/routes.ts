@@ -10,14 +10,14 @@ export const routes: Array<RouteConfig> = [
         name: 'home',
         component: () => import('@/views/Home.vue'),
         children: [
-          {
-            path: 'map',
-            name: 'map',
-            component: () =>
-              import(
-                /* webpackChunkName: "map" */ '@/layouts/MapWithSidebar.vue'
-              ),
-          },
+          // {
+          //   path: 'map',
+          //   name: 'map',
+          //   component: () =>
+          //     import(
+          //       /* webpackChunkName: "map" */ '@/layouts/MapWithSidebar.vue'
+          //     ),
+          // },
         ],
       },
     ],

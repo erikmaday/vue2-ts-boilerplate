@@ -33,14 +33,9 @@
             <div class="shrink">
               <v-menu offset-y>
                 <template #activator="{ on, attrs }">
-                  <!-- TODO: Switch this back to CUIcon as soon
-                  as we figure out issue with v-menu
                   <CUIcon class="text-black" v-on="on" v-bind="attrs">
                     more_vert
-                  </CUIcon> -->
-                  <v-icon color="black" v-on="on" v-bind="attrs">
-                    mdi-dots-vertical
-                  </v-icon>
+                  </CUIcon>
                 </template>
                 <slot name="navigation" />
               </v-menu>
@@ -54,14 +49,13 @@
 
 <script lang="ts">
 import { Prop, Vue, Component } from 'vue-property-decorator'
-// import CUIcon from '@/components/CUIcon.vue'
+import CUIcon from '@/components/CUIcon.vue'
 
-@Component
-// ({
-//   components: {
-//     CUIcon,
-//   },
-// })
+@Component({
+  components: {
+    CUIcon,
+  },
+})
 export default class MainWithNavigation extends Vue {
   @Prop({ default: 400 })
   sidebarWidth!: number

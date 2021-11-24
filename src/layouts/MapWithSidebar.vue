@@ -13,12 +13,7 @@
       >
         <slot name="sidebar-content" />
       </v-col>
-      <v-col
-        v-if="showMap"
-        sm="auto"
-        cols="12"
-        class="background-white flex-grow-1 z-2"
-      >
+      <v-col v-if="showMap" sm="auto" cols="12" class="flex-grow-1 z-2">
         <slot name="map-content" />
       </v-col>
     </v-row>
@@ -26,8 +21,6 @@
       v-if="$vuetify.breakpoint.xsOnly"
       class="mx-0 mt-n8 py-1 mb-0 justify-center z-4"
     >
-      <!--
-      TODO: switch back to CRIcon when click issue is resolved
       <CUIcon
         class="text-black"
         :class="{ 'opacity-25': !showPanel }"
@@ -41,35 +34,20 @@
         @click="mobileShowMap = true"
       >
         dot
-      </CUIcon> -->
-      <v-icon
-        color="black"
-        :class="{ 'opacity-25': !showPanel }"
-        @click="mobileShowMap = false"
-      >
-        mdi-circle-small
-      </v-icon>
-      <v-icon
-        color="black"
-        :class="{ 'opacity-25': !showMap }"
-        @click="mobileShowMap = true"
-      >
-        mdi-circle-small
-      </v-icon>
+      </CUIcon>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-// import CUIcon from '@/components/CUIcon.vue'
+import CUIcon from '@/components/CUIcon.vue'
 
-@Component
-// ({
-//   components: {
-//     CUIcon,
-//   },
-// })
+@Component({
+  components: {
+    CUIcon,
+  },
+})
 export default class MainWithNavigation extends Vue {
   mobileShowMap = false
 

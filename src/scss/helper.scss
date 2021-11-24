@@ -39,13 +39,18 @@ $base-class: 'z';
 );
 
 // CURSOR
-.cursor {
-  &-pointer {
-    cursor: pointer;
-  }
-  &-default {
-    cursor: default;
-  }
+$cursors: alias, all-scroll, auto, cell, copy, default, grab, grabbing, help,
+  move, no-drop, none, not-allowed, pointer, progress, text, wait, zoom-in,
+  zoom-out;
+$base-class: 'cursor';
+@each $cursor in $cursors {
+  @include create-helper-with-pseudo-classes(
+    $base-class,
+    $cursor,
+    $cursor,
+    'cursor',
+    $pseudo-classes
+  );
 }
 
 // BOX SHADOW
@@ -64,10 +69,17 @@ $border-directions: (
   'left': 'l',
   'right': 'r',
 );
-.border {
-  border-width: 1px;
-}
 $base-class: 'border';
+
+@include create-helper-with-pseudo-classes(
+  $base-class,
+  '',
+  1px,
+  'border-width',
+  $pseudo-classes,
+  false,
+  ''
+);
 @each $border-width in $border-widths {
   @include create-helper-with-pseudo-classes(
     $base-class,

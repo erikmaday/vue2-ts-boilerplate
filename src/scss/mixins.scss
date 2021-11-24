@@ -24,6 +24,14 @@
   $prefix: '-'
 ) {
   $i: if($important, ' !important', '');
+  @include create-helper(
+    $base-class,
+    $sub-class,
+    $value,
+    $properties,
+    $important,
+    $prefix
+  );
   @each $pseudo-class in $pseudo-classes {
     .#{$pseudo-class}\:#{$base-class}#{$prefix}#{$sub-class}:#{$pseudo-class} {
       @each $property in $properties {

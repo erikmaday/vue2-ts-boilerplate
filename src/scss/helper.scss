@@ -1,23 +1,42 @@
-@import '~@/scss/colors';
-@import '~@/scss/fonts';
-@import '~@/scss/mixins';
-@import '~@/scss/_dimensions';
+@import './colors';
+@import './fonts';
+@import './mixins';
+@import './_dimensions';
+@import './_pseudoclasses';
 // ALL HELPER CLASSES LIVE HERE
 
 // FONT WEIGHTS
 // .font-light, .font-book, .font-medium, .font-extrabold, .font-black
-.font {
-  @include map-to-helpers($fonts, 'font-family', false);
-}
+$base-class: 'font';
+@include map-to-helpers($base-class, $fonts, 'font-family', $pseudo-classes);
+@include map-to-helpers(
+  $base-class,
+  $font-sizes,
+  'font-size',
+  $pseudo-classes,
+  false,
+  '-size-'
+);
 
 // Z-INDEX
 // .z-0, .z-1, ..., .z-100
-.z {
-  @for $i from 1 through 100 {
-    @include create-helper($i, $i, 'z-index');
-  }
-  @include create-helper('auto', 'auto', 'z-index');
+$base-class: 'z';
+@for $i from 1 through 100 {
+  @include create-helper-with-pseudo-classes(
+    $base-class,
+    $i,
+    $i,
+    'z-index',
+    $pseudo-classes
+  );
 }
+@include create-helper-with-pseudo-classes(
+  $base-class,
+  'auto',
+  'auto',
+  'z-index',
+  $pseudo-classes
+);
 
 // CURSOR
 .cursor {
@@ -47,71 +66,113 @@ $border-directions: (
 );
 .border {
   border-width: 1px;
-  @each $border-width in $border-widths {
-    @include create-helper($border-width, #{$border-width}px, 'border-width');
-    &-y-#{$border-width} {
-      border-top-width: #{$border-width}px;
-      border-bottom-width: #{$border-width}px;
-    }
-    &-x-#{$border-width} {
-      border-left-width: #{$border-width}px;
-      border-right-width: #{$border-width}px;
-    }
-    @each $border-direction,
-      $border-direction-abbreviation in $border-directions
-    {
-      @include create-helper(
-        $border-width,
-        #{$border-width}px,
-        'border-#{$border-direction}-width',
-        false,
-        '-#{$border-direction-abbreviation}-'
-      );
-    }
+}
+$base-class: 'border';
+@each $border-width in $border-widths {
+  @include create-helper-with-pseudo-classes(
+    $base-class,
+    $border-width,
+    #{$border-width}px,
+    'border-width',
+    $pseudo-classes
+  );
+  .#{$base-class}-y-#{$border-width} {
+    border-top-width: #{$border-width}px;
+    border-bottom-width: #{$border-width}px;
+  }
+  .#{$base-class}-x-#{$border-width} {
+    border-left-width: #{$border-width}px;
+    border-right-width: #{$border-width}px;
   }
   @each $border-direction, $border-direction-abbreviation in $border-directions
   {
-    @include create-helper(
-      $border-direction-abbreviation,
-      1px,
-      'border-#{$border-direction}-width'
+    @include create-helper-with-pseudo-classes(
+      $base-class,
+      $border-width,
+      #{$border-width}px,
+      'border-#{$border-direction}-width',
+      $pseudo-classes,
+      false,
+      '-#{$border-direction-abbreviation}-'
     );
   }
-  @each $style in $border-styles {
-    @include create-helper($style, #{unquote($style)}, 'border-style');
-  }
-  @include map-to-helpers($colors, 'border-color', true);
 }
+@each $border-direction, $border-direction-abbreviation in $border-directions {
+  @include create-helper-with-pseudo-classes(
+    $base-class,
+    $border-direction-abbreviation,
+    1px,
+    'border-#{$border-direction}-width',
+    $pseudo-classes
+  );
+}
+@each $style in $border-styles {
+  @include create-helper-with-pseudo-classes(
+    $base-class,
+    $style,
+    #{unquote($style)},
+    'border-style',
+    $pseudo-classes
+  );
+}
+@include map-to-helpers(
+  $base-class,
+  $colors,
+  'border-color',
+  $pseudo-classes,
+  true
+);
+@include create-helper-with-pseudo-classes(
+  $base-class,
+  'transparent',
+  #{unquote('transparent')},
+  'border-color',
+  $pseudo-classes
+);
 
 // BACKGROUND
 // .background-#{color} for every color in our color library
-.background {
-  @include map-to-helpers($colors, 'background-color', true);
-}
+$base-class: 'background';
+@include map-to-helpers(
+  $base-class,
+  $colors,
+  'background-color',
+  $pseudo-classes,
+  true
+);
 
 // TEXT
 // .text-#{color} for every color in our color library
-.text {
-  @include map-to-helpers($colors, 'color', true);
-}
+$base-class: 'text';
+@include map-to-helpers($base-class, $colors, 'color', $pseudo-classes, true);
 
 // WIDTH
 // .w-0, .w-1,..., .w-16, .w-20, .w-24, ... , .w-200
-.w {
-  @include map-to-helpers($dimensions, 'width', false);
-}
+$base-class: 'w';
+@include map-to-helpers($base-class, $dimensions, 'width', $pseudo-classes);
 
 // MAX-WIDTH
 // .max-w-0, .max-w-1,..., .max-w-16, .max-w-20, .max-w-24, ... , .max-w-200
+$base-class: 'max-w';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  'max-width',
+  $pseudo-classes,
+  true
+);
+
+// MAX-WIDTH
+// .max-w-0, .max-w-1,..., .max-w-16, .max-w-20, .max-w-24, ... , .max-w-200
+$base-class: 'max-w';
 .max-w {
-  @include map-to-helpers($dimensions, 'max-width', true);
+  @include map-to-helpers($base-class, $dimensions, 'max-width', true);
 }
 
 // HEIGHT
 // .h-0, .h-1,..., .h-16, .h-20, .h-24, ... , .h-200
-.h {
-  @include map-to-helpers($dimensions, 'height', false);
-}
+$base-class: 'h';
+@include map-to-helpers($base-class, $dimensions, 'height', $pseudo-classes);
 
 //FLEX
 .shrink {
@@ -119,10 +180,15 @@ $border-directions: (
 }
 
 //OPACITY
-.opacity {
-  $percent: 0;
-  @while $percent <= 100 {
-    @include create-helper($percent, $percent / 100, 'opacity');
-    $percent: $percent + 5;
-  }
+$base-class: 'opacity';
+$percent: 0;
+@while $percent <= 100 {
+  @include create-helper-with-pseudo-classes(
+    $base-class,
+    $percent,
+    $percent / 100,
+    'opacity',
+    $pseudo-classes
+  );
+  $percent: $percent + 5;
 }

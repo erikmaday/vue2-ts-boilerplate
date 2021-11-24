@@ -49,16 +49,14 @@ $border-directions: (
   border-width: 1px;
   @each $border-width in $border-widths {
     @include create-helper($border-width, #{$border-width}px, 'border-width');
-    @include create-helper(
-      'x',
-      #{$border-width}px,
-      ('border-left-width', 'border-right-width')
-    );
-    @include create-helper(
-      'y',
-      #{$border-width}px,
-      ('border-top-width', 'border-bottom-width')
-    );
+    &-y-#{$border-width} {
+      border-top-width: #{$border-width}px;
+      border-bottom-width: #{$border-width}px;
+    }
+    &-x-#{$border-width} {
+      border-left-width: #{$border-width}px;
+      border-right-width: #{$border-width}px;
+    }
     @each $border-direction,
       $border-direction-abbreviation in $border-directions
     {
@@ -107,4 +105,9 @@ $border-directions: (
 // .h-0, .h-1,..., .h-16, .h-20, .h-24, ... , .h-200
 .h {
   @include map-to-helpers($dimensions, 'height', false);
+}
+
+//FLEX
+.shrink {
+  flex-shrink: 1 !important;
 }

@@ -6,17 +6,13 @@ Vue.use(Vuetify)
 
 const caseConvertedColors: { [index: string]: string } = {}
 for (const [key, value] of Object.entries(colors)) {
-  Object.defineProperty(caseConvertedColors, toCamel(key), {
-    value: value,
-  })
+  caseConvertedColors[key] = toCamel(`${value}`)
 }
 
 export default new Vuetify({
   theme: {
     themes: {
-      light: {
-        ...caseConvertedColors,
-      },
+      light: caseConvertedColors,
     },
   },
 })

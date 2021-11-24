@@ -1,30 +1,31 @@
 <template>
-  <span @click="$emit('click')">
-    <svg
-      class="cu-icon"
-      xmlns="http://www.w3.org/2000/svg"
-      :height="height"
-      :width="width"
-      :viewBox="viewBox"
-      :class="classes"
-      :style="style"
-      role="presentation"
-      :aria-labelledby="!decorative ? ariaLabelledBy : null"
-      :aria-hidden="decorative"
-      v-bind="$attrs"
-    >
-      <title :id="ariaLabelledBy || iconFileName" lang="en">
-        {{ iconFileName }} icon
-      </title>
-      <g fill="currentColor">
-        <component :is="icon"></component>
-      </g>
-    </svg>
-  </span>
+  <svg
+    class="cu-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    :height="height"
+    :width="width"
+    :viewBox="viewBox"
+    :class="classes"
+    :style="style"
+    role="presentation"
+    :aria-labelledby="!decorative ? ariaLabelledBy : null"
+    :aria-hidden="decorative"
+    v-bind="$attrs"
+    v-on="$listeners"
+    @click="$emit('click')"
+  >
+    <title :id="ariaLabelledBy || iconTitle" lang="en">
+      {{ iconTitle }} icon
+    </title>
+    <g fill="currentColor">
+      <component :is="icon"></component>
+    </g>
+  </svg>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { toPascal, toTitle } from '@/utils/string'
 
 @Component
 export default class CUIcon extends Vue {
@@ -58,14 +59,23 @@ export default class CUIcon extends Vue {
     }
 
     if (iconFileName && iconFileName?.length > 1) {
-      iconFileName = iconFileName[0].toUpperCase() + iconFileName.slice(1)
+      iconFileName = toPascal(iconFileName)
     }
 
     return iconFileName
   }
 
+  get iconTitle(): string | undefined {
+    let iconTitle: string | undefined = undefined
+    if (this.iconFileName) {
+      iconTitle = toTitle(this.iconFileName)
+    }
+    return iconTitle
+  }
+
   get icon() {
-    return () => import(`../assets/icons/${this.iconFileName}.vue`)
+    // eslint-disable-next-line
+    return () => import(`@/assets/icons/${this.iconFileName}.vue`)
   }
 
   get ariaLabelledBy(): string {
@@ -73,7 +83,7 @@ export default class CUIcon extends Vue {
       return this.ariaLabel
     }
 
-    return `${this.iconFileName} icon`
+    return `${this.iconTitle} icon`
   }
 
   get style(): string {

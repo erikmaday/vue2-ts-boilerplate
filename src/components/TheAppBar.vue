@@ -8,69 +8,108 @@
       z-20
       border-b border-solid border-gray-border border-x-0 border-t-0
       background-white
-      px-2
+      padding-x-2
     "
   >
-    <v-toolbar-title class="mr-11">
+    <v-toolbar-title class="margin-r-4">
       <a @click="$router.push({ name: 'home' })" role="link">
         <CharterUPLogo style="width: 108px" />
       </a>
     </v-toolbar-title>
-    <router-link
-      v-for="(item, index) in topNavigationItems"
-      :id="`toolbar-button-${item.label}`"
-      :key="`item-link-${index}`"
-      :to="{ name: item.link }"
-      class="app-bar-link py-0 px-6 font-size-14 font-medium"
-      :class="{
-        'h-68': $vuetify.breakpoint.smAndUp,
-        'h-60': $vuetify.breakpoint.xsOnly,
-      }"
-    >
-      <!-- Double spans allow for precise underlining -->
-      <span
+    <template v-if="$vuetify.breakpoint.mdAndUp">
+      <div
+        v-for="(item, index) in topNavigationItems"
+        :id="`app-bar-button-${item.label}`"
+        :key="`item-link-${index}`"
+        @click="handleNavigationClick(item)"
         class="
-          border-b-2 border-t-0 border-x-0 border-transparent border-solid
-          h-full
-          d-flex
-          align-center
-          hover:test-b
+          cursor-pointer
+          padding-y-0 padding-x-4
+          first-of-type:padding-l-0
+          font-14 font-medium
+          text-black text-no-wrap
         "
+        :class="{
+          'h-68': $vuetify.breakpoint.smAndUp,
+          'h-60': $vuetify.breakpoint.xsOnly,
+        }"
       >
-        <span class="text-black">{{ item.label }}</span>
-      </span>
-    </router-link>
+        <!-- Double spans allow for precise underlining -->
+        <span
+          class="
+            h-full
+            d-flex
+            align-center
+            border-b-2 border-t-0 border-x-0 border-transparent border-solid
+            hover:border-black
+            active:border-black
+          "
+        >
+          <span>{{ item.label }}</span>
+        </span>
+      </div>
+      <v-spacer />
+      <v-btn outlined small color="primary" class="margin-r-6">Support</v-btn>
+      <v-menu class="border-0">
+        <template #activator="{ on }">
+          <div
+            id="app-bar-button-drop-down"
+            class="d-flex align-center cursor-pointer"
+            v-on="on"
+          >
+            <span class="font-14 font-medium text-no-wrap">First Last</span>
+            <CUIcon class="text-black">keyboard_arrow_down</CUIcon>
+          </div>
+        </template>
+        <v-list class="font-14 font-medium">
+          <v-list-item
+            v-for="(item, index) in dropdownNavigationItems"
+            :id="`app-bar-dropdown-button-${item.label}`"
+            :key="`dropdown-item-link-${index}`"
+            @click="handleNavigationClick(item)"
+          >
+            {{ item.label }}
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </template>
+    <template v-else>
+      <v-spacer />
+      <CUIcon class="text-black cursor-pointer" @click="$emit('open-sidebar')">
+        menu_three_lines
+      </CUIcon>
+    </template>
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import CharterUPLogo from '@/components/CharterUPLogo.vue'
+import CUIcon from '@/components/CUIcon.vue'
 import { navigation } from '@/data/navigation'
 import { NavigationLink } from '@/models/NavigationLink'
 
 @Component({
   components: {
     CharterUPLogo,
+    CUIcon,
   },
 })
 export default class TheAppBar extends Vue {
   get topNavigationItems(): Array<NavigationLink> {
     return navigation.filter((item) => item.location === 'top')
   }
+
+  get dropdownNavigationItems(): Array<NavigationLink> {
+    return navigation.filter((item) => item.location === 'dropdown')
+  }
+
+  handleNavigationClick(item: NavigationLink): void {
+    if (item.link) {
+      this.$router.push(item.link)
+    } else if (item.action) {
+      item.action()
+    }
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/scss/colors.scss';
-// a {
-//   &.app-bar-link {
-//     &:hover,
-//     &.active {
-//       > span {
-//         border-bottom: 2px solid $black;
-//       }
-//     }
-//   }
-// }
-</style>

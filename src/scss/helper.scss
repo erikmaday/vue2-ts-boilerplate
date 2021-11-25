@@ -225,7 +225,7 @@ $base-classes: 'padding', 'margin';
       $dimension-value,
       $base-class,
       $pseudo-classes,
-      false,
+      true,
       '-a-'
     );
     @include create-helper-with-pseudo-classes(
@@ -234,7 +234,7 @@ $base-classes: 'padding', 'margin';
       $dimension-value,
       ('#{$base-class}-top', '#{$base-class}-bottom'),
       $pseudo-classes,
-      false,
+      true,
       '-y-'
     );
     @include create-helper-with-pseudo-classes(
@@ -243,7 +243,7 @@ $base-classes: 'padding', 'margin';
       $dimension-value,
       ('#{$base-class}-right', '#{$base-class}-left'),
       $pseudo-classes,
-      false,
+      true,
       '-x-'
     );
     @each $direction, $direction-abbreviation in $directions {
@@ -253,7 +253,7 @@ $base-classes: 'padding', 'margin';
         $dimension-value,
         '#{$base-class}-#{$direction}',
         $pseudo-classes,
-        false,
+        true,
         '-#{$direction-abbreviation}-'
       );
     }

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-0 fill-height">
+  <v-container fluid class="padding-a-0 fill-height">
     <v-row no-gutters class="fill-height">
       <v-col
         v-if="showPanel"
@@ -9,7 +9,7 @@
           'w-404': $vuetify.breakpoint.smAndUp,
           'shadow-right': $vuetify.breakpoint.smAndUp,
         }"
-        class="pa-6 z-3"
+        class="padding-a-6 z-3"
       >
         <slot name="sidebar-content" />
       </v-col>
@@ -19,7 +19,7 @@
     </v-row>
     <v-row
       v-if="$vuetify.breakpoint.xsOnly"
-      class="mx-0 mt-n8 py-1 mb-0 justify-center z-4"
+      class="margin-x-0 margin-t-n8 padding-y-1 margin-b-0 justify-center z-4"
     >
       <CUIcon
         class="text-black"

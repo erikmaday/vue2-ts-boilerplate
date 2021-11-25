@@ -1,7 +1,7 @@
 <template>
   <v-container
     fluid
-    class="pa-0"
+    class="padding-a-0"
     :class="{ 'fill-height': $vuetify.breakpoint.mdAndUp }"
   >
     <v-row no-gutters :class="{ 'fill-height': $vuetify.breakpoint.mdAndUp }">
@@ -13,14 +13,14 @@
           'max-width': `${sidebarWidth}px`,
         }"
         class="
-          pa-6
+          padding-a-6
           background-gray-header
           border-y-0 border-l-0 border-r border-gray-border border-solid
         "
       >
         <slot name="navigation" />
       </v-col>
-      <v-col class="pa-6">
+      <v-col class="padding-a-6">
         <v-row align="center">
           <v-col cols="auto">
             <h1><slot name="section-title" /></h1>

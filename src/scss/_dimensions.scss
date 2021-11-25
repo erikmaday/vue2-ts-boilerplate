@@ -55,3 +55,18 @@ $i: 16;
   );
   $i: $i + 4;
 }
+
+$padding-margin-dimensions: (
+  '0': 0px,
+);
+$i: 1;
+@while $i <= 20 {
+  $padding-margin-dimensions: map-merge(
+    $padding-margin-dimensions,
+    (
+      '#{$i}': $i*4px,
+      'n#{$i}': $i * -4px,
+    )
+  );
+  $i: $i + 1;
+}

@@ -1,7 +1,7 @@
-@import '~@/scss/colors';
-@import '~@/scss/fonts';
-@import '~@/scss/variables';
-@import '~@/scss/helper';
+@import './colors';
+@import './fonts';
+@import './variables';
+@import './helper';
 
 .v-application.theme--light {
   body {

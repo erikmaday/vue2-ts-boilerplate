@@ -14,8 +14,7 @@ $base-class: 'font';
   $font-sizes,
   'font-size',
   $pseudo-classes,
-  false,
-  '-size-'
+  false
 );
 
 // Z-INDEX
@@ -60,15 +59,15 @@ $base-class: 'cursor';
   }
 }
 
-// BORDER WIDTH AND STYLE
-$border-styles: 'solid', 'dashed', 'dotted', 'double', 'none';
-$border-widths: 0, 2, 4;
-$border-directions: (
+// BORDER WIDTH, STYLE, AND COLOR
+$directions: (
   'bottom': 'b',
   'top': 't',
   'left': 'l',
   'right': 'r',
 );
+$border-styles: 'solid', 'dashed', 'dotted', 'double', 'none';
+$border-widths: 0, 2, 4;
 $base-class: 'border';
 
 @include create-helper-with-pseudo-classes(
@@ -88,16 +87,26 @@ $base-class: 'border';
     'border-width',
     $pseudo-classes
   );
-  .#{$base-class}-y-#{$border-width} {
-    border-top-width: #{$border-width}px;
-    border-bottom-width: #{$border-width}px;
-  }
-  .#{$base-class}-x-#{$border-width} {
-    border-left-width: #{$border-width}px;
-    border-right-width: #{$border-width}px;
-  }
-  @each $border-direction, $border-direction-abbreviation in $border-directions
-  {
+
+  @include create-helper-with-pseudo-classes(
+    $base-class,
+    $border-width,
+    #{$border-width}px,
+    ('border-top-width', 'border-bottom-width'),
+    $pseudo-classes,
+    false,
+    '-y-'
+  );
+  @include create-helper-with-pseudo-classes(
+    $base-class,
+    $border-width,
+    #{$border-width}px,
+    ('border-left-width', 'border-right-width'),
+    $pseudo-classes,
+    false,
+    '-x-'
+  );
+  @each $border-direction, $border-direction-abbreviation in $directions {
     @include create-helper-with-pseudo-classes(
       $base-class,
       $border-width,
@@ -109,7 +118,7 @@ $base-class: 'border';
     );
   }
 }
-@each $border-direction, $border-direction-abbreviation in $border-directions {
+@each $border-direction, $border-direction-abbreviation in $directions {
   @include create-helper-with-pseudo-classes(
     $base-class,
     $border-direction-abbreviation,
@@ -203,4 +212,50 @@ $percent: 0;
     $pseudo-classes
   );
   $percent: $percent + 5;
+}
+
+// PADDING AND MARGIN
+$base-classes: 'padding', 'margin';
+
+@each $base-class in $base-classes {
+  @each $dimension-key, $dimension-value in $padding-margin-dimensions {
+    @include create-helper-with-pseudo-classes(
+      $base-class,
+      $dimension-key,
+      $dimension-value,
+      $base-class,
+      $pseudo-classes,
+      false,
+      '-a-'
+    );
+    @include create-helper-with-pseudo-classes(
+      $base-class,
+      $dimension-key,
+      $dimension-value,
+      ('#{$base-class}-top', '#{$base-class}-bottom'),
+      $pseudo-classes,
+      false,
+      '-y-'
+    );
+    @include create-helper-with-pseudo-classes(
+      $base-class,
+      $dimension-key,
+      $dimension-value,
+      ('#{$base-class}-right', '#{$base-class}-left'),
+      $pseudo-classes,
+      false,
+      '-x-'
+    );
+    @each $direction, $direction-abbreviation in $directions {
+      @include create-helper-with-pseudo-classes(
+        $base-class,
+        $dimension-key,
+        $dimension-value,
+        '#{$base-class}-#{$direction}',
+        $pseudo-classes,
+        false,
+        '-#{$direction-abbreviation}-'
+      );
+    }
+  }
 }

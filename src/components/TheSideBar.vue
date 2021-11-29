@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    v-model="shouldShowSidebar"
+    v-model="showSidebar"
     app
     right
     width="70vw"
@@ -11,7 +11,13 @@
       <v-row>
         <CharterUPLogo style="width: 135px" class="margin-b-4" />
         <v-spacer />
-        <CUIcon large class="text-black">close</CUIcon>
+        <CUIcon
+          large
+          class="text-black cursor-pointer"
+          @click="sidebar.closeSidebar()"
+        >
+          close
+        </CUIcon>
       </v-row>
       <v-row>
         <v-col
@@ -33,11 +39,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Model, Watch } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import CharterUPLogo from '@/components/CharterUPLogo.vue'
 import CUIcon from '@/components/CUIcon.vue'
 import { navigation } from '@/data/navigation'
 import { NavigationLink } from '@/models/NavigationLink'
+import modules from '@/store/modules'
 
 @Component({
   components: {
@@ -46,26 +53,32 @@ import { NavigationLink } from '@/models/NavigationLink'
   },
 })
 export default class TheSideBar extends Vue {
-  @Model('input', { type: Boolean }) readonly isSidebarOpen!: boolean
-
-  shouldShowSidebar = false
-
-  @Watch('isSidebarOpen')
-  isSidebarOpenChanged(value: boolean): void {
-    if (value !== this.shouldShowSidebar) {
-      this.shouldShowSidebar = value
-    }
-  }
-
-  @Watch('shouldShowSidebar')
-  shouldShowSidebarChanged(value: boolean): void {
-    if (value !== this.isSidebarOpen) {
-      this.$emit('input', this.shouldShowSidebar)
-    }
-  }
+  showSidebar = false
+  sidebar = modules.sidebar
 
   get navigationItems(): Array<NavigationLink> {
     return navigation
+  }
+  get isSidebarOpen(): boolean {
+    return this.sidebar.isSidebarOpen
+  }
+
+  @Watch('isSidebarOpen')
+  isSidebarOpenChanged(value: boolean): void {
+    if (value !== this.showSidebar) {
+      this.showSidebar = value
+    }
+  }
+
+  @Watch('showSidebar')
+  showSidebarChanged(value: boolean): void {
+    if (value !== this.sidebar.isSidebarOpen) {
+      if (value) {
+        this.sidebar.openSidebar()
+      } else {
+        this.sidebar.closeSidebar()
+      }
+    }
   }
 
   handleNavigationClick(item: NavigationLink): void {

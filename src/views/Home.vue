@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <TheSideBar v-model="isSidebarOpen" />
-    <TheAppBar @open-sidebar="isSidebarOpen = true" />
+    <TheSideBar />
+    <TheAppBar />
     <v-main>
       <router-view />
     </v-main>
@@ -9,9 +9,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import TheAppBar from '@/components/TheAppBar.vue'
 import TheSideBar from '@/components/TheSideBar.vue'
+import modules from '@/store/modules'
 
 @Component({
   components: {
@@ -20,6 +21,11 @@ import TheSideBar from '@/components/TheSideBar.vue'
   },
 })
 export default class Home extends Vue {
-  isSidebarOpen = false
+  @Watch('$vuetify.breakpoint.mdAndUp')
+  shouldHideSidebar(value: boolean): void {
+    if (value) {
+      modules.sidebar.closeSidebar()
+    }
+  }
 }
 </script>

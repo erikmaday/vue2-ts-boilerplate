@@ -75,7 +75,7 @@
     </template>
     <template v-else>
       <v-spacer />
-      <CUIcon class="text-black cursor-pointer" @click="$emit('open-sidebar')">
+      <CUIcon class="text-black cursor-pointer" @click="openSidebar">
         menu_three_lines
       </CUIcon>
     </template>
@@ -88,6 +88,7 @@ import CharterUPLogo from '@/components/CharterUPLogo.vue'
 import CUIcon from '@/components/CUIcon.vue'
 import { navigation } from '@/data/navigation'
 import { NavigationLink } from '@/models/NavigationLink'
+import modules from '@/store/modules'
 
 @Component({
   components: {
@@ -102,6 +103,10 @@ export default class TheAppBar extends Vue {
 
   get dropdownNavigationItems(): Array<NavigationLink> {
     return navigation.filter((item) => item.location === 'dropdown')
+  }
+
+  openSidebar(): void {
+    modules.sidebar.open()
   }
 
   handleNavigationClick(item: NavigationLink): void {

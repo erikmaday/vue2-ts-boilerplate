@@ -37,6 +37,12 @@ export const navigation: Array<NavigationLink> = [
     permission: [],
   },
   {
+    label: 'Support',
+    location: 'mobile',
+    params: {},
+    permission: [],
+  },
+  {
     label: 'Logout',
     location: 'dropdown',
     action: () => console.log('test'),

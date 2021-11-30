@@ -106,7 +106,7 @@ export default class TheAppBar extends Vue {
   }
 
   openSidebar(): void {
-    modules.sidebar.openSidebar()
+    modules.sidebar.open()
   }
 
   handleNavigationClick(item: NavigationLink): void {

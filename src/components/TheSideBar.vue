@@ -60,7 +60,7 @@ export default class TheSideBar extends Vue {
     return navigation
   }
   get isSidebarOpen(): boolean {
-    return this.sidebar.isSidebarOpen
+    return this.sidebar.isOpen
   }
 
   @Watch('isSidebarOpen')
@@ -72,11 +72,11 @@ export default class TheSideBar extends Vue {
 
   @Watch('showSidebar')
   showSidebarChanged(value: boolean): void {
-    if (value !== this.sidebar.isSidebarOpen) {
+    if (value !== this.sidebar.isOpen) {
       if (value) {
-        this.sidebar.openSidebar()
+        this.sidebar.open()
       } else {
-        this.sidebar.closeSidebar()
+        this.sidebar.close()
       }
     }
   }

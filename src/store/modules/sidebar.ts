@@ -6,7 +6,7 @@ class SidebarModule extends VuexModule {
   sidebarOpen = false
 
   // getters
-  get isSidebarOpen(): boolean {
+  get isOpen(): boolean {
     return this.sidebarOpen
   }
 
@@ -14,12 +14,12 @@ class SidebarModule extends VuexModule {
 
   // actions
   @Action
-  openSidebar() {
+  open() {
     this.sidebarOpen = true
   }
 
   @Action
-  closeSidebar() {
+  close() {
     this.sidebarOpen = false
   }
 }

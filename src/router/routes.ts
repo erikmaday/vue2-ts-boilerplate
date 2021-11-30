@@ -11,11 +11,11 @@ export const routes: Array<RouteConfig> = [
         component: () => import('@/views/Home.vue'),
         children: [
           // {
-          //   path: 'sidenav',
-          //   name: 'sidenav',
+          //   path: 'map',
+          //   name: 'map',
           //   component: () =>
           //     import(
-          //       /* webpackChunkName: "sidenav" */ '@/views/SideNavTest.vue'
+          //       /* webpackChunkName: "map" */ '@/layouts/MapWithSidebar.vue'
           //     ),
           // },
         ],

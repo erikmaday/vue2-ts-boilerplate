@@ -62,7 +62,6 @@ export default class MainWithNavigation extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import '@/scss/colors.scss';
 .shadow-right {
   box-shadow: 0px 0px 35px 0px rgba($black-true, 0.35);
 }

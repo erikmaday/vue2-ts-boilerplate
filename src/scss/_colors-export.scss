@@ -1,0 +1,39 @@
+// NOTE TO FUTURE DEVELOPERS
+// IF YOU ADD OR REMOVE A COLOR, MAKE THE CORRESPONDING 
+// CHANGE TO ORIGINAL DEFINITION IN COLORS.SCSS AND 
+// ADD IT TO THE MAP IN THIS FILE 
+
+@import './colors';
+
+$colors: (
+  'black': $black,
+  'gray-light': $gray-light,
+  'gray-mid-light': $gray-mid-light,
+  'gray-lighter': $gray-lighter,
+  'gray-border': $gray-border,
+  'gray-header': $gray-header,
+  'white': $white,
+  'black-true': $black-true,
+  'red': $red,
+  'orange': $orange,
+  'yellow': $yellow,
+  'green': $green,
+  'blue': $blue,
+  'purple': $purple,
+  'primary': $blue,
+  'success': $green,
+  'success-background': $success-background,
+  'warning': $orange,
+  'error': $red,
+  'error-background': $error-background,
+  'info': $primary,
+  'secondary': $secondary,
+  'action': $action,
+  'accent': $accent,
+);
+
+:export {
+  @each $key, $value in $colors {
+    #{unquote($key)}: $value;
+  }
+}

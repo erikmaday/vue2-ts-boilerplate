@@ -10,6 +10,12 @@ export const routes: Array<RouteConfig> = [
         name: 'home',
         component: () => import('@/views/Home.vue'),
         children: [
+          {
+            path: 'company',
+            name: 'company',
+            component: () =>
+              import(/* webpackChunkName: "map" */ '@/views/MyCompany.vue'),
+          },
           // {
           //   path: 'map',
           //   name: 'map',

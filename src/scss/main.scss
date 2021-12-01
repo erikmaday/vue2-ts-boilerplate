@@ -279,7 +279,7 @@
           border-left-color: $gray-border;
 
           &:hover:not(.v-data-table__expanded__content) {
-            background-color: $gray-mid-light;
+            background-color: $gray-header !important;
           }
 
           td {
@@ -312,7 +312,7 @@
     }
 
     .v-data-table-header {
-      background-color: $gray-mid-light;
+      background-color: $gray-header;
     }
 
     .v-datatable__progress {

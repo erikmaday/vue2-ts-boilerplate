@@ -200,6 +200,31 @@ $base-class: 'h';
   flex-shrink: 1 !important;
 }
 
+.flex-row {
+  display: flex;
+  flex-wrap: wrap; 
+  flex-direction: row; 
+}
+
+.flex-column {
+  display: flex;
+  flex-wrap: wrap; 
+  flex-direction: column; 
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.center {
+  align-items: center;
+  justify-content: center;
+}
+
 //OPACITY
 $base-class: 'opacity';
 $percent: 0;

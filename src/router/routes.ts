@@ -8,16 +8,23 @@ export const routes: Array<RouteConfig> = [
       {
         path: '',
         name: 'home',
+        meta: {
+          requiresAuth: true,
+        },
         component: () => import('@/views/Home.vue'),
+        children: [],
+      },
+      {
+        path: '',
+        name: 'preauth',
+        component: () => import('@/views/PreAuth.vue'),
         children: [
-          // {
-          //   path: 'map',
-          //   name: 'map',
-          //   component: () =>
-          //     import(
-          //       /* webpackChunkName: "map" */ '@/layouts/MapWithSidebar.vue'
-          //     ),
-          // },
+          {
+            path: 'login',
+            name: 'login',
+            component: () =>
+              import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
+          },
         ],
       },
     ],

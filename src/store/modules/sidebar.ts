@@ -26,4 +26,4 @@ class SidebarModule extends VuexModule {
 
 // register module (could be in any file)
 import store from '@/store/index'
-export const sidebar = new SidebarModule({ store, name: 'sidebar' })
+export default new SidebarModule({ store, name: 'sidebar' })

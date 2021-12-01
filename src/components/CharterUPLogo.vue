@@ -67,7 +67,7 @@
 </template>
 
 <style lang="scss">
-@import '@/scss/colors.scss';
+@import '@/scss/_colors-export.scss';
 .st0 {
   fill: $primary;
 }

@@ -24,7 +24,7 @@ export default class Home extends Vue {
   @Watch('$vuetify.breakpoint.mdAndUp')
   shouldHideSidebar(value: boolean): void {
     if (value) {
-      modules.sidebar.closeSidebar()
+      modules.sidebar.close()
     }
   }
 }

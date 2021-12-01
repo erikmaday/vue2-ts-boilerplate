@@ -1,6 +1,13 @@
 module.exports = {
   transpileDependencies: ['vuetify'],
-
+  css: {
+    sourceMap: process.env.NODE_ENV === 'development',
+    loaderOptions: {
+      scss: {
+        additionalData: `@import "@/scss/colors";`,
+      },
+    },
+  },
   pluginOptions: {
     i18n: {
       locale: 'en',

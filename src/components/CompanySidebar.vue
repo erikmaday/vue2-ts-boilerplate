@@ -7,15 +7,22 @@
         :to="item.href"
       >
         <div
-          class="
+          :class="`
             my-company__sidebar-item
             flex-row
             align-center
             padding-y-4 padding-l-3
+            margin-y-1
             cursor-pointer
-          "
+            ${mode === item.name ? 'my-company__sidebar-item--active' : ''}
+          `"
         >
-          <CUIcon class="margin-r-3" color="gray">
+          <CUIcon
+            width="20px"
+            height="20px"
+            class="margin-r-3"
+            :color="mode === item.name ? 'primary' : 'gray'"
+          >
             {{ item.icon }}
           </CUIcon>
           {{ toTitle(item.name) }}
@@ -24,22 +31,28 @@
     </div>
   </div>
 </template>
-
 <script lang="ts">
 import { PropType } from 'vue'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { SidebarLink } from '@/models/SidebarLink'
 import CUIcon from '@/components/CUIcon.vue'
 import { toTitle } from '@/utils/string'
+
 @Component({
   components: { CUIcon },
 })
 export default class CompanySidebar extends Vue {
   @Prop({
-    type: Array as PropType<SidebarLink[]>, // use PropType
-    default: () => [], // use a factory function
+    type: Array as PropType<SidebarLink[]>,
+    default: () => [],
   })
   private readonly links!: SidebarLink[]
+
+  @Prop({
+    type: String,
+    default: '',
+  })
+  private readonly mode!: string
 
   toTitle = toTitle
 }
@@ -47,15 +60,18 @@ export default class CompanySidebar extends Vue {
 
 <style lang="scss" scoped>
 .my-company__sidebar {
-  //   height: 100%;
   font-weight: bold;
-  //   border-right: 1px solid $gray-border;
 
   &-item {
     border-radius: 5px;
     &:hover {
-      color: $gray-light;
-      transition: 0.1 ease-in-out all;
+    background: $gray-header-alt;
+      transition: 0.05s ease-in-out all;
+    }
+
+    &--active {
+      background: $gray-header-alt;
+      color: $primary !important;
     }
   }
 }

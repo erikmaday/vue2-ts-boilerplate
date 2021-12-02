@@ -24,42 +24,40 @@ export const routes: Array<RouteConfig> = [
         path: 'company',
         name: 'company',
         component: () =>
-          import(
-            /* webpackChunkName: "company" */ '@/views/Company.vue'
-          ),
+          import(/* webpackChunkName: "company" */ '@/views/Company.vue'),
         children: [
           {
-            path: 'users', 
-            name: 'users', 
+            path: 'users',
+            name: 'users',
             props: { mode: 'users' },
             component: () => import('@/views/Company.vue'),
           },
           {
-            path: 'vehicles', 
-            name: 'vehicles', 
+            path: 'vehicles',
+            name: 'vehicles',
             component: () => import('@/views/Company.vue'),
           },
           {
-            path: 'garages', 
-            name: 'garages', 
+            path: 'garages',
+            name: 'garages',
             component: () => import('@/views/Company.vue'),
           },
           {
-            path: 'rates', 
-            name: 'rates', 
+            path: 'rates',
+            name: 'rates',
             component: () => import('@/views/Company.vue'),
           },
           {
-            path: 'availability', 
-            name: 'availability', 
+            path: 'availability',
+            name: 'availability',
             component: () => import('@/views/Company.vue'),
           },
           {
-            path: 'settings', 
-            name: 'settings', 
+            path: 'settings',
+            name: 'settings',
             component: () => import('@/views/Company.vue'),
           },
-        ]
+        ],
       },
     ],
   },

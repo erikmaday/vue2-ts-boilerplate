@@ -1,7 +1,7 @@
 <template>
   <MainWithNavigation :sidebarWidth="278">
     <template v-slot:navigation>
-      <CompanySidebar :links="links" />
+      <CompanySidebar :links="links" :mode="mode" />
     </template>
     <template v-slot:top-bar-content>
       <TheAppBar />

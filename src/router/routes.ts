@@ -59,6 +59,22 @@ export const routes: Array<RouteConfig> = [
           },
         ],
       },
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+      },
+      {
+        path: 'marketplace',
+        name: 'marketplace',
+      },
+      {
+        path: 'bookings',
+        name: 'bookings',
+      },
+      {
+        path: 'trips',
+        name: 'trips',
+      },
     ],
   },
 ]

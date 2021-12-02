@@ -1,6 +1,5 @@
 <template>
-  <div class="usersusers margin-a-20" style="border: 1px solid red; background-color: red;">
+  <div class="users margin-a-20">
     <h1>Users</h1>
-    <p>oshdflksdjflakjsdlfjsdkfalsdjfakdsjflaksdjfkadsjfaldskfjaksldfjak</p>
   </div>
 </template>

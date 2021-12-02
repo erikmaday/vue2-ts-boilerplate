@@ -4,6 +4,7 @@ export const navigation: Array<NavigationLink> = [
   {
     label: 'Dashboard',
     href: 'dashboard',
+    name: 'dashboard',
     location: 'top',
     params: {},
     permission: [],
@@ -11,6 +12,7 @@ export const navigation: Array<NavigationLink> = [
   {
     label: 'Marketplace',
     href: 'marketplace',
+    name: 'marketplace',
     location: 'top',
     params: {},
     permission: [],
@@ -18,6 +20,7 @@ export const navigation: Array<NavigationLink> = [
   {
     label: 'Bookings',
     href: 'bookings',
+    name: 'bookings',
     location: 'top',
     params: {},
     permission: [],
@@ -25,6 +28,7 @@ export const navigation: Array<NavigationLink> = [
   {
     label: 'My Company',
     href: 'company',
+    name: 'company',
     location: 'top',
     params: {},
     permission: [],
@@ -32,6 +36,7 @@ export const navigation: Array<NavigationLink> = [
   {
     label: 'My Trips',
     href: 'trips',
+    name: 'trips',
     location: 'top',
     params: {},
     permission: [],

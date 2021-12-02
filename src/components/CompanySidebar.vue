@@ -1,21 +1,19 @@
 <template>
   <div class="my-company__sidebar margin-t-10">
     <div class="my-company__sidebar-wrapper padding-y-5">
-      <router-link
-        v-for="(item, index) in links"
-        :key="`company-sidebar-${index}`"
-        :to="item.href"
-      >
         <div
+            v-for="(item, index) in links"
+            :key="`company-sidebar-${index}`"
           :class="`
             my-company__sidebar-item
             flex-row
             align-center
-            padding-y-4 padding-l-3
+            padding-y-3 padding-l-3
             margin-y-1
             cursor-pointer
             ${mode === item.name ? 'my-company__sidebar-item--active' : ''}
           `"
+          @click="handleNavigationClick(item)"
         >
           <CUIcon
             width="20px"
@@ -27,7 +25,6 @@
           </CUIcon>
           {{ toTitle(item.name) }}
         </div>
-      </router-link>
     </div>
   </div>
 </template>
@@ -55,6 +52,10 @@ export default class CompanySidebar extends Vue {
   private readonly mode!: string
 
   toTitle = toTitle
+
+  handleNavigationClick(item: SidebarLink): void {
+    this.$router.push({ name: item.name })
+  }
 }
 </script>
 

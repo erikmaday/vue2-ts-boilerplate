@@ -52,11 +52,11 @@ export default class Login extends Vue {
       await modules.auth.login({ email: this.email, password: this.password })
       await modules.auth.getUserProfile()
       this.isSubmitting = false
-      this.$router.push({ name: 'home' })
     } catch (error) {
       this.isSubmitting = false
       return
     }
+    this.$router.push({ name: 'home' })
   }
 }
 </script>

@@ -97,11 +97,11 @@ import modules from '@/store/modules'
   },
 })
 export default class TheAppBar extends Vue {
-  get topNavigationItems(): Array<NavigationLink> {
+  get topNavigationItems(): NavigationLink[] {
     return navigation.filter((item) => item.location === 'top')
   }
 
-  get dropdownNavigationItems(): Array<NavigationLink> {
+  get dropdownNavigationItems(): NavigationLink[] {
     return navigation.filter((item) => item.location === 'dropdown')
   }
 

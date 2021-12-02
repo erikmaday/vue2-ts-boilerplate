@@ -1,6 +1,6 @@
 import { RouteConfig } from 'vue-router'
 
-export const routes: Array<RouteConfig> = [
+export const routes: RouteConfig[] = [
   {
     path: '/',
     component: () => import('@/views/Empty.vue'),

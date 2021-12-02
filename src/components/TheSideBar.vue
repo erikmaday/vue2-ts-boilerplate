@@ -56,7 +56,7 @@ export default class TheSideBar extends Vue {
   showSidebar = false
   sidebar = modules.sidebar
 
-  get navigationItems(): Array<NavigationLink> {
+  get navigationItems(): NavigationLink[] {
     return navigation
   }
   get isSidebarOpen(): boolean {

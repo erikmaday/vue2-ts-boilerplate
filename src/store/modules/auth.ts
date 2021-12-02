@@ -13,7 +13,7 @@ class AuthModule extends VuexModule {
   user = {}
   token: string | null = load('token') || null
   isTokenSet = !!load('token')
-  roles: Array<Role> = []
+  roles: Role[] = []
 
   // getters
   get getUser() {

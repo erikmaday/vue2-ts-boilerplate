@@ -36,7 +36,7 @@ export interface Group {
 
 export interface UserProfile {
   groupId: number
-  roles: Array<Role>
+  roles: Role[]
 }
 
 export interface UserProfileResult extends ApiResult {
@@ -46,7 +46,7 @@ export interface UserProfileResult extends ApiResult {
 export interface Role {
   roleId: number
   roleName: string
-  permissions: Array<Permission>
+  permissions: Permission[]
 }
 
 export interface Permission {

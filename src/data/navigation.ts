@@ -1,7 +1,7 @@
 import { NavigationLink } from '@/models/NavigationLink'
 import modules from '@/store/modules'
 
-export const navigation: Array<NavigationLink> = [
+export const navigation: NavigationLink[] = [
   {
     label: 'Dashboard',
     link: 'dashboard',

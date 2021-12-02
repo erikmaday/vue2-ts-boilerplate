@@ -17,13 +17,6 @@ export const navigation: NavigationLink[] = [
     permission: [],
   },
   {
-    label: 'Bookings',
-    link: 'bookings',
-    location: 'top',
-    params: {},
-    permission: [],
-  },
-  {
     label: 'My Company',
     link: 'company',
     location: 'top',
@@ -34,6 +27,18 @@ export const navigation: NavigationLink[] = [
     label: 'My Trips',
     link: 'trips',
     location: 'top',
+    params: {},
+    permission: [],
+  },
+  {
+    label: 'Search',
+    location: 'mobile',
+    params: {},
+    permission: [],
+  },
+  {
+    label: 'Notifications',
+    location: 'mobile',
     params: {},
     permission: [],
   },

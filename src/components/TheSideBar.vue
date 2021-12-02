@@ -11,11 +11,7 @@
       <v-row>
         <CharterUPLogo style="width: 135px" class="margin-b-4" />
         <v-spacer />
-        <CUIcon
-          large
-          class="text-black cursor-pointer"
-          @click="sidebar.closeSidebar()"
-        >
+        <CUIcon large class="text-black cursor-pointer" @click="sidebar.close">
           close
         </CUIcon>
       </v-row>

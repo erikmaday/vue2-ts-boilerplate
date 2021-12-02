@@ -10,7 +10,7 @@
       background-white
       padding-x-2
     "
-  >
+  > 
     <v-toolbar-title class="margin-r-4">
       <a @click="$router.push({ name: 'home' })" role="link">
         <CharterUPLogo style="width: 108px" />
@@ -110,8 +110,8 @@ export default class TheAppBar extends Vue {
   }
 
   handleNavigationClick(item: NavigationLink): void {
-    if (item.link) {
-      this.$router.push(item.link)
+    if (item.href) {
+      this.$router.push(item.href)
     } else if (item.action) {
       item.action()
     }

@@ -200,6 +200,20 @@ $base-class: 'h';
   flex-shrink: 1 !important;
 }
 
+.flex-row {
+  display: flex;
+  flex-direction: row; 
+}
+
+.align-center {
+  align-items: center;
+}
+
+.center {
+  align-items: center;
+  justify-content: center;
+}
+
 //OPACITY
 $base-class: 'opacity';
 $percent: 0;

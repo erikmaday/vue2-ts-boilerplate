@@ -42,6 +42,7 @@
             </div>
           </template>
         </v-row>
+        <slot />
       </v-col>
     </v-row>
   </v-container>

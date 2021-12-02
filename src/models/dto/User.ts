@@ -1,3 +1,4 @@
+import { ApiResult } from '.'
 import { Company } from './Company'
 
 export interface User {
@@ -31,4 +32,33 @@ export interface Group {
   groupId: number
   label: string
   key: string
+}
+
+export interface UserProfile {
+  groupId: number
+  roles: Role[]
+}
+
+export interface UserProfileResult extends ApiResult {
+  userProfile: UserProfile
+}
+
+export interface Role {
+  roleId: number
+  roleName: string
+  permissions: Permission[]
+}
+
+export interface Permission {
+  permissionId: number
+  permissionName: string
+}
+
+export interface UserAuthPayload {
+  email: string
+  password: string
+}
+export interface UserAuthResult extends ApiResult {
+  token: string
+  user: User
 }

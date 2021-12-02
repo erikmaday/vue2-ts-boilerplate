@@ -1,6 +1,7 @@
 import { NavigationLink } from '@/models/NavigationLink'
+import modules from '@/store/modules'
 
-export const navigation: Array<NavigationLink> = [
+export const navigation: NavigationLink[] = [
   {
     label: 'Dashboard',
     link: 'dashboard',
@@ -45,7 +46,7 @@ export const navigation: Array<NavigationLink> = [
   {
     label: 'Logout',
     location: 'dropdown',
-    action: () => console.log('test'),
+    action: () => modules.auth.logout(),
     params: {},
     permission: [],
   },

@@ -68,10 +68,5 @@ export default class CompanySidebar extends Vue {
   &:hover {
     transition: 0.05s ease-in-out all;
   }
-
-  &--active {
-    background: $gray-header-alt;
-    color: $primary !important;
-  }
 }
 </style>

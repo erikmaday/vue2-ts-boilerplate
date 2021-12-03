@@ -10,7 +10,7 @@
       background-white
       padding-x-2
     "
-  > 
+  >
     <v-toolbar-title class="margin-r-4">
       <a @click="$router.push({ name: 'home' })" role="link">
         <CharterUPLogo style="width: 108px" />

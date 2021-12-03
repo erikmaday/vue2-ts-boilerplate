@@ -1,10 +1,10 @@
 <template>
   <div class="my-company__sidebar margin-t-10">
     <div class="my-company__sidebar-wrapper padding-y-5">
-        <div
-            v-for="(item, index) in links"
-            :key="`company-sidebar-${index}`"
-          :class="`
+      <div
+        v-for="(item, index) in links"
+        :key="`company-sidebar-${index}`"
+        :class="`
             my-company__sidebar-item
             flex-row
             align-center
@@ -13,18 +13,18 @@
             cursor-pointer
             ${mode === item.name ? 'my-company__sidebar-item--active' : ''}
           `"
-          @click="handleNavigationClick(item)"
+        @click="handleNavigationClick(item)"
+      >
+        <CUIcon
+          width="20px"
+          height="20px"
+          class="margin-r-3"
+          :color="mode === item.name ? 'primary' : 'gray'"
         >
-          <CUIcon
-            width="20px"
-            height="20px"
-            class="margin-r-3"
-            :color="mode === item.name ? 'primary' : 'gray'"
-          >
-            {{ item.icon }}
-          </CUIcon>
-          {{ toTitle(item.name) }}
-        </div>
+          {{ item.icon }}
+        </CUIcon>
+        {{ toTitle(item.name) }}
+      </div>
     </div>
   </div>
 </template>
@@ -66,7 +66,7 @@ export default class CompanySidebar extends Vue {
   &-item {
     border-radius: 5px;
     &:hover {
-    background: $gray-header-alt;
+      background: $gray-header-alt;
       transition: 0.05s ease-in-out all;
     }
 

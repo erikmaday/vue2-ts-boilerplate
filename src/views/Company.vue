@@ -3,6 +3,9 @@
     <template v-slot:navigation>
       <CompanySidebar :links="links" :mode="mode" />
     </template>
+    <template v-slot:section-title>
+      {{ toTitle(mode) }}
+    </template>
     <template v-slot:top-bar-content>
       <TheAppBar />
     </template>
@@ -24,6 +27,7 @@ import Garages from '@/views/Garages.vue'
 import Rates from '@/views/Rates.vue'
 import Settings from '@/views/Settings.vue'
 import Availability from '@/views/Availability.vue'
+import { toTitle } from '@/utils/string'
 
 @Component({
   components: {
@@ -101,5 +105,7 @@ export default class Company extends Vue {
     }
     return null
   }
+
+  toTitle = toTitle
 }
 </script>

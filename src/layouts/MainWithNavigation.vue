@@ -20,7 +20,7 @@
       >
         <slot name="navigation" />
       </v-col>
-      <v-col class="padding-a-6">
+      <v-col class="padding-a-6 padding-t-24">
         <v-row align="center">
           <v-col cols="auto">
             <h1><slot name="section-title" /></h1>

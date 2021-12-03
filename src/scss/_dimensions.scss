@@ -60,7 +60,7 @@ $padding-margin-dimensions: (
   '0': 0px,
 );
 $i: 1;
-@while $i <= 20 {
+@while $i <= 40 {
   $padding-margin-dimensions: map-merge(
     $padding-margin-dimensions,
     (

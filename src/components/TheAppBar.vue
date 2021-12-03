@@ -44,12 +44,26 @@
             hover:border-black
             active:border-black
           "
+          :class="{ 'border-black': item.link === $route.name }"
         >
           <span>{{ item.label }}</span>
         </span>
       </div>
       <v-spacer />
-      <v-btn outlined small color="primary" class="margin-r-6">Support</v-btn>
+      <CUIcon class="text-gray-mid-light margin-r-4" large :key="`search-icon`">
+        search
+      </CUIcon>
+
+      <v-badge bordered color="error" :content="0" :value="0" overlap>
+        <CUIcon
+          class="text-gray-mid-light margin-r-2"
+          large
+          :key="`notification-icon`"
+        >
+          notifications
+        </CUIcon>
+      </v-badge>
+      <v-btn small text color="primary" class="margin-r-2">Support</v-btn>
       <v-menu class="border-0">
         <template #activator="{ on }">
           <div
@@ -75,7 +89,11 @@
     </template>
     <template v-else>
       <v-spacer />
-      <CUIcon class="text-black cursor-pointer" @click="openSidebar">
+      <CUIcon
+        class="text-black cursor-pointer"
+        :key="`menu-icon`"
+        @click="openSidebar"
+      >
         menu_three_lines
       </CUIcon>
     </template>
@@ -97,11 +115,11 @@ import modules from '@/store/modules'
   },
 })
 export default class TheAppBar extends Vue {
-  get topNavigationItems(): Array<NavigationLink> {
+  get topNavigationItems(): NavigationLink[] {
     return navigation.filter((item) => item.location === 'top')
   }
 
-  get dropdownNavigationItems(): Array<NavigationLink> {
+  get dropdownNavigationItems(): NavigationLink[] {
     return navigation.filter((item) => item.location === 'dropdown')
   }
 

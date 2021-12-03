@@ -17,4 +17,4 @@ class AppModule extends VuexModule {
 
 // register module (could be in any file)
 import store from '@/store/index'
-export const app = new AppModule({ store, name: 'app' })
+export default new AppModule({ store, name: 'app' })

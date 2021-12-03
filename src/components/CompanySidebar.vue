@@ -5,12 +5,12 @@
         v-for="(item, index) in links"
         :key="`company-sidebar-${index}`"
         class="
-          my-company__sidebar-item
           hover:background-gray-header-alt
           d-flex
           border-radius-regular
           align-center
           padding-y-3 padding-l-3
+          transition-duration-50 transition-all
           margin-y-1
           cursor-pointer
         "
@@ -62,11 +62,3 @@ export default class CompanySidebar extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.my-company__sidebar-item {
-  &:hover {
-    transition: 0.05s ease-in-out all;
-  }
-}
-</style>

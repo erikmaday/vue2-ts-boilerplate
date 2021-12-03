@@ -1,12 +1,13 @@
 // NOTE TO FUTURE DEVELOPERS
-// IF YOU ADD OR REMOVE A COLOR, MAKE THE CORRESPONDING 
-// CHANGE TO ORIGINAL DEFINITION IN COLORS.SCSS AND 
-// ADD IT TO THE MAP IN THIS FILE 
+// IF YOU ADD OR REMOVE A COLOR, MAKE THE CORRESPONDING
+// CHANGE TO ORIGINAL DEFINITION IN COLORS.SCSS AND
+// ADD IT TO THE MAP IN THIS FILE
 
 @import './colors';
 
 $colors: (
   'black': $black,
+  'black-5': $black-5,
   'gray-light': $gray-light,
   'gray-mid-light': $gray-mid-light,
   'gray-lighter': $gray-lighter,

@@ -78,8 +78,8 @@ export default class TheSideBar extends Vue {
   }
 
   handleNavigationClick(item: NavigationLink): void {
-    if (item.href) {
-      this.$router.push(item.href)
+    if (item.name) {
+      this.$router.push(item.name)
     } else if (item.action) {
       item.action()
     }

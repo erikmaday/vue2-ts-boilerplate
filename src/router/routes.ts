@@ -30,6 +30,7 @@ export const routes: RouteConfig[] = [
       {
         path: 'company',
         name: 'company',
+        redirect: 'company/users',
         component: () =>
           import(/* webpackChunkName: "company" */ '@/views/Company.vue'),
         children: [
@@ -55,7 +56,7 @@ export const routes: RouteConfig[] = [
             name: 'garages',
             component: () =>
               import(
-                /* webpackChunkName: "companyGarages" */ '@/views/Company.vue'
+                /* webpackChunkName: "company-garages" */ '@/views/Company.vue'
               ),
           },
           {
@@ -63,7 +64,7 @@ export const routes: RouteConfig[] = [
             name: 'rates',
             component: () =>
               import(
-                /* webpackChunkName: "companyRates" */ '@/views/Company.vue'
+                /* webpackChunkName: "company-rates" */ '@/views/Company.vue'
               ),
           },
           {
@@ -71,7 +72,7 @@ export const routes: RouteConfig[] = [
             name: 'availability',
             component: () =>
               import(
-                /* webpackChunkName: "companyAvailability" */ '@/views/Company.vue'
+                /* webpackChunkName: "company-availability" */ '@/views/Company.vue'
               ),
           },
           {
@@ -79,7 +80,7 @@ export const routes: RouteConfig[] = [
             name: 'settings',
             component: () =>
               import(
-                /* webpackChunkName: "companySettings" */ '@/views/Company.vue'
+                /* webpackChunkName: "company-settings" */ '@/views/Company.vue'
               ),
           },
         ],

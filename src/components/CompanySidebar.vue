@@ -8,12 +8,15 @@
           my-company__sidebar-item
           hover:background-gray-header-alt
           d-flex
+          border-radius-regular
           align-center
           padding-y-3 padding-l-3
           margin-y-1
           cursor-pointer
         "
-        :class="mode === item.name ? 'my-company__sidebar-item--active' : ''"
+        :class="{
+          'background-gray-header-alt text-primary': mode === item.name,
+        }"
         @click="handleNavigationClick(item)"
       >
         <CUIcon
@@ -62,15 +65,13 @@ export default class CompanySidebar extends Vue {
 
 <style lang="scss" scoped>
 .my-company__sidebar-item {
-    border-radius: 5px;
+  &:hover {
+    transition: 0.05s ease-in-out all;
+  }
 
-    &:hover {
-      transition: 0.05s ease-in-out all;
-    }
-
-    &--active {
-      background: $gray-header-alt;
-      color: $primary !important;
-    }
+  &--active {
+    background: $gray-header-alt;
+    color: $primary !important;
+  }
 }
 </style>

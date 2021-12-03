@@ -200,6 +200,20 @@ $base-class: 'h';
   flex-shrink: 1 !important;
 }
 
+// BORDER RADIUS
+$border-radius-values: (
+  'none': 0,
+  'regular': $border-radius-root,
+);
+$base-class: 'border-radius';
+@include map-to-helpers(
+  $base-class,
+  $border-radius-values,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+
 //OPACITY
 $base-class: 'opacity';
 $percent: 0;

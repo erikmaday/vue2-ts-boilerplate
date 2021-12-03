@@ -51,7 +51,7 @@ export default class CompanySidebar extends Vue {
 
   @Prop({
     type: String,
-    default: '',
+    default: 'users',
   })
   private readonly mode!: string
 

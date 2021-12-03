@@ -44,7 +44,7 @@ import { toTitle } from '@/utils/string'
   },
 })
 export default class Company extends Vue {
-  links: Array<SidebarLink> = [
+  links: SidebarLink[] = [
     {
       label: 'Users',
       href: 'users',

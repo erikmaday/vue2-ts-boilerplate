@@ -54,7 +54,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Model } from 'vue-property-decorator'
 import places from '@/services/places'
-import { Place, PlaceSearch } from '@/models/dto'
+import { Address, PlaceSearch } from '@/models/dto'
 import CUIcon from '@/components/CUIcon.vue'
 @Component({
   components: {
@@ -62,7 +62,7 @@ import CUIcon from '@/components/CUIcon.vue'
   },
 })
 export default class AutocompleteAddress extends Vue {
-  @Model('change') readonly value!: Place | null
+  @Model('change') readonly value!: Address | null
   @Prop({ default: false }) readonly autoFocus!: boolean
   @Prop({ default: [] }) readonly rules!: []
   @Prop({ default: false }) readonly disabled!: boolean
@@ -82,18 +82,20 @@ export default class AutocompleteAddress extends Vue {
   isFocused = false
 
   created(): void {
-    this.search = this.initialSearch
+    if (this.value?.addressName) {
+      this.search = this.value.addressName
+    }
   }
 
   @Watch('search')
   searchChanged(value: string): void {
-    if (value === this.initialSearch) {
+    if (value === this.value?.addressName) {
       this.addressAutoComplete(value)
     }
   }
-  @Watch('initialSearch')
-  initialSearchChanged(value: string): void {
-    this.search = value
+  @Watch('value.addressName')
+  addressNameChanged(addressName: string): void {
+    this.search = addressName
   }
 
   onFocus(): void {

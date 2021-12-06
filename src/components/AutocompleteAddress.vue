@@ -54,6 +54,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Model } from 'vue-property-decorator'
 import places from '@/services/places'
+import keyCode from '@/utils/keyCode'
 import { Address, PlaceSearch } from '@/models/dto'
 import CUIcon from '@/components/CUIcon.vue'
 @Component({
@@ -141,13 +142,9 @@ export default class AutocompleteAddress extends Vue {
     this.$emit('change', null)
   }
 
-  handleKeyEvent(keyCode: number): void {
-    const UP_ARROW = 38
-    const DOWN_ARROW = 40
-    const ENTER = 13
-
+  handleKeyEvent(key: number): void {
     const maxPosition = this.autocompleteItems.length
-    if (keyCode === UP_ARROW) {
+    if (key === keyCode.UpArrow) {
       if (this.arrowPosition === null) {
         this.arrowPosition = maxPosition
       } else if (this.arrowPosition && this.arrowPosition >= 0) {
@@ -155,7 +152,7 @@ export default class AutocompleteAddress extends Vue {
       }
       return
     }
-    if (keyCode === DOWN_ARROW) {
+    if (key === keyCode.DownArrow) {
       if (this.arrowPosition === null) {
         this.arrowPosition = 0
       } else if (this.arrowPosition + 1 === maxPosition) {
@@ -165,7 +162,7 @@ export default class AutocompleteAddress extends Vue {
       }
       return
     }
-    if (keyCode === ENTER) {
+    if (key === keyCode.Enter) {
       if (this.arrowPosition && this.autocompleteItems[this.arrowPosition]) {
         this.selectPlace(this.autocompleteItems[this.arrowPosition])
       }

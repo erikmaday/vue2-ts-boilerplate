@@ -1,5 +1,5 @@
 import { apiBaseUrl } from '@/utils/env'
-import { Place, PlaceSearch } from '@/models/dto'
+import { Address, PlaceSearch } from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 
@@ -10,7 +10,7 @@ export default {
     const url = `https://${apiBaseUrl()}/places?term=${term}`
     return httpService.get(url)
   },
-  byId(placeId: string): Promise<AxiosResponse<Place>> {
+  byId(placeId: string): Promise<AxiosResponse<Partial<Address>>> {
     const url = `https://${apiBaseUrl()}/places/${placeId}`
     return httpService.get(url)
   },

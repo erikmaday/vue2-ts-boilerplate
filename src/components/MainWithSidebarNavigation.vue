@@ -26,7 +26,7 @@
       >
         {{ item.icon }}
       </CUIcon>
-      {{ toTitle(item.name) }}
+      {{ item.label }}
     </div>
   </div>
 </template>
@@ -35,7 +35,6 @@ import { PropType } from 'vue'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { SidebarLink } from '@/models/SidebarLink'
 import CUIcon from '@/components/CUIcon.vue'
-import { toTitle } from '@/utils/string'
 
 @Component({
   components: { CUIcon },
@@ -52,8 +51,6 @@ export default class MainWithSidebarNavigation extends Vue {
     default: '',
   })
   private readonly mode!: string
-
-  toTitle = toTitle
 
   handleNavigationClick(item: SidebarLink): void {
     this.$router.push({ name: item.name })

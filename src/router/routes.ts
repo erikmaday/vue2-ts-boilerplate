@@ -12,7 +12,13 @@ export const routes: RouteConfig[] = [
           requiresAuth: true,
         },
         component: () => import('@/views/Home.vue'),
-        children: [],
+        children: [
+          {
+            path: '',
+            name: 'today',
+            component: () => import('@/views/Today.vue'),
+          },
+        ],
       },
       {
         path: '',

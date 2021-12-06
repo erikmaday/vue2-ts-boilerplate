@@ -3,8 +3,8 @@ import modules from '@/store/modules'
 
 export const navigation: NavigationLink[] = [
   {
-    label: 'Dashboard',
-    link: 'dashboard',
+    label: 'Today',
+    link: 'today',
     location: 'top',
     params: {},
     permission: [],

@@ -21,10 +21,10 @@
         outlined
         :tabindex="tabIndex"
         v-on="on"
-        @blur="onBlur"
+        @blur="blur"
         @input="addressAutoComplete"
         @keyup.native="handleKeyEvent($event.keyCode)"
-        @focus="onFocus"
+        @focus="focus"
       />
       <div v-if="loading">
         <v-progress-linear :indeterminate="true" height="1" />
@@ -41,7 +41,7 @@
           @mouseover="arrowPosition = index"
           @mousedown="() => selectPlace(item)"
         >
-          <CUIcon class="text-primary">place</CUIcon>
+          <CUIcon class="text-primary margin-r-2">place</CUIcon>
           <v-list-item-title>
             {{ item.description }}
           </v-list-item-title>
@@ -99,16 +99,16 @@ export default class AutocompleteAddress extends Vue {
     this.search = addressName
   }
 
-  onFocus(): void {
+  focus(): void {
     this.isFocused = true
   }
 
-  onBlur(): void {
+  blur(): void {
     this.isFocused = false
   }
 
   async addressAutoComplete(input: string): Promise<void> {
-    if (typeof input === 'undefined' || input === null || input.length === 0) {
+    if (!input) {
       this.clearPlace()
       return
     }
@@ -163,8 +163,12 @@ export default class AutocompleteAddress extends Vue {
       return
     }
     if (key === keyCode.Enter) {
-      if (this.arrowPosition && this.autocompleteItems[this.arrowPosition]) {
+      if (
+        this.arrowPosition !== null &&
+        this.autocompleteItems[this.arrowPosition]
+      ) {
         this.selectPlace(this.autocompleteItems[this.arrowPosition])
+        this.blur()
       }
       return
     }

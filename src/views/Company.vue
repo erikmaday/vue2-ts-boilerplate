@@ -18,12 +18,12 @@ import MainWithSidebarNavigation from '@/components/MainWithSidebarNavigation.vu
 import MainWithSidebar from '@/layouts/MainWithSidebar.vue'
 import TheAppBar from '@/components/TheAppBar.vue'
 import TheSideBar from '@/components/TheSideBar.vue'
-import Users from '@/views/Users.vue'
-import Vehicles from '@/views/Vehicles.vue'
-import Garages from '@/views/Garages.vue'
-import Rates from '@/views/Rates.vue'
-import Settings from '@/views/Settings.vue'
-import Availability from '@/views/Availability.vue'
+import CompanyUsers from '@/components/CompanyUsers.vue'
+import CompanyVehicles from '@/components/CompanyVehicles.vue'
+import CompanyGarages from '@/components/CompanyGarages.vue'
+import CompanyRates from '@/components/CompanyRates.vue'
+import CompanySettings from '@/components/CompanySettings.vue'
+import CompanyAvailability from '@/components/CompanyAvailability.vue'
 import { toTitle } from '@/utils/string'
 import { Component as VueComponent } from 'vue'
 
@@ -33,12 +33,12 @@ import { Component as VueComponent } from 'vue'
     MainWithSidebar,
     TheAppBar,
     TheSideBar,
-    Users,
-    Garages,
-    Rates,
-    Settings,
-    Availability,
-    Vehicles,
+    CompanyUsers,
+    CompanyGarages,
+    CompanyRates,
+    CompanySettings,
+    CompanyAvailability,
+    CompanyVehicles,
   },
 })
 export default class Company extends Vue {
@@ -47,42 +47,42 @@ export default class Company extends Vue {
       label: 'Users',
       href: 'users',
       name: 'users',
-      component: Users,
+      component: CompanyUsers,
       icon: 'users',
     },
     {
       label: 'Vehicles',
       href: 'vehicles',
       name: 'vehicles',
-      component: Vehicles,
+      component: CompanyVehicles,
       icon: 'directions_bus',
     },
     {
       label: 'Garages',
       href: 'garages',
       name: 'garages',
-      component: Garages,
+      component: CompanyGarages,
       icon: 'garages',
     },
     {
       label: 'Rates',
       href: 'rates',
       name: 'rates',
-      component: Rates,
+      component: CompanyRates,
       icon: 'rates',
     },
     {
       label: 'Availability',
       href: 'availability',
       name: 'availability',
-      component: Availability,
+      component: CompanyAvailability,
       icon: 'event_available',
     },
     {
       label: 'Rates',
       href: 'settings',
       name: 'settings',
-      component: Settings,
+      component: CompanySettings,
       icon: 'settings',
     },
   ]
@@ -101,7 +101,7 @@ export default class Company extends Vue {
     if (link) {
       return link.component
     }
-    return Users
+    return CompanyUsers
   }
 
   toTitle = toTitle

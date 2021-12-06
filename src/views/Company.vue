@@ -1,13 +1,10 @@
 <template>
-  <MainWithNavigation :sidebarWidth="278">
+  <MainWithNavigation>
     <template v-slot:navigation>
       <CompanySidebar :links="links" :mode="mode" />
     </template>
     <template v-slot:section-title>
       {{ toTitle(mode) }}
-    </template>
-    <template v-slot:top-bar-content>
-      <TheAppBar />
     </template>
     <template v-slot:default>
       <component :is="companyComponent" />
@@ -15,7 +12,7 @@
   </MainWithNavigation>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import { SidebarLink } from '@/models/SidebarLink'
 import CompanySidebar from '@/components/CompanySidebar.vue'
 import MainWithNavigation from '@/layouts/MainWithNavigation.vue'

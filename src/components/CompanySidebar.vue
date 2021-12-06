@@ -1,34 +1,32 @@
 <template>
-  <div class="my-company__sidebar margin-t-10 font-bold">
-    <div class="my-company__sidebar-wrapper padding-y-5">
-      <div
-        v-for="(item, index) in links"
-        :key="`company-sidebar-${index}`"
-        class="
-          hover:background-gray-header-alt
-          d-flex
-          border-radius-regular
-          align-center
-          padding-y-3 padding-l-3
-          transition-duration-50 transition-ease-in transition-all
-          margin-y-1
-          cursor-pointer
-        "
-        :class="{
-          'background-gray-header-alt text-primary': mode === item.name,
-        }"
-        @click="handleNavigationClick(item)"
+  <div class="my-company__sidebar font-bold">
+    <div
+      v-for="(item, index) in links"
+      :key="`company-sidebar-${index}`"
+      class="
+        hover:background-black-5
+        d-flex
+        border-radius-regular
+        align-center
+        padding-y-3 padding-l-3
+        transition-duration-50 transition-ease-in transition-all
+        margin-y-1
+        cursor-pointer
+      "
+      :class="{
+        'background-black-5 text-primary': mode === item.name,
+      }"
+      @click="handleNavigationClick(item)"
+    >
+      <CUIcon
+        width="20px"
+        height="20px"
+        class="margin-r-3"
+        :color="mode === item.name ? 'primary' : 'gray'"
       >
-        <CUIcon
-          width="20px"
-          height="20px"
-          class="margin-r-3"
-          :color="mode === item.name ? 'primary' : 'gray'"
-        >
-          {{ item.icon }}
-        </CUIcon>
-        {{ toTitle(item.name) }}
-      </div>
+        {{ item.icon }}
+      </CUIcon>
+      {{ toTitle(item.name) }}
     </div>
   </div>
 </template>

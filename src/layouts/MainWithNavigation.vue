@@ -20,7 +20,7 @@
       >
         <slot name="navigation" />
       </v-col>
-      <v-col class="padding-a-6 margin-t-17">
+      <v-col class="padding-a-6">
         <v-row align="center">
           <v-col cols="auto">
             <h1><slot name="section-title" /></h1>
@@ -58,7 +58,7 @@ import CUIcon from '@/components/CUIcon.vue'
   },
 })
 export default class MainWithNavigation extends Vue {
-  @Prop({ default: 400 })
+  @Prop({ default: 278 })
   sidebarWidth!: number
 }
 </script>

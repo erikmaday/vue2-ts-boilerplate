@@ -1,11 +1,11 @@
 <template>
-  <v-app>
+  <div class="h-full">
     <TheSideBar />
     <TheAppBar />
     <v-main>
       <router-view />
     </v-main>
-  </v-app>
+  </div>
 </template>
 
 <script lang="ts">

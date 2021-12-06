@@ -42,6 +42,7 @@
             </div>
           </template>
         </v-row>
+        <slot />
       </v-col>
     </v-row>
   </v-container>
@@ -56,8 +57,8 @@ import CUIcon from '@/components/CUIcon.vue'
     CUIcon,
   },
 })
-export default class MainWithNavigation extends Vue {
-  @Prop({ default: 400 })
+export default class MainWithSidebar extends Vue {
+  @Prop({ default: 278 })
   sidebarWidth!: number
 }
 </script>

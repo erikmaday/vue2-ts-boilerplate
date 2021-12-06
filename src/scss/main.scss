@@ -125,7 +125,7 @@
     }
 
     &--outlined {
-      border-width: $border-width;
+      border-width: $text-field-outlined-border;
     }
   }
 
@@ -153,7 +153,7 @@
 
     fieldset {
       background-color: $white;
-      border: $border-width solid $gray-border;
+      border: $text-field-outlined-border solid $gray-border;
     }
 
     input {
@@ -205,10 +205,10 @@
 
   .v-card {
     box-shadow: none;
-    border: $border-width $gray-border solid;
+    border: $card-border-width $gray-border solid;
 
     .v-card__title:not(.plain) {
-      border-bottom: 1px $gray-border solid;
+      border-bottom: $card-border-width $gray-border solid;
       border-radius: $border-radius-root $border-radius-root 0 0;
       padding: 14px 24px;
       font-size: 24px;

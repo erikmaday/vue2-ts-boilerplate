@@ -5,16 +5,32 @@
 @import './_pseudoclasses';
 // ALL HELPER CLASSES LIVE HERE
 
-// FONT WEIGHTS
+// FONT
 // .font-light, .font-book, .font-medium, .font-extrabold, .font-black
 $base-class: 'font';
-@include map-to-helpers($base-class, $fonts, 'font-family', $pseudo-classes);
+@include map-to-helpers(
+  $base-class,
+  $fonts,
+  'font-family',
+  $pseudo-classes,
+  true
+);
 @include map-to-helpers(
   $base-class,
   $font-sizes,
   'font-size',
   $pseudo-classes,
-  false
+  true
+);
+
+// FONT WEIGHTS
+$base-class: 'font-weight';
+@include map-to-helpers(
+  $base-class,
+  $font-weights,
+  'font-weight',
+  $pseudo-classes,
+  true
 );
 
 // Z-INDEX
@@ -48,7 +64,8 @@ $base-class: 'cursor';
     $cursor,
     $cursor,
     'cursor',
-    $pseudo-classes
+    $pseudo-classes,
+    true
   );
 }
 
@@ -183,13 +200,6 @@ $base-class: 'max-w';
   true
 );
 
-// MAX-WIDTH
-// .max-w-0, .max-w-1,..., .max-w-16, .max-w-20, .max-w-24, ... , .max-w-200
-$base-class: 'max-w';
-.max-w {
-  @include map-to-helpers($base-class, $dimensions, 'max-width', true);
-}
-
 // HEIGHT
 // .h-0, .h-1,..., .h-16, .h-20, .h-24, ... , .h-200
 $base-class: 'h';
@@ -259,3 +269,21 @@ $base-classes: 'padding', 'margin';
     }
   }
 }
+
+// WHITE SPACE
+$base-class: 'white-space';
+$white-space-map: (
+  'normal': normal,
+  'nowrap': nowrap,
+  'pre': pre,
+  'pre-wrap': pre-wrap,
+  'pre-line': pre-line,
+  'break-spaces': break-spaces,
+);
+@include map-to-helpers(
+  $base-class,
+  $white-space-map,
+  'white-space',
+  $pseudo-classes,
+  true
+);

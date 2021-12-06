@@ -57,7 +57,7 @@ import CUIcon from '@/components/CUIcon.vue'
     CUIcon,
   },
 })
-export default class MainWithNavigation extends Vue {
+export default class MainWithSidebar extends Vue {
   @Prop({ default: 278 })
   sidebarWidth!: number
 }

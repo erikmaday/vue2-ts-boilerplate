@@ -1,7 +1,7 @@
 <template>
-  <MainWithNavigation>
+  <MainWithSidebar>
     <template v-slot:navigation>
-      <CompanySidebar :links="links" :mode="mode" />
+      <MainWithSidebarNavigation :links="links" :mode="mode" />
     </template>
     <template v-slot:section-title>
       {{ toTitle(mode) }}
@@ -9,13 +9,13 @@
     <template v-slot:default>
       <component :is="companyComponent" />
     </template>
-  </MainWithNavigation>
+  </MainWithSidebar>
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { SidebarLink } from '@/models/SidebarLink'
-import CompanySidebar from '@/components/CompanySidebar.vue'
-import MainWithNavigation from '@/layouts/MainWithNavigation.vue'
+import MainWithSidebarNavigation from '@/components/MainWithSidebarNavigation.vue'
+import MainWithSidebar from '@/layouts/MainWithSidebar.vue'
 import TheAppBar from '@/components/TheAppBar.vue'
 import TheSideBar from '@/components/TheSideBar.vue'
 import Users from '@/views/Users.vue'
@@ -25,11 +25,12 @@ import Rates from '@/views/Rates.vue'
 import Settings from '@/views/Settings.vue'
 import Availability from '@/views/Availability.vue'
 import { toTitle } from '@/utils/string'
+import { Component as VueComponent } from 'vue'
 
 @Component({
   components: {
-    CompanySidebar,
-    MainWithNavigation,
+    MainWithSidebarNavigation,
+    MainWithSidebar,
     TheAppBar,
     TheSideBar,
     Users,
@@ -93,14 +94,14 @@ export default class Company extends Vue {
     return ''
   }
 
-  get companyComponent() {
+  get companyComponent(): VueComponent {
     const link: SidebarLink | undefined = this.links.find(
       (link) => link.name === this.mode
     )
     if (link) {
       return link.component
     }
-    return null
+    return Users
   }
 
   toTitle = toTitle

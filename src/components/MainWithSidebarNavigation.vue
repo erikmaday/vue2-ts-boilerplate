@@ -1,8 +1,8 @@
 <template>
-  <div class="my-company__sidebar font-bold">
+  <div class="font-bold">
     <div
       v-for="(item, index) in links"
-      :key="`company-sidebar-${index}`"
+      :key="`sidebar-link-${index}`"
       class="
         hover:background-black-5
         d-flex
@@ -40,7 +40,7 @@ import { toTitle } from '@/utils/string'
 @Component({
   components: { CUIcon },
 })
-export default class CompanySidebar extends Vue {
+export default class MainWithSidebarNavigation extends Vue {
   @Prop({
     type: Array as PropType<SidebarLink[]>,
     default: () => [],
@@ -49,7 +49,7 @@ export default class CompanySidebar extends Vue {
 
   @Prop({
     type: String,
-    default: 'users',
+    default: '',
   })
   private readonly mode!: string
 

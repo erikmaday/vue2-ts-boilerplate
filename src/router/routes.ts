@@ -1,6 +1,6 @@
 import { RouteConfig } from 'vue-router'
 
-export const routes: Array<RouteConfig> = [
+export const routes: RouteConfig[] = [
   {
     path: '/',
     component: () => import('@/views/Empty.vue'),
@@ -8,22 +8,23 @@ export const routes: Array<RouteConfig> = [
       {
         path: '',
         name: 'home',
+        meta: {
+          requiresAuth: true,
+        },
         component: () => import('@/views/Home.vue'),
+        children: [],
+      },
+      {
+        path: '',
+        name: 'preauth',
+        component: () => import('@/views/PreAuth.vue'),
         children: [
           {
-            path: 'company',
-            name: 'company',
+            path: 'login',
+            name: 'login',
             component: () =>
-              import(/* webpackChunkName: "map" */ '@/views/MyCompany.vue'),
+              import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
           },
-          // {
-          //   path: 'map',
-          //   name: 'map',
-          //   component: () =>
-          //     import(
-          //       /* webpackChunkName: "map" */ '@/layouts/MapWithSidebar.vue'
-          //     ),
-          // },
         ],
       },
     ],

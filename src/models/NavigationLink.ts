@@ -4,5 +4,5 @@ export interface NavigationLink {
   action?(): void
   location: string
   params: Record<string, unknown>
-  permission: Array<string>
+  permission: string[]
 }

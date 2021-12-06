@@ -1,6 +1,7 @@
 import { NavigationLink } from '@/models/NavigationLink'
+import modules from '@/store/modules'
 
-export const navigation: Array<NavigationLink> = [
+export const navigation: NavigationLink[] = [
   {
     label: 'Dashboard',
     link: 'dashboard',
@@ -11,13 +12,6 @@ export const navigation: Array<NavigationLink> = [
   {
     label: 'Marketplace',
     link: 'marketplace',
-    location: 'top',
-    params: {},
-    permission: [],
-  },
-  {
-    label: 'Bookings',
-    link: 'bookings',
     location: 'top',
     params: {},
     permission: [],
@@ -37,6 +31,18 @@ export const navigation: Array<NavigationLink> = [
     permission: [],
   },
   {
+    label: 'Search',
+    location: 'mobile',
+    params: {},
+    permission: [],
+  },
+  {
+    label: 'Notifications',
+    location: 'mobile',
+    params: {},
+    permission: [],
+  },
+  {
     label: 'Support',
     location: 'mobile',
     params: {},
@@ -45,7 +51,7 @@ export const navigation: Array<NavigationLink> = [
   {
     label: 'Logout',
     location: 'dropdown',
-    action: () => console.log('test'),
+    action: () => modules.auth.logout(),
     params: {},
     permission: [],
   },

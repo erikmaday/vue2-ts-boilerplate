@@ -1,8 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import VueMeta from 'vue-meta'
 import { routes } from './routes'
+import modules from '@/store/modules'
 
 Vue.use(VueRouter)
+Vue.use(VueMeta)
+
+const auth = modules.auth
 
 const router = new VueRouter({
   mode: 'history',
@@ -16,6 +21,14 @@ const router = new VueRouter({
     }
     return { x: 0, y: 0 }
   },
+})
+
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+  if (requiresAuth && !auth.getIsTokenSet) {
+    next({ name: 'login' })
+  }
+  next()
 })
 
 export default router

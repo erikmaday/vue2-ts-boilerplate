@@ -76,7 +76,6 @@ export default class AutocompleteAddress extends Vue {
   loading = false
   search: string | null = null
   debounce: number | null = null
-  addressSearchText = null
   autocompleteItems: PlaceSearch[] = []
   arrowPosition: number | null = null
   errorMessages = []

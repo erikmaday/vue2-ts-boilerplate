@@ -133,7 +133,7 @@ export default class AutocompleteAddress extends Vue {
       this.$emit('change', place)
     })
 
-    this.search = place.completeAddress
+    this.search = place.completeAddress || null
   }
 
   clearPlace(): void {

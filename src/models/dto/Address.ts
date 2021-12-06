@@ -17,4 +17,5 @@ export interface Address {
   nearestMarketId?: number
   companyId?: number
   addressName: string
+  completeAddress?: string
 }

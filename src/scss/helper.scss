@@ -200,6 +200,80 @@ $base-class: 'h';
   flex-shrink: 1 !important;
 }
 
+// BORDER RADIUS
+$border-radius-values: (
+  'none': 0,
+  'regular': $border-radius-root,
+);
+$base-class: 'border-radius';
+@include map-to-helpers(
+  $base-class,
+  $border-radius-values,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+
+// TRANSITION
+$milliseconds: 50;
+$time-map: ();
+@while $milliseconds <= 1000 {
+  $time-map: map-merge(
+    $time-map,
+    (
+      '#{$milliseconds}': #{$milliseconds/1000}s,
+    )
+  );
+  $milliseconds: $milliseconds + 50;
+}
+
+$base-class: 'transition-duration';
+@include map-to-helpers(
+  $base-class,
+  $time-map,
+  'transition-duration',
+  $pseudo-classes,
+  true
+);
+
+$base-class: 'transition-delay';
+@include map-to-helpers(
+  $base-class,
+  $time-map,
+  'transition-delay',
+  $pseudo-classes,
+  true
+);
+
+$transition-timing-functions: (
+  'linear': linear,
+  'ease': ease,
+  'ease-in': ease-in,
+  'ease-out': ease-out,
+  'ease-in-out': ease-in-out,
+  'all': all,
+);
+
+$base-class: 'transition';
+@include map-to-helpers(
+  $base-class,
+  $time-map,
+  'transition-timing-function',
+  $pseudo-classes,
+  true
+);
+
+$transition-timing-functions: (
+  'all': all,
+);
+@include map-to-helpers(
+  $base-class,
+  $time-map,
+  'transition-property',
+  $pseudo-classes,
+  true
+);
+
 //OPACITY
 $base-class: 'opacity';
 $percent: 0;

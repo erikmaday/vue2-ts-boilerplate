@@ -48,7 +48,7 @@ import CUIcon from '@/components/CUIcon.vue'
     CUIcon,
   },
 })
-export default class MainWithNavigation extends Vue {
+export default class MapWithSidebar extends Vue {
   mobileShowMap = false
 
   get showPanel(): boolean {

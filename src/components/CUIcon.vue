@@ -38,8 +38,8 @@ export default class CUIcon extends Vue {
   @Prop({ default: 24 })
   readonly height: string | number | undefined
 
-  @Prop(String)
-  readonly viewBox: string = '0 0 24 24'
+  @Prop({ default: '0 0 24 24' })
+  readonly viewBox: string | undefined
 
   @Prop(Boolean)
   readonly decorative: boolean = false

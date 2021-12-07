@@ -128,8 +128,8 @@ export default class TheAppBar extends Vue {
   }
 
   handleNavigationClick(item: NavigationLink): void {
-    if (item.link) {
-      this.$router.push(item.link)
+    if (item.name) {
+      this.$router.push({ name: item.name })
     } else if (item.action) {
       item.action()
     }

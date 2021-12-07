@@ -68,6 +68,11 @@
     background: $white;
   }
 
+  body,
+  .v-main {
+    min-height: 100%;
+  }
+
   .v-ripple__container {
     display: none !important;
   }

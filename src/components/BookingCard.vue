@@ -12,12 +12,12 @@
       <v-row class="align-end">
         <p class="col shrink white-space-nowrap font-bold font-18">$6,150</p>
         <!-- TODO: FIGURE OUT HOW WE CAN SURFACE THIS AMOUNT -->
-        <v-spacer v-if="needsAssignment" />
+        <v-spacer v-if="actionMessage" />
         <p
-          v-if="needsAssignment"
+          v-if="actionMessage"
           class="col shrink white-space-nowrap font-bold font-12 text-error"
         >
-          Needs Assignment
+          {{ actionMessage }}
         </p>
       </v-row>
     </v-card-text>
@@ -27,6 +27,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Reservation } from '@/models/dto'
+import { ReferralStatus } from '@/utils/enum'
 import dayjs from 'dayjs'
 
 @Component
@@ -34,10 +35,24 @@ export default class BookingCard extends Vue {
   @Prop() readonly reservation!: Reservation
 
   get needsAssignment(): boolean {
-    return !(
-      this.reservation.assignedDriverPercentage &&
-      this.reservation.assignedVehiclePercentage
+    return (
+      this.reservation.assignedDriverPercentage < 100 &&
+      this.reservation.assignedVehiclePercentage < 100
     )
+  }
+
+  get needsAcceptance(): boolean {
+    return this.reservation.referralStatus === ReferralStatus.Offered
+  }
+
+  get actionMessage(): string | null {
+    if (this.needsAcceptance) {
+      return 'Needs Acceptance'
+    }
+    if (this.needsAssignment) {
+      return 'Needs Assignment'
+    }
+    return null
   }
 
   get formattedStartDateTime(): string {

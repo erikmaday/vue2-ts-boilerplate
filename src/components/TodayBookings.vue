@@ -43,7 +43,7 @@
         sm="6"
         md="4"
         lg="3"
-        :key="`reservation-${reservationIndex}`"
+        :key="`reservation-${reservation.childReservationId}-${reservationIndex}`"
       >
         <BookingCard :reservation="reservation" />
         <!-- TODO: PAGINATE THESE BASED ON SCREEN SIZE -->
@@ -64,6 +64,8 @@ import {
 } from '@/utils/enum'
 import { Reservation, TableViewFilterChip } from '@/models/dto'
 import reservation from '@/services/reservation'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 @Component({
   components: {
@@ -72,11 +74,36 @@ import reservation from '@/services/reservation'
 })
 export default class TodayBookings extends Vue {
   // TODO: FIGURE OUT HOW WE CAN DISPLAY THE NUMBER NEXT TO EACH ONE WITHOUT CALLING THE ENDPOINT FOR THEM
-  bookingFilters = [
+  bookingFilters: TableViewFilterChip[] = [
     {
       label: 'Starting Soon',
       count: 4,
-      value: null,
+      filter: [
+        {
+          column: {
+            _t_id: '533d2c12-0b01-4945-a375-cb7c2e2040ec',
+            prop: 'startDate',
+            filterType: 'gte',
+          },
+          value: this.currentTimestamp.format('YYYY-MM-DD'),
+        },
+        {
+          column: {
+            _t_id: '0b2c67aa-7350-4cc7-b6d0-e9cdb113ff15',
+            prop: 'startDate',
+            filterType: 'lte',
+          },
+          value: this.currentTimestamp.add(1, 'day').format('YYYY-MM-DD'),
+        },
+        {
+          column: {
+            _t_id: 'f9668131-3d1a-45ff-bbef-33c9b7cf832a',
+            prop: 'reservationStatus',
+            filterType: 'eq',
+          },
+          value: ReservationStatus.Upcoming,
+        },
+      ],
       active: false,
     },
     {
@@ -114,6 +141,14 @@ export default class TodayBookings extends Vue {
           },
           value: 99.99,
         },
+        {
+          column: {
+            _t_id: 'f9dd8140-d676-4485-9c8b-0cd2f226a2ad',
+            prop: 'referralStatus',
+            filterType: 'eq',
+          },
+          value: ReferralStatus.Accepted,
+        },
       ],
       active: false,
     },
@@ -124,7 +159,7 @@ export default class TodayBookings extends Vue {
         {
           column: {
             _t_id: '5b583f16-1d99-43c2-9e74-4f3df497c25f',
-            prop: 'reservationStatusKey',
+            prop: 'reservationStatus',
             filterType: 'eq',
           },
           value: ReservationStatus.Started,
@@ -139,7 +174,7 @@ export default class TodayBookings extends Vue {
         {
           column: {
             _t_id: 'f9668131-3d1a-45ff-bbef-33c9b7cf832a',
-            prop: 'reservationStatusKey',
+            prop: 'reservationStatus',
             filterType: 'eq',
           },
           value: ReservationStatus.Finished,
@@ -167,16 +202,23 @@ export default class TodayBookings extends Vue {
     this.getBookings()
   }
 
-  async mounted(): Promise<void> {
-    this.establishFilters()
-    this.getBookings()
+  get currentTimestamp(): dayjs.Dayjs {
+    dayjs.extend(utc)
+    return dayjs().utc()
   }
 
-  async getBookings(): Promise<void> {
+  async mounted(): Promise<void> {
+    this.establishFilters()
+    this.getBookings(true)
+  }
+
+  async getBookings(setCount = false): Promise<void> {
     this.params.filters = this.filters.asQueryParams()
     const reservationResponse = await reservation.tableView(this.params)
     this.reservations = reservationResponse.data.resultList
-    this.reservationCount = reservationResponse.data.count
+    if (setCount) {
+      this.reservationCount = reservationResponse.data.count
+    }
   }
 
   establishFilters(): void {

@@ -18,7 +18,7 @@
           cursor-pointer
         "
       >
-        All Your Bookings (30)
+        All Your Bookings ({{ reservationCount }})
       </p>
     </v-row>
     <v-row>
@@ -30,7 +30,7 @@
           outlined
           class="margin-r-2 cursor-pointer margin-b-2"
           :key="`booking-filter-${filterIndex}`"
-          @click="filter.active = !filter.active"
+          @click="handleFilterClick(filter)"
         >
           {{ filter.label }} ({{ filter.count }})
         </v-chip>
@@ -38,22 +38,32 @@
     </v-row>
     <v-row>
       <v-col
-        v-for="(reservation, reservationIndex) in 6"
+        v-for="(reservation, reservationIndex) in reservations"
         cols="12"
         sm="6"
         md="4"
         lg="3"
         :key="`reservation-${reservationIndex}`"
       >
-        <BookingCard />
+        <BookingCard :reservation="reservation" />
+        <!-- TODO: PAGINATE THESE BASED ON SCREEN SIZE -->
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import BookingCard from '@/components/BookingCard.vue'
+
+import { filter } from '@/utils/filter'
+import {
+  ReservationType,
+  ReferralStatus,
+  ReservationStatus,
+} from '@/utils/enum'
+import { Reservation, TableViewFilterChip } from '@/models/dto'
+import reservation from '@/services/reservation'
 
 @Component({
   components: {
@@ -61,6 +71,7 @@ import BookingCard from '@/components/BookingCard.vue'
   },
 })
 export default class TodayBookings extends Vue {
+  // TODO: FIGURE OUT HOW WE CAN DISPLAY THE NUMBER NEXT TO EACH ONE WITHOUT CALLING THE ENDPOINT FOR THEM
   bookingFilters = [
     {
       label: 'Starting Soon',
@@ -71,27 +82,132 @@ export default class TodayBookings extends Vue {
     {
       label: 'Needs Acceptance',
       count: 1,
-      value: null,
+      filter: [
+        {
+          column: {
+            _t_id: 'f9dd8140-d676-4485-9c8b-0cd2f226a2ad',
+            prop: 'referralStatus',
+            filterType: 'eq',
+          },
+          value: ReferralStatus.Offered,
+        },
+      ],
       active: false,
     },
     {
       label: 'Needs Assignment',
       count: 1,
-      value: null,
+      filter: [
+        {
+          column: {
+            _t_id: '3716f4e0-ee25-4426-9493-9cce6547475d',
+            prop: 'assignedDriverPercentage',
+            filterType: 'lte',
+          },
+          value: 99.99,
+        },
+        {
+          column: {
+            _t_id: '348a7adb-72ee-4da5-8134-753263c7663c',
+            prop: 'assignedVehiclePercentage',
+            filterType: 'lte',
+          },
+          value: 99.99,
+        },
+      ],
       active: false,
     },
     {
       label: 'In Progress',
       count: 2,
-      value: null,
+      filter: [
+        {
+          column: {
+            _t_id: '5b583f16-1d99-43c2-9e74-4f3df497c25f',
+            prop: 'reservationStatusKey',
+            filterType: 'eq',
+          },
+          value: ReservationStatus.Started,
+        },
+      ],
       active: false,
     },
     {
       label: 'Finished',
       count: 1,
-      value: null,
+      filter: [
+        {
+          column: {
+            _t_id: 'f9668131-3d1a-45ff-bbef-33c9b7cf832a',
+            prop: 'reservationStatusKey',
+            filterType: 'eq',
+          },
+          value: ReservationStatus.Finished,
+        },
+      ],
       active: false,
     },
   ]
+
+  reservations: Reservation[] = []
+  reservationCount = 0
+
+  params = {
+    pageSize: 12,
+    page: 1,
+    filters: [],
+    sorts: [],
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  filters: any = null
+
+  @Watch('params', { deep: true })
+  onParamsChanged(): void {
+    this.getBookings()
+  }
+
+  async mounted(): Promise<void> {
+    this.establishFilters()
+    this.getBookings()
+  }
+
+  async getBookings(): Promise<void> {
+    this.params.filters = this.filters.asQueryParams()
+    const reservationResponse = await reservation.tableView(this.params)
+    this.reservations = reservationResponse.data.resultList
+    this.reservationCount = reservationResponse.data.count
+  }
+
+  establishFilters(): void {
+    const filterIsReferral = {
+      column: {
+        _t_id: '5e1dfd51-9620-4cd5-9b3f-ca91ce6aadf9',
+        prop: 'reservationType',
+        filterType: 'eq',
+      },
+      value: ReservationType.Referral,
+    }
+
+    const parentFilter = filter()
+    const filterParentAnd = parentFilter.createParent('and')
+    parentFilter.add(filterParentAnd, filterIsReferral)
+    this.filters = parentFilter
+  }
+
+  handleFilterClick(filterChip: TableViewFilterChip): void {
+    if (filterChip.active) {
+      for (const filter of filterChip.filter) {
+        this.filters.remove(filter)
+      }
+    } else {
+      for (const filter of filterChip.filter) {
+        const filterParentAnd = this.filters.createParent('and')
+        this.filters.add(filterParentAnd, filter)
+      }
+    }
+    filterChip.active = !filterChip.active
+    this.params.filters = this.filters.asQueryParams()
+  }
 }
 </script>

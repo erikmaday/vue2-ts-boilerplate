@@ -3,6 +3,7 @@ import { Trip } from './Trip'
 import { Stop } from './Stop'
 import { Customer } from './Customer'
 import { VehicleAssignment } from './VehicleAssignment'
+import { TableViewResult } from './TableView'
 
 export interface Reservation {
   active: boolean
@@ -62,3 +63,5 @@ export interface Reservation {
   tripTypeLabel: string
   vehicleAssignments?: VehicleAssignment[]
 }
+
+export type ReservationTableViewResult = TableViewResult<Reservation>

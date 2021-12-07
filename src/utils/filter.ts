@@ -22,7 +22,7 @@ export function filter(): any {
     }
   }
 
-  function createParent(method: any, childOf: Filter) {
+  function createParent(method: string, childOf: Filter) {
     const parent = newParent()
     if (childOf) {
       parent.parent = childOf.column._t_id
@@ -40,15 +40,15 @@ export function filter(): any {
     return filterList.find(filterById(f))
   }
 
-  function or(f: Filter, addToBeginning: any) {
+  function or(f: Filter, addToBeginning: boolean) {
     return andOr('or', f, addToBeginning)
   }
 
-  function and(f: Filter, addToBeginning: any) {
+  function and(f: Filter, addToBeginning: boolean) {
     return andOr('and', f, addToBeginning)
   }
 
-  function andOr(method: string, f: Filter, addToBeginning: any) {
+  function andOr(method: string, f: Filter, addToBeginning: boolean) {
     const exists = parent(f)
     const _parent = exists || newParent()
     if (!exists) {
@@ -62,7 +62,7 @@ export function filter(): any {
     }
     return {
       add: (f: { parent: any }) => add(_parent, f),
-      addChild: (child: any, method: undefined) =>
+      addChild: (child: any, method: string) =>
         addChild(_parent, child, method),
     }
   }
@@ -106,7 +106,7 @@ export function filter(): any {
     )
   }
 
-  function addChild(parent: Filter, child: any, method: undefined) {
+  function addChild(parent: Filter, child: any, method: string) {
     const parentExists = find(parent)
     const childExists = find(child)
     if (!parentExists) {
@@ -127,7 +127,7 @@ export function filter(): any {
     filterList.push(newChild)
     return {
       add: (f: { parent: any }) => add(newChild, f),
-      addChild: (child: any, method: undefined) =>
+      addChild: (child: any, method: string) =>
         addChild(newChild, child, method),
     }
   }
@@ -173,7 +173,7 @@ export function filter(): any {
             const addSingleFilter = (
               item: { column: { prop: string } },
               value: string,
-              replacementProp: undefined,
+              replacementProp: string | undefined,
               overrideIdx: number | undefined,
               overrideFilterType: undefined
             ) => {
@@ -229,7 +229,7 @@ export function filter(): any {
                             control.filterType
                           )
                         } else {
-                          child.column.prop.forEach((prop: any) =>
+                          child.column.prop.forEach((prop: string) =>
                             addSingleFilter(
                               child,
                               queryPart,
@@ -286,7 +286,7 @@ export function filter(): any {
                 ) {
                   const propsArray =
                     child.column.filterProp || child.column.prop
-                  propsArray.forEach((prop: any) =>
+                  propsArray.forEach((prop: string) =>
                     addSingleFilter(
                       child,
                       queryPart,

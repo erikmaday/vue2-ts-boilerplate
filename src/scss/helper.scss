@@ -84,7 +84,7 @@ $directions: (
   'right': 'r',
 );
 $border-styles: 'solid', 'dashed', 'dotted', 'double', 'none';
-$border-widths: 0, 2, 4;
+$border-widths: 0, 1, 2, 4;
 $base-class: 'border';
 
 @include create-helper-with-pseudo-classes(
@@ -93,7 +93,7 @@ $base-class: 'border';
   1px,
   'border-width',
   $pseudo-classes,
-  false,
+  true,
   ''
 );
 @each $border-width in $border-widths {
@@ -166,6 +166,27 @@ $base-class: 'border';
   #{unquote('transparent')},
   'border-color',
   $pseudo-classes
+);
+
+// BORDER RADIUS
+$border-radius-map: (
+  '0': 0,
+  '1': 1px,
+  '2': 2px,
+  '3': 3px,
+  '4': 4px,
+  '5': 5px,
+  '8': 8px,
+  '12': 12px,
+  'round': 50%,
+);
+$base-class: 'border-radius';
+@include map-to-helpers(
+  $base-class,
+  $border-radius-map,
+  $base-class,
+  $pseudo-classes,
+  true
 );
 
 // BACKGROUND

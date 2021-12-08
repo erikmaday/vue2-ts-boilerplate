@@ -188,10 +188,10 @@ export default class TodayBookings extends Vue {
   reservationCount = 0
 
   params = {
-    pageSize: 12,
+    pageSize: 8,
     page: 1,
-    filters: [],
-    sorts: [],
+    filters: null,
+    sorts: null,
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

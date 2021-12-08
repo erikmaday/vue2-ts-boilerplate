@@ -7,8 +7,10 @@
         {{ reservation.firstDropoffAddress.city }}
       </p>
       <p class="font-14 margin-t-0">{{ formattedStartDateTime }}</p>
-      <p>ICONS</p>
-      <!-- TODO: CREATE NEW COMPONENT TO HANDLE THESE ICONS -->
+      <div class="d-inline-flex margin-t-4 margin-b-2">
+        <VehicleAssignmentIcons :reservation="reservation" class="margin-r-4" />
+        <DriverAssignmentIcons :reservation="reservation" />
+      </div>
       <v-row class="align-end">
         <p class="col shrink white-space-nowrap font-bold font-18">$6,150</p>
         <!-- TODO: FIGURE OUT HOW WE CAN SURFACE THIS AMOUNT -->
@@ -26,11 +28,18 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import VehicleAssignmentIcons from '@/components/VehicleAssignmentIcons.vue'
+import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
 import { Reservation } from '@/models/dto'
 import { ReferralStatus } from '@/utils/enum'
 import dayjs from 'dayjs'
 
-@Component
+@Component({
+  components: {
+    VehicleAssignmentIcons,
+    DriverAssignmentIcons,
+  },
+})
 export default class BookingCard extends Vue {
   @Prop() readonly reservation!: Reservation
 

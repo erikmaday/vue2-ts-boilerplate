@@ -1,23 +1,21 @@
 <template>
-  <div>
-    <div class="d-inline-flex margin-l-3 cursor-pointer">
-      <VehicleAssignmentIcon
-        v-for="(vehicle, vehicleIndex) in vehicleAssignmentsToDisplay"
-        :vehicle-assignment="vehicle"
-        :key="`assigned-vehicle-${vehicleIndex}`"
-        class="margin-l-n3"
-      />
-      <VehicleAssignmentIcon
-        v-for="(vehicle, vehicleIndex) in unassignedToDisplay"
-        :key="`unassigned-vehicle-${vehicleIndex}`"
-        class="margin-l-n3"
-      />
-      <VehicleAssignmentIcon
-        v-if="moreRequiredCount"
-        :more-required-count="moreRequiredCount"
-        class="margin-l-n3"
-      />
-    </div>
+  <div class="d-inline-flex margin-l-3 cursor-pointer">
+    <VehicleAssignmentIcon
+      v-for="(vehicle, vehicleIndex) in vehicleAssignmentsToDisplay"
+      :vehicle-assignment="vehicle"
+      :key="`assigned-vehicle-${vehicleIndex}`"
+      class="margin-l-n3"
+    />
+    <VehicleAssignmentIcon
+      v-for="(vehicle, vehicleIndex) in unassignedToDisplay"
+      :key="`unassigned-vehicle-${vehicleIndex}`"
+      class="margin-l-n3"
+    />
+    <VehicleAssignmentIcon
+      v-if="moreRequiredCount"
+      :more-required-count="moreRequiredCount"
+      class="margin-l-n3"
+    />
   </div>
 </template>
 <script lang="ts">

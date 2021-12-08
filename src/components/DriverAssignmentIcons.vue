@@ -1,23 +1,21 @@
 <template>
-  <div>
-    <div class="d-inline-flex margin-l-3 cursor-pointer">
-      <DriverAssignmentIcon
-        v-for="(driver, driverIndex) in driverAssignmentsToDisplay"
-        :driver-assignment="driver"
-        :key="`assigned-driver-${driverIndex}`"
-        class="margin-l-n3"
-      />
-      <DriverAssignmentIcon
-        v-for="(driver, driverIndex) in unassignedToDisplay"
-        :key="`unassigned-driver-${driverIndex}`"
-        class="margin-l-n3"
-      />
-      <DriverAssignmentIcon
-        v-if="moreRequiredCount"
-        :more-required-count="moreRequiredCount"
-        class="margin-l-n3"
-      />
-    </div>
+  <div class="d-inline-flex margin-l-3 cursor-pointer">
+    <DriverAssignmentIcon
+      v-for="(driver, driverIndex) in driverAssignmentsToDisplay"
+      :driver-assignment="driver"
+      :key="`assigned-driver-${driverIndex}`"
+      class="margin-l-n3"
+    />
+    <DriverAssignmentIcon
+      v-for="(driver, driverIndex) in unassignedToDisplay"
+      :key="`unassigned-driver-${driverIndex}`"
+      class="margin-l-n3"
+    />
+    <DriverAssignmentIcon
+      v-if="moreRequiredCount"
+      :more-required-count="moreRequiredCount"
+      class="margin-l-n3"
+    />
   </div>
 </template>
 <script lang="ts">

@@ -294,12 +294,12 @@ $base-class: 'transition';
   true
 );
 
-$transition-timing-functions: (
+$transition-properties: (
   'all': all,
 );
 @include map-to-helpers(
   $base-class,
-  $time-map,
+  $transition-properties,
   'transition-property',
   $pseudo-classes,
   true

@@ -38,7 +38,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-for="(reservation, reservationIndex) in reservations"
+        v-for="(reservation, reservationIndex) in reservationsToDisplay"
         cols="12"
         sm="6"
         md="4"
@@ -46,8 +46,15 @@
         :key="`reservation-${reservation.childReservationId}-${reservationIndex}`"
       >
         <BookingCard :reservation="reservation" />
-        <!-- TODO: PAGINATE THESE BASED ON SCREEN SIZE -->
       </v-col>
+    </v-row>
+    <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
+      <!-- TODO: PAGINATE BASED ON SCREEN SIZE -->
+      <Pagination
+        v-model="pagination"
+        :breakpoint-sizes="pageSizeByBreakpoint"
+        :items="reservations"
+      />
     </v-row>
   </v-container>
 </template>
@@ -55,6 +62,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import BookingCard from '@/components/BookingCard.vue'
+import Pagination from '@/components/Pagination.vue'
 
 import { filter } from '@/utils/filter'
 import {
@@ -70,10 +78,43 @@ import utc from 'dayjs/plugin/utc'
 @Component({
   components: {
     BookingCard,
+    Pagination,
   },
 })
 export default class TodayBookings extends Vue {
   // TODO: FIGURE OUT HOW WE CAN DISPLAY THE NUMBER NEXT TO EACH ONE WITHOUT CALLING THE ENDPOINT FOR THEM
+  reservations: Reservation[] = []
+  reservationCount = 0
+
+  params = {
+    pageSize: 24, // TODO: remove this and only pull in inprogress or future trips
+    page: 1,
+    filters: null,
+    sorts: null,
+  }
+
+  pagination = {
+    pageSize: 4,
+    currentPage: 1,
+  }
+
+  pageSizeByBreakpoint = {
+    xs: 1,
+    sm: 2,
+    md: 3,
+    lg: 4,
+    xl: 4,
+  }
+
+  get reservationsToDisplay(): Reservation[] {
+    const startIndex =
+      (this.pagination.currentPage - 1) * this.pagination.pageSize
+    return this.reservations.slice(
+      startIndex,
+      startIndex + this.pagination.pageSize
+    )
+  }
+
   bookingFilters: TableViewFilterChip[] = [
     {
       label: 'Starting Soon',
@@ -183,16 +224,6 @@ export default class TodayBookings extends Vue {
       active: false,
     },
   ]
-
-  reservations: Reservation[] = []
-  reservationCount = 0
-
-  params = {
-    pageSize: 8,
-    page: 1,
-    filters: null,
-    sorts: null,
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: any = null

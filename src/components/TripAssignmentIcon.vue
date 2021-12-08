@@ -5,13 +5,11 @@
       h-32
       border-radius-round
       d-inline-flex
-      border-1 border-solid
       justify-center
       align-center
     "
     :class="{
-      'border-white': !!imageSource,
-      'border-error background-error-background':
+      'border-1 border-solid border-error background-error-background':
         !imageSource || moreRequiredCount,
     }"
   >
@@ -20,7 +18,7 @@
       :src="imageSource"
       width="32"
       height="32"
-      class="border-radius-round"
+      class="border-radius-round border-white border-solid border-2"
     />
     <p
       v-else-if="moreRequiredCount"

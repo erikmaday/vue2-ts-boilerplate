@@ -46,9 +46,13 @@ export default class DriverAssignmentIcons extends Vue {
 
   get driverAssignments(): DriverAssignment[] {
     const driverAssignments: DriverAssignment[] = []
-    for (const vehicleAssignment of this.reservation.vehicleAssignments) {
-      for (const driverAssignment of vehicleAssignment.driverAssignments) {
-        driverAssignments.push(driverAssignment)
+    if (this?.reservation?.vehicleAssignments) {
+      for (const vehicleAssignment of this.reservation.vehicleAssignments) {
+        if (vehicleAssignment?.driverAssignments) {
+          for (const driverAssignment of vehicleAssignment.driverAssignments) {
+            driverAssignments.push(driverAssignment)
+          }
+        }
       }
     }
     return driverAssignments
@@ -58,7 +62,7 @@ export default class DriverAssignmentIcons extends Vue {
     return this.driverAssignments.slice(0, MAX_DISPLAY)
   }
 
-  get unassignedToDisplay(): number[] {
+  get unassignedToDisplay(): number {
     return Math.min(
       this.totalRequiredDrivers - this.driverAssignmentsToDisplay.length,
       MAX_DISPLAY

@@ -39,8 +39,8 @@ import CUIcon from '@/components/CUIcon.vue'
   },
 })
 export default class TripAssignmentIcon extends Vue {
-  @Prop({ required: false }) readonly imageSource: string
-  @Prop({ required: false }) readonly iconName: string
-  @Prop({ required: false }) readonly moreRequiredCount: number
+  @Prop({ required: false }) readonly imageSource?: string
+  @Prop({ required: false }) readonly iconName?: string
+  @Prop({ required: false }) readonly moreRequiredCount?: number
 }
 </script>

@@ -4,6 +4,7 @@ import { CheckoutType } from './CheckoutType'
 import { Customer } from './Customer'
 import { GarageTimes } from './GarageTimes'
 import { Vehicle } from './Vehicle'
+import { TableViewResult } from './TableView'
 
 export enum TripTypeKeys {
   ONE_WAY = 'one_way',
@@ -131,3 +132,5 @@ export interface TripContact {
   email: string
   phone: string
 }
+
+export type TripTableViewResult = TableViewResult<Trip>

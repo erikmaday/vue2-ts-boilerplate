@@ -8,6 +8,7 @@ export const routes: RouteConfig[] = [
       {
         path: '',
         name: 'home',
+        redirect: 'today',
         meta: {
           requiresAuth: true,
         },

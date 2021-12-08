@@ -44,21 +44,28 @@ export default class VehicleAssignmentIcons extends Vue {
     return count
   }
 
-  get vehicleAssignmentsToDisplay(): VehicleAssignment[] {
-    return this.reservation.vehicleAssignments.slice(0, MAX_DISPLAY)
+  get vehicleAssignmentsToDisplay(): VehicleAssignment[] | undefined {
+    if (this?.reservation?.vehicleAssignments) {
+      return this.reservation.vehicleAssignments.slice(0, MAX_DISPLAY)
+    }
+    return this?.reservation?.vehicleAssignments
   }
 
-  get unassignedToDisplay(): number[] {
-    return Math.min(
-      this.totalRequiredVehicles - this.vehicleAssignmentsToDisplay.length,
-      MAX_DISPLAY
-    )
+  get unassignedToDisplay(): number {
+    if (this?.vehicleAssignmentsToDisplay?.length) {
+      return Math.min(
+        this.totalRequiredVehicles - this.vehicleAssignmentsToDisplay.length,
+        MAX_DISPLAY
+      )
+    }
+    return MAX_DISPLAY
   }
 
   get moreRequiredCount(): number {
+    const assignedVehiclesCount = this?.vehicleAssignmentsToDisplay?.length || 0
     const count =
       this.totalRequiredVehicles -
-      this.vehicleAssignmentsToDisplay.length -
+      assignedVehiclesCount -
       this.unassignedToDisplay
     if (count > 0) {
       return count

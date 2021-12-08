@@ -49,7 +49,6 @@
       </v-col>
     </v-row>
     <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
-      <!-- TODO: PAGINATE BASED ON SCREEN SIZE -->
       <Pagination
         v-model="pagination"
         :breakpoint-sizes="pageSizeByBreakpoint"
@@ -261,11 +260,32 @@ export default class TodayBookings extends Vue {
       },
       value: ReservationType.Referral,
     }
+    const filterUpcoming = {
+      column: {
+        _t_id: '533d2c12-0b01-4945-a375-cb7c2e2040ec',
+        prop: 'startDate',
+        filterType: 'gte',
+      },
+      value: this.currentTimestamp.format('YYYY-MM-DD'),
+    }
+    const filterInProgress = {
+      column: {
+        _t_id: '5b583f16-1d99-43c2-9e74-4f3df497c25f',
+        prop: 'reservationStatus',
+        filterType: 'eq',
+      },
+      value: ReservationStatus.Started,
+    }
 
     const parentFilter = filter()
+    const filterParentReferral = parentFilter.createParent('and')
     const filterParentAnd = parentFilter.createParent('and')
-    parentFilter.add(filterParentAnd, filterIsReferral)
-    this.filters = parentFilter
+    filterParentAnd.add(filterParentReferral, filterIsReferral)
+    const filterUpcomingOrInProgress = parentFilter.createParent('or')
+    filterParentReferral.add(filterUpcomingOrInProgress, filterUpcoming)
+    filterParentReferral.add(filterUpcomingOrInProgress, filterInProgress)
+    parentFilter.add(filterParentAnd)
+    this.filters = filterParentAnd
   }
 
   handleFilterClick(filterChip: TableViewFilterChip): void {

@@ -37,7 +37,7 @@ export default class BookingCard extends Vue {
   @Watch('breakpointName', { immediate: true })
   didBreakpointChange(breakpoint: string): void {
     if (this.breakpointSizes) {
-      const newPageSize = this.breakpointSizes[breakpoint]
+      const newPageSize = this.breakpointSizes[`${breakpoint}`]
       const newCurrentPage = Math.floor(
         (this.value.currentPage * this.value.pageSize) / newPageSize
       )

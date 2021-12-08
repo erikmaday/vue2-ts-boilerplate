@@ -45,15 +45,31 @@
             </v-chip>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col
+            v-for="(trip, tripIndex) in trips"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+            :key="`trip-${tripIndex}-${trip.tripId}`"
+          >
+            <MarketplaceCard :trip="trip" />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import MarketplaceCard from '@/components/MarketplaceCard.vue'
+import { Trip } from '@/models/dto'
+import trip from '@/services/trip'
+import { filter } from '@/utils/filter'
 
-@Component
+@Component({ components: { MarketplaceCard } })
 export default class TodayMarketplace extends Vue {
   marketplaceFilters = [
     {
@@ -69,5 +85,52 @@ export default class TodayMarketplace extends Vue {
       active: false,
     },
   ]
+
+  trips: Trip[] = []
+  tripCount = 0
+
+  params = {
+    pageSize: 24, // TODO: remove this and only pull in inprogress or future trips
+    page: 1,
+    filters: null,
+    sorts: null,
+  }
+
+  filters: any = null
+
+  @Watch('params', { deep: true })
+  onParamsChanged(): void {
+    this.getTrips()
+  }
+
+  async mounted(): Promise<void> {
+    this.establishFilters()
+    this.getTrips(true)
+  }
+
+  establishFilters(): void {
+    // const filterIsReferral = {
+    //   column: {
+    //     _t_id: '5e1dfd51-9620-4cd5-9b3f-ca91ce6aadf9',
+    //     prop: 'reservationType',
+    //     filterType: 'eq',
+    //   },
+    //   value: ReservationType.Referral,
+    // }
+
+    const parentFilter = filter()
+    // const filterParentAnd = parentFilter.createParent('and')
+    // parentFilter.add(filterParentAnd, filterIsReferral)
+    this.filters = parentFilter
+  }
+
+  async getTrips(setCount = false): Promise<void> {
+    this.params.filters = this.filters.asQueryParams()
+    const reservationResponse = await trip.tableView(this.params)
+    this.trips = reservationResponse.data.resultList
+    if (setCount) {
+      this.tripCount = reservationResponse.data.count
+    }
+  }
 }
 </script>

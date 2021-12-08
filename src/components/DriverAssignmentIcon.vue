@@ -16,10 +16,10 @@ import { DriverAssignment } from '@/models/dto'
   },
 })
 export default class DriverAssignmentIcon extends Vue {
-  @Prop({ required: false }) readonly driverAssignment: DriverAssignment
-  @Prop({ required: false, default: 0 }) readonly moreRequiredCount: number
+  @Prop({ required: false }) readonly driverAssignment?: DriverAssignment
+  @Prop({ required: false, default: 0 }) readonly moreRequiredCount?: number
 
-  get image(): string {
+  get image(): string | null {
     if (this.driverAssignment) {
       //TODO: figure out where to pull the vehicle image from
       return 'https://pbs.twimg.com/profile_images/1267507368830664705/ErirCXMq_400x400.jpg'

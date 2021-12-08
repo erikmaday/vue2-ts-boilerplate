@@ -16,10 +16,10 @@ import { VehicleAssignment } from '@/models/dto/VehicleAssignment'
   },
 })
 export default class VehicleAssignmentIcon extends Vue {
-  @Prop({ required: false }) readonly vehicleAssignment: VehicleAssignment
-  @Prop({ required: false, default: 0 }) readonly moreRequiredCount: number
+  @Prop({ required: false }) readonly vehicleAssignment?: VehicleAssignment
+  @Prop({ required: false, default: 0 }) readonly moreRequiredCount?: number
 
-  get image(): string {
+  get image(): string | null {
     if (this.vehicleAssignment) {
       //TODO: figure out where to pull the vehicle image from
       return 'https://www.nationalbuscharter.com/employee/upload/cityBanner/1593699841national-atlanta-charter-bus.jpg'

@@ -1,51 +1,59 @@
 <template>
   <div class="d-inline-flex">
-    <CUIcon
+    <PaginationDot
       v-for="(page, pageIndex) in pagesCount"
       :key="`page-${pageIndex}`"
-      class="
-        text-gray-border
-        cursor-pointer
-        transition-all transition-duration-100
-      "
-      :class="{
-        'text-primary': pageIndex === activeIndex,
-        'hover:text-gray-mid-light': pageIndex !== activeIndex,
-      }"
+      :active="activeIndex === pageIndex"
+      :active-color="activeColor"
+      :inactive-color="inactiveColor"
+      :hover-color="hoverColor"
       @click="handlePageChange(page)"
-    >
-      dot
-    </CUIcon>
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Model, Prop, Watch, Vue } from 'vue-property-decorator'
 import CUIcon from '@/components/CUIcon.vue'
-import { Pagination, PaginationBreakpoints } from '@/models/Pagination'
+import PaginationDot from '@/components/PaginationDot.vue'
+import { PaginationParams, PaginationBreakpoints } from '@/models/Pagination'
 
 @Component({
   components: {
     CUIcon,
+    PaginationDot,
   },
 })
-export default class BookingCard extends Vue {
-  @Model('change') readonly value!: Pagination
-  @Prop({ required: false }) readonly breakpointSizes!: PaginationBreakpoints
+export default class Pagination extends Vue {
+  @Model('change') readonly value!: PaginationParams
   @Prop() readonly items!: any[]
+  @Prop({ default: 'primary' }) readonly activeColor?: string
+  @Prop({ default: 'gray-mid-light' }) readonly hoverColor?: string
+  @Prop({ default: 'gray-border' }) readonly inactiveColor?: string
+
+  hover = false
 
   @Watch('breakpointName', { immediate: true })
   didBreakpointChange(breakpoint: string): void {
-    if (this.breakpointSizes) {
-      const newPageSize = this.breakpointSizes[`${breakpoint}`]
-      const newCurrentPage = Math.floor(
-        (this.value.currentPage * this.value.pageSize) / newPageSize
-      )
+    if (this.value.breakpointSizes) {
+      const newPageSize = this.value.breakpointSizes[`${breakpoint}`]
+      const firstItemIndex = (this.value.currentPage - 1) * this.value.pageSize
+      const newCurrentPage = Math.floor(firstItemIndex / newPageSize + 1)
       this.$emit('change', {
         pageSize: newPageSize,
         currentPage: newCurrentPage,
+        breakpointSizes: this.value.breakpointSizes,
       })
     }
+  }
+
+  @Watch('items', { deep: true })
+  didItemsChange(): void {
+    this.$emit('change', {
+      pageSize: this.value.pageSize,
+      currentPage: 1,
+      breakpointSizes: this.value.breakpointSizes,
+    })
   }
 
   get pagesCount(): number {

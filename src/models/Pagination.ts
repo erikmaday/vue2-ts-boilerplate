@@ -1,6 +1,7 @@
-export interface Pagination {
+export interface PaginationParams {
   pageSize: number
   currentPage: number
+  breakpointSizes: PaginationBreakpoints
 }
 
 export interface PaginationBreakpoints {

@@ -221,6 +221,17 @@ $base-class: 'max-w';
   true
 );
 
+// MAX-WIDTH
+// .max-h-0, .max-h-1,..., .max-h-16, .max-h-20, .max-h-24, ... , .max-h-200
+$base-class: 'max-h';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  'max-height',
+  $pseudo-classes,
+  true
+);
+
 // HEIGHT
 // .h-0, .h-1,..., .h-16, .h-20, .h-24, ... , .h-200
 $base-class: 'h';
@@ -379,6 +390,30 @@ $white-space-map: (
   $base-class,
   $white-space-map,
   'white-space',
+  $pseudo-classes,
+  true
+);
+
+//TRANSFORM
+$base-class: 'transform';
+$scale: 10;
+$scale-map: (
+  '105': scale(1.05),
+);
+@while $scale < 100 {
+  $scale-calc: (100 + $scale) / 100;
+  $scale-map: map-merge(
+    $scale-map,
+    (
+      '1#{$scale}': scale($scale-calc),
+    )
+  );
+  $scale: $scale + 5;
+}
+@include map-to-helpers(
+  $base-class,
+  $scale-map,
+  'transform',
   $pseudo-classes,
   true
 );

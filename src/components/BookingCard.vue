@@ -15,8 +15,9 @@
         <DriverAssignmentIcons :reservation="reservation" />
       </div>
       <v-row class="align-end">
-        <p class="col shrink white-space-nowrap font-bold font-18">$6,150</p>
-        <!-- TODO: FIGURE OUT HOW WE CAN SURFACE THIS AMOUNT -->
+        <p class="col shrink white-space-nowrap font-bold font-18">
+          {{ price }}
+        </p>
         <v-spacer v-if="actionMessage" />
         <p
           v-if="actionMessage"
@@ -35,6 +36,7 @@ import VehicleAssignmentIcons from '@/components/VehicleAssignmentIcons.vue'
 import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
 import { Reservation } from '@/models/dto'
 import { ReferralStatus } from '@/utils/enum'
+import { roundedCurrencyFilter } from '@/utils/string'
 import dayjs from 'dayjs'
 
 @Component({
@@ -73,6 +75,10 @@ export default class BookingCard extends Vue {
       this.reservation.firstStopAddressTimeZone
     )
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
+  }
+
+  get price(): string {
+    return roundedCurrencyFilter(this.reservation.customerTotal)
   }
 }
 </script>

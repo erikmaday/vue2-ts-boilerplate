@@ -52,13 +52,12 @@ export default class VehicleAssignmentIcons extends Vue {
   }
 
   get unassignedToDisplay(): number {
-    if (this?.vehicleAssignmentsToDisplay?.length) {
-      return Math.min(
-        this.totalRequiredVehicles - this.vehicleAssignmentsToDisplay.length,
-        MAX_DISPLAY
-      )
-    }
-    return MAX_DISPLAY
+    const displayedAssignedVehicles =
+      this?.vehicleAssignmentsToDisplay?.length || 0
+    return Math.min(
+      this.totalRequiredVehicles - displayedAssignedVehicles,
+      MAX_DISPLAY
+    )
   }
 
   get moreRequiredCount(): number {

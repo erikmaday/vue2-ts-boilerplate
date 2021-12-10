@@ -79,6 +79,7 @@ export interface Trip {
   recurringTripTotal?: number
   recurringAmountDueNow?: number
   recurrenceText?: string
+  requiredVehicles?: RequiredVehicle[]
   updateRecurringTrips: boolean
   updateRecurringTripsFromDate?: dayjs.Dayjs
   processingFeePercentage: number
@@ -131,6 +132,12 @@ export interface TripContact {
   lastName: string
   email: string
   phone: string
+}
+
+export interface RequiredVehicle {
+  requiredVehicles: number
+  vehicleType: string
+  vehicleTypeId: number
 }
 
 export type TripTableViewResult = TableViewResult<Trip>

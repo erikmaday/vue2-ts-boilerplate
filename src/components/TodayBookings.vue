@@ -24,7 +24,7 @@
     <v-row>
       <v-col cols="12">
         <v-chip
-          v-for="(filter, filterIndex) in bookingFilters"
+          v-for="(filter, filterIndex) in bookingFilterChips"
           :color="filter.active ? 'primary' : 'gray-border'"
           :text-color="filter.active ? 'primary' : 'black'"
           outlined
@@ -32,7 +32,10 @@
           :key="`booking-filter-${filterIndex}`"
           @click="handleFilterClick(filter)"
         >
-          {{ filter.label }} ({{ filter.count }})
+          {{ filter.label }}
+          <!-- ADD BACK IN WHEN WE DETERMINE THE BEST WAY TO PULL THESE COUNTS
+            ({{ filter.count }})
+          -->
         </v-chip>
       </v-col>
     </v-row>
@@ -49,11 +52,7 @@
       </v-col>
     </v-row>
     <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
-      <Pagination
-        v-model="pagination"
-        :breakpoint-sizes="pageSizeByBreakpoint"
-        :items="reservations"
-      />
+      <Pagination v-model="pagination" :items="reservations" />
     </v-row>
   </v-container>
 </template>
@@ -63,16 +62,15 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import BookingCard from '@/components/BookingCard.vue'
 import Pagination from '@/components/Pagination.vue'
 
-import { filter } from '@/utils/filter'
-import {
-  ReservationType,
-  ReferralStatus,
-  ReservationStatus,
-} from '@/utils/enum'
 import { Reservation, TableViewFilterChip } from '@/models/dto'
 import reservation from '@/services/reservation'
+
+import { filter } from '@/utils/filter'
+import deepClone from '@/utils/deepClone'
+import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import reservationFilters from '@/data/reservationFilters'
 
 @Component({
   components: {
@@ -86,7 +84,7 @@ export default class TodayBookings extends Vue {
   reservationCount = 0
 
   params = {
-    pageSize: 24, // TODO: remove this and only pull in inprogress or future trips
+    pageSize: -1,
     page: 1,
     filters: null,
     sorts: null,
@@ -95,14 +93,13 @@ export default class TodayBookings extends Vue {
   pagination = {
     pageSize: 4,
     currentPage: 1,
-  }
-
-  pageSizeByBreakpoint = {
-    xs: 1,
-    sm: 2,
-    md: 3,
-    lg: 4,
-    xl: 4,
+    breakpointSizes: {
+      xs: 1,
+      sm: 2,
+      md: 3,
+      lg: 4,
+      xl: 4,
+    },
   }
 
   get reservationsToDisplay(): Reservation[] {
@@ -114,112 +111,43 @@ export default class TodayBookings extends Vue {
     )
   }
 
-  bookingFilters: TableViewFilterChip[] = [
+  bookingFilterChips: TableViewFilterChip[] = [
     {
       label: 'Starting Soon',
-      count: 4,
+      count: 0,
       filter: [
-        {
-          column: {
-            _t_id: '533d2c12-0b01-4945-a375-cb7c2e2040ec',
-            prop: 'startDate',
-            filterType: 'gte',
-          },
-          value: this.currentTimestamp.format('YYYY-MM-DD'),
-        },
-        {
-          column: {
-            _t_id: '0b2c67aa-7350-4cc7-b6d0-e9cdb113ff15',
-            prop: 'startDate',
-            filterType: 'lte',
-          },
-          value: this.currentTimestamp.add(1, 'day').format('YYYY-MM-DD'),
-        },
-        {
-          column: {
-            _t_id: 'f9668131-3d1a-45ff-bbef-33c9b7cf832a',
-            prop: 'reservationStatus',
-            filterType: 'eq',
-          },
-          value: ReservationStatus.Upcoming,
-        },
+        reservationFilters.isStartDateInFuture,
+        reservationFilters.isStartDateLessThanADayAway,
+        reservationFilters.isUpcoming,
       ],
       active: false,
     },
     {
       label: 'Needs Acceptance',
-      count: 1,
-      filter: [
-        {
-          column: {
-            _t_id: 'f9dd8140-d676-4485-9c8b-0cd2f226a2ad',
-            prop: 'referralStatus',
-            filterType: 'eq',
-          },
-          value: ReferralStatus.Offered,
-        },
-      ],
+      count: 0,
+      filter: [reservationFilters.isNotAccepted],
       active: false,
     },
     {
       label: 'Needs Assignment',
-      count: 1,
+      count: 0,
       filter: [
-        {
-          column: {
-            _t_id: '3716f4e0-ee25-4426-9493-9cce6547475d',
-            prop: 'assignedDriverPercentage',
-            filterType: 'lte',
-          },
-          value: 99.99,
-        },
-        {
-          column: {
-            _t_id: '348a7adb-72ee-4da5-8134-753263c7663c',
-            prop: 'assignedVehiclePercentage',
-            filterType: 'lte',
-          },
-          value: 99.99,
-        },
-        {
-          column: {
-            _t_id: 'f9dd8140-d676-4485-9c8b-0cd2f226a2ad',
-            prop: 'referralStatus',
-            filterType: 'eq',
-          },
-          value: ReferralStatus.Accepted,
-        },
+        reservationFilters.needsDriverAssignment,
+        reservationFilters.needsVehicleAssignment,
+        reservationFilters.isAccepted,
       ],
       active: false,
     },
     {
       label: 'In Progress',
-      count: 2,
-      filter: [
-        {
-          column: {
-            _t_id: '5b583f16-1d99-43c2-9e74-4f3df497c25f',
-            prop: 'reservationStatus',
-            filterType: 'eq',
-          },
-          value: ReservationStatus.Started,
-        },
-      ],
+      count: 0,
+      filter: [reservationFilters.isInProgress],
       active: false,
     },
     {
       label: 'Finished',
-      count: 1,
-      filter: [
-        {
-          column: {
-            _t_id: 'f9668131-3d1a-45ff-bbef-33c9b7cf832a',
-            prop: 'reservationStatus',
-            filterType: 'eq',
-          },
-          value: ReservationStatus.Finished,
-        },
-      ],
+      count: 0,
+      filter: [reservationFilters.isFinished],
       active: false,
     },
   ]
@@ -252,54 +180,56 @@ export default class TodayBookings extends Vue {
   }
 
   establishFilters(): void {
-    const filterIsReferral = {
-      column: {
-        _t_id: '5e1dfd51-9620-4cd5-9b3f-ca91ce6aadf9',
-        prop: 'reservationType',
-        filterType: 'eq',
-      },
-      value: ReservationType.Referral,
-    }
-    const filterUpcoming = {
-      column: {
-        _t_id: '533d2c12-0b01-4945-a375-cb7c2e2040ec',
-        prop: 'startDate',
-        filterType: 'gte',
-      },
-      value: this.currentTimestamp.format('YYYY-MM-DD'),
-    }
-    const filterInProgress = {
-      column: {
-        _t_id: '5b583f16-1d99-43c2-9e74-4f3df497c25f',
-        prop: 'reservationStatus',
-        filterType: 'eq',
-      },
-      value: ReservationStatus.Started,
-    }
+    const filterIsReferral = reservationFilters.isReferral
+    filterIsReferral.column._t_id = uuidv4()
 
-    const parentFilter = filter()
-    const filterParentReferral = parentFilter.createParent('and')
-    const filterParentAnd = parentFilter.createParent('and')
-    filterParentAnd.add(filterParentReferral, filterIsReferral)
-    const filterUpcomingOrInProgress = parentFilter.createParent('or')
-    filterParentReferral.add(filterUpcomingOrInProgress, filterUpcoming)
-    filterParentReferral.add(filterUpcomingOrInProgress, filterInProgress)
-    parentFilter.add(filterParentAnd)
-    this.filters = filterParentAnd
+    const filterIsStartDateInFuture = deepClone(
+      reservationFilters.isStartDateInFuture
+    )
+    filterIsStartDateInFuture.column._t_id = uuidv4()
+
+    const filterIsInProgress = deepClone(reservationFilters.isInProgress)
+    filterIsInProgress.column._t_id = uuidv4()
+
+    const filterInstance = filter()
+    const filterParentAnd = filterInstance.createParent('and')
+    const filterParentReferral = filterInstance.createParent(
+      'and',
+      filterParentAnd
+    )
+    filterInstance.add(filterParentReferral, filterIsReferral)
+    const filterUpcomingOrInProgress = filterInstance.createParent(
+      'or',
+      filterParentAnd
+    )
+    filterInstance.add(filterUpcomingOrInProgress, filterIsStartDateInFuture)
+    filterInstance.add(filterUpcomingOrInProgress, filterIsInProgress)
+
+    this.filters = filterInstance
   }
 
   handleFilterClick(filterChip: TableViewFilterChip): void {
-    if (filterChip.active) {
-      for (const filter of filterChip.filter) {
-        this.filters.remove(filter)
-      }
-    } else {
-      for (const filter of filterChip.filter) {
-        const filterParentAnd = this.filters.createParent('and')
-        this.filters.add(filterParentAnd, filter)
+    filterChip.active = !filterChip.active
+    this.establishFilters()
+    const filterInstance = this.filters
+    const filterParentAnd = filterInstance.createParent('and')
+    const filterParentOrAdditionalFilters = filterInstance.createParent(
+      'or',
+      filterParentAnd
+    )
+
+    for (const filterItem of this.bookingFilterChips) {
+      if (filterItem.active) {
+        const filterParentFilterChipGroup = filterInstance.createParent(
+          'and',
+          filterParentOrAdditionalFilters
+        )
+        for (const filter of filterItem.filter) {
+          filterInstance.add(filterParentFilterChipGroup, filter)
+        }
       }
     }
-    filterChip.active = !filterChip.active
+    this.filters = filterInstance
     this.params.filters = this.filters.asQueryParams()
   }
 }

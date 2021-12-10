@@ -16,8 +16,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
-import { DataOptions } from 'vuetify'
-import { VuetifyItem } from '@/models/VuetifyItem'
+import { TableViewParameters } from '@/models/TableView'
 import { AxiosResponse } from 'axios'
 import { DataTableColumn } from '@/models/DataTableColumn'
 
@@ -64,15 +63,9 @@ export default class CUCollectionTable extends Vue {
   loading = false
   serverItemsLength = 0
 
-  options: DataOptions = {
+  options: TableViewParameters = {
     page: 1,
-    itemsPerPage: 10,
-    sortBy: [],
-    sortDesc: [],
-    groupBy: [],
-    groupDesc: [],
-    multiSort: false,
-    mustSort: false,
+    pageSize: 10,
   }
 
   mounted(): void {

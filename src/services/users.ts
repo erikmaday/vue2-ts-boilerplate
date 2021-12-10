@@ -1,19 +1,20 @@
 import { apiBaseUrl } from '@/utils/env'
-import { TableViewRequest } from '@/models/TableViewRequest'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
+import { TableViewParameters, TableViewResult } from '@/models/TableView'
+import { User } from '@/models/dto/User'
 
 const httpService: HttpService = new HttpService()
 
 export const usersTableView = async ({
-  itemsPerPage,
+  pageSize,
   page,
   sorts,
   filters,
-}: TableViewRequest): Promise<AxiosResponse> => {
+}: TableViewParameters): Promise<AxiosResponse<TableViewResult<User>>> => {
   return httpService.get(
     `https://${apiBaseUrl()}/tables/users?${
-      (itemsPerPage ? `pageSize=${itemsPerPage}&` : '') +
+      (pageSize ? `pageSize=${pageSize}&` : '') +
       (page ? `page=${page}&` : '') +
       (sorts ? `${sorts}` : '') +
       (filters ? `${filters}` : '')

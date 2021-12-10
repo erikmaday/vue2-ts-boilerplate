@@ -3,6 +3,7 @@
     <v-data-table
       :headers="columns"
       :items="items"
+      :server-items-length="serverItemsLength"
       disable-sort
       disable-filtering
       :loader-height="2"
@@ -38,8 +39,8 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 import CUDataTableActionColumn from '@/components/CUDataTableActionColumn.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import CUDataTableCell from '@/components/CUDataTableCell.vue'
-import { DataOptions } from 'vuetify'
 import { DataTableColumn } from '@/models/DataTableColumn'
+import { TableViewParameters } from '@/models/TableView'
 
 @Component({
   components: { CUDataTableActionColumn, CUDataTableCell },
@@ -82,6 +83,6 @@ export default class CUDataTable extends Vue {
     type: Object,
     required: true,
   })
-  options!: DataOptions
+  options!: TableViewParameters
 }
 </script>

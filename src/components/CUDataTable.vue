@@ -26,35 +26,9 @@
           </td>
         </tr>
       </template>
-
-      <!-- <template v-if="actions" #item.actions="{ item }">
-        <CUDataTableActionColumn
-          :actions="actions"
-          :row="item"
-          :collection-name-singular="collectionNameSingular"
-          @refresh="$emit('refresh')"
-        />
-      </template>
-      <template #item.phone="{ item }">
-        <a :href="`tel:${item.phone}`">
-          {{ phoneFormatFilter(String(item.phone)) }}
-        </a>
-      </template>
-      <template #item.email="{ item }">
-        <a :href="`mailto:${item.email}`">{{ item.email }}</a>
-      </template>
-      <template #item.details="{ item }">
-        <router-link
-          class="font-medium font-14"
-          :to="{ path: `edit/${item.id}` }"
-          :append="true"
-        >
-          Details
-        </router-link>
-      </template> -->
       <v-pagination
         v-model="$attrs.options.page"
-        :length="$attrs.serverItemsLength"
+        :length="serverItemsLength"
       ></v-pagination>
     </v-data-table>
   </div>
@@ -62,11 +36,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { VuetifyItem } from '@/models/VuetifyItem'
 import CUDataTableActionColumn from '@/components/CUDataTableActionColumn.vue'
 import { phoneFormatFilter } from '@/utils/phone'
 import { ActionColumn } from '@/models/ActionColumn'
 import CUDataTableCell from '@/components/CUDataTableCell.vue'
+import { DataOptions } from 'vuetify'
+import { DataTableHeader } from '@/models/DataTableHeader'
 
 @Component({
   components: { CUDataTableActionColumn, CUDataTableCell },
@@ -91,13 +66,25 @@ export default class CUDataTable extends Vue {
     required: true,
     default: [],
   })
-  headers!: Array<VuetifyItem>
+  headers!: Array<DataTableHeader>
 
   @Prop({
     type: String,
     required: false,
   })
   collectionNameSingular!: string
+
+  @Prop({
+    type: Number,
+    required: true,
+  })
+  serverItemsLength!: number
+
+  @Prop({
+    type: Object,
+    required: true,
+  })
+  options!: DataOptions
 
   phoneFormatFilter = phoneFormatFilter
 }

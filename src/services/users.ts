@@ -12,7 +12,7 @@ export const usersTableView = async ({
   itemsPerPage,
   page,
   filters,
-}: Partial<DataOptions>): Promise<AxiosResponse> => {
+}: TableViewRequest): Promise<AxiosResponse> => {
   return httpService.get(
     `https://${apiBaseUrl()}/tables/users?${
       (itemsPerPage ? `pageSize=${itemsPerPage}&` : '') +
@@ -22,10 +22,10 @@ export const usersTableView = async ({
   )
 }
 
-export const getUser = async (userId: number): Promise<unknown> => {
+export const getUser = async (userId: number): Promise<AxiosResponse> => {
   return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
 }
 
-export const deleteUser = async (userId: number): Promise<unknown> => {
+export const deleteUser = async (userId: number): Promise<AxiosResponse> => {
   return httpService.delete(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
 }

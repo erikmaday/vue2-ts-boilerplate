@@ -18,14 +18,18 @@ import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import { usersTableView, deleteUser } from '@/services/users'
 import { User } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
+import { DataTableHeader } from '@/models/DataTableHeader'
 
 @Component({
   components: { CUDataTable, CUCollectionTable },
 })
 export default class CompanyUsers extends Vue {
-  headers = [
-    { text: 'First Name', value: 'firstName' },
-    { text: 'Last Name', value: 'lastName' },
+  headers: DataTableHeader[] = [
+    {
+      text: 'Name',
+      value: 'name',
+      computedText: (row: User): string => `${row.firstName} ${row.lastName}`,
+    },
     { text: 'Email', value: 'email' },
     { text: 'Type', value: 'groupName' },
     { value: 'details' },
@@ -42,7 +46,10 @@ export default class CompanyUsers extends Vue {
       color: 'primary',
       ariaLabel: 'Edit User',
       action: (row: User): void => {
-        this.$router.push({ name: 'users.edit', params: { id: row.userId } })
+        this.$router.push({
+          name: 'users.edit',
+          params: { id: String(row.userId) },
+        })
       },
     },
     {

@@ -17,7 +17,6 @@
     <template v-else-if="header.value === 'email'">
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
     </template>
-    <!-- eslint-disable-next-line vue/no-unused-vars -->
     <template v-else-if="header.value === 'details'">
       <router-link
         class="font-medium font-14"
@@ -28,15 +27,15 @@
       </router-link>
     </template>
     <template v-else>
-      {{ cellItem }}
+      {{ computedCellItemText }}
     </template>
   </div>
 </template>
 <script lang="ts">
 import CUDataTableActionColumn from '@/components/CUDataTableActionColumn.vue'
 import { ActionColumn } from '@/models/ActionColumn'
-import { VuetifyItem } from '@/models/VuetifyItem'
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { DataTableHeader } from '@/models/DataTableHeader'
 
 @Component({
   components: { CUDataTableActionColumn },
@@ -52,7 +51,7 @@ export default class CUDataTableCell extends Vue {
     type: Object,
     required: true,
   })
-  header!: VuetifyItem
+  header!: DataTableHeader
 
   @Prop({
     type: Array,
@@ -61,7 +60,6 @@ export default class CUDataTableCell extends Vue {
   })
   actions!: Array<ActionColumn>
 
-  
   @Prop({
     type: String,
     required: false,
@@ -70,6 +68,13 @@ export default class CUDataTableCell extends Vue {
 
   get cellItem() {
     return this.row[this.header.value]
+  }
+
+  get computedCellItemText(): unknown {
+    if (this.header.computedText) {
+      return this.header.computedText(this.row)
+    }
+    return this.cellItem
   }
 }
 </script>

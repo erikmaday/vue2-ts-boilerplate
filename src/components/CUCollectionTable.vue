@@ -16,9 +16,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
-import { usersTableView } from '@/services/users'
 import { DataOptions } from 'vuetify'
-import { ActionColumn } from '@/models/ActionColumn'
 import { VuetifyItem } from '@/models/VuetifyItem'
 import { AxiosResponse } from 'axios'
 
@@ -89,7 +87,7 @@ export default class CUCollectionTable extends Vue {
 
     const items: unknown[] = data.resultList
 
-    this.items = items.map((item) => {
+    this.items = items.map((item: any) => {
       const obj = { id: item[this.itemKey] }
       return Object.assign({}, item, obj)
     })

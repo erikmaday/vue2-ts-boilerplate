@@ -12,6 +12,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { getUser } from '@/services/users'
 import { User } from '@/models/dto'
+import { AxiosResponse } from 'axios'
 
 @Component
 export default class CompanyUsersEdit extends Vue {
@@ -24,8 +25,7 @@ export default class CompanyUsersEdit extends Vue {
   }
 
   async getCurrentUser(): Promise<void> {
-    let response
-    console.log("> mounted")
+    let response: AxiosResponse
     try {
       if (this.$route.params.id) {
         response = await getUser(Number(this.$route.params.id))

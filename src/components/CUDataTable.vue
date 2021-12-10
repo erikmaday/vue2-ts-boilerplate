@@ -1,4 +1,3 @@
-/* eslint-disable vue/no-unused-vars */
 <template>
   <div>
     <v-data-table

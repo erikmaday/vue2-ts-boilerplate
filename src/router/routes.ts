@@ -18,16 +18,30 @@ export const routes: RouteConfig[] = [
             name: 'company',
             redirect: 'company/users',
             component: () =>
-              import(/* webpackChunkName: "company" */ '@/views/Company.vue'),
+              import(/* webpackChunkName: "company" */ '@/views/Empty.vue'),
             children: [
               {
                 path: 'users',
-                name: 'users',
-                props: { mode: 'users' },
                 component: () =>
-                  import(
-                    /* webpackChunkName: "company-users" */ '@/views/Company.vue'
-                  ),
+                  import(/* webpackChunkName: "company" */ '@/views/Empty.vue'),
+                children: [
+                  {
+                    path: '',
+                    name: 'users',
+                    component: () =>
+                    import(
+                      /* webpackChunkName: "company-users" */ '@/views/Company.vue'
+                    ),
+                  },
+                  {
+                    path: 'edit/:id', 
+                    name: 'users.edit', 
+                    component: () => 
+                    import(
+                      /* webpackChunkName: "company-users" */ '@/views/Company.vue'
+                    ),
+                  },
+                ],
               },
               {
                 path: 'vehicles',

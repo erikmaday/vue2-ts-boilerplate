@@ -3,4 +3,6 @@ export interface ActionColumn {
   key: string
   icon: string
   color?: string
+  ariaLabel?: string
+  action?: any
 }

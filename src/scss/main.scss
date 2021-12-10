@@ -249,12 +249,12 @@
   .v-data-table {
     font-size: 16px;
 
-    &__wrapper {
-      border-style: solid;
-      border-color: $gray-border;
-      border-width: 1px;
-      border-radius: $border-radius-root;
-    }
+    // &__wrapper {
+    //   border-style: solid;
+    //   border-color: $gray-border;
+    //   border-width: 1px;
+    //   border-radius: $border-radius-root;
+    // }
 
     .v-data-footer {
       border-top: none;
@@ -282,6 +282,7 @@
           border-right-color: $gray-border;
           border-bottom-color: $gray-border;
           border-left-color: $gray-border;
+          height: 80px;
 
           &:hover:not(.v-data-table__expanded__content) {
             background-color: $gray-header !important;
@@ -317,7 +318,7 @@
     }
 
     .v-data-table-header {
-      background-color: $gray-header;
+      height: 60px;
     }
 
     .v-datatable__progress {
@@ -328,5 +329,9 @@
   .v-pagination__item,
   .v-pagination__navigation {
     box-shadow: none !important;
+  }
+
+  .v-menu__content {
+    background-color: white;
   }
 }

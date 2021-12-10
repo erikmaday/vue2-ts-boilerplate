@@ -1,0 +1,45 @@
+<template>
+  <div>
+    <h1>Edit User</h1>
+    <h2 v-if="currentUser !== null">
+      {{ `${currentUser.firstName} ${currentUser.lastName}` }}
+    </h2>
+    <h2 v-else>User not found</h2>
+  </div>
+</template>
+
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import { getUser } from '@/services/users'
+import { User } from '@/models/dto'
+
+@Component
+export default class CompanyUsersEdit extends Vue {
+  notFound = false
+
+  currentUser = null
+  
+  mounted(): void {
+    this.getCurrentUser()
+  }
+
+  async getCurrentUser(): Promise<void> {
+    let response
+    console.log("> mounted")
+    try {
+      if (this.$route.params.id) {
+        response = await getUser(Number(this.$route.params.id))
+        const { data } = response
+        this.currentUser = data
+      } else {
+        this.notFound = true
+        return
+      }
+    } catch (e) {
+      this.notFound = true
+      console.error(e)
+      return
+    }
+  }
+}
+</script>

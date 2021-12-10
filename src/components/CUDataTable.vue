@@ -26,7 +26,7 @@
         </tr>
       </template>
       <v-pagination
-        v-model="$attrs.options.page"
+        v-model="options.page"
         :length="serverItemsLength"
       ></v-pagination>
     </v-data-table>

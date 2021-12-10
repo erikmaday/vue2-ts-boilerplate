@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-data-table
-      :headers="headers"
+      :headers="columns"
       :items="items"
       disable-sort
       disable-filtering
@@ -13,11 +13,11 @@
       <template #item="{ item, index }">
         <tr>
           <td
-            v-for="(header, headerIndex) in headers"
-            :key="`header-${headerIndex}-${index}`"
+            v-for="(col, colIndex) in columns"
+            :key="`column-${col.value}-${colIndex}-${index}`"
           >
             <CUDataTableCell
-              :header="header"
+              :column="col"
               :row="item"
               :actions="actions"
               :collection-name-singular="collectionNameSingular"
@@ -36,11 +36,10 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import CUDataTableActionColumn from '@/components/CUDataTableActionColumn.vue'
-import { phoneFormatFilter } from '@/utils/phone'
 import { ActionColumn } from '@/models/ActionColumn'
 import CUDataTableCell from '@/components/CUDataTableCell.vue'
 import { DataOptions } from 'vuetify'
-import { DataTableHeader } from '@/models/DataTableHeader'
+import { DataTableColumn } from '@/models/DataTableColumn'
 
 @Component({
   components: { CUDataTableActionColumn, CUDataTableCell },
@@ -65,7 +64,7 @@ export default class CUDataTable extends Vue {
     required: true,
     default: [],
   })
-  headers!: Array<DataTableHeader>
+  columns!: Array<DataTableColumn>
 
   @Prop({
     type: String,
@@ -84,7 +83,5 @@ export default class CUDataTable extends Vue {
     required: true,
   })
   options!: DataOptions
-
-  phoneFormatFilter = phoneFormatFilter
 }
 </script>

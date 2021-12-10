@@ -1,4 +1,4 @@
 export interface VuetifyItem {
-  text?: string
+  text: string
   value: string
 }

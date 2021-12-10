@@ -18,8 +18,8 @@ import { AxiosResponse } from 'axios'
 export default class CompanyUsersEdit extends Vue {
   notFound = false
 
-  currentUser = null
-  
+  currentUser: User | null = null
+
   mounted(): void {
     this.getCurrentUser()
   }

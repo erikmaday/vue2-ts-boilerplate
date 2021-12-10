@@ -1,7 +1,7 @@
 <template>
   <!-- eslint-disable vue/valid-v-slot -->
-  <div class="cu-data-table__cell">
-    <template v-if="header.value === 'actions'">
+  <div>
+    <template v-if="column.value === 'actions'">
       <CUDataTableActionColumn
         :actions="actions"
         :row="row"
@@ -9,15 +9,15 @@
         @refresh="$emit('refresh')"
       />
     </template>
-    <template v-else-if="header.value === 'phone'">
+    <template v-else-if="column.value === 'phone'">
       <a :href="`tel:${cellItem}`">
         {{ phoneFormatFilter(String(cellItem)) }}
       </a>
     </template>
-    <template v-else-if="header.value === 'email'">
+    <template v-else-if="column.value === 'email'">
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
     </template>
-    <template v-else-if="header.value === 'details'">
+    <template v-else-if="column.value === 'details'">
       <router-link
         class="font-medium font-14"
         :to="{ path: `edit/${row.id}` }"
@@ -35,7 +35,8 @@
 import CUDataTableActionColumn from '@/components/CUDataTableActionColumn.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { DataTableHeader } from '@/models/DataTableHeader'
+import { DataTableColumn } from '@/models/DataTableColumn'
+import { phoneFormatFilter } from '@/utils/string'
 
 @Component({
   components: { CUDataTableActionColumn },
@@ -51,7 +52,7 @@ export default class CUDataTableCell extends Vue {
     type: Object,
     required: true,
   })
-  header!: DataTableHeader
+  column!: DataTableColumn
 
   @Prop({
     type: Array,
@@ -67,16 +68,16 @@ export default class CUDataTableCell extends Vue {
   collectionNameSingular!: string
 
   get cellItem() {
-    return this.row[this.header.value]
+    return this.row[this.column.value]
   }
 
   get computedCellItemText(): unknown {
-    if (this.header.computedText) {
-      return this.header.computedText(this.row)
+    if (this.column.computedText) {
+      return this.column.computedText(this.row)
     }
     return this.cellItem
   }
+
+  phoneFormatFilter = phoneFormatFilter
 }
 </script>
-
-<style></style>

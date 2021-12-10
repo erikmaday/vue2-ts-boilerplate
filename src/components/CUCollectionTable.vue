@@ -2,7 +2,7 @@
   <CUDataTable
     :actions="actions"
     :options="options"
-    :headers="headers"
+    :columns="columns"
     :items="items"
     :item-key="itemKey"
     :loading="loading"
@@ -19,6 +19,7 @@ import CUDataTable from '@/components/CUDataTable.vue'
 import { DataOptions } from 'vuetify'
 import { VuetifyItem } from '@/models/VuetifyItem'
 import { AxiosResponse } from 'axios'
+import { DataTableColumn } from '@/models/DataTableColumn'
 
 @Component({
   components: { CUDataTable },
@@ -29,7 +30,7 @@ export default class CUCollectionTable extends Vue {
     required: false,
     default: () => [],
   })
-  headers!: Array<VuetifyItem>
+  columns!: Array<DataTableColumn>
 
   @Prop({
     type: String,

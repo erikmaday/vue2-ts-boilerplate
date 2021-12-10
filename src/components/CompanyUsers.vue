@@ -2,9 +2,9 @@
   <div>
     <CUCollectionTable
       :actions="actions"
-      :headers="headers"
+      :columns="columns"
       item-key="userId"
-      collectionNameSingular="user"
+      collection-name-singular="user"
       collection="users"
       :fetchMethod="usersTableView"
     />
@@ -18,13 +18,13 @@ import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import { usersTableView, deleteUser } from '@/services/users'
 import { User } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
-import { DataTableHeader } from '@/models/DataTableHeader'
+import { DataTableColumn } from '@/models/DataTableColumn'
 
 @Component({
   components: { CUDataTable, CUCollectionTable },
 })
 export default class CompanyUsers extends Vue {
-  headers: DataTableHeader[] = [
+  columns: DataTableColumn[] = [
     {
       text: 'Name',
       value: 'name',
@@ -32,8 +32,8 @@ export default class CompanyUsers extends Vue {
     },
     { text: 'Email', value: 'email' },
     { text: 'Type', value: 'groupName' },
-    { value: 'details' },
-    { value: 'actions' },
+    { text: 'Details', value: 'details' },
+    { text: 'Actions', value: 'actions' },
   ]
 
   usersTableView = usersTableView

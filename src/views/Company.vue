@@ -51,14 +51,6 @@ export default class Company extends Vue {
       name: 'users',
       component: CompanyUsers,
       icon: 'users',
-      visible: true,
-    },
-    {
-      label: 'Edit User',
-      href: 'users/edit',
-      name: 'users.edit',
-      component: CompanyUsersEdit,
-      visible: false,
     },
     {
       label: 'Vehicles',
@@ -66,7 +58,6 @@ export default class Company extends Vue {
       name: 'vehicles',
       component: CompanyVehicles,
       icon: 'directions_bus',
-      visible: true,
     },
     {
       label: 'Garages',
@@ -74,7 +65,6 @@ export default class Company extends Vue {
       name: 'garages',
       component: CompanyGarages,
       icon: 'garages',
-      visible: true,
     },
     {
       label: 'Rates',
@@ -82,7 +72,6 @@ export default class Company extends Vue {
       name: 'rates',
       component: CompanyRates,
       icon: 'rates',
-      visible: true,
     },
     {
       label: 'Availability',
@@ -90,7 +79,6 @@ export default class Company extends Vue {
       name: 'availability',
       component: CompanyAvailability,
       icon: 'event_available',
-      visible: true,
     },
     {
       label: 'Rates',
@@ -98,7 +86,6 @@ export default class Company extends Vue {
       name: 'settings',
       component: CompanySettings,
       icon: 'settings',
-      visible: true,
     },
   ]
 

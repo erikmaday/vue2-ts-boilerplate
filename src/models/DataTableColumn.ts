@@ -1,5 +1,5 @@
-import { VuetifyItem } from "./VuetifyItem";
+import { TextValue } from './TextValue'
 
-export interface DataTableColumn extends VuetifyItem {
+export interface DataTableColumn extends TextValue {
   computedText?: (row: any) => string
 }

@@ -3,6 +3,7 @@ import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
 import { User } from '@/models/dto/User'
+import { UserApiResult } from '@/models/dto/UserApiResult'
 
 const httpService: HttpService = new HttpService()
 
@@ -22,7 +23,9 @@ export const usersTableView = async ({
   )
 }
 
-export const getUser = async (userId: number): Promise<AxiosResponse> => {
+export const getUser = async (
+  userId: number
+): Promise<AxiosResponse<UserApiResult>> => {
   return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
 }
 

@@ -45,7 +45,7 @@ export default class CUDataTableCell extends Vue {
     type: Object,
     required: true,
   })
-  row!: unknown
+  row!: any
 
   @Prop({
     type: Object,
@@ -60,7 +60,7 @@ export default class CUDataTableCell extends Vue {
   })
   actions!: Array<ActionColumn>
 
-  get cellItem() {
+  get cellItem(): any {
     return this.row[this.column.value]
   }
 

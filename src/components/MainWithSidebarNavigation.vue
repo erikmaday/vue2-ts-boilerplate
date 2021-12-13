@@ -1,7 +1,7 @@
 <template>
   <div class="font-bold">
     <div
-      v-for="(item, index) in visibleLinks"
+      v-for="(item, index) in links"
       :key="`sidebar-link-${index}`"
       class="
         hover:background-black-5
@@ -51,10 +51,6 @@ export default class MainWithSidebarNavigation extends Vue {
     default: '',
   })
   private readonly mode!: string
-
-  get visibleLinks(): SidebarLink[] {
-    return this.links.filter((sidebarLink: SidebarLink) => sidebarLink.visible)
-  }
 
   handleNavigationClick(item: SidebarLink): void {
     this.$router.push({ name: item.name })

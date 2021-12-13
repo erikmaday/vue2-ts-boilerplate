@@ -15,7 +15,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
-import users from '@/services/user'
+import user from '@/services/user'
 import { User } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
@@ -36,7 +36,7 @@ export default class CompanyUsers extends Vue {
     { text: 'Actions', value: 'actions', type: 'actions' },
   ]
 
-  usersTableView = users.tableView
+  usersTableView = user.tableView
 
   actions: ActionColumn[] = [
     {
@@ -60,7 +60,7 @@ export default class CompanyUsers extends Vue {
       confirmModal: true,
       confirmModalText: 'Are you sure you want to delete this user?',
       action: (row: User): void => {
-        users.delete(row.userId)
+        user.delete(row.userId)
       },
     },
   ]

@@ -21,7 +21,6 @@
               :column="col"
               :row="item"
               :actions="actions"
-              :collection-name-singular="collectionNameSingular"
               @refresh="$emit('refresh')"
             />
           </td>
@@ -67,12 +66,6 @@ export default class CUDataTable extends Vue {
     default: [],
   })
   columns!: Array<DataTableColumn>
-
-  @Prop({
-    type: String,
-    required: false,
-  })
-  collectionNameSingular!: string
 
   @Prop({
     type: Number,

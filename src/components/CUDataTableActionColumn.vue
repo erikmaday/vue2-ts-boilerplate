@@ -72,12 +72,6 @@ export default class CUDataTableActionColumn extends Vue {
   })
   row!: any
 
-  @Prop({
-    type: String,
-    required: false,
-  })
-  collectionNameSingular!: string
-
   dialogOpen = false
   dialogText: string | undefined = ''
   dialogConfirmFn = () => ({})

@@ -5,7 +5,6 @@
       <CUDataTableActionColumn
         :actions="actions"
         :row="row"
-        :collection-name-singular="collectionNameSingular"
         @refresh="$emit('refresh')"
       />
     </template>
@@ -60,12 +59,6 @@ export default class CUDataTableCell extends Vue {
     default: undefined,
   })
   actions!: Array<ActionColumn>
-
-  @Prop({
-    type: String,
-    required: false,
-  })
-  collectionNameSingular!: string
 
   get cellItem() {
     return this.row[this.column.value]

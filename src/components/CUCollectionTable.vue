@@ -7,7 +7,6 @@
     :item-key="itemKey"
     :loading="loading"
     :server-items-length="serverItemsLength"
-    :collection-name-singular="collectionNameSingular"
     @update:options="load"
     @pagination="options = $event"
     @refresh="load"
@@ -43,12 +42,6 @@ export default class CUCollectionTable extends Vue {
     default: () => [],
   })
   actions!: Array<unknown>
-
-  @Prop({
-    type: String,
-    required: false,
-  })
-  collectionNameSingular!: string
 
   @Prop({
     type: String,

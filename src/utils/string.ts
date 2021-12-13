@@ -41,7 +41,6 @@ export const toSentence = (string: string): string => {
   return interim.slice(0, 1).toUpperCase() + interim.slice(1)
 }
 
-
 export function phoneFormatFilter(input: string): string {
   const inp = input.replace(/[^0-9]/gi, '')
 

@@ -81,7 +81,7 @@ $directions: (
   'right': 'r',
 );
 $border-styles: 'solid', 'dashed', 'dotted', 'double', 'none';
-$border-widths: 0, 2, 4;
+$border-widths: 0, 1, 2, 4;
 $base-class: 'border';
 
 @include create-helper-with-pseudo-classes(

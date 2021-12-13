@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="w-full">
+    <h1>Team</h1>
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
       item-key="userId"
-      collection-name-singular="user"
       collection="users"
       :fetch-method="usersTableView"
     />

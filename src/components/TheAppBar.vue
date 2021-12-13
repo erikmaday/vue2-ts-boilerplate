@@ -34,8 +34,42 @@
           'h-60': $vuetify.breakpoint.xsOnly,
         }"
       >
+        <v-menu v-if="item.children" bottom offset-y nudge-top="15px">
+          <template v-slot:activator="{ on }">
+            <span class="h-full d-flex align-center" v-on="on">
+              {{ item.label }}
+              <CUIcon
+                class="margin-r-3"
+                width="20px"
+                height="20px"
+                color="black"
+              >
+                keyboard_arrow_down
+              </CUIcon>
+            </span>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(childLink, cIndex) in item.children"
+              :key="`child-${cIndex}`"
+              @click="handleNavigationClick(childLink)"
+              class="font-14 font-medium"
+            >
+              <CUIcon
+                class="margin-r-3"
+                width="20px"
+                height="20px"
+                color="black"
+              >
+                {{ childLink.icon }}
+              </CUIcon>
+              {{ childLink.label }}
+            </v-list-item>
+          </v-list>
+        </v-menu>
         <!-- Double spans allow for precise underlining -->
         <span
+          v-else
           class="
             h-full
             d-flex

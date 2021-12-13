@@ -4,4 +4,6 @@ export interface NavigationLink extends Link {
   location: string
   params: Record<string, unknown>
   permission: string[]
+  children?: NavigationLink[]
+  icon?: string
 }

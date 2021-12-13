@@ -69,6 +69,20 @@ $base-class: 'cursor';
   );
 }
 
+// WORD BREAK 
+// .wb-normal, .wb-break-all...
+$word-breaks: normal, break-all, keep-all, break-word, initial, inherit;
+$base-class: 'wb';
+@each $word-break in $word-breaks {
+  @include create-helper-with-pseudo-classes(
+    $base-class,
+    $word-break,
+    $word-break,
+    'word-break',
+    $pseudo-classes
+  );
+}
+
 // BOX SHADOW
 .shadow {
   &-none {

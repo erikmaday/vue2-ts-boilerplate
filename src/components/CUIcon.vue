@@ -15,7 +15,7 @@
     @click="$emit('click')"
   >
     <title :id="ariaLabelledBy || iconTitle" lang="en">
-      {{ iconTitle }} icon
+      {{ ariaLabelledBy }} icon
     </title>
     <g fill="currentColor">
       <component :is="icon"></component>

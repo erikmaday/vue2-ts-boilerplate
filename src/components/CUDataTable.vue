@@ -22,6 +22,7 @@
               :row="item"
               :actions="actions"
               :collection-name-singular="collectionNameSingular"
+              @refresh="$emit('refresh')"
             />
           </td>
         </tr>

@@ -57,6 +57,8 @@ export default class CompanyUsers extends Vue {
       key: 'delete',
       color: 'error',
       icon: 'trash',
+      confirmModal: true,
+      confirmModalText: 'Are you sure you want to delete this user?',
       action: (row: User): void => {
         deleteUser(row.userId)
       },

@@ -34,16 +34,15 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-dialog v-model="deleteDialog" max-width="500px">
+    <v-dialog v-model="dialogOpen" max-width="500px">
       <v-card>
         <p class="wb-break-word font-22 font-medium padding-x-6 padding-y-2">
-          Are you sure you want to delete this
-          {{ collectionNameSingular || 'item' }}?
+          {{ dialogText }}
         </p>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="closeDelete">Cancel</v-btn>
-          <v-btn color="primary" @click="deleteItemConfirm">OK</v-btn>
+          <v-btn color="primary" text @click="closeDialog">Cancel</v-btn>
+          <v-btn color="primary" @click="confirmAction">OK</v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -79,24 +78,31 @@ export default class CUDataTableActionColumn extends Vue {
   })
   collectionNameSingular!: string
 
-  deleteDialog = false
+  dialogOpen = false
+  dialogText: string | undefined = ''
+  dialogConfirmFn = () => ({})
+  currentAction: ActionColumn | undefined = undefined
 
-  async deleteItemConfirm(): Promise<void> {
-    const deleteAction = this.actions.find((action) => action.key === 'delete')
-    if (deleteAction) {
-      await deleteAction.action(this.row)
+  async confirmAction(): Promise<void> {
+    const action = this.currentAction
+    // const deleteAction = this.actions.find((action) => action.key === 'delete')
+    if (action) {
+      console.log("> awaiting action...")
+      await action.action(this.row)
       this.$emit('refresh')
     }
-    this.deleteDialog = false
+    this.dialogOpen = false
   }
 
-  closeDelete(): void {
-    this.deleteDialog = false
+  closeDialog(): void {
+    this.dialogOpen = false
   }
 
   handleAction(action: ActionColumn): void {
-    if (action.key === 'delete') {
-      this.deleteDialog = true
+    if (action.confirmModal) {
+      this.dialogOpen = true
+      this.dialogText = action.confirmModalText
+      this.currentAction = action
     } else if (action.action) {
       action.action(this.row)
     }

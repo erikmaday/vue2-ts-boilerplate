@@ -1,5 +1,5 @@
 import { ApiResult, User } from '.'
 
-export interface UserApiResult extends ApiResult {
+export interface UserResult extends ApiResult {
   user: User
 }

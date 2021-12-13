@@ -58,7 +58,7 @@ export default class CUDataTableCell extends Vue {
     required: false,
     default: undefined,
   })
-  actions!: Array<ActionColumn>
+  actions!: ActionColumn[]
 
   get cellItem(): any {
     return this.row[this.column.value]

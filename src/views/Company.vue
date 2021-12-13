@@ -24,7 +24,6 @@ import CompanyGarages from '@/components/CompanyGarages.vue'
 import CompanyRates from '@/components/CompanyRates.vue'
 import CompanySettings from '@/components/CompanySettings.vue'
 import CompanyAvailability from '@/components/CompanyAvailability.vue'
-import CompanyUsersEdit from '@/components/CompanyUsersEdit.vue'
 import { toTitle } from '@/utils/string'
 import { Component as VueComponent } from 'vue'
 
@@ -40,7 +39,6 @@ import { Component as VueComponent } from 'vue'
     CompanySettings,
     CompanyAvailability,
     CompanyVehicles,
-    CompanyUsersEdit,
   },
 })
 export default class Company extends Vue {

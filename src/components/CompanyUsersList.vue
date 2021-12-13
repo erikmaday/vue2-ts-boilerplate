@@ -15,7 +15,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
-import users from '@/services/users'
+import users from '@/services/user'
 import { User } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'

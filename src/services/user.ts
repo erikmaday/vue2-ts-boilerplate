@@ -3,7 +3,7 @@ import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
 import { User } from '@/models/dto/User'
-import { UserApiResult } from '@/models/dto/UserApiResult'
+import { UserResult } from '@/models/dto/UserResult'
 
 const httpService: HttpService = new HttpService()
 
@@ -23,7 +23,7 @@ export default {
       }`
     )
   },
-  byId(userId: number): Promise<AxiosResponse<UserApiResult>> {
+  byId(userId: number): Promise<AxiosResponse<UserResult>> {
     return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
   },
   delete(userId: number): Promise<AxiosResponse> {

@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import users from '@/services/users'
+import users from '@/services/user'
 import { User } from '@/models/dto'
 import { AxiosResponse } from 'axios'
 

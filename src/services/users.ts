@@ -16,7 +16,7 @@ export const usersTableView = async ({
     `https://${apiBaseUrl()}/tables/users?${
       (pageSize ? `pageSize=${pageSize}&` : '') +
       (page ? `page=${page}&` : '') +
-      (sorts ? `${sorts}` : '') +
+      (sorts ? `${sorts}&` : '') +
       (filters ? `${filters}` : '')
     }`
   )

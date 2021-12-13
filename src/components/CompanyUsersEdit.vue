@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import user from '@/services/user'
 import { User } from '@/models/dto'
 import { AxiosResponse } from 'axios'

@@ -29,17 +29,17 @@ export const routes: RouteConfig[] = [
                     path: '',
                     name: 'users',
                     component: () =>
-                    import(
-                      /* webpackChunkName: "company-users" */ '@/views/Company.vue'
-                    ),
+                      import(
+                        /* webpackChunkName: "company-users" */ '@/views/Company.vue'
+                      ),
                   },
                   {
-                    path: 'edit/:id', 
-                    name: 'users.edit', 
-                    component: () => 
-                    import(
-                      /* webpackChunkName: "company-users" */ '@/views/Company.vue'
-                    ),
+                    path: 'edit/:id',
+                    name: 'users.edit',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-users" */ '@/views/Company.vue'
+                      ),
                   },
                 ],
               },
@@ -53,11 +53,28 @@ export const routes: RouteConfig[] = [
               },
               {
                 path: 'garages',
-                name: 'garages',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-garages" */ '@/views/Company.vue'
+                    /* webpackChunkName: "company-garages" */ '@/views/Empty.vue'
                   ),
+                children: [
+                  {
+                    path: '',
+                    name: 'garages',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-users" */ '@/views/Company.vue'
+                      ),
+                  },
+                  {
+                    path: 'edit/:id',
+                    name: 'garages.edit',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-users" */ '@/views/Company.vue'
+                      ),
+                  },
+                ],
               },
               {
                 path: 'rates',

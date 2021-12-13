@@ -62,7 +62,7 @@ export default class CUDataTableActionColumn extends Vue {
       return []
     },
   })
-  actions!: Array<ActionColumn>
+  actions!: ActionColumn[]
 
   @Prop({
     required: false,

@@ -39,11 +39,9 @@
         <p class="wb-break-word font-22 font-medium padding-x-6 padding-y-2">
           {{ dialogText }}
         </p>
-        <v-card-actions>
-          <v-spacer></v-spacer>
+        <v-card-actions class="d-flex justify-center">
           <v-btn color="primary" text @click="closeDialog">Cancel</v-btn>
           <v-btn color="primary" @click="confirmAction">OK</v-btn>
-          <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
     </v-dialog>

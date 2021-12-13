@@ -6,7 +6,7 @@
       item-key="userId"
       collection-name-singular="user"
       collection="users"
-      :fetchMethod="usersTableView"
+      :fetch-method="usersTableView"
     />
   </div>
 </template>
@@ -15,7 +15,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
-import { usersTableView, deleteUser } from '@/services/users'
+import users from '@/services/users'
 import { User } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
@@ -30,13 +30,13 @@ export default class CompanyUsers extends Vue {
       value: 'name',
       computedText: (row: User): string => `${row.firstName} ${row.lastName}`,
     },
-    { text: 'Email', value: 'email' },
+    { text: 'Email', value: 'email', type: 'email' },
     { text: 'Type', value: 'groupName' },
-    { text: 'Details', value: 'details' },
-    { text: 'Actions', value: 'actions' },
+    { text: 'Details', value: 'details', type: 'details' },
+    { text: 'Actions', value: 'actions', type: 'actions' },
   ]
 
-  usersTableView = usersTableView
+  usersTableView = users.tableView
 
   actions: ActionColumn[] = [
     {
@@ -60,7 +60,7 @@ export default class CompanyUsers extends Vue {
       confirmModal: true,
       confirmModalText: 'Are you sure you want to delete this user?',
       action: (row: User): void => {
-        deleteUser(row.userId)
+        users.delete(row.userId)
       },
     },
   ]

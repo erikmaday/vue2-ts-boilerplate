@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { getUser } from '@/services/users'
+import users from '@/services/users'
 import { User } from '@/models/dto'
 import { AxiosResponse } from 'axios'
 
@@ -28,7 +28,7 @@ export default class CompanyUsersEdit extends Vue {
     let response: AxiosResponse
     try {
       if (this.$route.params.id) {
-        response = await getUser(Number(this.$route.params.id))
+        response = await users.byId(Number(this.$route.params.id))
         const { data } = response
         this.currentUser = data
       } else {

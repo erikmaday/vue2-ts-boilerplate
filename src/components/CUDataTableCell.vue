@@ -1,22 +1,22 @@
 <template>
   <!-- eslint-disable vue/valid-v-slot -->
   <div>
-    <template v-if="column.value === 'actions'">
+    <template v-if="column.type && column.type === 'actions'">
       <CUDataTableActionColumn
         :actions="actions"
         :row="row"
         @refresh="$emit('refresh')"
       />
     </template>
-    <template v-else-if="column.value === 'phone'">
+    <template v-else-if="column.type && column.type === 'phone'">
       <a :href="`tel:${cellItem}`">
         {{ phoneFormatFilter(String(cellItem)) }}
       </a>
     </template>
-    <template v-else-if="column.value === 'email'">
+    <template v-else-if="column.type && column.type === 'email'">
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
     </template>
-    <template v-else-if="column.value === 'details'">
+    <template v-else-if="column.type && column.type === 'details'">
       <router-link
         class="font-medium font-14"
         :to="{ path: `edit/${row.id}` }"

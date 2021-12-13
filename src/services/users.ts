@@ -7,28 +7,26 @@ import { UserApiResult } from '@/models/dto/UserApiResult'
 
 const httpService: HttpService = new HttpService()
 
-export const usersTableView = async ({
-  pageSize,
-  page,
-  sorts,
-  filters,
-}: TableViewParameters): Promise<AxiosResponse<TableViewResult<User>>> => {
-  return httpService.get(
-    `https://${apiBaseUrl()}/tables/users?${
-      (pageSize ? `pageSize=${pageSize}&` : '') +
-      (page ? `page=${page}&` : '') +
-      (sorts ? `${sorts}&` : '') +
-      (filters ? `${filters}` : '')
-    }`
-  )
-}
-
-export const getUser = async (
-  userId: number
-): Promise<AxiosResponse<UserApiResult>> => {
-  return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
-}
-
-export const deleteUser = async (userId: number): Promise<AxiosResponse> => {
-  return httpService.delete(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
+export default {
+  tableView({
+    pageSize,
+    page,
+    sorts,
+    filters,
+  }: TableViewParameters): Promise<AxiosResponse<TableViewResult<User>>> {
+    return httpService.get(
+      `https://${apiBaseUrl()}/tables/users?${
+        (pageSize ? `pageSize=${pageSize}&` : '') +
+        (page ? `page=${page}&` : '') +
+        (sorts ? `${sorts}&` : '') +
+        (filters ? `${filters}` : '')
+      }`
+    )
+  },
+  byId(userId: number): Promise<AxiosResponse<UserApiResult>> {
+    return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
+  },
+  delete(userId: number): Promise<AxiosResponse> {
+    return httpService.delete(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
+  },
 }

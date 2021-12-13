@@ -85,9 +85,7 @@ export default class CUDataTableActionColumn extends Vue {
 
   async confirmAction(): Promise<void> {
     const action = this.currentAction
-    // const deleteAction = this.actions.find((action) => action.key === 'delete')
     if (action) {
-      console.log("> awaiting action...")
       await action.action(this.row)
       this.$emit('refresh')
     }

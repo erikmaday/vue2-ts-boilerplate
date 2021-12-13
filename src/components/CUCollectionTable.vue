@@ -74,18 +74,20 @@ export default class CUCollectionTable extends Vue {
 
   async load(): Promise<void> {
     this.loading = true
-    const response: AxiosResponse = await this.fetchMethod(this.options)
-    const { data } = response
+    await this.$nextTick(async () => {
+      const response: AxiosResponse = await this.fetchMethod(this.options)
+      const { data } = response
 
-    this.serverItemsLength = data.count
+      this.serverItemsLength = data.count
 
-    const items: unknown[] = data.resultList
+      const items: unknown[] = data.resultList
 
-    this.items = items.map((item: any) => {
-      const obj = { id: item[this.itemKey] }
-      return Object.assign({}, item, obj)
+      this.items = items.map((item: any) => {
+        const obj = { id: item[this.itemKey] }
+        return Object.assign({}, item, obj)
+      })
+      this.loading = false
     })
-    this.loading = false
   }
 }
 </script>

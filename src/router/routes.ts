@@ -30,11 +30,7 @@ export const routes: RouteConfig[] = [
                     name: 'users',
                     component: () =>
                       import(
-<<<<<<< HEAD
-                        /* webpackChunkName: "company-users" */ '@/views/Company.vue'
-=======
                         /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
->>>>>>> CUPOPS-24
                       ),
                   },
                   {
@@ -42,11 +38,7 @@ export const routes: RouteConfig[] = [
                     name: 'users.edit',
                     component: () =>
                       import(
-<<<<<<< HEAD
-                        /* webpackChunkName: "company-users" */ '@/views/Company.vue'
-=======
                         /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
->>>>>>> CUPOPS-24
                       ),
                   },
                 ],
@@ -80,19 +72,7 @@ export const routes: RouteConfig[] = [
                     name: 'garages',
                     component: () =>
                       import(
-<<<<<<< HEAD
-                        /* webpackChunkName: "company-users" */ '@/views/Company.vue'
-                      ),
-                  },
-                  {
-                    path: 'edit/:id',
-                    name: 'garages.edit',
-                    component: () =>
-                      import(
-                        /* webpackChunkName: "company-users" */ '@/views/Company.vue'
-=======
                         /* webpackChunkName: "company-users" */ '@/components/CompanyGarages.vue'
->>>>>>> CUPOPS-24
                       ),
                   },
                 ],

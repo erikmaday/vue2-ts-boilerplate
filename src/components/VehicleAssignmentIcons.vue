@@ -37,11 +37,10 @@ export default class VehicleAssignmentIcons extends Vue {
   @Prop() readonly reservation!: Reservation
 
   get totalRequiredVehicles(): number {
-    let count = 0
-    for (const vehicle of this.reservation.trip.vehicles) {
-      count += vehicle.quantity
-    }
-    return count
+    return this.reservation.trip.vehicles.reduce(
+      (sum, vehicle) => sum + vehicle.quantity,
+      0
+    )
   }
 
   get vehicleAssignmentsToDisplay(): VehicleAssignment[] | undefined {
@@ -53,7 +52,7 @@ export default class VehicleAssignmentIcons extends Vue {
 
   get unassignedToDisplay(): number {
     const displayedAssignedVehicles =
-      this?.vehicleAssignmentsToDisplay?.length || 0
+      this.vehicleAssignmentsToDisplay?.length || 0
     return Math.min(
       this.totalRequiredVehicles - displayedAssignedVehicles,
       MAX_DISPLAY

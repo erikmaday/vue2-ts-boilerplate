@@ -45,17 +45,10 @@ export default class DriverAssignmentIcons extends Vue {
   }
 
   get driverAssignments(): DriverAssignment[] {
-    const driverAssignments: DriverAssignment[] = []
-    if (this?.reservation?.vehicleAssignments) {
-      for (const vehicleAssignment of this.reservation.vehicleAssignments) {
-        if (vehicleAssignment?.driverAssignments) {
-          for (const driverAssignment of vehicleAssignment.driverAssignments) {
-            driverAssignments.push(driverAssignment)
-          }
-        }
-      }
-    }
-    return driverAssignments
+    return this.reservation.vehicleAssignments.reduce(
+      (prev, { driverAssignments }) => [...prev, ...driverAssignments],
+      []
+    )
   }
 
   get driverAssignmentsToDisplay(): DriverAssignment[] {

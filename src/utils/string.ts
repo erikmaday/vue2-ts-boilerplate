@@ -67,10 +67,7 @@ export const roundedCurrencyFilter = (input: number): string => {
   return `${currencyFilter(Math.round(input)).split('.')[0]}`
 }
 
-export const numberWithCommas = (number: number): string => {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-
-export function phoneFormatFilter(input: string): string {
+export const phoneFormatFilter = (input: string): string => {
   const inp = input.replace(/[^0-9]/gi, '')
 
   if (input[0] === '1') {
@@ -78,4 +75,20 @@ export function phoneFormatFilter(input: string): string {
   }
 
   return `(${inp.substring(0, 3)}) ${inp.substring(3, 6)}-${inp.substring(6)}`
+}
+
+export const truncate = (
+  string: string,
+  numCharacters: number,
+  endOnFullWord: boolean
+): string => {
+  if (string.length <= numCharacters) {
+    return string
+  }
+  const subString = string.substr(0, numCharacters - 1)
+  return (
+    (endOnFullWord
+      ? subString.substr(0, subString.lastIndexOf(' '))
+      : subString) + '...'
+  )
 }

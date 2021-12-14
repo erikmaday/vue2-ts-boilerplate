@@ -99,6 +99,17 @@ export const routes: RouteConfig[] = [
           {
             path: 'bookings',
             name: 'bookings',
+            component: () => import('@/views/Empty.vue'),
+            children: [
+              {
+                path: ':id',
+                name: 'booking-detail',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "quote-detail" */ '@/views/BookingDetail.vue'
+                  ),
+              },
+            ],
           },
           {
             path: 'trips',

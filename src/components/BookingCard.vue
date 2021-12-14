@@ -56,7 +56,7 @@ export default class BookingCard extends Vue {
   }
 
   get needsAcceptance(): boolean {
-    return this.reservation.referralStatus === ReferralStatus.Offered
+    return this.reservation?.referralStatus === ReferralStatus.Offered
   }
 
   get actionMessage(): string | null {

@@ -1,5 +1,10 @@
 import { apiBaseUrl } from '@/utils/env'
-import { TableViewParameters, ReservationTableViewResult } from '@/models/dto'
+import {
+  TableViewParameters,
+  ReservationTableViewResult,
+  Reservation,
+  ReservationCommentPayload,
+} from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 
@@ -22,5 +27,17 @@ export default {
     const host = apiBaseUrl()
     const url = `https://${host}/tables/referrals?${query}`
     return httpService.get(url)
+  },
+  byId(id: number): Promise<AxiosResponse<Reservation>> {
+    const host = apiBaseUrl()
+    const url = `https://${host}/reservations/v2/${id}`
+    return httpService.get(url)
+  },
+  addComment(
+    payload: ReservationCommentPayload
+  ): Promise<AxiosResponse<number>> {
+    const host = apiBaseUrl()
+    const url = `https://${host}/reservations/${payload.reservation.id}/comments`
+    return httpService.post<number, ReservationCommentPayload>(url, payload)
   },
 }

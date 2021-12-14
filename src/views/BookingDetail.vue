@@ -1,0 +1,127 @@
+<template>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <BookingDetailStepTimeline
+          :reservation="reservation"
+          :trip-assignments="tripAssignments"
+        />
+      </v-col>
+      <v-col cols="12">
+        <BookingDetailHeader
+          :reservation="reservation"
+          :trip-assignments="tripAssignments"
+        />
+      </v-col>
+      <v-col cols="12">
+        <v-divider />
+      </v-col>
+      <!-- <v-col cols="12" class="margin-t-3 margin-b-0">
+        <BookingDetailTripNumbers
+          :trip="trip"
+          :trip-assignments="tripAssignments"
+        />
+      </v-col> -->
+    </v-row>
+
+    <v-col cols="12">Trip Map</v-col>
+    <v-col cols="12">Trip Itinerary</v-col>
+    <v-col cols="12">
+      <BookingDetailCustomerNotes :reservation="reservation" />
+    </v-col>
+    <v-col cols="12">
+      <v-divider />
+    </v-col>
+    <v-col cols="12">
+      <BookingDetailPaymentStatus :reservation="reservation" />
+    </v-col>
+    <v-col cols="12">
+      <v-divider />
+    </v-col>
+    <v-col cols="12">
+      <BookingDetailComments :reservation="reservation" @refresh="refresh" />
+    </v-col>
+    <v-col cols="12">
+      <v-divider />
+    </v-col>
+    <v-col cols="12">
+      <BookingDetailCustomerInformation :reservation="reservation" />
+    </v-col>
+    <v-col cols="12">
+      <v-divider />
+    </v-col>
+    <v-col cols="12"><BookingDetailSupport /></v-col>
+  </v-container>
+</template>
+
+<script lang="ts">
+import { ReservationDetail, Trip, VehicleAssignment } from '@/models/dto'
+import { Component, Vue } from 'vue-property-decorator'
+import BookingDetailStepTimeline from '@/components/BookingDetailStepTimeline.vue'
+import BookingDetailHeader from '@/components/BookingDetailHeader.vue'
+import BookingDetailTripNumbers from '@/components/BookingDetailTripNumbers.vue'
+import BookingDetailSupport from '@/components/BookingDetailSupport.vue'
+import BookingDetailPaymentStatus from '@/components/BookingDetailPaymentStatus.vue'
+import BookingDetailCustomerNotes from '@/components/BookingDetailCustomerNotes.vue'
+import BookingDetailCustomerInformation from '@/components/BookingDetailCustomerInformation.vue'
+import BookingDetailComments from '@/components/BookingDetailComments.vue'
+import reservation from '@/services/reservation'
+import tripAssignments from '@/services/tripAssignment'
+import trip from '@/services/trip'
+
+@Component({
+  components: {
+    BookingDetailStepTimeline,
+    BookingDetailHeader,
+    BookingDetailTripNumbers,
+    BookingDetailSupport,
+    BookingDetailPaymentStatus,
+    BookingDetailCustomerInformation,
+    BookingDetailComments,
+    BookingDetailCustomerNotes,
+  },
+})
+export default class BookingDetail extends Vue {
+  id: number | null = null
+  reservation: ReservationDetail | null = null
+  trip: Trip | null = null
+  tripAssignments: VehicleAssignment[] = []
+
+  created(): void {
+    this.id = parseInt(this.$route.params.id)
+  }
+
+  mounted(): void {
+    this.refresh()
+  }
+
+  async refresh(): Promise<void> {
+    await this.getReservation()
+    this.getTripAssignments()
+    this.getTrip()
+  }
+
+  async getReservation(): Promise<void> {
+    if (this.id) {
+      const reservationResponse = await reservation.byId(this.id)
+      this.reservation = reservationResponse.data
+    }
+  }
+
+  async getTrip(): Promise<void> {
+    if (this.reservation.tripId) {
+      const tripResponse = await trip.byId(this.reservation.tripId)
+      this.trip = tripResponse.data.trip
+    }
+  }
+
+  async getTripAssignments(): Promise<void> {
+    if (this.id) {
+      const tripAssignmentsResponse = await tripAssignments.byReservationIds([
+        this.id,
+      ])
+      this.tripAssignments = tripAssignmentsResponse.data.vehicleAssignments
+    }
+  }
+}
+</script>

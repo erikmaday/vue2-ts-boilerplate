@@ -4,6 +4,7 @@ import { Stop } from './Stop'
 import { Customer } from './Customer'
 import { VehicleAssignment } from './VehicleAssignment'
 import { TableViewResult } from './TableView'
+import { RequiredVehicleType } from './Vehicle'
 
 export interface Reservation {
   active: boolean
@@ -30,6 +31,7 @@ export interface Reservation {
   firstStopAddress: string
   firstStopAddressTimeZone: string
   hash: string
+  hasTrackingData?: boolean
   lastDropoffDate: string
   managedContractId?: string
   managedId: number
@@ -51,7 +53,9 @@ export interface Reservation {
   referralPaymentStatusLabel: string
   referralStatus: string
   referralStatusLabel: string
+  requiredDrivers?: number
   requiredVehiclesCount: number
+  requiredVehicles?: RequiredVehicleType[]
   reservationId: number
   reservationStatus: string
   reservationStatusKey: string
@@ -59,9 +63,30 @@ export interface Reservation {
   startDate: string
   stops?: Stop[]
   trip: Trip
+  tripId: number
   tripRouteName?: string
+  tripType?: string
   tripTypeLabel: string
   vehicleAssignments?: VehicleAssignment[]
+}
+
+export interface ReservationComment {
+  active: boolean
+  comment: string
+  companyId: number
+  companyName: string
+  createdOn: string
+  note: string | null
+  reservationCommentId: number
+  reservationId: number
+  userId: number
+  userName: string
+}
+export interface ReservationCommentPayload {
+  note: string
+  reservation: {
+    id: number
+  }
 }
 
 export type ReservationTableViewResult = TableViewResult<Reservation>

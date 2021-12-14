@@ -3,9 +3,9 @@ import modules from '@/store/modules'
 
 export const navigation: NavigationLink[] = [
   {
-    label: 'Dashboard',
-    href: 'dashboard',
-    name: 'dashboard',
+    label: 'Today',
+    href: 'today',
+    name: 'today',
     location: 'top',
     params: {},
     permission: [],

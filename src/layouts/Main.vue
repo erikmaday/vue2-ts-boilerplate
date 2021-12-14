@@ -1,6 +1,8 @@
 <template>
-  <v-container fluid class="padding-a-8 fill-height w-full align-start">
-    <slot />
+  <v-container fluid class="padding-a-8 fill-height align-start">
+    <div class="w-full">
+      <slot />
+    </div>
   </v-container>
 </template>
 

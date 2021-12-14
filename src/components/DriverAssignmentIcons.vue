@@ -41,7 +41,14 @@ export default class DriverAssignmentIcons extends Vue {
   @Prop({ default: false, required: false }) driversOnly!: boolean
 
   get totalRequiredDrivers(): number {
-    return this.reservation.trip.requiredDrivers
+    return Math.max(
+      this.totalRequiredVehicles,
+      this.reservation.trip.requiredDrivers
+    )
+  }
+
+  get totalRequiredVehicles(): number {
+    return this.reservation?.requiredVehiclesCount
   }
 
   get driverAssignments(): DriverAssignment[] {

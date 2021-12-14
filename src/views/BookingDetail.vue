@@ -24,7 +24,7 @@
       </v-col> -->
     </v-row>
 
-    <v-col cols="12">Trip Map</v-col>
+    <v-col cols="12"><BookingDetailMap /></v-col>
     <v-col cols="12">Trip Itinerary</v-col>
     <v-col cols="12">
       <BookingDetailCustomerNotes :reservation="reservation" />
@@ -61,6 +61,7 @@ import BookingDetailStepTimeline from '@/components/BookingDetailStepTimeline.vu
 import BookingDetailHeader from '@/components/BookingDetailHeader.vue'
 import BookingDetailTripNumbers from '@/components/BookingDetailTripNumbers.vue'
 import BookingDetailSupport from '@/components/BookingDetailSupport.vue'
+import BookingDetailMap from '@/components/BookingDetailMap.vue'
 import BookingDetailPaymentStatus from '@/components/BookingDetailPaymentStatus.vue'
 import BookingDetailCustomerNotes from '@/components/BookingDetailCustomerNotes.vue'
 import BookingDetailCustomerInformation from '@/components/BookingDetailCustomerInformation.vue'
@@ -79,6 +80,7 @@ import trip from '@/services/trip'
     BookingDetailCustomerInformation,
     BookingDetailComments,
     BookingDetailCustomerNotes,
+    BookingDetailMap,
   },
 })
 export default class BookingDetail extends Vue {

@@ -6,6 +6,7 @@ import vuetify from './plugins/vuetify'
 import modules from './store/modules'
 import '@/scss/main.scss'
 import i18n from './i18n'
+import '@/plugins/gmaps'
 
 Vue.config.productionTip = false
 

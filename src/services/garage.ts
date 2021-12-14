@@ -26,4 +26,7 @@ export default {
   byId(garageId: number): Promise<AxiosResponse<GarageResult>> {
     return httpService.get(`https://${apiBaseUrl()}/garages/${garageId}`)
   },
+  delete(garageId: number): Promise<AxiosResponse> {
+    return httpService.delete(`https://${apiBaseUrl()}/garages/${garageId}`)
+  },
 }

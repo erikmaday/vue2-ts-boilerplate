@@ -51,6 +51,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { ActionColumn } from '@/models/ActionColumn'
 import CUIcon from '@/components/CUIcon.vue'
+import { AxiosResponse } from 'axios'
 @Component({
   components: { CUIcon },
 })
@@ -78,8 +79,11 @@ export default class CUDataTableActionColumn extends Vue {
   async confirmAction(): Promise<void> {
     const action = this.currentAction
     if (action) {
-      await action.action(this.row)
-      this.$emit('refresh')
+      const res: AxiosResponse = await action.action(this.row)
+      if (res.status === 200) {
+        this.$emit('refresh')
+      }
+      console.log("> res:", res)
     }
     this.dialogOpen = false
   }

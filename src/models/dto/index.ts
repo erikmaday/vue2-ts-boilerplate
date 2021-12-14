@@ -1,6 +1,6 @@
 export * from './ApiResult'
 export * from './Address'
-export * from './AddressApiResult'
+export * from './AddressResult'
 export * from './DriverAssignment'
 export * from './PaymentMethod'
 export * from './PaymentType'

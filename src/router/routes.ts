@@ -30,7 +30,11 @@ export const routes: RouteConfig[] = [
                     name: 'users',
                     component: () =>
                       import(
+<<<<<<< HEAD
                         /* webpackChunkName: "company-users" */ '@/views/Company.vue'
+=======
+                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+>>>>>>> CUPOPS-24
                       ),
                   },
                   {
@@ -38,18 +42,31 @@ export const routes: RouteConfig[] = [
                     name: 'users.edit',
                     component: () =>
                       import(
+<<<<<<< HEAD
                         /* webpackChunkName: "company-users" */ '@/views/Company.vue'
+=======
+                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+>>>>>>> CUPOPS-24
                       ),
                   },
                 ],
               },
               {
                 path: 'vehicles',
-                name: 'vehicles',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-vehicles" */ '@/views/Company.vue'
+                    /* webpackChunkName: "company-vehicles" */ '@/views/Empty.vue'
                   ),
+                children: [
+                  {
+                    path: '',
+                    name: 'vehicles',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-users" */ '@/components/CompanyVehicles.vue'
+                      ),
+                  },
+                ],
               },
               {
                 path: 'garages',
@@ -63,6 +80,7 @@ export const routes: RouteConfig[] = [
                     name: 'garages',
                     component: () =>
                       import(
+<<<<<<< HEAD
                         /* webpackChunkName: "company-users" */ '@/views/Company.vue'
                       ),
                   },
@@ -72,6 +90,9 @@ export const routes: RouteConfig[] = [
                     component: () =>
                       import(
                         /* webpackChunkName: "company-users" */ '@/views/Company.vue'
+=======
+                        /* webpackChunkName: "company-users" */ '@/components/CompanyGarages.vue'
+>>>>>>> CUPOPS-24
                       ),
                   },
                 ],
@@ -81,7 +102,7 @@ export const routes: RouteConfig[] = [
                 name: 'rates',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-rates" */ '@/views/Company.vue'
+                    /* webpackChunkName: "company-rates" */ '@/views/Empty.vue'
                   ),
               },
               {
@@ -89,7 +110,7 @@ export const routes: RouteConfig[] = [
                 name: 'availability',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-availability" */ '@/views/Company.vue'
+                    /* webpackChunkName: "company-availability" */ '@/views/Empty.vue'
                   ),
               },
               {
@@ -97,7 +118,7 @@ export const routes: RouteConfig[] = [
                 name: 'settings',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-settings" */ '@/views/Company.vue'
+                    /* webpackChunkName: "company-settings" */ '@/views/Empty.vue'
                   ),
               },
             ],

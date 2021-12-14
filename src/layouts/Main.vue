@@ -1,9 +1,5 @@
 <template>
-  <v-container
-    fluid
-    class="padding-a-8 fill-height align-start"
-    :style="{ 'max-width': `${$vuetify.breakpoint.thresholds.md}px` }"
-  >
+  <v-container fluid class="padding-a-8 fill-height w-full align-start">
     <slot />
   </v-container>
 </template>

@@ -1,6 +1,10 @@
 <template>
   <div>
+<<<<<<< HEAD
     <component :is="currentComponent" />
+=======
+    <h1>Garages</h1>
+>>>>>>> CUPOPS-24
   </div>
 </template>
 

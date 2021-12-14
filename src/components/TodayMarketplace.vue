@@ -225,10 +225,8 @@ export default class TodayMarketplace extends Vue {
     const filterInstance = this.filters
     const filterParentOrAdditionalFilters = filterInstance.createParent('or')
 
-    console.log(this.marketplaceFilterChips)
     for (const filterItem of this.marketplaceFilterChips) {
       if (filterItem.active) {
-        // build this and filter
         const filterParentFilterChipGroup = filterInstance.createParent(
           'and',
           filterParentOrAdditionalFilters

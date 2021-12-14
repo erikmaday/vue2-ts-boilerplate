@@ -42,9 +42,7 @@
         <span class="font-14">{{ formattedRequiredDrivers }}</span>
       </div>
       <div class="d-flex align-center margin-t-6 margin-b-2">
-        <!-- <span class="font-bold font-20">$9,200</span> -->
         <v-spacer />
-        <!-- <span v-if="isActive" class="text-primary font-bold">View</span> -->
         <CUIcon class="text-primary margin-l-2">arrow_right</CUIcon>
       </div>
     </v-card-text>

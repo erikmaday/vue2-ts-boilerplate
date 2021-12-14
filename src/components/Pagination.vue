@@ -31,8 +31,6 @@ export default class Pagination extends Vue {
   @Prop({ default: 'gray-mid-light' }) readonly hoverColor?: string
   @Prop({ default: 'gray-border' }) readonly inactiveColor?: string
 
-  hover = false
-
   @Watch('breakpointName', { immediate: true })
   didBreakpointChange(breakpoint: string): void {
     if (this.value.breakpointSizes) {

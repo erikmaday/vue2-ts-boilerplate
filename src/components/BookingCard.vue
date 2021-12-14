@@ -50,7 +50,7 @@ export default class BookingCard extends Vue {
 
   get needsAssignment(): boolean {
     return (
-      this.reservation.assignedDriverPercentage < 100 &&
+      this.reservation.assignedDriverPercentage < 100 ||
       this.reservation.assignedVehiclePercentage < 100
     )
   }

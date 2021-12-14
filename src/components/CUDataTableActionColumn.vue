@@ -83,7 +83,6 @@ export default class CUDataTableActionColumn extends Vue {
       if (res.status === 200) {
         this.$emit('refresh')
       }
-      console.log("> res:", res)
     }
     this.dialogOpen = false
   }

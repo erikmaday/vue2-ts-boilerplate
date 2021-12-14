@@ -17,6 +17,7 @@ import { Component, Model, Prop, Watch, Vue } from 'vue-property-decorator'
 import CUIcon from '@/components/CUIcon.vue'
 import PaginationDot from '@/components/PaginationDot.vue'
 import { PaginationParams, PaginationBreakpoints } from '@/models/Pagination'
+import deepClone from '@/utils/deepClone'
 
 @Component({
   components: {
@@ -67,7 +68,7 @@ export default class Pagination extends Vue {
   }
 
   handlePageChange(page: number): void {
-    const valueCopy = JSON.parse(JSON.stringify(this.value))
+    const valueCopy = deepClone(this.value)
     valueCopy.currentPage = page
     this.$emit('change', valueCopy)
   }

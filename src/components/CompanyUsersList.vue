@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div>
     <h1>Team</h1>
     <CUCollectionTable
       :actions="actions"

@@ -8,11 +8,17 @@ export const routes: RouteConfig[] = [
       {
         path: '',
         name: 'home',
+        redirect: 'today',
         meta: {
           requiresAuth: true,
         },
         component: () => import('@/views/Home.vue'),
         children: [
+          {
+            path: '',
+            name: 'today',
+            component: () => import('@/views/Today.vue'),
+          },
           {
             path: 'company',
             name: 'company',
@@ -111,10 +117,7 @@ export const routes: RouteConfig[] = [
               },
             ],
           },
-          {
-            path: 'dashboard',
-            name: 'dashboard',
-          },
+
           {
             path: 'marketplace',
             name: 'marketplace',

@@ -41,8 +41,37 @@ export const toSentence = (string: string): string => {
   return interim.slice(0, 1).toUpperCase() + interim.slice(1)
 }
 
+export const pluralize = (
+  count: number,
+  noun: string,
+  suffix = 's'
+): string => {
+  if (noun.endsWith('s')) {
+    suffix = 'es'
+    return `${noun}${count !== 1 ? suffix : ''}`
+  }
 
-export function phoneFormatFilter(input: string): string {
+  return `${noun}${count !== 1 ? suffix : ''}`
+}
+
+export const currencyFilter = (input: number): string => {
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    currencyDisplay: 'symbol',
+  })
+  return `${formatter.format(input)}`
+}
+
+export const roundedCurrencyFilter = (input: number): string => {
+  return `${currencyFilter(Math.round(input)).split('.')[0]}`
+}
+
+export const numberWithCommas = (number: number): string => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+export const phoneFormatFilter = (input: string): string => {
   const inp = input.replace(/[^0-9]/gi, '')
 
   if (input[0] === '1') {

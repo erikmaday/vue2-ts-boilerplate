@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full align-start">
+  <div>
     <h1>Edit User</h1>
     <h2 v-if="currentUser !== null">
       {{ `${currentUser.firstName} ${currentUser.lastName}` }}

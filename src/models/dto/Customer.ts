@@ -1,4 +1,4 @@
-import { Industry } from "./Industry";
+import { Industry } from './Industry'
 
 export interface Customer {
   customerId: number

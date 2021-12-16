@@ -1,5 +1,5 @@
 <template>
-  <v-timeline align-top dense>
+  <!-- <v-timeline align-top dense>
     <v-timeline-item
       v-for="(stop, stopIndex) in stops"
       :key="`stop-${stopIndex}-${stop.stopId}`"
@@ -22,15 +22,20 @@
         </p>
       </div>
     </v-timeline-item>
-  </v-timeline>
+  </v-timeline> -->
+  <CUTimeline>
+    <CUTimelineItem />
+  </CUTimeline>
 </template>
 
 <script lang="ts">
 import { ReservationDetail, ReservationDetailStop } from '@/models/dto'
 import { formatStopAddress } from '@/utils/string'
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import CUTimeline from '@/components/CUTimeline.vue'
+import CUTimelineItem from '@/components/CUTimelineItem.vue'
 
-@Component
+@Component({ components: { CUTimeline, CUTimelineItem } })
 export default class BookingDetailHeader extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
 

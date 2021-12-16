@@ -13,10 +13,10 @@ export default {
     const { sorts, filters, pageSize = 10, page = 1 } = params
     return httpService.get(
       `https://${apiBaseUrl()}/tables/vehicles?${
-        (pageSize ? `pageSize=${pageSize}&` : '') +
-        (page ? `page=${page}&` : '') +
-        (sorts ? `${sorts}&` : '') +
-        (filters ? `${filters}` : '')
+        (pageSize ? `pageSize=${pageSize}` : '') +
+        (page ? `&page=${page}` : '') +
+        (sorts ? `&${sorts}` : '') +
+        (filters ? `&${filters}` : '')
       }`
     )
   },

@@ -30,7 +30,7 @@
                   </div>
                 </template>
               </div>
-              <div v-show="mode !== 'edit'" class="user-photo__upload-group">
+              <div v-show="mode === 'edit'" class="user-photo__upload-group">
                 <button class="user-photo__upload-btn" @click="uploadFile">
                   <CUIcon color="white" width="24px" height="24px">
                     upload

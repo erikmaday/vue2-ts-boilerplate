@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row class="align-center">
     <v-col cols="auto">
       <span
         class="

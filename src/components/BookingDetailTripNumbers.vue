@@ -1,13 +1,13 @@
 <template>
   <v-row class="align-center justify-space-between">
-    <v-col cols="auto">
-      <div class="row align-center margin-a-0">
+    <v-col cols="6" md="auto" class="order-1">
+      <div class="row align-center margin-a-0 justify-center">
         <CUIcon class="margin-r-2" color="gray-light">trip_type</CUIcon>
         {{ tripType }}
       </div>
     </v-col>
-    <v-col cols="auto">
-      <div class="row align-center margin-a-0">
+    <v-col cols="6" md="auto" class="order-3 order-md-2">
+      <div class="row align-center margin-a-0 justify-center">
         <VehicleAssignmentIcons
           v-if="trip"
           :trip="trip"
@@ -16,8 +16,8 @@
         />
       </div>
     </v-col>
-    <v-col cols="auto">
-      <div class="row align-center margin-a-0">
+    <v-col cols="6" md="auto" class="order-4 order-md-3">
+      <div class="row align-center margin-a-0 justify-center">
         <DriverAssignmentIcons
           v-if="trip"
           :trip="trip"
@@ -26,8 +26,8 @@
         />
       </div>
     </v-col>
-    <v-col cols="auto">
-      <div class="row align-center margin-a-0">
+    <v-col cols="6" md="auto" class="order-2 order-md-4">
+      <div class="row align-center margin-a-0 justify-center">
         <CUIcon class="margin-r-2" color="gray-light">ticket</CUIcon>
         {{ passengerCount }} Passengers
       </div>

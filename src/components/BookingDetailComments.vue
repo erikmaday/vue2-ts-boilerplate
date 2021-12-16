@@ -7,13 +7,7 @@
         </v-col>
         <v-spacer />
         <v-col class="shrink">
-          <v-btn
-            text
-            small
-            color="primary"
-            class="padding-x-0"
-            @click="isDialogOpen = true"
-          >
+          <v-btn text small color="primary" @click="isDialogOpen = true">
             Add Comment
           </v-btn>
         </v-col>
@@ -75,7 +69,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import reservation from '@/services/reservation'
 
 @Component
-export default class BookingDetailCustomerInformation extends Vue {
+export default class BookingDetailComments extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
 
   isDialogOpen = false

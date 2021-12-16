@@ -111,6 +111,16 @@
     }
   }
 
+  .v-input--checkbox {
+    &.v-input--is-disabled {
+
+      .v-input--selection-controls__input {
+
+        color: $gray-mid-light;
+      }
+    }
+  }
+
   .v-btn {
     font-family: Airbnb Cereal App Bold;
     text-transform: none;

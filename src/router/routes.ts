@@ -47,6 +47,23 @@ export const routes: RouteConfig[] = [
                         /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
                       ),
                   },
+                  {
+                    path: 'view/:id',
+                    name: 'users.view',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+                      ),
+                  },
+                  {
+                    path: 'add',
+                    name: 'users.add',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+                      ),
+                  },
+
                 ],
               },
               {

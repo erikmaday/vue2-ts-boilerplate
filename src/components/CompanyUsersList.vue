@@ -1,6 +1,9 @@
 <template>
   <div>
-    <h1>Team</h1>
+    <v-row justify="space-between" class="padding-b-6 padding-x-3">
+      <h1>Team</h1>
+      <v-btn primary small color="primary" @click="$router.push({ name: 'users.add' })">Add New</v-btn>
+    </v-row>
     <CUCollectionTable
       :actions="actions"
       :columns="columns"

@@ -19,7 +19,7 @@
     <template v-else-if="column.type && column.type === 'details'">
       <router-link
         class="font-medium font-14"
-        :to="{ path: `edit/${row.id}` }"
+        :to="{ path: `view/${row.id}` }"
         :append="true"
       >
         Details

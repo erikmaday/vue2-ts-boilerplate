@@ -24,9 +24,15 @@ export default {
     )
   },
   byId(userId: number): Promise<AxiosResponse<UserResult>> {
-    return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
+    return httpService.get(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
   },
   delete(userId: number): Promise<AxiosResponse> {
     return httpService.delete(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
+  },
+  getRoles(userId: number) {
+    const host = apiBaseUrl()
+    const url = `https://${host}/user/roles/${userId}`
+
+    return httpService.get(url)
   },
 }

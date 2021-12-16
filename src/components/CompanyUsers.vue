@@ -18,6 +18,8 @@ export default class CompanyUsers extends Vue {
   get currentComponent(): VueComponent {
     switch (this.$route.name) {
       case 'users.edit':
+      case 'users.view':
+      case 'users.add':
         return CompanyUsersEdit
       default:
         return CompanyUsersList

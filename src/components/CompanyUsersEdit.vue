@@ -1,8 +1,11 @@
 <template>
   <div>
     <v-container>
-      <h1 class="padding-b-5">Edit User</h1>
-      <v-form>
+      <v-row justify="space-between" class="padding-b-6 padding-x-3">
+        <h1 class="padding-b-5">{{ headerTitle }}</h1>
+        <v-btn v-show="mode !== 'edit'" primary small color="primary" @click="$router.push({ name: 'users.edit', params: { id: $route.params.id } })">Edit</v-btn>
+      </v-row>
+      <v-form :disabled="mode !== 'edit'">
         <v-row>
           <v-col cols="4">
             <div class="user-photo">
@@ -12,14 +15,28 @@
                   class="h-full w-full"
                   :src="userPhoto"
                 />
+                <template v-else>
+                  <div
+                    class="
+                      d-flex
+                      align-center
+                      justify-center
+                      h-190
+                      w-190
+                      background-gray-header
+                    "
+                  >
+                    <CUIcon color="gray-mid-light" width="120px" height="120px">person</CUIcon>
+                  </div>
+                </template>
               </div>
-              <div class="user-photo__upload-group">
+              <div v-show="mode !== 'edit'" class="user-photo__upload-group">
                 <button class="user-photo__upload-btn" @click="uploadFile">
                   <CUIcon color="white" width="24px" height="24px">
                     upload
                   </CUIcon>
                 </button>
-                <input type="file" accept="image/*" />
+                <input type="file" accept="image/*" @change="uploadFile" />
               </div>
             </div>
           </v-col>
@@ -68,11 +85,14 @@
             </v-row>
             <v-col
               v-show="isUserDriver"
-              class="background-gray-lighter border-radius-5 padding-a-5"
+              class="background-gray-header border-radius-5 padding-a-5"
             >
               <v-row>
                 <v-col cols="6">
-                  <CUTextField label="Drug Test #" />
+                  <CUTextField
+                    v-model="currentUser.drugTestNumber"
+                    label="Drug Test #"
+                  />
                 </v-col>
                 <v-col cols="3">
                   <CUSelect
@@ -80,10 +100,11 @@
                     item-text="short"
                     item-key="number"
                     :items="months"
+
                   />
                 </v-col>
                 <v-col cols="3">
-                  <CUSelect label="Exp. Year" />
+                  <CUSelect :items="years" label="Exp. Year" />
                 </v-col>
               </v-row>
 
@@ -107,18 +128,20 @@
               </v-row>
               <v-row>
                 <v-col cols="6" class="padding-t-0">
-                  <CUSelect label="State" :items="states" />
+                  <CUSelect label="State" :items="states" v-model="currentUser.licensState"/>
                 </v-col>
                 <v-col cols="3" class="padding-t-0">
                   <CUSelect
                     label="Exp. Month"
                     item-text="short"
-                    item-key="number"
+                    item-value="number"
                     :items="months"
+                    v-model="currentUser.licenseExpirationMonth"
                   />
                 </v-col>
                 <v-col cols="3" class="padding-t-0">
-                  <CUSelect label="Exp. Year" />
+                  <CUSelect :items="years" label="Exp. Year" 
+                    v-model="currentUser.licenseExpirationYear" />
                 </v-col>
               </v-row>
               <div
@@ -133,12 +156,26 @@
               ></div>
               <v-row>
                 <v-col>
-                  <v-textarea label="Notes" outlined flat solo />
+                  <v-textarea v-model="currentUser.notes" label="Notes" outlined flat solo />
+                </v-col>
+              </v-row>
+
+              <h4 class="padding-b-3">Vehicle Types</h4>
+              <v-row wrap>
+                <v-col v-for="(vType, vti) in vehicleTypes" :key="`vehicle-type-${vti}`" cols="4">
+                  <v-checkbox
+                    class="padding-a-0 margin-a-0"
+                    hide-details
+                    :label="vType.label"
+                    @change="
+                      (e) => updateVehicleTypes({ type: vType, value: e })
+                    "
+                  />
                 </v-col>
               </v-row>
             </v-col>
             <v-row>
-              <v-col>
+              <v-col class="margin-t-7">
                 <v-btn small color="primary">Add User</v-btn>
               </v-col>
             </v-row>
@@ -161,6 +198,7 @@ import CUIcon from '@/components/CUIcon.vue'
 import { states } from '@/utils/states'
 import { months } from '@/utils/dates'
 import { apiBaseUrl } from '@/utils/env'
+import dayjs from 'dayjs'
 
 @Component({
   components: { CUTextField, CUSelect, CUIcon },
@@ -177,14 +215,36 @@ export default class CompanyUsersEdit extends Vue {
     groupId: 1,
     userPhotoDTOs: [],
     licenseNumber: '',
+    driverSupportedTypes: [],
+  } 
+
+  isUserDriver = false
+  vehicleTypes = []
+  years: number[] = []
+  
+  get mode(): string {
+    switch (this.$route.name) {
+      case 'users.edit': 
+        return 'edit'
+      case 'users.view':
+        return 'view'
+      default: 
+        return 'add'
+    }
   }
 
-  isUserDriver = true
-  vehicleTypes = []
-
   mounted(): void {
-    this.getCurrentUser()
+    console.log("get vehicle types")
     this.setVehicleTypes()
+
+    const currentYear = dayjs().year()
+    for (let i = currentYear - 1; i < currentYear + 20; i++) {
+      this.years.push(i)
+    }
+
+    if (this.mode === 'edit' || this.mode === 'view') {
+      this.getCurrentUser()
+    }
   }
 
   async getCurrentUser(): Promise<void> {
@@ -193,7 +253,13 @@ export default class CompanyUsersEdit extends Vue {
       if (this.$route.params.id) {
         response = await user.byId(Number(this.$route.params.id))
         const { data } = response
-        this.currentUser = data
+        this.currentUser = data.driver
+
+        const rolesResponse = await user.getRoles(Number(this.$route.params.id))
+        const roles = rolesResponse.data.roles
+        if (roles.find((role) => role.roleName === 'is_driver')) {
+          this.isUserDriver = true 
+        }
       } else {
         this.notFound = true
         return
@@ -206,20 +272,28 @@ export default class CompanyUsersEdit extends Vue {
   }
 
   async setVehicleTypes(): Promise<void> {
+    console.log("> setVehicleTypes")
     let response: AxiosResponse
     try {
-      if (this.$route.params.id) {
         response = await getVehicleTypes({})
+        console.log("> response:", response)
         const { data } = response
-        this.vehicleTypes = data
-      } else {
-        this.notFound = true
-        return
-      }
+        this.vehicleTypes = data.resultList
     } catch (e) {
-      this.notFound = true
       console.error(e)
       return
+    }
+  }
+
+  get headerTitle(): string {
+    switch (this.mode) {
+      case 'add': 
+        return "Add User"
+      case 'edit': 
+        return "Edit User"
+      default:
+        return "View User"
+
     }
   }
 
@@ -237,6 +311,9 @@ export default class CompanyUsersEdit extends Vue {
   }
 
   get userPhoto(): string {
+    if (this.avatarLink) {
+      return this.avatarLink
+    }
     if (this.currentUser?.userPhotoDTOs?.length) {
       return `https://${apiBaseUrl(null)}${
         this.currentUser.userPhotoDTOs[0].imagePath
@@ -244,6 +321,22 @@ export default class CompanyUsersEdit extends Vue {
     }
     return ''
   }
+
+  updateVehicleTypes(e) {
+    this.currentUser.driverSupportedTypes =
+      this.currentUser.driverSupportedTypes || []
+
+    if (e.value === true) {
+      const type = this.currentUser?.driverSupportedTypes?.find(type => type.key === e.type.key)
+      if (!type) {
+        this.currentUser.driverSupportedTypes.push(e.type)
+      }
+    } else {
+      this.currentUser.driverSupportedTypes.filter((t) => t.key !== e.type.key)
+    }
+  }
+
+
 
   // Probably should be extracted elsewhere instead of hardcoded here?
   userGroups: Group[] = [

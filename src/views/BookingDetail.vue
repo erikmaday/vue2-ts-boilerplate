@@ -128,7 +128,7 @@ export default class BookingDetail extends Vue {
   }
 
   async getTrip(): Promise<void> {
-    if (this.reservation.tripId) {
+    if (this.reservation?.tripId) {
       const tripResponse = await trip.byId(this.reservation.tripId)
       this.trip = tripResponse.data.trip
     }

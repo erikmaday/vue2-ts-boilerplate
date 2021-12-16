@@ -4,6 +4,7 @@ import { CheckoutType } from './CheckoutType'
 import { Customer } from './Customer'
 import { GarageTimes } from './GarageTimes'
 import { Vehicle } from './Vehicle'
+import { TableViewResult } from './TableView'
 
 export enum TripTypeKeys {
   ONE_WAY = 'one_way',
@@ -78,6 +79,7 @@ export interface Trip {
   recurringTripTotal?: number
   recurringAmountDueNow?: number
   recurrenceText?: string
+  requiredVehicles?: RequiredVehicle[]
   updateRecurringTrips: boolean
   updateRecurringTripsFromDate?: dayjs.Dayjs
   processingFeePercentage: number
@@ -131,3 +133,11 @@ export interface TripContact {
   email: string
   phone: string
 }
+
+export interface RequiredVehicle {
+  requiredVehicles: number
+  vehicleType: string
+  vehicleTypeId: number
+}
+
+export type TripTableViewResult = TableViewResult<Trip>

@@ -1,0 +1,243 @@
+<template>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <v-row>
+          <h3
+            class="
+              col
+              shrink
+              white-space-nowrap
+              font-book font-weight-400
+              text-white
+              font-20
+            "
+          >
+            Marketplace
+          </h3>
+          <v-spacer />
+          <p
+            class="
+              col
+              shrink
+              white-space-nowrap
+              text-white
+              font-14 font-medium
+              text-decoration-underline
+              cursor-pointer
+            "
+          >
+            All Bids ({{ tripCount }})
+          </p>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-chip
+              v-for="(filter, filterIndex) in marketplaceFilterChips"
+              color="white"
+              :text-color="filter.active ? 'black-true' : 'white'"
+              :outlined="!filter.active"
+              class="margin-r-2 cursor-pointer margin-b-2"
+              :key="`marketplace-filter-${filterIndex}`"
+              @click="handleFilterClick(filter)"
+            >
+              {{ filter.label }}
+              <!-- ADD BACK IN WHEN WE DETERMINE THE BEST WAY TO PULL THESE COUNTS
+                ({{ filter.count }})
+              -->
+            </v-chip>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            v-for="(trip, tripIndex) in tripsToDisplay"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+            :key="`trip-${tripIndex}-${trip.tripId}`"
+          >
+            <MarketplaceCard :trip="trip" />
+          </v-col>
+        </v-row>
+        <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
+          <Pagination
+            v-model="pagination"
+            active-color="white"
+            inactive-color="black"
+            hover-color="gray-light"
+            :items="trips"
+          />
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script lang="ts">
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import MarketplaceCard from '@/components/MarketplaceCard.vue'
+import Pagination from '@/components/Pagination.vue'
+import { Trip } from '@/models/dto'
+import trip from '@/services/trip'
+import { filter } from '@/utils/filter'
+import { sort } from '@/utils/sort'
+import { TableViewFilterChip } from '@/models/dto'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+
+@Component({ components: { MarketplaceCard, Pagination } })
+export default class TodayMarketplace extends Vue {
+  marketplaceFilterChips: TableViewFilterChip[] = [
+    {
+      label: 'Created Today',
+      count: 0,
+      filters: [
+        {
+          column: {
+            _t_id: '1fce4feb-760c-49ad-99f2-7ed35aa794e2',
+            prop: 'createdOn',
+            filterType: 'gte',
+          },
+          value: this.currentTimestamp.format('YYYY-MM-DDT00:00:00.000+00:00'),
+        },
+        {
+          column: {
+            _t_id: '91b87f9b-23f7-48aa-aa98-040ef5aa4bf4',
+            prop: 'createdOn',
+            filterType: 'lte',
+          },
+          value: this.currentTimestamp
+            .add(1, 'day')
+            .format('YYYY-MM-DDT00:00:00.000+00:00'),
+        },
+      ],
+      active: false,
+    },
+    {
+      label: 'Ending Soon',
+      count: 0,
+      filters: [
+        {
+          column: {
+            _t_id: '8be3681f-dbfb-427d-8e23-13e72a8a100d',
+            prop: 'biddingEndDate',
+            filterType: 'gte',
+          },
+          value: this.currentTimestamp.format('YYYY-MM-DDTHH:mm:ss.000+00:00'),
+        },
+        {
+          column: {
+            _t_id: 'e935bd46-1275-4805-ab5d-09b0b14f2550',
+            prop: 'biddingEndDate',
+            filterType: 'lte',
+          },
+          value: this.currentTimestamp
+            .add(1, 'day')
+            .format('YYYY-MM-DDTHH:mm:ss.000+00:00'),
+        },
+      ],
+      active: false,
+    },
+  ]
+
+  trips: Trip[] = []
+  tripCount = 0
+
+  params = {
+    pageSize: 24,
+    page: 1,
+    filters: null,
+    sorts: null,
+  }
+
+  pagination = {
+    pageSize: 4,
+    currentPage: 1,
+    breakpointSizes: {
+      xs: 1,
+      sm: 2,
+      md: 3,
+      lg: 4,
+      xl: 4,
+    },
+  }
+
+  filters: any = null
+  sorts: any = null
+
+  @Watch('params', { deep: true })
+  onParamsChanged(): void {
+    this.getTrips()
+  }
+
+  get tripsToDisplay(): Trip[] {
+    const startIndex =
+      (this.pagination.currentPage - 1) * this.pagination.pageSize
+    return this.trips.slice(startIndex, startIndex + this.pagination.pageSize)
+  }
+
+  get currentTimestamp(): dayjs.Dayjs {
+    dayjs.extend(utc)
+    return dayjs().utc()
+  }
+
+  async mounted(): Promise<void> {
+    this.establishFilters()
+    this.establishSorts()
+    this.getTrips(true)
+  }
+
+  establishFilters(): void {
+    const parentFilter = filter()
+    this.filters = parentFilter
+  }
+
+  establishSorts(): void {
+    const sortProp = { prop: 'biddingEndDate', direction: 'asc' }
+    const sorts = sort()
+    sorts.add(sortProp)
+    this.sorts = sorts
+    this.params.sorts = sorts.asQueryParams()
+  }
+
+  async getTrips(setCount = false): Promise<void> {
+    this.params.filters = this.filters.asQueryParams()
+    const preliminaryTripResponse = await trip.tableView(this.params, true)
+    const quoteIdList: string = preliminaryTripResponse.data.resultList
+      .map((trip) => trip.quoteId)
+      .join(',')
+    const secondaryParams = { ...this.params, pageSize: -1 }
+    const tripResponse = await trip.tableView(
+      secondaryParams,
+      false,
+      quoteIdList
+    )
+    this.trips = tripResponse.data.resultList
+    if (setCount) {
+      this.tripCount = preliminaryTripResponse.data.count
+    }
+  }
+
+  handleFilterClick(filterChip: TableViewFilterChip): void {
+    filterChip.active = !filterChip.active
+    this.establishFilters()
+    const filterInstance = this.filters
+    const filterParentOrAdditionalFilters = filterInstance.createParent('or')
+
+    for (const filterItem of this.marketplaceFilterChips) {
+      if (filterItem.active) {
+        const filterParentFilterChipGroup = filterInstance.createParent(
+          'and',
+          filterParentOrAdditionalFilters
+        )
+        for (const filter of filterItem.filters) {
+          filterInstance.add(filterParentFilterChipGroup, filter)
+        }
+      }
+    }
+    this.filters = filterInstance
+    this.params.filters = this.filters.asQueryParams()
+  }
+}
+</script>

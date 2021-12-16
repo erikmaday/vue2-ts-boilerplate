@@ -4,7 +4,9 @@
     class="padding-a-8 fill-height align-start"
     :style="{ 'max-width': `${$vuetify.breakpoint.thresholds.md}px` }"
   >
-    <slot />
+    <div class="w-full">
+      <slot />
+    </div>
   </v-container>
 </template>
 

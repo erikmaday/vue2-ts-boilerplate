@@ -9,7 +9,7 @@ export interface Vehicle {
   tripVehicleId: number
   tripId: number
   vehicleTypeId: number
-  vehicleId?: number
+  vehicleId: number
   quantity: number
   vehicleType: VehicleType
   vehicleTypeKey: string

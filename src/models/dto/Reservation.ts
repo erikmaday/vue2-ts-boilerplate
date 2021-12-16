@@ -43,7 +43,7 @@ export interface Reservation {
   parentReservationManagedId?: string
   passengerCount: number
   paymentStatus: string
-  paymentStatusLabel: strisng
+  paymentStatusLabel: string
   quoteId: number
   quoteManagedId: number
   quoteType: number

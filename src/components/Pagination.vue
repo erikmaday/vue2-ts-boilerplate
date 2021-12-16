@@ -14,14 +14,12 @@
 
 <script lang="ts">
 import { Component, Model, Prop, Watch, Vue } from 'vue-property-decorator'
-import CUIcon from '@/components/CUIcon.vue'
 import PaginationDot from '@/components/PaginationDot.vue'
-import { PaginationParams, PaginationBreakpoints } from '@/models/Pagination'
+import { PaginationParams } from '@/models/Pagination'
 import deepClone from '@/utils/deepClone'
 
 @Component({
   components: {
-    CUIcon,
     PaginationDot,
   },
 })

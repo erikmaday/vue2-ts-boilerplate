@@ -72,7 +72,6 @@
 <script lang="ts">
 import { ReservationDetail, ReservationComment } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import dayjs from 'dayjs'
 import reservation from '@/services/reservation'
 
 @Component
@@ -88,7 +87,7 @@ export default class BookingDetailCustomerInformation extends Vue {
   }
 
   formatTimestamp(timestamp: string): string {
-    const datetime = new dayjs(timestamp)
+    const datetime = this.$dayjs(timestamp)
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
   }
 

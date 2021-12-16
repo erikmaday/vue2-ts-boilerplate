@@ -6,11 +6,11 @@
     <v-col class="shrink">
       <v-chip
         small
-        color="black"
+        :color="paymentStatus.color"
         text-color="white"
         class="font-medium padding-x-2 font-12 border-radius-2"
       >
-        {{ paymentStatus }}
+        {{ paymentStatus.text }}
       </v-chip>
     </v-col>
     <v-col cols="12" class="shrink padding-t-0">
@@ -40,7 +40,9 @@
 </template>
 
 <script lang="ts">
+import { ColoredMessage } from '@/models/ColoredMessage'
 import { ReservationDetail } from '@/models/dto'
+import { PaymentStatus } from '@/utils/enum'
 import { currencyFilter, toTitle } from '@/utils/string'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
@@ -48,11 +50,18 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 export default class BookingDetailPaymentStatus extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
 
-  get paymentStatus(): string | null {
-    if (this.reservation?.referralPaymentStatus) {
-      return toTitle(this.reservation.referralPaymentStatus)
+  get paymentStatus(): ColoredMessage {
+    let status = {
+      text: '',
+      color: 'black',
     }
-    return null
+    if (this.reservation?.referralPaymentStatus) {
+      if (this.reservation.referralPaymentStatus === PaymentStatus.FullyPaid) {
+        status.color = 'green'
+      }
+      status.text = toTitle(this.reservation.referralPaymentStatus)
+    }
+    return status
   }
 
   get bidPrice(): string | null {

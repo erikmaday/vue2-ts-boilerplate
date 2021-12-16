@@ -1,38 +1,60 @@
 <template>
-  <v-row>
-    <v-col>{{ tripTypeLabel }}</v-col>
-    <v-col>
-      Vehicle Assignments
-      <VehicleAssignmentIcons
-        :trip="trip"
-        :vehicle-assignments="tripAssignments"
-      />
+  <v-row class="align-center justify-space-between">
+    <v-col cols="auto">
+      <div class="row align-center margin-a-0">
+        <CUIcon class="margin-r-2" color="gray-light">trip_type</CUIcon>
+        {{ tripType }}
+      </div>
     </v-col>
-    <v-col>
-      Driver Assignments
-      <DriverAssignmentIcons
-        :trip="trip"
-        :vehicle-assignments="tripAssignments"
-      />
+    <v-col cols="auto">
+      <div class="row align-center margin-a-0">
+        <VehicleAssignmentIcons
+          v-if="trip"
+          :trip="trip"
+          :vehicle-assignments="tripAssignments"
+          show-label="true"
+        />
+      </div>
     </v-col>
-    <v-col>Passenger Count</v-col>
+    <v-col cols="auto">
+      <div class="row align-center margin-a-0">
+        <DriverAssignmentIcons
+          v-if="trip"
+          :trip="trip"
+          :vehicle-assignments="tripAssignments"
+          show-label="true"
+        />
+      </div>
+    </v-col>
+    <v-col cols="auto">
+      <div class="row align-center margin-a-0">
+        <CUIcon class="margin-r-2" color="gray-light">ticket</CUIcon>
+        {{ passengerCount }} Passengers
+      </div>
+    </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
-import { Trip, VehicleAssignment } from '@/models/dto'
+import { ReservationDetail, Trip, VehicleAssignment } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import VehicleAssignmentIcons from '@/components/VehicleAssignmentIcons.vue'
 import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
 
-@Component({ components: { VehicleAssignmentIcons, DriverAssignmentIcons } })
+@Component({
+  components: { VehicleAssignmentIcons, DriverAssignmentIcons },
+})
 export default class BookingDetailTripNumbers extends Vue {
-  // @Prop({ required: true }) readonly reservation!: Reservation
-  @Prop({ required: true }) readonly trip!: Trip
-  @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
+  @Prop({ required: true }) readonly reservation?: ReservationDetail
+  @Prop({ required: true }) readonly trip?: Trip
+  @Prop({ required: true }) readonly tripAssignments?: VehicleAssignment[]
 
-  get tripTypeLabel(): string {
-    return this.trip?.tripType?.label
+  get tripType(): string {
+    return this.reservation?.tripType
+  }
+
+  get passengerCount(): string {
+    return this.reservation?.referralPassengerCount
   }
 }
 </script>

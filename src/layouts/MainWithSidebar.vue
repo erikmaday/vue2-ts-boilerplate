@@ -50,13 +50,8 @@
 
 <script lang="ts">
 import { Prop, Vue, Component } from 'vue-property-decorator'
-import CUIcon from '@/components/CUIcon.vue'
 
-@Component({
-  components: {
-    CUIcon,
-  },
-})
+@Component
 export default class MainWithSidebar extends Vue {
   @Prop({ default: 278 })
   sidebarWidth!: number

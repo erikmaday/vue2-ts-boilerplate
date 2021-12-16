@@ -13,13 +13,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import CUIcon from '@/components/CUIcon.vue'
 
-@Component({
-  components: {
-    CUIcon,
-  },
-})
+@Component
 export default class PaginationDot extends Vue {
   @Prop() readonly active!: boolean
   @Prop({ default: 'primary' }) readonly activeColor!: string

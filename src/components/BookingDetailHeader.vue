@@ -1,25 +1,47 @@
 <template>
-  <div class="w-full">
-    <span
-      class="d-flex-inline flex-shrink-1 white-space-nowrap font-14 margin-r-3"
-    >
-      <span class="text-gray-light">ID</span>
-      {{ reservationId }}
-    </span>
-    <span
-      v-if="actionMessage"
-      class="
-        d-flex-inline
-        flex-shrink-1
-        white-space-nowrap
-        font-medium
-        text-error
-      "
-    >
-      {{ actionMessage }}
-    </span>
-    <h1>{{ firstPickupCity }} to {{ firstDropoffCity }}</h1>
-  </div>
+  <v-row>
+    <v-col cols="auto">
+      <span
+        class="
+          d-flex-inline
+          flex-shrink-1
+          white-space-nowrap
+          font-14
+          margin-r-3
+        "
+      >
+        <span class="text-gray-light">ID</span>
+        {{ reservationId }}
+      </span>
+      <span
+        v-if="actionMessage"
+        class="
+          d-flex-inline
+          flex-shrink-1
+          white-space-nowrap
+          font-medium
+          text-error
+        "
+      >
+        {{ actionMessage }}
+      </span>
+      <h1 class="margin-b-0">
+        {{ firstPickupCity }} to {{ firstDropoffCity }}
+      </h1>
+    </v-col>
+    <template v-if="needsAcceptance">
+      <v-spacer />
+      <v-col cols="auto">
+        <v-btn small text color="error" class="margin-r-2" @click="reject">
+          Reject
+        </v-btn>
+        <v-btn small text color="primary" @click="accept">Accept</v-btn>
+      </v-col>
+    </template>
+  </v-row>
+  <!-- <div class="w-full">
+
+  </div> -->
 </template>
 
 <script lang="ts">
@@ -31,6 +53,7 @@ import {
 } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ReferralStatus } from '@/utils/enum'
+import reservation from '@/services/reservation'
 
 @Component
 export default class BookingDetailHeader extends Vue {
@@ -98,6 +121,16 @@ export default class BookingDetailHeader extends Vue {
 
   get firstDropoffCity(): string {
     return this.firstDropoff?.address?.city
+  }
+
+  async accept(): Promise<void> {
+    await reservation.accept(this.reservation.reservationId)
+    this.$emit('refresh')
+  }
+
+  async reject(): Promise<void> {
+    await reservation.reject(this.reservation.reservationId)
+    this.$emit('refresh')
   }
 }
 </script>

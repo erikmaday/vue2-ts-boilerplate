@@ -5,6 +5,7 @@
       <p class="margin-t-0">
         {{ notesDisplay }}
         <button
+          v-if="notes.length"
           id="customer-notes-expand-button"
           class="text-primary font-medium"
           @click="isExpanded = !isExpanded"

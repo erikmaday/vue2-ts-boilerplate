@@ -70,7 +70,7 @@ $base-class: 'cursor';
   );
 }
 
-// WORD BREAK 
+// WORD BREAK
 // .wb-normal, .wb-break-all...
 $word-breaks: normal, break-all, keep-all, break-word, initial, inherit;
 $base-class: 'wb';
@@ -195,6 +195,7 @@ $border-radius-map: (
   '12': 12px,
   'round': 50%,
   'regular': $border-radius-root,
+  '2x': $border-radius-root * 2,
 );
 $border-radius-directions: (
   'top-left',

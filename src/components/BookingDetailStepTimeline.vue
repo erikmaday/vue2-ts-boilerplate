@@ -3,7 +3,7 @@
     <v-col>
       1/3 Accept the Job
       <div
-        class="h-10 w-full"
+        class="h-8 w-full"
         :class="{
           'background-primary': isAccepted,
           'background-gray-mid-light': !isAccepted,
@@ -13,7 +13,7 @@
     <v-col>
       2/3 Assign Drivers and Vehicles
       <div
-        class="h-10 w-full"
+        class="h-8 w-full"
         :class="{
           'background-primary': isFullyAssigned,
           'background-gray-mid-light': !isFullyAssigned,
@@ -23,7 +23,7 @@
     <v-col>
       3/3 Driver Tracking via Mobile App
       <div
-        class="h-10 w-full"
+        class="h-8 w-full"
         :class="{
           'background-primary': isTracked,
           'background-gray-mid-light': !isTracked,

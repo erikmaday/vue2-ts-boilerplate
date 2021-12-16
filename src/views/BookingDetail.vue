@@ -11,46 +11,52 @@
         <BookingDetailHeader
           :reservation="reservation"
           :trip-assignments="tripAssignments"
+          @refresh="refresh"
         />
       </v-col>
       <v-col cols="12">
         <v-divider />
       </v-col>
-      <!-- <v-col cols="12" class="margin-t-3 margin-b-0">
+      <v-col cols="12" class="margin-b-0">
         <BookingDetailTripNumbers
+          :reservation="reservation"
           :trip="trip"
           :trip-assignments="tripAssignments"
         />
-      </v-col> -->
-    </v-row>
+      </v-col>
 
-    <v-col cols="12"><BookingDetailMap /></v-col>
-    <v-col cols="12">Trip Itinerary</v-col>
-    <v-col cols="12">
-      <BookingDetailCustomerNotes :reservation="reservation" />
-    </v-col>
-    <v-col cols="12">
-      <v-divider />
-    </v-col>
-    <v-col cols="12">
-      <BookingDetailPaymentStatus :reservation="reservation" />
-    </v-col>
-    <v-col cols="12">
-      <v-divider />
-    </v-col>
-    <v-col cols="12">
-      <BookingDetailComments :reservation="reservation" @refresh="refresh" />
-    </v-col>
-    <v-col cols="12">
-      <v-divider />
-    </v-col>
-    <v-col cols="12">
-      <BookingDetailCustomerInformation :reservation="reservation" />
-    </v-col>
-    <v-col cols="12">
-      <v-divider />
-    </v-col>
-    <v-col cols="12"><BookingDetailSupport /></v-col>
+      <v-col cols="12">
+        <BookingDetailMap v-if="reservation" :reservation="reservation" />
+      </v-col>
+      <v-col cols="12">
+        <BookingDetailItinerary v-if="reservation" :reservation="reservation" />
+      </v-col>
+      <v-col cols="12">
+        <BookingDetailCustomerNotes :reservation="reservation" />
+      </v-col>
+      <v-col cols="12">
+        <v-divider />
+      </v-col>
+      <v-col cols="12">
+        <BookingDetailPaymentStatus :reservation="reservation" />
+      </v-col>
+      <v-col cols="12">
+        <v-divider />
+      </v-col>
+      <v-col cols="12">
+        <BookingDetailComments :reservation="reservation" @refresh="refresh" />
+      </v-col>
+      <v-col cols="12">
+        <v-divider />
+      </v-col>
+      <v-col cols="12">
+        <BookingDetailCustomerInformation :reservation="reservation" />
+      </v-col>
+      <v-col cols="12">
+        <v-divider />
+      </v-col>
+      <v-col cols="12"><BookingDetailSupport /></v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -62,6 +68,7 @@ import BookingDetailHeader from '@/components/BookingDetailHeader.vue'
 import BookingDetailTripNumbers from '@/components/BookingDetailTripNumbers.vue'
 import BookingDetailSupport from '@/components/BookingDetailSupport.vue'
 import BookingDetailMap from '@/components/BookingDetailMap.vue'
+import BookingDetailItinerary from '@/components/BookingDetailItinerary.vue'
 import BookingDetailPaymentStatus from '@/components/BookingDetailPaymentStatus.vue'
 import BookingDetailCustomerNotes from '@/components/BookingDetailCustomerNotes.vue'
 import BookingDetailCustomerInformation from '@/components/BookingDetailCustomerInformation.vue'
@@ -69,6 +76,7 @@ import BookingDetailComments from '@/components/BookingDetailComments.vue'
 import reservation from '@/services/reservation'
 import tripAssignments from '@/services/tripAssignment'
 import trip from '@/services/trip'
+import { ReferralStatus } from '@/utils/enum'
 
 @Component({
   components: {
@@ -81,6 +89,7 @@ import trip from '@/services/trip'
     BookingDetailComments,
     BookingDetailCustomerNotes,
     BookingDetailMap,
+    BookingDetailItinerary,
   },
 })
 export default class BookingDetail extends Vue {
@@ -106,6 +115,14 @@ export default class BookingDetail extends Vue {
   async getReservation(): Promise<void> {
     if (this.id) {
       const reservationResponse = await reservation.byId(this.id)
+      if (
+        reservationResponse.data?.referralStatus === ReferralStatus.Rejected
+      ) {
+        //FOR NOW, REDIRECT HOME
+        this.$router.push({ name: 'home' })
+        return
+        //TODO: display options?
+      }
       this.reservation = reservationResponse.data
     }
   }

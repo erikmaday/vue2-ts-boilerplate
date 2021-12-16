@@ -4,6 +4,7 @@ import {
   ReservationTableViewResult,
   Reservation,
   ReservationCommentPayload,
+  ApiResult,
 } from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
@@ -39,5 +40,16 @@ export default {
     const host = apiBaseUrl()
     const url = `https://${host}/reservations/${payload.reservation.id}/comments`
     return httpService.post<number, ReservationCommentPayload>(url, payload)
+  },
+  accept(reservationId: number): Promise<AxiosResponse<ApiResult>> {
+    const host = apiBaseUrl()
+    const query = '?referralAcceptanceESignature='
+    const url = `https://${host}/reservations/acceptReferral/${reservationId}${query}`
+    return httpService.get(url)
+  },
+  reject(reservationId: number): Promise<AxiosResponse<ApiResult>> {
+    const host = apiBaseUrl()
+    const url = `https://${host}/reservations/rejectReferral/${reservationId}`
+    return httpService.get(url)
   },
 }

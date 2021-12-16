@@ -327,4 +327,53 @@
   .v-menu__content {
     background-color: $white;
   }
+
+  .v-timeline {
+    &:before {
+      background-image: linear-gradient($primary, $purple);
+    }
+    .v-timeline-item {
+      .v-timeline-item__dot {
+        box-shadow: none !important;
+      }
+      &.upcoming {
+        .v-timeline-item__dot {
+          background: $white;
+          .v-timeline-item__inner-dot {
+            background: $primary !important;
+          }
+        }
+      }
+      &.inprogress {
+        .v-timeline-item__dot {
+          background: $white;
+          .v-timeline-item__inner-dot {
+            background: $purple !important;
+          }
+        }
+      }
+      &.completed {
+        .v-timeline-item__dot {
+          background: $white;
+          .v-timeline-item__inner-dot {
+            background: $gray-border !important;
+          }
+        }
+      }
+      &.last {
+        .v-timeline-item__dot {
+          background: $primary !important;
+          border-radius: 0 !important;
+          height: 14px;
+          width: 14px;
+          .v-timeline-item__inner-dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 0 !important;
+            background: $white !important;
+          }
+        }
+      }
+    }
+  }
 }

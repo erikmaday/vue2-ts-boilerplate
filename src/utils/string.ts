@@ -1,3 +1,5 @@
+import { ReservationDetailStop } from '@/models/dto'
+
 export const toKebab = (string: string): string => {
   return string
     .split('')
@@ -91,4 +93,32 @@ export const truncate = (
       ? subString.substr(0, subString.lastIndexOf(' '))
       : subString) + '...'
   )
+}
+
+export const formatStopAddress = (stop: ReservationDetailStop): string => {
+  const address = stop.address
+  const street1IsPresent = address.street1 && address.street1 !== ' '
+  const street2IsPresent = address.street2 && address.street2 !== ' '
+
+  let addressString = ''
+  if (!street1IsPresent && !street2IsPresent) {
+    addressString = `${address.title}`
+  } else {
+    if (street1IsPresent) {
+      addressString = `${address.street1}`
+    }
+    if (street2IsPresent) {
+      addressString = `${addressString} ${address.street2}`
+    }
+  }
+  if (address.city) {
+    if (addressString.length) {
+      addressString = `${addressString},`
+    }
+    addressString = `${addressString} ${address.city}`
+  }
+  if (address.state) {
+    addressString = `${addressString}, ${address.state}`
+  }
+  return addressString
 }

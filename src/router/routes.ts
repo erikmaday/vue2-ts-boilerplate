@@ -15,7 +15,7 @@ export const routes: RouteConfig[] = [
         component: () => import('@/views/Home.vue'),
         children: [
           {
-            path: '',
+            path: 'today',
             name: 'today',
             component: () => import('@/views/Today.vue'),
           },

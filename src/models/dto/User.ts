@@ -62,3 +62,14 @@ export interface UserAuthResult extends ApiResult {
   token: string
   user: User
 }
+
+export interface Driver extends User {
+  drugTestNumber: string
+  drugTestExpiration: string
+  licenseNumber: string
+  licenseExpirationMonth: number
+  licenseExpirationYear: number
+  phoneNumber: string
+  notes: string
+  driverSupportedTypes: Group[]
+}

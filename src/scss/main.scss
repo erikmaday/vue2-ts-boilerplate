@@ -137,6 +137,11 @@
   .v-text-field {
     margin-bottom: 0px;
 
+
+    &.v-input--is-disabled fieldset {
+      background: $gray-lighter;
+    }
+
     &:not(.v-input--is-focused) {
       .v-input__control {
         > .v-input__slot {

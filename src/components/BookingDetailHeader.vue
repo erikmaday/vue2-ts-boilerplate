@@ -39,9 +39,6 @@
       </v-col>
     </template>
   </v-row>
-  <!-- <div class="w-full">
-
-  </div> -->
 </template>
 
 <script lang="ts">

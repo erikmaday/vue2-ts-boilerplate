@@ -11,8 +11,7 @@
     :aria-labelledby="!decorative ? ariaLabelledBy : null"
     :aria-hidden="decorative"
     v-bind="$attrs"
-    v-on="$listeners"
-    @click="$emit('click')"
+    v-on="listeners"
   >
     <title :id="ariaLabelledBy || iconTitle" lang="en">
       {{ ariaLabelledBy }} icon
@@ -41,14 +40,24 @@ export default class CUIcon extends Vue {
   @Prop({ default: '0 0 24 24' })
   readonly viewBox: string | undefined
 
-  @Prop(Boolean)
-  readonly decorative: boolean = false
+  @Prop({ default: false, required: false })
+  readonly decorative!: boolean
 
   @Prop(String)
   readonly ariaLabel: string | undefined
 
   @Prop(String)
   readonly color: string | undefined
+
+  get listeners(): Record<string, unknown> {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const vm = this
+    return Object.assign({}, this.$listeners, {
+      click: function (event: PointerEvent) {
+        vm.$emit('click', event)
+      },
+    })
+  }
 
   get isClickable(): boolean {
     return !!(this.$listeners && this.$listeners.click)

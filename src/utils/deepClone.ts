@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export default function deepClone(object: any): any {
+export default function deepClone<T>(object: T): T {
   return JSON.parse(JSON.stringify(object))
 }

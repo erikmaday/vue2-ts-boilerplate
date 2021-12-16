@@ -31,7 +31,6 @@ export interface Reservation {
   firstStopAddress: string
   firstStopAddressTimeZone: string
   hash: string
-  hasTrackingData?: boolean
   lastDropoffDate: string
   managedContractId?: string
   managedId: number
@@ -44,7 +43,7 @@ export interface Reservation {
   parentReservationManagedId?: string
   passengerCount: number
   paymentStatus: string
-  paymentStatusLabel: string
+  paymentStatusLabel: strisng
   quoteId: number
   quoteManagedId: number
   quoteType: number
@@ -53,9 +52,7 @@ export interface Reservation {
   referralPaymentStatusLabel: string
   referralStatus: string
   referralStatusLabel: string
-  requiredDrivers?: number
   requiredVehiclesCount: number
-  requiredVehicles?: RequiredVehicleType[]
   reservationId: number
   reservationStatus: string
   reservationStatusKey: string
@@ -65,7 +62,6 @@ export interface Reservation {
   trip: Trip
   tripId: number
   tripRouteName?: string
-  tripType?: string
   tripTypeLabel: string
   vehicleAssignments?: VehicleAssignment[]
 }

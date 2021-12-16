@@ -12,7 +12,7 @@ import CompanyGaragesEdit from './CompanyGaragesEdit.vue'
 import Main from '@/layouts/Main.vue'
 
 @Component({
-  components: { CompanyGaragesList, Main },
+  components: { Main },
 })
 export default class CompanyUsers extends Vue {
   get currentComponent(): VueComponent {

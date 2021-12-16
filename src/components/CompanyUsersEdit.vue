@@ -187,7 +187,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import user from '@/services/user'
 import { getVehicleTypes } from '@/services/type'
 import { Driver, Group } from '@/models/dto'

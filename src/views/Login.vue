@@ -56,7 +56,7 @@ export default class Login extends Vue {
       this.isSubmitting = false
       return
     }
-    this.$router.push({ name: 'home' })
+    this.$router.push({ name: 'today' })
   }
 }
 </script>

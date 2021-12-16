@@ -4,16 +4,13 @@ import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
 import { Vehicle } from '@/models/dto/Vehicle'
 import { VehicleResult } from '@/models/dto/VehicleResult'
+import { ApiResult } from '@/models/dto'
 
 const httpService: HttpService = new HttpService()
 
 export default {
-  tableView({
-    pageSize,
-    page,
-    sorts,
-    filters,
-  }: TableViewParameters): Promise<AxiosResponse<TableViewResult<Vehicle>>> {
+  tableView(params: TableViewParameters): Promise<AxiosResponse<TableViewResult<Vehicle>>> {
+    const { sorts, filters, pageSize = 10, page = 1 } = params
     return httpService.get(
       `https://${apiBaseUrl()}/tables/vehicles?${
         (pageSize ? `pageSize=${pageSize}&` : '') +
@@ -26,7 +23,7 @@ export default {
   byId(vehicleId: number): Promise<AxiosResponse<VehicleResult>> {
     return httpService.get(`https://${apiBaseUrl()}/v2/vehicles/${vehicleId}`)
   },
-  delete(vehicleId: number): Promise<AxiosResponse> {
+  delete(vehicleId: number): Promise<AxiosResponse<ApiResult>> {
     return httpService.delete(
       `https://${apiBaseUrl()}/v2/vehicles/${vehicleId}`
     )

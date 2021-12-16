@@ -5,16 +5,32 @@
 @import './_pseudoclasses';
 // ALL HELPER CLASSES LIVE HERE
 
-// FONT WEIGHTS
+// FONT
 // .font-light, .font-book, .font-medium, .font-extrabold, .font-black
 $base-class: 'font';
-@include map-to-helpers($base-class, $fonts, 'font-family', $pseudo-classes);
+@include map-to-helpers(
+  $base-class,
+  $fonts,
+  'font-family',
+  $pseudo-classes,
+  true
+);
 @include map-to-helpers(
   $base-class,
   $font-sizes,
   'font-size',
   $pseudo-classes,
-  false
+  true
+);
+
+// FONT WEIGHTS
+$base-class: 'font-weight';
+@include map-to-helpers(
+  $base-class,
+  $font-weights,
+  'font-weight',
+  $pseudo-classes,
+  true
 );
 
 // Z-INDEX
@@ -48,7 +64,8 @@ $base-class: 'cursor';
     $cursor,
     $cursor,
     'cursor',
-    $pseudo-classes
+    $pseudo-classes,
+    true
   );
 }
 
@@ -81,7 +98,7 @@ $directions: (
   'right': 'r',
 );
 $border-styles: 'solid', 'dashed', 'dotted', 'double', 'none';
-$border-widths: 0, 2, 4;
+$border-widths: 0, 1, 2, 4;
 $base-class: 'border';
 
 @include create-helper-with-pseudo-classes(
@@ -90,7 +107,7 @@ $base-class: 'border';
   1px,
   'border-width',
   $pseudo-classes,
-  false,
+  true,
   ''
 );
 @each $border-width in $border-widths {
@@ -165,6 +182,27 @@ $base-class: 'border';
   $pseudo-classes
 );
 
+// BORDER RADIUS
+$border-radius-map: (
+  '0': 0,
+  '1': 1px,
+  '2': 2px,
+  '3': 3px,
+  '4': 4px,
+  '5': 5px,
+  '8': 8px,
+  '12': 12px,
+  'round': 50%,
+);
+$base-class: 'border-radius';
+@include map-to-helpers(
+  $base-class,
+  $border-radius-map,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+
 // BACKGROUND
 // .background-#{color} for every color in our color library
 $base-class: 'background';
@@ -198,11 +236,15 @@ $base-class: 'max-w';
 );
 
 // MAX-WIDTH
-// .max-w-0, .max-w-1,..., .max-w-16, .max-w-20, .max-w-24, ... , .max-w-200
-$base-class: 'max-w';
-.max-w {
-  @include map-to-helpers($base-class, $dimensions, 'max-width', true);
-}
+// .max-h-0, .max-h-1,..., .max-h-16, .max-h-20, .max-h-24, ... , .max-h-200
+$base-class: 'max-h';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  'max-height',
+  $pseudo-classes,
+  true
+);
 
 // HEIGHT
 // .h-0, .h-1,..., .h-16, .h-20, .h-24, ... , .h-200
@@ -277,12 +319,12 @@ $base-class: 'transition';
   true
 );
 
-$transition-timing-functions: (
+$transition-properties: (
   'all': all,
 );
 @include map-to-helpers(
   $base-class,
-  $time-map,
+  $transition-properties,
   'transition-property',
   $pseudo-classes,
   true
@@ -347,3 +389,45 @@ $base-classes: 'padding', 'margin';
     }
   }
 }
+
+// WHITE SPACE
+$base-class: 'white-space';
+$white-space-map: (
+  'normal': normal,
+  'nowrap': nowrap,
+  'pre': pre,
+  'pre-wrap': pre-wrap,
+  'pre-line': pre-line,
+  'break-spaces': break-spaces,
+);
+@include map-to-helpers(
+  $base-class,
+  $white-space-map,
+  'white-space',
+  $pseudo-classes,
+  true
+);
+
+//TRANSFORM
+$base-class: 'transform';
+$scale: 10;
+$scale-map: (
+  '105': scale(1.05),
+);
+@while $scale < 100 {
+  $scale-calc: (100 + $scale) / 100;
+  $scale-map: map-merge(
+    $scale-map,
+    (
+      '1#{$scale}': scale($scale-calc),
+    )
+  );
+  $scale: $scale + 5;
+}
+@include map-to-helpers(
+  $base-class,
+  $scale-map,
+  'transform',
+  $pseudo-classes,
+  true
+);

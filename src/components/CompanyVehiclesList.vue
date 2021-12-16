@@ -13,7 +13,6 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import vehicle from '@/services/vehicle'
 import { ActionColumn } from '@/models/ActionColumn'
@@ -21,7 +20,7 @@ import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vehicle } from '@/models/dto/Vehicle'
 
 @Component({
-  components: { CUDataTable, CUCollectionTable },
+  components: { CUCollectionTable },
 })
 export default class CompanyVehiclesList extends Vue {
   columns: DataTableColumn[] = [

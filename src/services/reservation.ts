@@ -3,7 +3,7 @@ import {
   TableViewParameters,
   ReservationTableViewResult,
   Reservation,
-  ReservationCommentPayload,
+  ReservationDetailCommentPayload,
   ApiResult,
 } from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
@@ -35,11 +35,14 @@ export default {
     return httpService.get(url)
   },
   addComment(
-    payload: ReservationCommentPayload
+    payload: ReservationDetailCommentPayload
   ): Promise<AxiosResponse<number>> {
     const host = apiBaseUrl()
     const url = `https://${host}/reservations/${payload.reservation.id}/comments`
-    return httpService.post<number, ReservationCommentPayload>(url, payload)
+    return httpService.post<number, ReservationDetailCommentPayload>(
+      url,
+      payload
+    )
   },
   accept(reservationId: number): Promise<AxiosResponse<ApiResult>> {
     const host = apiBaseUrl()

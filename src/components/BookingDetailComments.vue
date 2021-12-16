@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import { ReservationDetail, ReservationComment } from '@/models/dto'
+import { ReservationDetail, ReservationDetailComment } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import reservation from '@/services/reservation'
 
@@ -82,7 +82,7 @@ export default class BookingDetailCustomerInformation extends Vue {
   newComment = ''
   savingComment = false
 
-  get comments(): ReservationComment[] {
+  get comments(): ReservationDetailComment[] {
     return this.reservation?.reservationComments || []
   }
 

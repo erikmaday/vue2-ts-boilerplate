@@ -69,7 +69,7 @@ export interface ReservationDetail {
   assignedVehicles: any[]
   referredTo?: any
   stops: ReservationDetailStop[]
-  reservationComments: any[]
+  reservationComments: ReservationDetailComment[]
   reservationTickets?: any
   journeys: any[]
   transactions: any[]
@@ -218,6 +218,25 @@ export interface PaymentSummary {
   netZero: boolean
   dueDate?: string
   convertedCreatedOn: Date
+}
+
+export interface ReservationDetailComment {
+  active: boolean
+  comment: string
+  companyId: number
+  companyName: string
+  createdOn: string
+  note: string | null
+  reservationCommentId: number
+  reservationId: number
+  userId: number
+  userName: string
+}
+export interface ReservationDetailCommentPayload {
+  note: string
+  reservation: {
+    id: number
+  }
 }
 
 export interface AwardedTo {

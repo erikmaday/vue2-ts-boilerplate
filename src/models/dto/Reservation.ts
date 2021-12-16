@@ -70,23 +70,4 @@ export interface Reservation {
   vehicleAssignments?: VehicleAssignment[]
 }
 
-export interface ReservationComment {
-  active: boolean
-  comment: string
-  companyId: number
-  companyName: string
-  createdOn: string
-  note: string | null
-  reservationCommentId: number
-  reservationId: number
-  userId: number
-  userName: string
-}
-export interface ReservationCommentPayload {
-  note: string
-  reservation: {
-    id: number
-  }
-}
-
 export type ReservationTableViewResult = TableViewResult<Reservation>

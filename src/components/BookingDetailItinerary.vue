@@ -34,7 +34,7 @@ export default class BookingDetailHeader extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
 
   get stops(): ReservationDetailStop[] {
-    return this.reservation?.stops
+    return this.reservation.stops
   }
 
   formatStopTime(time: string, timezone: string): string {

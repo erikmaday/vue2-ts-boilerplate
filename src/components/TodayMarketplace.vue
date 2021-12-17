@@ -92,7 +92,7 @@ export default class TodayMarketplace extends Vue {
     {
       label: 'Created Today',
       count: 0,
-      filters: [
+      filter: [
         {
           column: {
             _t_id: '1fce4feb-760c-49ad-99f2-7ed35aa794e2',
@@ -117,7 +117,7 @@ export default class TodayMarketplace extends Vue {
     {
       label: 'Ending Soon',
       count: 0,
-      filters: [
+      filter: [
         {
           column: {
             _t_id: '8be3681f-dbfb-427d-8e23-13e72a8a100d',
@@ -231,7 +231,7 @@ export default class TodayMarketplace extends Vue {
           'and',
           filterParentOrAdditionalFilters
         )
-        for (const filter of filterItem.filters) {
+        for (const filter of filterItem.filter) {
           filterInstance.add(filterParentFilterChipGroup, filter)
         }
       }

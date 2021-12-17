@@ -37,7 +37,6 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import CharterUPLogo from '@/components/CharterUPLogo.vue'
-import CUIcon from '@/components/CUIcon.vue'
 import { navigation } from '@/data/navigation'
 import { NavigationLink } from '@/models/NavigationLink'
 import modules from '@/store/modules'
@@ -45,7 +44,6 @@ import modules from '@/store/modules'
 @Component({
   components: {
     CharterUPLogo,
-    CUIcon,
   },
 })
 export default class TheSideBar extends Vue {

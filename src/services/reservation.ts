@@ -1,5 +1,11 @@
 import { apiBaseUrl } from '@/utils/env'
-import { TableViewParameters, ReservationTableViewResult } from '@/models/dto'
+import {
+  TableViewParameters,
+  ReservationTableViewResult,
+  Reservation,
+  ReservationDetailCommentPayload,
+  ApiResult,
+} from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 
@@ -21,6 +27,34 @@ export default {
     query = encodeURI(query)
     const host = apiBaseUrl()
     const url = `https://${host}/tables/referrals?${query}`
+    return httpService.get(url)
+  },
+  byId(id: number): Promise<AxiosResponse<Reservation>> {
+    const host = apiBaseUrl()
+    const url = `https://${host}/reservations/v2/${id}`
+    return httpService.get(url)
+  },
+  addComment(
+    payload: ReservationDetailCommentPayload
+  ): Promise<AxiosResponse<number>> {
+    const host = apiBaseUrl()
+    const url = `https://${host}/reservations/${payload.reservation.id}/comments`
+    return httpService.post<number, ReservationDetailCommentPayload>(
+      url,
+      payload
+    )
+  },
+  accept(reservationId: number): Promise<AxiosResponse<ApiResult>> {
+    const host = apiBaseUrl()
+    const query = '?referralAcceptanceESignature='
+    const url = `https://${host}/reservations/acceptReferral/${reservationId}${query}`
+    return httpService.get(url)
+  },
+  reject(reservationId: number): Promise<AxiosResponse<ApiResult>> {
+    const host = apiBaseUrl()
+    let query = '?notes='
+    query = encodeURI(query)
+    const url = `https://${host}/reservations/rejectReferral/${reservationId}${query}`
     return httpService.get(url)
   },
 }

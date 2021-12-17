@@ -56,12 +56,7 @@ import { Component, Vue, Prop, Watch, Model } from 'vue-property-decorator'
 import places from '@/services/places'
 import { KeyCode } from '@/utils/enum'
 import { Address, PlaceSearch } from '@/models/dto'
-import CUIcon from '@/components/CUIcon.vue'
-@Component({
-  components: {
-    CUIcon,
-  },
-})
+@Component
 export default class AutocompleteAddress extends Vue {
   @Model('change') readonly value!: Address | null
   @Prop({ default: false }) readonly autoFocus!: boolean

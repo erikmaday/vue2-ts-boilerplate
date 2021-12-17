@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-export type SpotTime = {
+export interface SpotTime {
   companyId: number
   tripId: number
   stopId: number

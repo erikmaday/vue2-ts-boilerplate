@@ -75,10 +75,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { ActionColumn } from '@/models/ActionColumn'
-import CUIcon from '@/components/CUIcon.vue'
-@Component({
-  components: { CUIcon },
-})
+
+@Component
 export default class CUDataTableActionColumn extends Vue {
   @Prop({
     type: Array,

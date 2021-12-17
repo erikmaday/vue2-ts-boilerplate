@@ -15,7 +15,7 @@ export const routes: RouteConfig[] = [
         component: () => import('@/views/Home.vue'),
         children: [
           {
-            path: '',
+            path: 'today',
             name: 'today',
             component: () => import('@/views/Today.vue'),
           },
@@ -117,6 +117,17 @@ export const routes: RouteConfig[] = [
           {
             path: 'bookings',
             name: 'bookings',
+            component: () => import('@/views/Empty.vue'),
+            children: [
+              {
+                path: ':id',
+                name: 'booking-detail',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "quote-detail" */ '@/views/BookingDetail.vue'
+                  ),
+              },
+            ],
           },
           {
             path: 'trips',

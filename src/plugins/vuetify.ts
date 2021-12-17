@@ -10,7 +10,6 @@ for (const [key, value] of Object.entries(colors)) {
   caseConvertedColors[convertedKey] = value
 }
 
-console.log(caseConvertedColors)
 export default new Vuetify({
   theme: {
     themes: {

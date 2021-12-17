@@ -113,6 +113,17 @@ export const routes: RouteConfig[] = [
           {
             path: 'marketplace',
             name: 'marketplace',
+            component: () => import('@/views/Empty.vue'),
+            children: [
+              {
+                path: ':id',
+                name: 'bid-detail',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "quote-detail" */ '@/views/BidDetail.vue'
+                  ),
+              },
+            ],
           },
           {
             path: 'bookings',

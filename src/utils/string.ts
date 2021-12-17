@@ -1,4 +1,10 @@
-import { ReservationDetailStop } from '@/models/dto'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import { Stop } from '@/models/dto'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export const toKebab = (string: string): string => {
   return string
@@ -121,4 +127,17 @@ export const formatStopAddress = (stop: ReservationDetailStop): string => {
     addressString = `${addressString}, ${address.state}`
   }
   return addressString
+}
+
+export const formatStopTime = (time: string, timezone: string): string => {
+  const datetime = dayjs(time).tz(timezone)
+  return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
+}
+
+export const formatDropoffTime = (stop: Stop): string => {
+  return formatStopTime(stop.dropoffDatetime, stop.address.timeZone)
+}
+
+export const formatPickupTime = (stop: Stop): string => {
+  return formatStopTime(stop.pickupDatetime, stop.address.timeZone)
 }

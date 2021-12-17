@@ -11,10 +11,10 @@
         }"
         class="padding-a-6 z-3"
       >
-        <slot name="sidebar-content" />
+        <slot name="sidebar" />
       </v-col>
       <v-col v-if="showMap" sm="auto" cols="12" class="flex-grow-1 z-2">
-        <slot name="map-content" />
+        <slot name="map" />
       </v-col>
     </v-row>
     <v-row

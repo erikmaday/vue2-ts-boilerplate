@@ -11,6 +11,7 @@
     @focus="isActive = true"
     @mouseleave="isActive = false"
     @blur="isActive = false"
+    @click="goToBid"
   >
     <v-card-text class="padding-a-4">
       <p class="font-medium margin-t-0">
@@ -105,6 +106,13 @@ export default class MarketplaceCard extends Vue {
       vehicle.requiredVehicles,
       vehicle.vehicleType
     )}`
+  }
+
+  goToBid(): void {
+    this.$router.push({
+      name: 'bid-detail',
+      params: { id: this.trip.tripId },
+    })
   }
 }
 </script>

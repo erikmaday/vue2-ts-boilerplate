@@ -111,7 +111,6 @@ export const formatStopAddress = (stop: ReservationDetailStop): string => {
       addressString = `${addressString} ${address.street2}`
     }
   }
-  console.log(addressString)
   if (address.city) {
     if (addressString.length) {
       addressString = `${addressString},`

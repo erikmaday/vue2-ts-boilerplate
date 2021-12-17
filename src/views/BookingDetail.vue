@@ -34,12 +34,14 @@
       <v-col cols="12">
         <BookingDetailCustomerNotes :reservation="reservation" />
       </v-col>
-      <v-col cols="12">
-        <v-divider />
-      </v-col>
-      <v-col cols="12">
-        <BookingDetailPaymentStatus :reservation="reservation" />
-      </v-col>
+      <template v-if="isAccepted">
+        <v-col cols="12">
+          <v-divider />
+        </v-col>
+        <v-col cols="12">
+          <BookingDetailPaymentStatus :reservation="reservation" />
+        </v-col>
+      </template>
       <v-col cols="12">
         <v-divider />
       </v-col>
@@ -121,14 +123,17 @@ export default class BookingDetail extends Vue {
         //FOR NOW, REDIRECT HOME
         this.$router.push({ name: 'home' })
         return
-        //TODO: display options?
       }
       this.reservation = reservationResponse.data
     }
   }
 
+  get isAccepted(): boolean {
+    return this.reservation?.referralStatus === ReferralStatus.Accepted
+  }
+
   async getTrip(): Promise<void> {
-    if (this.reservation.tripId) {
+    if (this.reservation?.tripId) {
       const tripResponse = await trip.byId(this.reservation.tripId)
       this.trip = tripResponse.data.trip
     }

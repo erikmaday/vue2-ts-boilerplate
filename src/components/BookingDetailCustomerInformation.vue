@@ -21,14 +21,11 @@
           <p class="font-16 font-medium">
             {{ name }}
           </p>
-          <v-btn
-            text
-            small
-            color="primary"
-            class="font-16 font-medium padding-x-0"
+          <button
+            class="font-16 text-primary font-medium padding-x-0 margin-t-2"
           >
             Send Message
-          </v-btn>
+          </button>
         </v-col>
       </v-row>
     </v-col>

@@ -16,7 +16,7 @@
     <v-col cols="12" class="shrink padding-t-0">
       <v-list>
         <v-list-item
-          v-for="(payment, paymentIndex) in payments"
+          v-for="(payment, paymentIndex) in paymentsSummary"
           :key="`payment-${paymentIndex}`"
           class="
             border-solid border-gray-border
@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { ColoredMessage } from '@/models/ColoredMessage'
-import { ReservationDetail } from '@/models/dto'
+import { PaymentSummary, ReservationDetail } from '@/models/dto'
 import { PaymentStatus } from '@/utils/enum'
 import { currencyFilter, toTitle } from '@/utils/string'
 import { Component, Prop, Vue } from 'vue-property-decorator'
@@ -80,12 +80,26 @@ export default class BookingDetailPaymentStatus extends Vue {
     return bidAmount + serviceAmount
   }
 
-  get payments(): { label: string; amount: string }[] {
-    return [
-      { label: 'Bid Price', amount: this.bidPrice },
-      { label: 'CharterUP Fee', amount: this.serviceFee },
-      { label: 'New Total', amount: this.total },
-    ]
+  get paymentsSummary(): { label: string; amount: number }[] {
+    const paymentsSummary = this.reservation?.paymentsSummary
+    let total = 0
+    const summary = paymentsSummary.map((payment, paymentIndex) => {
+      const label = this.getPaymentLabel(payment, paymentIndex)
+      const amount = payment.amount
+      total += amount
+      return { label, amount }
+    })
+    summary.push({ label: 'New Total', amount: total })
+    return summary
+  }
+
+  getPaymentLabel(payment: PaymentSummary, paymentIndex: number): string {
+    if (paymentIndex === 0) {
+      return 'Bid Price'
+    } else if (payment.notes.includes('CharterUP fee')) {
+      return 'CharterUP Fee'
+    }
+    return payment.notes
   }
 
   currencyFilter = currencyFilter

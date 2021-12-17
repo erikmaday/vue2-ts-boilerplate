@@ -52,7 +52,9 @@ export default {
   },
   reject(reservationId: number): Promise<AxiosResponse<ApiResult>> {
     const host = apiBaseUrl()
-    const url = `https://${host}/reservations/rejectReferral/${reservationId}`
+    let query = '?notes='
+    query = encodeURI(query)
+    const url = `https://${host}/reservations/rejectReferral/${reservationId}${query}`
     return httpService.get(url)
   },
 }

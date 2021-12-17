@@ -101,7 +101,7 @@ export const formatStopAddress = (stop: ReservationDetailStop): string => {
   const street2IsPresent = address.street2 && address.street2 !== ' '
 
   let addressString = ''
-  if (!street1IsPresent && !street2IsPresent) {
+  if (!street1IsPresent && !street2IsPresent && address.title) {
     addressString = `${address.title}`
   } else {
     if (street1IsPresent) {
@@ -111,6 +111,7 @@ export const formatStopAddress = (stop: ReservationDetailStop): string => {
       addressString = `${addressString} ${address.street2}`
     }
   }
+  console.log(addressString)
   if (address.city) {
     if (addressString.length) {
       addressString = `${addressString},`

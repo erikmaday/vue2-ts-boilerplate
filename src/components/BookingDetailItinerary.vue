@@ -5,12 +5,24 @@
       :key="`stop-${stopIndex}-${stop.stopId}`"
       right
       :class="{
-        last: stopIndex === stops.length - 1,
-        inprogress: stopIndex === 0,
-        upcoming: stopIndex !== stops.length - 1 && stopIndex !== 0,
+
+        inprogress: ,
+
       }"
     >
-      <div class="padding-x-2 padding-b-2">
+
+    </v-timeline-item>
+  </v-timeline> -->
+
+  <CUTimeline>
+    <CUTimelineItem
+      v-for="(stop, stopIndex) in stops"
+      :key="`stop-${stopIndex}-${stop.stopId}`"
+      :in-progress="stopIndex === 0"
+      :upcoming="stopIndex !== stops.length - 1 && stopIndex !== 0"
+      :last-stop="stopIndex === stops.length - 1"
+    >
+      <div class="padding-l-4 padding-b-4">
         <p class="font-medium margin-t-0">{{ formatStopAddress(stop) }}</p>
         <p v-if="stop.dropoffDatetime" class="text-gray-light margin-t-0">
           Estimated arrival:
@@ -21,10 +33,7 @@
           {{ formatStopTime(stop.pickupDatetime, stop.address.timeZone) }}
         </p>
       </div>
-    </v-timeline-item>
-  </v-timeline> -->
-  <CUTimeline>
-    <CUTimelineItem />
+    </CUTimelineItem>
   </CUTimeline>
 </template>
 

@@ -438,3 +438,54 @@ $scale-map: (
   $pseudo-classes,
   true
 );
+
+// POSITION
+$position-map: (
+  'static': static,
+  'relative': relative,
+  'fixed': fixed,
+  'absolute': absolute,
+  'sticky': sticky,
+);
+$base-class: 'position';
+@include map-to-helpers(
+  $base-class,
+  $position-map,
+  'position',
+  $pseudo-classes,
+  true
+);
+
+// POSITION
+$base-class: 'top';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+$base-class: 'left';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+$base-class: 'righht';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+$base-class: 'bottom';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  $base-class,
+  $pseudo-classes,
+  true
+);

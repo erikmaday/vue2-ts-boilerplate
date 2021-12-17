@@ -5,10 +5,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Provide, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component
-export default class CUTimeline extends Vue {
-  @Provide() isInTimeline = true
-}
+export default class CUTimeline extends Vue {}
 </script>
+Z

@@ -1,21 +1,6 @@
 <template>
-  <!-- <v-timeline align-top dense>
-    <v-timeline-item
-      v-for="(stop, stopIndex) in stops"
-      :key="`stop-${stopIndex}-${stop.stopId}`"
-      right
-      :class="{
-
-        inprogress: ,
-
-      }"
-    >
-
-    </v-timeline-item>
-  </v-timeline> -->
-
-  <CUTimeline>
-    <CUTimelineItem
+  <CUItinerary>
+    <CUItineraryItem
       v-for="(stop, stopIndex) in stops"
       :key="`stop-${stopIndex}-${stop.stopId}`"
       :in-progress="stopIndex === 0"
@@ -33,18 +18,18 @@
           {{ formatStopTime(stop.pickupDatetime, stop.address.timeZone) }}
         </p>
       </div>
-    </CUTimelineItem>
-  </CUTimeline>
+    </CUItineraryItem>
+  </CUItinerary>
 </template>
 
 <script lang="ts">
 import { ReservationDetail, ReservationDetailStop } from '@/models/dto'
 import { formatStopAddress } from '@/utils/string'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import CUTimeline from '@/components/CUTimeline.vue'
-import CUTimelineItem from '@/components/CUTimelineItem.vue'
+import CUItinerary from '@/components/CUItinerary.vue'
+import CUItineraryItem from '@/components/CUItineraryItem.vue'
 
-@Component({ components: { CUTimeline, CUTimelineItem } })
+@Component({ components: { CUItinerary, CUItineraryItem } })
 export default class BookingDetailHeader extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
 

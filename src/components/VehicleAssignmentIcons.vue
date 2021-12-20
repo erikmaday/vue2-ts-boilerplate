@@ -1,5 +1,8 @@
 <template>
-  <div class="d-inline-flex margin-l-3 cursor-pointer">
+  <div class="d-inline-flex margin-l-3 cursor-pointer align-center">
+    <span v-if="showLabel" class="margin-r-5" :class="`text-${label.color}`">
+      {{ label.text }}
+    </span>
     <VehicleAssignmentIcon
       v-for="(vehicle, vehicleIndex) in vehicleAssignmentsToDisplay"
       :vehicle-assignment="vehicle"
@@ -20,34 +23,48 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import CUIcon from '@/components/CUIcon.vue'
 import VehicleAssignmentIcon from '@/components/VehicleAssignmentIcon.vue'
-import { Reservation } from '@/models/dto'
+import { Reservation, Trip } from '@/models/dto'
 import { VehicleAssignment } from '@/models/dto'
+import { pluralize } from '@/utils/string'
+import { ColoredMessage } from '@/models/ColoredMessage'
 
 const MAX_DISPLAY = 3
 
 @Component({
   components: {
-    CUIcon,
     VehicleAssignmentIcon,
   },
 })
 export default class VehicleAssignmentIcons extends Vue {
-  @Prop() readonly reservation!: Reservation
+  @Prop({ required: false }) readonly reservation: Reservation
+  @Prop({ required: false }) readonly vehicleAssignments: VehicleAssignment[]
+  @Prop({ required: false }) readonly trip: Trip
+  @Prop({ required: false }) readonly showLabel: boolean
+
+  get computedTrip(): Trip {
+    return this.trip ? this.trip : this.reservation.trip
+  }
+
+  get computedVehicleAssignments(): Trip {
+    return this.vehicleAssignments
+      ? this.vehicleAssignments
+      : this.reservation.vehicleAssignments
+  }
 
   get totalRequiredVehicles(): number {
-    return this.reservation.trip.vehicles.reduce(
+    return this.computedTrip.vehicles.reduce(
       (sum, vehicle) => sum + vehicle.quantity,
       0
     )
   }
 
-  get vehicleAssignmentsToDisplay(): VehicleAssignment[] | undefined {
-    if (this?.reservation?.vehicleAssignments) {
-      return this.reservation.vehicleAssignments.slice(0, MAX_DISPLAY)
+  get vehicleAssignmentsToDisplay(): VehicleAssignment[] {
+    let vehicleAssignments = []
+    if (this.computedVehicleAssignments) {
+      vehicleAssignments = this.computedVehicleAssignments.slice(0, MAX_DISPLAY)
     }
-    return this?.reservation?.vehicleAssignments
+    return vehicleAssignments
   }
 
   get unassignedToDisplay(): number {
@@ -69,6 +86,19 @@ export default class VehicleAssignmentIcons extends Vue {
       return count
     }
     return 0
+  }
+
+  get label(): ColoredMessage {
+    const count = this.totalRequiredVehicles
+    const noun = pluralize(this.totalRequiredVehicles, 'Vehicle')
+    return {
+      text: `${count} ${noun}`,
+      color: !this.isFullyAssigned ? 'red' : 'black',
+    }
+  }
+
+  get isFullyAssigned(): boolean {
+    return this.computedVehicleAssignments.length === this.totalRequiredVehicles
   }
 }
 </script>

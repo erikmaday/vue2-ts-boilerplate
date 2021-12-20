@@ -109,8 +109,6 @@ $app-bar-elevation: 0;
 // v-btn
 $btn-focus-opacity: 0.2;
 $btn-active-opacity: 1;
-$btn-hover-opacity: 0;
-$btn-transition: none;
 $btn-letter-spacing: normal;
 $btn-icon-padding: 28px;
 $btn-sizes: (
@@ -163,3 +161,11 @@ $badge-font-size: 10px;
 $badge-padding: 3px 6px;
 
 $btn-toggle-btn-opacity: 1;
+
+//v-timeline
+// $timeline-divider-center: 50%;
+$timeline-item-padding: 0;
+$timeline-divider-width: 16px;
+
+$timeline-dot-regular-size: 16px !default;
+$timeline-inner-dot-regular-size: 12px !default;

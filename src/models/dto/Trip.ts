@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { PaymentMethod, PaymentType, Stop } from '.'
+import { ApiResult, PaymentMethod, PaymentType, Stop } from '.'
 import { CheckoutType } from './CheckoutType'
 import { Customer } from './Customer'
 import { GarageTimes } from './GarageTimes'
@@ -138,6 +138,10 @@ export interface RequiredVehicle {
   requiredVehicles: number
   vehicleType: string
   vehicleTypeId: number
+}
+
+export interface TripResult extends ApiResult {
+  trip: Trip
 }
 
 export type TripTableViewResult = TableViewResult<Trip>

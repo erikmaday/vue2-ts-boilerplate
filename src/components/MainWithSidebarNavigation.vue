@@ -34,11 +34,8 @@
 import { PropType } from 'vue'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { SidebarLink } from '@/models/SidebarLink'
-import CUIcon from '@/components/CUIcon.vue'
 
-@Component({
-  components: { CUIcon },
-})
+@Component
 export default class MainWithSidebarNavigation extends Vue {
   @Prop({
     type: Array as PropType<SidebarLink[]>,

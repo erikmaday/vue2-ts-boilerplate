@@ -2,7 +2,7 @@ import { apiBaseUrl } from '@/utils/env'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
-import { UserDetail } from '@/models/dto/User'
+import { UserDetail, UserDetailDriver } from '@/models/dto/User'
 import { UserResult } from '@/models/dto/UserResult'
 import { RoleResult } from '@/models/dto/RoleResult'
 import { DriverResult } from '@/models/dto/DriverResult'
@@ -52,5 +52,11 @@ export default {
         password,
       }
     )
+  },
+  createUser(user: UserDetail): Promise<AxiosResponse<number>> {
+    return httpService.post(`https://${apiBaseUrl()}/user`, user)
+  },
+  createDriver(driver: UserDetailDriver): Promise<AxiosResponse<number>> {
+    return httpService.post(`https://${apiBaseUrl()}/v3/drivers`, driver)
   },
 }

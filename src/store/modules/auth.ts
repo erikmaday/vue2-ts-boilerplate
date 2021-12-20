@@ -4,6 +4,7 @@ import axios from 'axios'
 import auth from '@/services/auth'
 import user from '@/services/user'
 import router from '@/router'
+import { UserDetail } from '@/models/dto/User'
 
 import { UserAuthPayload, Role } from '@/models/dto'
 import { save, load } from '@/utils/localStorage'

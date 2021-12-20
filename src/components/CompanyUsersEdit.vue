@@ -132,13 +132,13 @@
                 <v-row>
                   <v-col cols="6">
                     <CUTextField
-                      v-model="currentUser.drugTestNumber"
+                      v-model="currentUserAsDriver.drugTestNumber"
                       label="Drug Test #"
                     />
                   </v-col>
                   <v-col cols="3">
                     <CUSelect
-                      v-model="currentUser.drugTestExpirationMonth"
+                      v-model="currentUserAsDriver.drugTestExpirationMonth"
                       label="Exp. Month"
                       item-text="short"
                       item-value="number"
@@ -147,7 +147,7 @@
                   </v-col>
                   <v-col cols="3">
                     <CUSelect
-                      v-model="currentUser.drugTestExpirationYear"
+                      v-model="currentUserAsDriver.drugTestExpirationYear"
                       :items="years"
                       label="Exp. Year"
                     />
@@ -167,7 +167,7 @@
                   <v-col cols="6" class="padding-b-0">
                     <CUTextField
                       label="License #"
-                      v-model="currentUser.licenseNumber"
+                      v-model="currentUserAsDriver.licenseNumber"
                     />
                   </v-col>
                 </v-row>
@@ -176,7 +176,7 @@
                     <CUSelect
                       label="State"
                       :items="states"
-                      v-model="currentUser.licensState"
+                      v-model="currentUserAsDriver.licensState"
                     />
                   </v-col>
                   <v-col cols="3" class="padding-t-0">
@@ -185,14 +185,14 @@
                       item-text="short"
                       item-value="number"
                       :items="months"
-                      v-model="currentUser.licenseExpirationMonth"
+                      v-model="currentUserAsDriver.licenseExpirationMonth"
                     />
                   </v-col>
                   <v-col cols="3" class="padding-t-0">
                     <CUSelect
                       :items="years"
                       label="Exp. Year"
-                      v-model="currentUser.licenseExpirationYear"
+                      v-model="currentUserAsDriver.licenseExpirationYear"
                     />
                   </v-col>
                 </v-row>
@@ -209,7 +209,7 @@
                 <v-row>
                   <v-col>
                     <v-textarea
-                      v-model="currentUser.notes"
+                      v-model="currentUserAsDriver.notes"
                       label="Notes"
                       outlined
                       flat
@@ -220,16 +220,17 @@
                 <h4 class="padding-b-3">Vehicle Types</h4>
                 <v-row wrap>
                   <v-col
-                    v-for="(vType, vti) in vehicleTypes"
-                    :key="`vehicle-type-${vti}`"
+                    v-for="([key, type], vti) in Object.entries(vehicleTypeMap)"
+                    :key="`vehicle-type-${key}-${vti}`"
                     cols="4"
                   >
                     <v-checkbox
                       class="padding-a-0 margin-a-0"
                       hide-details
-                      :label="vType.label"
+                      :value="vehicleTypeMap[key].supported"
+                      :label="type.label"
                       @change="
-                        (e) => updateVehicleTypes({ type: vType, value: e })
+                        (e) => updateVehicleTypes({ type: type, value: e })
                       "
                     />
                   </v-col>
@@ -245,7 +246,10 @@
         </v-row>
       </v-form>
       <v-dialog v-model="changePasswordIsOpen">
-        <CompanyUsersChangePassword :user="currentUser" @close="changePasswordIsOpen = false"/>
+        <CompanyUsersChangePassword
+          :user="currentUserAsDriver"
+          @close="changePasswordIsOpen = false"
+        />
       </v-dialog>
     </v-container>
   </div>
@@ -254,8 +258,9 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import user from '@/services/user'
+import auth from '@/store/modules/auth'
 import { getVehicleTypes } from '@/services/type'
-import { UserDetailDriver, Group } from '@/models/dto'
+import { UserDetail, UserDetailDriver, Group, RequiredVehicleType, SupportedVehicleType, VehicleType } from '@/models/dto'
 import { AxiosResponse } from 'axios'
 import CUTextField from '@/components/CUTextField.vue'
 import CUSelect from '@/components/CUSelect.vue'
@@ -274,18 +279,39 @@ export default class CompanyUsersEdit extends Vue {
   states = states
   months = months
 
-  currentUser: Partial<UserDetailDriver> = {
+  currentUser: UserDetail = {
     firstName: '',
     lastName: '',
     email: '',
     groupId: 1,
     userPhotoDTOs: [],
+    active: false,
+    companyId: auth.getUser.companyId,
+    companyName: auth.getUser.companyName,
+    userRoleNames: [],
+  }
+
+  currentUserAsDriver: Partial<UserDetailDriver> = {
+    active: true,
+    firstName: '',
+    lastName: '',
+    email: '',
+    groupId: 1,
+    companyId: auth.getUser.companyId,
+    companyName: auth.getUser.companyName,
+    userPhotoDTOs: [],
+    userRoleNames: ['is_driver'],
+    drugTestNumber: '',
+    drugTestExpiration: '',
+    licensState: '',
     licenseNumber: '',
+    phoneNumber: '',
+    notes: '',
     driverSupportedVehicles: [],
   }
 
   isUserDriver = false
-  vehicleTypes = []
+  vehicleTypes: VehicleType[] = []
   years: number[] = []
   changePasswordIsOpen = false
 
@@ -313,22 +339,29 @@ export default class CompanyUsersEdit extends Vue {
     }
   }
 
+  // Get the user's roles
+  // If we determine that the user is a driver, pull the user info from the
+  // getDriverById endpoint
+  // Otherwise, use getUserByIdV2
   async getCurrentUser(): Promise<void> {
-    let response: AxiosResponse
     try {
       if (this.$route.params.id) {
         const rolesResponse = await user.getRoles(Number(this.$route.params.id))
         const roles = rolesResponse.data.roles
         if (roles.find((role) => role.roleName === 'is_driver')) {
           this.isUserDriver = true
-
-          response = await user.getDriverInfo(Number(this.$route.params.id))
-          const { data } = response
-          this.currentUser = data.driver
+          const response = await user.getDriverById(
+            Number(this.$route.params.id)
+          )
+          const userResponseData = response.data.driver
+          this.currentUser = userResponseData as UserDetail
+          this.currentUserAsDriver = userResponseData
         } else {
-          response = await user.byId(Number(this.$route.params.id))
-          const { data } = response
-          this.currentUser = data
+          const response = await user.byId(Number(this.$route.params.id))
+          const userResponseData = response.data
+
+          this.currentUser = userResponseData
+          this.currentUserAsDriver = userResponseData as UserDetailDriver
         }
       } else {
         this.notFound = true
@@ -336,26 +369,30 @@ export default class CompanyUsersEdit extends Vue {
       }
     } catch (e) {
       this.notFound = true
+      // eslint-disable-next-line no-console
       console.error(e)
       return
     }
   }
 
-  @Watch('currentUser', { immediate: true })
-  onUserChanged(val: Partial<UserDetailDriver>) {
-    if (val.drugTestExpiration && (!val.drugTestExpirationMonth || !val.drugTestExpirationYear)) {
-      let dateArr = val.drugTestExpiration.split('-')
-      this.currentUser.drugTestExpirationMonth = Number(dateArr[1])
-      this.currentUser.drugTestExpirationYear = Number(dateArr[0])
-    }
+  @Watch('currentUser', { immediate: true, deep: true })
+  onUserChanged(updatedUser: UserDetail) {
+    // if (val.drugTestExpiration && (!val.drugTestExpirationMonth || !val.drugTestExpirationYear)) {
+    //   let dateArr = val.drugTestExpiration.split('-')
+    //   this.currentUser.drugTestExpirationMonth = Number(dateArr[1])
+    //   this.currentUser.drugTestExpirationYear = Number(dateArr[0])
+    // }
+    this.currentUserAsDriver = Object.assign(
+      {},
+      this.currentUserAsDriver,
+      updatedUser
+    )
   }
 
   async setVehicleTypes(): Promise<void> {
-    console.log('> setVehicleTypes')
     let response: AxiosResponse
     try {
       response = await getVehicleTypes({})
-      console.log('> response:', response)
       const { data } = response
       this.vehicleTypes = data.resultList
     } catch (e) {
@@ -400,19 +437,40 @@ export default class CompanyUsersEdit extends Vue {
     return ''
   }
 
-  updateVehicleTypes(e) {
-    this.currentUser.driverSupportedVehicles =
-      this.currentUser.driverSupportedVehicles || []
-
-    if (e.value === true) {
-      const type = this.currentUser?.driverSupportedVehicles?.find(
-        (type) => type.key === e.type.key
-      )
-      if (!type) {
-        this.currentUser.driverSupportedVehicles.push(e.type)
+  get vehicleTypeMap(): Record<number, SupportedVehicleType> {
+    let map: Record<number, SupportedVehicleType> = {}
+    this.vehicleTypes.map((vt: VehicleType) => {
+      map[vt.id] = {
+        vehicleTypeId: vt.id,
+        label: vt.label,
+        supported: false,
       }
-    } else {
-      this.currentUser.driverSupportedVehicles.filter((t) => t.key !== e.type.key)
+    })
+
+    if (this.currentUserAsDriver.driverSupportedVehicles) {
+      const supportedVehicles = this.currentUserAsDriver.driverSupportedVehicles
+      supportedVehicles.map((st: SupportedVehicleType) => {
+        if (map[st.vehicleTypeId]) {
+          map[st.vehicleTypeId].supported = st.supported
+        }
+    //     if (map[st.vehicleTypeId]) {
+    //       map[st.vehicleTypeId].supported = st.supported
+    //     }
+      })
+    }
+
+
+    return map
+  }
+
+  updateVehicleTypes(vehicleTypeId: number, value: boolean): void {
+    const supportedTypes =
+      this.currentUserAsDriver.driverSupportedVehicles || []
+    const matchingType = supportedTypes.find(
+      (t) => t.vehicleTypeId === vehicleTypeId
+    )
+    if (matchingType) {
+      matchingType.supported = value
     }
   }
 

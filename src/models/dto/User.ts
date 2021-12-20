@@ -1,4 +1,4 @@
-import { ApiResult, VehicleType } from '.'
+import { ApiResult, SupportedVehicleType, VehicleType } from '.'
 import { Company } from './Company'
 
 export interface UserDetail {
@@ -77,5 +77,5 @@ export interface UserDetailDriver extends UserDetail {
   phoneNumber: string
   notes?: string
   timeZone?: string
-  driverSupportedVehicles: VehicleType[]
+  driverSupportedVehicles: SupportedVehicleType[]
 }

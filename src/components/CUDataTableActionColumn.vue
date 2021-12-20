@@ -75,6 +75,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { ActionColumn } from '@/models/ActionColumn'
+import { AxiosResponse } from 'axios'
 
 @Component
 export default class CUDataTableActionColumn extends Vue {

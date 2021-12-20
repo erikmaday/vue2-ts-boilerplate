@@ -4,6 +4,9 @@ import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
 import { UserDetail } from '@/models/dto/User'
 import { UserResult } from '@/models/dto/UserResult'
+import { RoleResult } from '@/models/dto/RoleResult'
+import { DriverResult } from '@/models/dto/DriverResult'
+import { ApiResult } from '@/models/dto/ApiResult'
 
 const httpService: HttpService = new HttpService()
 
@@ -23,19 +26,19 @@ export default {
       }`
     )
   },
-  byId(userId: number): Promise<AxiosResponse<UserResult>> {
+  byId(userId: number): Promise<AxiosResponse<UserDetail>> {
     return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
   },
   delete(userId: number): Promise<AxiosResponse> {
     return httpService.delete(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
   },
-  getRoles(userId: number) {
+  getRoles(userId: number): Promise<AxiosResponse<RoleResult>> {
     const host = apiBaseUrl()
     const url = `https://${host}/user/roles/${userId}`
 
     return httpService.get(url)
   },
-  getDriverInfo(userId: number): Promise<AxiosResponse<UserResult>> {
+  getDriverById(userId: number): Promise<AxiosResponse<DriverResult>> {
     return httpService.get(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
   },
   setPassword(

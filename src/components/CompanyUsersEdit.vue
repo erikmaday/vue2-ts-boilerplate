@@ -255,7 +255,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import user from '@/services/user'
 import { getVehicleTypes } from '@/services/type'
-import { Driver, Group } from '@/models/dto'
+import { UserDetailDriver, Group } from '@/models/dto'
 import { AxiosResponse } from 'axios'
 import CUTextField from '@/components/CUTextField.vue'
 import CUSelect from '@/components/CUSelect.vue'
@@ -274,14 +274,14 @@ export default class CompanyUsersEdit extends Vue {
   states = states
   months = months
 
-  currentUser: Partial<Driver> = {
+  currentUser: Partial<UserDetailDriver> = {
     firstName: '',
     lastName: '',
     email: '',
     groupId: 1,
     userPhotoDTOs: [],
     licenseNumber: '',
-    driverSupportedTypes: []
+    driverSupportedVehicles: [],
   }
 
   isUserDriver = false
@@ -342,7 +342,7 @@ export default class CompanyUsersEdit extends Vue {
   }
 
   @Watch('currentUser', { immediate: true })
-  onUserChanged(val: Partial<Driver>) {
+  onUserChanged(val: Partial<UserDetailDriver>) {
     if (val.drugTestExpiration && (!val.drugTestExpirationMonth || !val.drugTestExpirationYear)) {
       let dateArr = val.drugTestExpiration.split('-')
       this.currentUser.drugTestExpirationMonth = Number(dateArr[1])
@@ -401,18 +401,18 @@ export default class CompanyUsersEdit extends Vue {
   }
 
   updateVehicleTypes(e) {
-    this.currentUser.driverSupportedTypes =
-      this.currentUser.driverSupportedTypes || []
+    this.currentUser.driverSupportedVehicles =
+      this.currentUser.driverSupportedVehicles || []
 
     if (e.value === true) {
-      const type = this.currentUser?.driverSupportedTypes?.find(
+      const type = this.currentUser?.driverSupportedVehicles?.find(
         (type) => type.key === e.type.key
       )
       if (!type) {
-        this.currentUser.driverSupportedTypes.push(e.type)
+        this.currentUser.driverSupportedVehicles.push(e.type)
       }
     } else {
-      this.currentUser.driverSupportedTypes.filter((t) => t.key !== e.type.key)
+      this.currentUser.driverSupportedVehicles.filter((t) => t.key !== e.type.key)
     }
   }
 

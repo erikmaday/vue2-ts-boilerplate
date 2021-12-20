@@ -7,4 +7,3 @@ export interface Driver {
   phoneNumber: number
   userId: number
 }
-

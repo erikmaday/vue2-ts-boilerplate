@@ -2,7 +2,7 @@ import { apiBaseUrl } from '@/utils/env'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
-import { User } from '@/models/dto/User'
+import { UserDetail } from '@/models/dto/User'
 import { UserResult } from '@/models/dto/UserResult'
 
 const httpService: HttpService = new HttpService()

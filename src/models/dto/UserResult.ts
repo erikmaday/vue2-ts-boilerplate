@@ -1,5 +1,5 @@
-import { ApiResult, User } from '.'
+import { ApiResult, UserDetail } from '.'
 
 export interface UserResult extends ApiResult {
-  user: User
+  user: UserDetail
 }

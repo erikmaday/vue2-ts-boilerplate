@@ -2,7 +2,7 @@ import { apiBaseUrl } from '@/utils/env'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
-import { User } from '@/models/dto/User'
+import { UserDetail } from '@/models/dto/User'
 import { UserResult } from '@/models/dto/UserResult'
 
 const httpService: HttpService = new HttpService()
@@ -13,7 +13,7 @@ export default {
     page,
     sorts,
     filters,
-  }: TableViewParameters): Promise<AxiosResponse<TableViewResult<User>>> {
+  }: TableViewParameters): Promise<AxiosResponse<TableViewResult<UserDetail>>> {
     return httpService.get(
       `https://${apiBaseUrl()}/tables/users?${
         (pageSize ? `pageSize=${pageSize}&` : '') +

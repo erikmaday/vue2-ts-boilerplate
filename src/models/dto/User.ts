@@ -1,23 +1,23 @@
 import { ApiResult, VehicleType } from '.'
 import { Company } from './Company'
 
-export interface User {
-  userId: number
+export interface UserDetail {
+  active: boolean
+  userId?: number
   firstName: string
   lastName: string
   email: string
-  groupName: string
   groupId: number
+  groupName?: string
   companyId: number
-  locale: string
-  timeZone?: string
   companyName: string
-  company: Company
-  group: Group
-  active: boolean
-  isSignedUp: boolean
   userPhotoDTOs: UserPhoto[]
   userRoleNames: string[]
+  company?: Company
+  linkedAccountProfileId?: number
+  isRA?: boolean
+  isSDR?: boolean
+  locale?: string
 }
 
 export interface UserPhoto {
@@ -60,18 +60,22 @@ export interface UserAuthPayload {
 }
 export interface UserAuthResult extends ApiResult {
   token: string
-  user: User
+  user: UserDetail
 }
 
-export interface Driver extends User {
+export interface UserDetailDriver extends UserDetail {
   drugTestNumber: string
   drugTestExpiration: string
   drugTestExpirationMonth?: number
   drugTestExpirationYear?: number
+  group?: Group
+  isSignedUp?: boolean
+  licensState: string
   licenseNumber: string
   licenseExpirationMonth: number
   licenseExpirationYear: number
   phoneNumber: string
-  notes: string
-  driverSupportedTypes: VehicleType[]
+  notes?: string
+  timeZone?: string
+  driverSupportedVehicles: VehicleType[]
 }

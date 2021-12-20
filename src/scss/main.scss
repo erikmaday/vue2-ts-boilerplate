@@ -147,6 +147,9 @@
   .v-text-field {
     margin-bottom: 0px;
 
+    input[type=password] {
+      font-size: 24px;
+    }
 
     &.v-input--is-disabled fieldset {
       background: $gray-lighter;

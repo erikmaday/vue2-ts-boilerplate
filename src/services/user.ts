@@ -24,7 +24,7 @@ export default {
     )
   },
   byId(userId: number): Promise<AxiosResponse<UserResult>> {
-    return httpService.get(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
+    return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
   },
   delete(userId: number): Promise<AxiosResponse> {
     return httpService.delete(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
@@ -34,5 +34,20 @@ export default {
     const url = `https://${host}/user/roles/${userId}`
 
     return httpService.get(url)
+  },
+  getDriverInfo(userId: number): Promise<AxiosResponse<UserResult>> {
+    return httpService.get(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
+  },
+  setPassword(
+    userId: number,
+    password: string
+  ): Promise<AxiosResponse<UserResult>> {
+    return httpService.post(
+      `https://${apiBaseUrl()}/users/admin-set-password/`,
+      {
+        id: String(userId),
+        password,
+      }
+    )
   },
 }

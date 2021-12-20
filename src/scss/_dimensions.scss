@@ -46,7 +46,7 @@ $dimensions: map-merge(
   )
 );
 $i: 16;
-@while $i <= 404 {
+@while $i <= 800 {
   $dimensions: map-merge(
     $dimensions,
     (

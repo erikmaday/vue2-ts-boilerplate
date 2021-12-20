@@ -66,6 +66,8 @@ export interface UserAuthResult extends ApiResult {
 export interface Driver extends User {
   drugTestNumber: string
   drugTestExpiration: string
+  drugTestExpirationMonth?: number
+  drugTestExpirationYear?: number
   licenseNumber: string
   licenseExpirationMonth: number
   licenseExpirationYear: number

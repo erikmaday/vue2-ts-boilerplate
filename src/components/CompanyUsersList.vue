@@ -22,6 +22,7 @@ import user from '@/services/user'
 import { User } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
+import { AxiosResponse } from 'axios'
 
 @Component({
   components: { CUDataTable, CUCollectionTable },
@@ -62,8 +63,8 @@ export default class CompanyUsers extends Vue {
       icon: 'trash',
       confirmModal: true,
       confirmModalText: 'Are you sure you want to delete this user?',
-      action: (row: User): void => {
-        user.delete(row.userId)
+      action: (row: User) => {
+        return user.delete(row.userId)
       },
     },
   ]

@@ -137,6 +137,11 @@
   .v-text-field {
     margin-bottom: 0px;
 
+    .v-input__prepend-inner {
+      z-index: 5;
+      margin-top: 13px;
+    }
+
     &:not(.v-input--is-focused) {
       .v-input__control {
         > .v-input__slot {

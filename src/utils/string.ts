@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import { Stop } from '@/models/dto'
+import { ReservationDetailStop, Stop } from '@/models/dto'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -107,7 +107,12 @@ export const formatStopAddress = (stop: ReservationDetailStop): string => {
   const street2IsPresent = address.street2 && address.street2 !== ' '
 
   let addressString = ''
-  if (!street1IsPresent && !street2IsPresent && address.title) {
+  if (
+    !street1IsPresent &&
+    !street2IsPresent &&
+    address.title &&
+    address.title !== address.city
+  ) {
     addressString = `${address.title}`
   } else {
     if (street1IsPresent) {

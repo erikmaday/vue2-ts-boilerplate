@@ -10,6 +10,7 @@
           'shadow-right': $vuetify.breakpoint.smAndUp,
         }"
         class="padding-a-6 z-3"
+        style="overflow-y: scroll; height: calc(100vh - 68px)"
       >
         <slot name="sidebar" />
       </v-col>
@@ -19,17 +20,24 @@
     </v-row>
     <v-row
       v-if="$vuetify.breakpoint.xsOnly"
-      class="margin-x-0 margin-t-n8 padding-y-1 margin-b-0 justify-center z-4"
+      class="
+        margin-x-0 margin-t-n8
+        padding-y-1
+        margin-b-0
+        justify-center
+        z-4
+        background-white
+      "
     >
       <CUIcon
-        class="text-black"
+        class="text-black cursor-pointer"
         :class="{ 'opacity-25': !showPanel }"
         @click="mobileShowMap = false"
       >
         dot
       </CUIcon>
       <CUIcon
-        class="text-black"
+        class="text-black cursor-pointer"
         :class="{ 'opacity-25': !showMap }"
         @click="mobileShowMap = true"
       >

@@ -59,11 +59,11 @@ export default class BookingDetailMap extends Vue {
   }
 
   async plotRoute(): Promise<void> {
-    const routeLineOptions = new this.google.maps.Polyline({
+    const routeLineOptions = {
       strokeColor: this.$vuetify.theme.themes.light.primary,
       strokeOpacity: 1.0,
       strokeWeight: 3,
-    })
+    }
     const directionsService = new this.google.maps.DirectionsService()
     const directionsRenderer = new this.google.maps.DirectionsRenderer({
       polylineOptions: routeLineOptions,

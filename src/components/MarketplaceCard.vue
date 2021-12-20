@@ -22,7 +22,7 @@
       <p class="font-14 margin-t-0 margin-b-3">
         {{ formattedStartDateTime }}
       </p>
-      <div class="d-flex align-center">
+      <div class="d-flex align-start">
         <CUIcon class="text-gray-mid-light margin-r-2">directions_bus</CUIcon>
         <span
           v-for="(requiredVehicle, requiredVehicleIndex) in requiredVehicles"
@@ -56,7 +56,7 @@ import { ColoredMessage } from '@/models/ColoredMessage'
 import { RequiredVehicle, Stop, Trip } from '@/models/dto'
 
 import { pluralize } from '@/utils/string'
-import { timeDifferenceToObject, timeObjectToString } from '@/utils/time'
+import { timeDifferenceAsObject, timeObjectToString } from '@/utils/time'
 
 @Component
 export default class MarketplaceCard extends Vue {
@@ -67,7 +67,7 @@ export default class MarketplaceCard extends Vue {
   get actionMessage(): ColoredMessage {
     const now = this.$dayjs.utc()
     const expiration = this.$dayjs(this.trip.biddingEndDate)
-    const diff = timeDifferenceToObject(now, expiration)
+    const diff = timeDifferenceAsObject(now, expiration)
 
     return {
       text: `Expires in ${timeObjectToString(diff)}`,

@@ -1,41 +1,39 @@
 <template>
   <MapWithSidebar>
     <template v-slot:sidebar>
-      <div>Bid Detail {{ id }}</div>
-      <!-- <div v-if="trip">{{ trip }}</div> -->
-      <p>{{ firstPickupCity }}>{{ firstDropoffCity }}</p>
-      <p>{{ formattedStartDateTime }}</p>
-      <CUItinerary v-if="stops">
-        <CUItineraryItem
-          v-for="(stop, stopIndex) in stops"
-          :key="`stop-${stopIndex}-${stop.stopId}`"
-          :in-progress="stopIndex === 0"
-          :upcoming="stopIndex !== stops.length - 1 && stopIndex !== 0"
-          :last-stop="stopIndex === stops.length - 1"
-        >
-          <div class="padding-l-4 padding-b-4">
-            <p class="font-medium margin-t-0">{{ formatStopAddress(stop) }}</p>
-            <p v-if="stop.dropoffDatetime" class="text-gray-light margin-t-0">
-              Estimated arrival:
-              {{ formatDropoffTime(stop) }}
-            </p>
-            <p v-if="stop.pickupDatetime" class="text-gray-light margin-t-0">
-              Departure time:
-              {{ formatPickupTime(stop) }}
-            </p>
-          </div>
-        </CUItineraryItem>
-      </CUItinerary>
+      <v-row>
+        <v-col class="shrink padding-r-0">
+          <CUIcon
+            color="primary"
+            class="margin-t-1 cursor-pointer"
+            @click="goBack"
+          >
+            arrow_left
+          </CUIcon>
+        </v-col>
+        <v-col v-if="trip" class="grow padding-r-10">
+          <BidDetailHeader :trip="trip" />
+          <BidDetailItinerary class="margin-t-8" :trip="trip" />
+          <BidDetailTripNumbers class="margin-t-6" :trip="trip" />
+          <BidDetailNotes class="margin-t-8" :trip="trip" />
+          <v-divider class="margin-t-8" />
+          <BidDetailActions class="margin-t-8" :trip="trip" />
+        </v-col>
+      </v-row>
     </template>
-    <template v-slot:map></template>
+    <template v-slot:map><BidDetailMap v-if="trip" :trip="trip" /></template>
   </MapWithSidebar>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import MapWithSidebar from '@/layouts/MapWithSidebar.vue'
-import CUItinerary from '@/components/CUItinerary.vue'
-import CUItineraryItem from '@/components/CUItineraryItem.vue'
+import BidDetailHeader from '@/components/BidDetailHeader.vue'
+import BidDetailItinerary from '@/components/BidDetailItinerary.vue'
+import BidDetailTripNumbers from '@/components/BidDetailTripNumbers.vue'
+import BidDetailNotes from '@/components/BidDetailNotes.vue'
+import BidDetailActions from '@/components/BidDetailActions.vue'
+import BidDetailMap from '@/components/BidDetailMap.vue'
 import trip from '@/services/trip'
 import { Stop, Trip } from '@/models/dto'
 import {
@@ -43,7 +41,18 @@ import {
   formatPickupTime,
   formatStopAddress,
 } from '@/utils/string'
-@Component({ components: { MapWithSidebar, CUItinerary, CUItineraryItem } })
+import app from '@/store/modules/app'
+@Component({
+  components: {
+    MapWithSidebar,
+    BidDetailHeader,
+    BidDetailItinerary,
+    BidDetailTripNumbers,
+    BidDetailNotes,
+    BidDetailActions,
+    BidDetailMap,
+  },
+})
 export default class BidDetail extends Vue {
   id: number | null = null
   trip: Trip = null
@@ -61,15 +70,13 @@ export default class BidDetail extends Vue {
 
   async refresh(): Promise<void> {
     await this.getTrip()
-    // this.getTripAssignments()
-    // this.getTrip()
   }
 
   async getTrip(): Promise<void> {
     try {
       if (this.id) {
         const tripResponse = await trip.byId(this.id)
-        this.trip = tripResponse.data.trip
+        this.trip = this.processTrip(tripResponse.data.trip)
       } else {
         this.notFound = true
         return
@@ -81,23 +88,21 @@ export default class BidDetail extends Vue {
     }
   }
 
+  processTrip(trip: Trip): Trip {
+    trip.stops = this.sortStopsByOrderIndex(trip.stops)
+    return trip
+  }
+
+  sortStopsByOrderIndex(stops: Stop[]): Stop[] {
+    return stops.sort((a, b) => a.orderIndex - b.orderIndex)
+  }
+
+  goBack(): void {
+    this.$router.push(app.getLastRoute)
+  }
+
   get stops(): Stop[] {
     return this.trip?.stops
-  }
-
-  get firstPickupCity(): string {
-    return this.trip?.stops[0].address.city
-  }
-
-  get firstDropoffCity(): string {
-    return this.trip?.stops[1].address.city || this.firstPickupCity
-  }
-
-  get formattedStartDateTime(): string {
-    const datetime = this.$dayjs(this.trip.startDate).tz(
-      this.trip?.stops[0].address.timeZone
-    )
-    return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
   }
 }
 </script>

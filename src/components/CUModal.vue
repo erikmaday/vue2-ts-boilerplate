@@ -20,11 +20,11 @@
 </template>
 
 <script lang="ts">
-import { Model, Prop, Vue, Component } from 'vue-property-decorator'
+import { Model, Prop, Watch, Vue, Component } from 'vue-property-decorator'
 
 @Component
 export default class CUModal extends Vue {
-  @Model('input') readonly isDialogOpen!: boolean | null
+  @Model('input') readonly value!: boolean | null
   @Prop({
     type: String,
     required: false,
@@ -37,5 +37,15 @@ export default class CUModal extends Vue {
     default: '500px',
   })
   maxWidth!: string
+  @Watch('isDialogOpen')
+  isDialogOpenChanged(value: boolean): void {
+    this.$emit('input', value)
+  }
+  @Watch('value')
+  valueChanged(value: boolean): void {
+    this.isDialogOpen = value
+  }
+
+  isDialogOpen = false
 }
 </script>

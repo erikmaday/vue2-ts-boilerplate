@@ -39,7 +39,7 @@
         </v-col>
       </v-row>
     </v-col>
-    <CUModal :is-dialog-open="isDialogOpen">
+    <CUModal v-model="isDialogOpen">
       <template #title>Add Comment</template>
       <template #text>
         <v-textarea v-model="newComment" auto-grow outlined></v-textarea>

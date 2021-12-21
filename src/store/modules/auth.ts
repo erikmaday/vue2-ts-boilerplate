@@ -77,7 +77,7 @@ class AuthModule extends VuexModule {
   }
 
   @Action
-  async getUserV2() {
+  async getUserDetail() {
     if (!this.user.userId) {
       return
     }

@@ -41,13 +41,8 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import CUIcon from '@/components/CUIcon.vue'
 
-@Component({
-  components: {
-    CUIcon,
-  },
-})
+@Component
 export default class MapWithSidebar extends Vue {
   mobileShowMap = false
 

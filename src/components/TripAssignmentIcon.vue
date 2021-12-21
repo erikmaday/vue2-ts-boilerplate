@@ -31,13 +31,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import CUIcon from '@/components/CUIcon.vue'
 
-@Component({
-  components: {
-    CUIcon,
-  },
-})
+@Component
 export default class TripAssignmentIcon extends Vue {
   @Prop({ required: false }) readonly imageSource?: string
   @Prop({ required: false }) readonly iconName?: string

@@ -3,6 +3,7 @@
 @import './mixins';
 @import './_dimensions';
 @import './_pseudoclasses';
+@import './variables';
 // ALL HELPER CLASSES LIVE HERE
 
 // FONT
@@ -69,7 +70,7 @@ $base-class: 'cursor';
   );
 }
 
-// WORD BREAK 
+// WORD BREAK
 // .wb-normal, .wb-break-all...
 $word-breaks: normal, break-all, keep-all, break-word, initial, inherit;
 $base-class: 'wb';
@@ -184,7 +185,7 @@ $base-class: 'border';
 
 // BORDER RADIUS
 $border-radius-map: (
-  '0': 0,
+  'none': 0,
   '1': 1px,
   '2': 2px,
   '3': 3px,
@@ -193,7 +194,16 @@ $border-radius-map: (
   '8': 8px,
   '12': 12px,
   'round': 50%,
+  'regular': $border-radius-root,
+  '2x': $border-radius-root * 2,
 );
+$border-radius-directions: (
+  'top-left',
+  'top-right',
+  'bottom-right',
+  'bottom-left'
+);
+
 $base-class: 'border-radius';
 @include map-to-helpers(
   $base-class,
@@ -202,6 +212,17 @@ $base-class: 'border-radius';
   $pseudo-classes,
   true
 );
+
+@each $border-radius-direction in $border-radius-directions {
+  @include map-to-helpers(
+    $base-class,
+    $border-radius-map,
+    'border-#{$border-radius-direction}-radius',
+    $pseudo-classes,
+    true,
+    $prefix: '-#{$border-radius-direction}-'
+  );
+}
 
 // BACKGROUND
 // .background-#{color} for every color in our color library
@@ -255,20 +276,6 @@ $base-class: 'h';
 .shrink {
   flex-shrink: 1 !important;
 }
-
-// BORDER RADIUS
-$border-radius-values: (
-  'none': 0,
-  'regular': $border-radius-root,
-);
-$base-class: 'border-radius';
-@include map-to-helpers(
-  $base-class,
-  $border-radius-values,
-  $base-class,
-  $pseudo-classes,
-  true
-);
 
 // TRANSITION
 $milliseconds: 50;

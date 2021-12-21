@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card @click="goToBooking" class="border-radius-2x">
     <v-card-text class="padding-a-4">
       <p class="font-medium margin-t-0">
         {{ reservation.firstPickupAddress.city }}
@@ -37,7 +37,6 @@ import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
 import { Reservation } from '@/models/dto'
 import { ReferralStatus } from '@/utils/enum'
 import { roundedCurrencyFilter } from '@/utils/string'
-import dayjs from 'dayjs'
 
 @Component({
   components: {
@@ -56,7 +55,7 @@ export default class BookingCard extends Vue {
   }
 
   get needsAcceptance(): boolean {
-    return this.reservation.referralStatus === ReferralStatus.Offered
+    return this.reservation?.referralStatus === ReferralStatus.Offered
   }
 
   get actionMessage(): string | null {
@@ -70,8 +69,7 @@ export default class BookingCard extends Vue {
   }
 
   get formattedStartDateTime(): string {
-    const datetime = dayjs(
-      this.reservation.startDate,
+    const datetime = this.$dayjs(this.reservation.startDate).tz(
       this.reservation.firstStopAddressTimeZone
     )
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
@@ -79,6 +77,13 @@ export default class BookingCard extends Vue {
 
   get price(): string {
     return roundedCurrencyFilter(this.reservation.customerTotal)
+  }
+
+  goToBooking(): void {
+    this.$router.push({
+      name: 'booking-detail',
+      params: { id: this.reservation.reservationId },
+    })
   }
 }
 </script>

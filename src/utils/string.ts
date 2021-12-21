@@ -1,3 +1,5 @@
+import { ReservationDetailStop } from '@/models/dto'
+
 export const toKebab = (string: string): string => {
   return string
     .split('')
@@ -67,10 +69,6 @@ export const roundedCurrencyFilter = (input: number): string => {
   return `${currencyFilter(Math.round(input)).split('.')[0]}`
 }
 
-export const numberWithCommas = (number: number): string => {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-}
-
 export const phoneFormatFilter = (input: string): string => {
   const inp = input.replace(/[^0-9]/gi, '')
 
@@ -79,4 +77,48 @@ export const phoneFormatFilter = (input: string): string => {
   }
 
   return `(${inp.substring(0, 3)}) ${inp.substring(3, 6)}-${inp.substring(6)}`
+}
+
+export const truncate = (
+  string: string,
+  numCharacters: number,
+  endOnFullWord: boolean
+): string => {
+  if (string.length <= numCharacters) {
+    return string
+  }
+  const subString = string.substr(0, numCharacters - 1)
+  return (
+    (endOnFullWord
+      ? subString.substr(0, subString.lastIndexOf(' '))
+      : subString) + '...'
+  )
+}
+
+export const formatStopAddress = (stop: ReservationDetailStop): string => {
+  const address = stop.address
+  const street1IsPresent = address.street1 && address.street1 !== ' '
+  const street2IsPresent = address.street2 && address.street2 !== ' '
+
+  let addressString = ''
+  if (!street1IsPresent && !street2IsPresent) {
+    addressString = `${address.title}`
+  } else {
+    if (street1IsPresent) {
+      addressString = `${address.street1}`
+    }
+    if (street2IsPresent) {
+      addressString = `${addressString} ${address.street2}`
+    }
+  }
+  if (address.city) {
+    if (addressString.length) {
+      addressString = `${addressString},`
+    }
+    addressString = `${addressString} ${address.city}`
+  }
+  if (address.state) {
+    addressString = `${addressString}, ${address.state}`
+  }
+  return addressString
 }

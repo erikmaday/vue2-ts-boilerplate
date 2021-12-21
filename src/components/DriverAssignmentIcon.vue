@@ -22,7 +22,7 @@ export default class DriverAssignmentIcon extends Vue {
   get image(): string | null {
     if (this.driverAssignment) {
       //TODO: figure out where to pull the vehicle image from
-      return 'https://pbs.twimg.com/profile_images/1267507368830664705/ErirCXMq_400x400.jpg'
+      return 'https://picsum.photos/100/100'
     }
     return null
   }

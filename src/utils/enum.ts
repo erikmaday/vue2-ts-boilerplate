@@ -28,3 +28,9 @@ export enum ReferralStatus {
   Accepted = 'accepted',
   Rejected = 'rejected',
 }
+
+export enum PaymentStatus {
+  NotPaid = 'not_paid',
+  PartiallyPaid = 'partially_paid',
+  FullyPaid = 'fully_paid',
+}

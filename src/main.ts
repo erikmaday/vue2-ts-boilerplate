@@ -6,7 +6,12 @@ import vuetify from './plugins/vuetify'
 import modules from './store/modules'
 import '@/scss/main.scss'
 import i18n from './i18n'
+import '@/plugins/gmaps'
+import VueDayjs from '@/plugins/dayjs'
+import CUIcon from '@/components/CUIcon.vue'
 
+Vue.use(VueDayjs)
+Vue.component('CUIcon', CUIcon)
 Vue.config.productionTip = false
 
 new Vue({

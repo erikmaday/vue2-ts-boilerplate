@@ -2,33 +2,40 @@
   <v-dialog
     v-model="isDialogOpen"
     :fullscreen="$vuetify.breakpoint.xs"
-    width="500px"
-    max-width="500px"
+    :width="width"
+    :max-width="maxWidth"
   >
     <v-card>
       <v-card-title class="background-primary text-white font-medium">
-        <slot name="title"></slot>
+        <slot name="title" />
       </v-card-title>
       <v-card-text>
-        <slot name="text"></slot>
+        <slot name="text" />
       </v-card-text>
       <v-card-actions>
-        <slot name="buttons"></slot>
+        <slot name="actions" />
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { Prop, Vue, Component } from 'vue-property-decorator'
+import { Model, Prop, Vue, Component } from 'vue-property-decorator'
 
 @Component
 export default class CUModal extends Vue {
+  @Model('input') readonly isDialogOpen!: boolean | null
   @Prop({
-    type: Boolean,
+    type: String,
     required: false,
-    default: false,
+    default: '500px',
   })
-  isDialogOpen!: boolean
+  width!: string
+  @Prop({
+    type: String,
+    required: false,
+    default: '500px',
+  })
+  maxWidth!: string
 }
 </script>

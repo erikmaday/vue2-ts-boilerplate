@@ -40,15 +40,17 @@
       </v-row>
     </v-col>
     <CUModal :is-dialog-open="isDialogOpen">
-      <template v-slot:title>Add Comment</template>
-      <template v-slot:text>
+      <template #title>Add Comment</template>
+      <template #text>
         <v-textarea v-model="newComment" auto-grow outlined></v-textarea>
       </template>
-      <template v-slot:buttons>
+      <template #actions>
+        <v-spacer />
         <v-btn color="primary" small text @click="cancelAddComment">
           Cancel
         </v-btn>
         <v-btn color="primary" small @click="submitComment">Save</v-btn>
+        <v-spacer />
       </template>
     </CUModal>
   </v-row>
@@ -58,11 +60,8 @@
 import { ReservationDetail, ReservationDetailComment } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import reservation from '@/services/reservation'
-import CUModal from '@/components/CUModal.vue'
 
-@Component({
-  components: { CUModal },
-})
+@Component
 export default class BookingDetailComments extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
 

@@ -39,27 +39,18 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-dialog
-      v-model="isDialogOpen"
-      :fullscreen="$vuetify.breakpoint.xs"
-      width="500px"
-      max-width="500px"
-    >
-      <v-card>
-        <v-card-title class="background-primary text-white font-medium">
-          Add Comment
-        </v-card-title>
-        <v-card-text>
-          <v-textarea v-model="newComment" auto-grow outlined></v-textarea>
-        </v-card-text>
-        <v-card-actions class="d-flex justify-center">
-          <v-btn color="primary" small text @click="cancelAddComment">
-            Cancel
-          </v-btn>
-          <v-btn color="primary" small @click="submitComment">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <CUModal :is-dialog-open="isDialogOpen">
+      <template v-slot:title>Add Comment</template>
+      <template v-slot:text>
+        <v-textarea v-model="newComment" auto-grow outlined></v-textarea>
+      </template>
+      <template v-slot:buttons>
+        <v-btn color="primary" small text @click="cancelAddComment">
+          Cancel
+        </v-btn>
+        <v-btn color="primary" small @click="submitComment">Save</v-btn>
+      </template>
+    </CUModal>
   </v-row>
 </template>
 
@@ -67,8 +58,11 @@
 import { ReservationDetail, ReservationDetailComment } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import reservation from '@/services/reservation'
+import CUModal from '@/components/CUModal.vue'
 
-@Component
+@Component({
+  components: { CUModal },
+})
 export default class BookingDetailComments extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
 

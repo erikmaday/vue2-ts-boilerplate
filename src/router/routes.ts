@@ -86,9 +86,17 @@ export const routes: RouteConfig[] = [
                     name: 'garages',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/CompanyGarages.vue'
+                        /* webpackChunkName: "company-garages-list" */ '@/components/CompanyGarages.vue'
                       ),
                   },
+                  {
+                    path: 'edit/:id', 
+                    name: 'garages.edit', 
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyGaragesEdit.vue'
+                      ),
+                  }
                 ],
               },
               {

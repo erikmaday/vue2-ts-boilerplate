@@ -61,7 +61,15 @@ export const routes: RouteConfig[] = [
                     name: 'vehicles',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/CompanyVehicles.vue'
+                        /* webpackChunkName: "company-vehicles-list" */ '@/components/CompanyVehicles.vue'
+                      ),
+                  },
+                  {
+                    path: 'edit/:id',
+                    name: 'vehicles.edit',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-vehicles-edit" */ '@/components/CompanyVehicles.vue'
                       ),
                   },
                 ],

@@ -36,9 +36,7 @@
           "
         >
           <div
-            v-for="(col, colIndex) in columns.filter(
-              (col) => col.type !== 'details'
-            )"
+            v-for="(col, colIndex) in columns"
             :key="`column-${col.value}-${colIndex}-${index}`"
           >
             <CUDataTableCell

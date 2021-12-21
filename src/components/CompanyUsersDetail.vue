@@ -1,8 +1,19 @@
 <template>
   <div>
     <v-container>
-      <v-row justify="space-between" class="padding-b-6 padding-x-3">
-        <h1 class="padding-b-5">{{ headerTitle }}</h1>
+      <v-row
+        justify-sm="space-between"
+        justify="center"
+        class="padding-b-6 padding-x-3"
+      >
+        <h1
+          class="padding-b-5"
+          :class="{
+            'w-full text-center': $vuetify.breakpoint.xs,
+          }"
+        >
+          {{ headerTitle }}
+        </h1>
         <span>
           <v-btn
             class="margin-x-2"
@@ -46,7 +57,13 @@
       </v-row>
       <v-form :disabled="mode === 'view'" ref="form" lazy-validation>
         <v-row>
-          <v-col cols="4">
+          <v-col
+            cols="12"
+            md="4"
+            :class="{
+              'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
+            }"
+          >
             <div class="user-photo">
               <div class="user-photo__src">
                 <img
@@ -81,7 +98,7 @@
               </div>
             </div>
           </v-col>
-          <v-col cols="8">
+          <v-col cols="12" md="8">
             <v-row>
               <v-col cols="6" class="py-0">
                 <CUTextField
@@ -136,7 +153,7 @@
                 class="background-gray-header border-radius-5 padding-a-5"
               >
                 <v-row>
-                  <v-col cols="6">
+                  <v-col cols="12" sm="6">
                     <CUTextField
                       v-model="currentUserAsDriver.phoneNumber"
                       :rules="[(val) => !!val || 'Phone Number is Required']"
@@ -155,13 +172,13 @@
                   "
                 ></div>
                 <v-row>
-                  <v-col cols="6">
+                  <v-col cols="12" sm="6">
                     <CUTextField
                       v-model="currentUserAsDriver.drugTestNumber"
                       label="Drug Test #"
                     />
                   </v-col>
-                  <v-col cols="3">
+                  <v-col cols="6" sm="3">
                     <CUSelect
                       v-model="currentUserAsDriver.drugTestExpirationMonth"
                       label="Exp. Month"
@@ -170,7 +187,7 @@
                       :items="months"
                     />
                   </v-col>
-                  <v-col cols="3">
+                  <v-col cols="6" sm="3">
                     <CUSelect
                       v-model="currentUserAsDriver.drugTestExpirationYear"
                       :items="years"
@@ -189,7 +206,7 @@
                   "
                 ></div>
                 <v-row>
-                  <v-col cols="6" class="padding-b-0">
+                  <v-col cols="12" sm="6" class="padding-b-0">
                     <CUTextField
                       label="License #"
                       v-model="currentUserAsDriver.licenseNumber"
@@ -198,14 +215,14 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="6" class="padding-t-0">
+                  <v-col cols="12" sm="6" class="padding-t-0">
                     <CUSelect
                       label="State"
                       :items="states"
                       v-model="currentUserAsDriver.licensState"
                     />
                   </v-col>
-                  <v-col cols="3" class="padding-t-0">
+                  <v-col cols="6" sm="3" class="padding-t-0">
                     <CUSelect
                       label="Exp. Month"
                       item-text="short"
@@ -214,7 +231,7 @@
                       v-model="currentUserAsDriver.licenseExpirationMonth"
                     />
                   </v-col>
-                  <v-col cols="3" class="padding-t-0">
+                  <v-col cols="6" sm="3" class="padding-t-0">
                     <CUSelect
                       :items="years"
                       label="Exp. Year"
@@ -248,7 +265,8 @@
                   <v-col
                     v-for="([key, type], vti) in Object.entries(vehicleTypeMap)"
                     :key="`vehicle-type-${key}-${vti}`"
-                    cols="4"
+                    cols="6"
+                    sm="4"
                   >
                     <v-checkbox
                       class="padding-a-0 margin-a-0"
@@ -266,6 +284,7 @@
                 <v-btn
                   v-show="this.mode !== 'view'"
                   small
+                  :class="{ 'w-full': $vuetify.breakpoint.smAndDown }"
                   color="primary"
                   @click="submit"
                 >

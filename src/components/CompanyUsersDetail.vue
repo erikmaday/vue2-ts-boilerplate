@@ -72,12 +72,12 @@
                 </template>
               </div>
               <div v-show="mode !== 'view'" class="user-photo__upload-group">
-                <button class="user-photo__upload-btn" @click="uploadFile">
+                <button class="user-photo__upload-btn" @click="uploadUserPhoto">
                   <CUIcon color="white" width="24px" height="24px">
                     upload
                   </CUIcon>
                 </button>
-                <input type="file" accept="image/*" @change="uploadFile" />
+                <input type="file" accept="image/*" @change="uploadUserPhoto" />
               </div>
             </div>
           </v-col>
@@ -106,7 +106,9 @@
                   label="Email"
                   placeholder="ajones@gmail.com"
                   :rules="[(val) => !!val || 'Email is Required']"
+                  :disabled="mode === 'edit'"
                   v-model="currentUser.email"
+                  :error-messages="validationErrors.email"
                 />
               </v-col>
               <v-col cols="6" class="py-0">
@@ -137,6 +139,7 @@
                   <v-col cols="6">
                     <CUTextField
                       v-model="currentUserAsDriver.phoneNumber"
+                      :rules="[(val) => !!val || 'Phone Number is Required']"
                       label="Phone Number"
                     />
                   </v-col>
@@ -190,6 +193,7 @@
                     <CUTextField
                       label="License #"
                       v-model="currentUserAsDriver.licenseNumber"
+                      :rules="[(val) => !!val || 'License Number is Required']"
                     />
                   </v-col>
                 </v-row>
@@ -251,9 +255,7 @@
                       hide-details
                       :value="vehicleTypeMap[key].supported"
                       :label="type.label"
-                      @change="
-                        (e) => updateVehicleTypes({ type: type, value: e })
-                      "
+                      @change="(e) => updateVehicleTypes(key, e)"
                     />
                   </v-col>
                 </v-row>
@@ -261,7 +263,12 @@
             </v-expand-transition>
             <v-row>
               <v-col class="margin-t-7">
-                <v-btn v-show="this.mode !== 'view'" small color="primary" @click="submit">
+                <v-btn
+                  v-show="this.mode !== 'view'"
+                  small
+                  color="primary"
+                  @click="submit"
+                >
                   {{ this.mode === 'add' ? 'Add User' : 'Update User' }}
                 </v-btn>
               </v-col>
@@ -281,29 +288,49 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import user from '@/services/user'
-import auth from '@/store/modules/auth'
-import { getVehicleTypes } from '@/services/type'
-import { UserDetail, UserDetailDriver, Group, SupportedVehicleType, VehicleType } from '@/models/dto'
+import dayjs from 'dayjs'
 import { AxiosResponse } from 'axios'
+
 import CUTextField from '@/components/CUTextField.vue'
 import CUSelect from '@/components/CUSelect.vue'
-import CUIcon from '@/components/CUIcon.vue'
+import CompanyUsersChangePassword from '@/components/CompanyUsersChangePassword.vue'
+
 import { states } from '@/utils/states'
 import { months } from '@/utils/dates'
 import { apiBaseUrl } from '@/utils/env'
-import dayjs from 'dayjs'
-import CompanyUsersChangePassword from '@/components/CompanyUsersChangePassword.vue'
+
+import auth from '@/store/modules/auth'
+import user from '@/services/user'
+import { getVehicleTypes } from '@/services/type'
+import { userGroups } from '@/data/userGroups'
+import {
+  UserDetail,
+  UserDetailDriver,
+  SupportedVehicleType,
+  VehicleType,
+} from '@/models/dto'
 
 @Component({
-  components: { CUTextField, CUSelect, CUIcon, CompanyUsersChangePassword },
+  components: { CUTextField, CUSelect, CompanyUsersChangePassword },
 })
 export default class CompanyUsersEdit extends Vue {
   DRIVER_GROUP_ID = 4
-  
-  notFound = false
   states = states
   months = months
+  userGroups = userGroups
+
+  validationErrors = {
+    email: '',
+  }
+
+  vehicleTypes: VehicleType[] = []
+  years: number[] = []
+
+  notFound = false
+  treatAsDriver = false
+  changePasswordIsOpen = false
+  avatarLink = ''
+  uploadedPhoto: FormData | undefined = undefined
 
   currentUser: UserDetail = {
     firstName: '',
@@ -315,6 +342,8 @@ export default class CompanyUsersEdit extends Vue {
     companyId: auth.getUser.companyId,
     companyName: auth.getUser.companyName,
     userRoleNames: [],
+    treatAsDriver: false,
+    locale: 'en_US',
   }
 
   currentUserAsDriver: UserDetailDriver = {
@@ -336,22 +365,8 @@ export default class CompanyUsersEdit extends Vue {
     phoneNumber: '',
     notes: '',
     driverSupportedVehicles: [],
-  }
-
-  treatAsDriver = false
-  vehicleTypes: VehicleType[] = []
-  years: number[] = []
-  changePasswordIsOpen = false
-
-  get mode(): string {
-    switch (this.$route.name) {
-      case 'users.edit':
-        return 'edit'
-      case 'users.view':
-        return 'view'
-      default:
-        return 'add'
-    }
+    locale: 'en_US',
+    treatAsDriver: true,
   }
 
   mounted(): void {
@@ -367,10 +382,8 @@ export default class CompanyUsersEdit extends Vue {
     }
   }
 
-  // Get the user's roles
-  // If we determine that the user is a driver, pull the user info from the
-  // getDriverById endpoint
-  // Otherwise, use getUserByIdV2
+  // Get the user's roles. If we determine that the user is a driver,
+  // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2
   async getCurrentUser(): Promise<void> {
     try {
       if (this.$route.params.id) {
@@ -384,6 +397,7 @@ export default class CompanyUsersEdit extends Vue {
           const userResponseData = response.data.driver
           this.currentUser = userResponseData as UserDetail
           this.currentUserAsDriver = userResponseData
+          this.populateDrugExpirationDateInputs()
         } else {
           const response = await user.byId(Number(this.$route.params.id))
           const userResponseData = response.data
@@ -403,13 +417,24 @@ export default class CompanyUsersEdit extends Vue {
     }
   }
 
+  // We store drug expiration dates as a string, instead of
+  // as separate values like we do for license expirations
+  populateDrugExpirationDateInputs(): void {
+    if (
+      this.currentUserAsDriver.drugTestExpiration &&
+      (!this.currentUserAsDriver.drugTestExpirationMonth ||
+        !this.currentUserAsDriver.drugTestExpirationYear)
+    ) {
+      let dateArr = this.currentUserAsDriver.drugTestExpiration.split('-')
+      if (dateArr.length > 1) {
+        this.currentUserAsDriver.drugTestExpirationMonth = Number(dateArr[1])
+        this.currentUserAsDriver.drugTestExpirationYear = Number(dateArr[0])
+      }
+    }
+  }
+
   @Watch('currentUser', { immediate: true, deep: true })
-  onUserChanged(updatedUser: UserDetail): void {
-    // if (val.drugTestExpiration && (!val.drugTestExpirationMonth || !val.drugTestExpirationYear)) {
-    //   let dateArr = val.drugTestExpiration.split('-')
-    //   this.currentUser.drugTestExpirationMonth = Number(dateArr[1])
-    //   this.currentUser.drugTestExpirationYear = Number(dateArr[0])
-    // }
+  onCurrentUserChanged(updatedUser: UserDetail): void {
     this.currentUserAsDriver = Object.assign(
       {},
       this.currentUserAsDriver,
@@ -433,18 +458,6 @@ export default class CompanyUsersEdit extends Vue {
     }
   }
 
-  async setVehicleTypes(): Promise<void> {
-    let response: AxiosResponse
-    try {
-      response = await getVehicleTypes({})
-      const { data } = response
-      this.vehicleTypes = data.resultList
-    } catch (e) {
-      console.error(e)
-      return
-    }
-  }
-
   get headerTitle(): string {
     switch (this.mode) {
       case 'add':
@@ -456,17 +469,15 @@ export default class CompanyUsersEdit extends Vue {
     }
   }
 
-  avatarLink = ''
-
-  uploadFile(e) {
-    e.preventDefault()
-
-    const file = e.target.files[0]
-    this.avatarLink = URL.createObjectURL(file)
-
-    // const formData = new FormData()
-    // formData.append('file', file)
-    // this.uploadedFile = formData
+  get mode(): string {
+    switch (this.$route.name) {
+      case 'users.edit':
+        return 'edit'
+      case 'users.view':
+        return 'view'
+      default:
+        return 'add'
+    }
   }
 
   get userPhoto(): string {
@@ -497,112 +508,185 @@ export default class CompanyUsersEdit extends Vue {
         if (map[st.vehicleTypeId]) {
           map[st.vehicleTypeId].supported = st.supported
         }
-    //     if (map[st.vehicleTypeId]) {
-    //       map[st.vehicleTypeId].supported = st.supported
-    //     }
       })
     }
 
-
     return map
+  }
+
+  async setVehicleTypes(): Promise<void> {
+    let response: AxiosResponse
+    try {
+      response = await getVehicleTypes({})
+      const { data } = response
+      this.vehicleTypes = data.resultList
+
+      if (this.mode === 'add') {
+        this.currentUserAsDriver.driverSupportedVehicles =
+          this.vehicleTypes.map((vt) => ({
+            vehicleTypeId: vt.id,
+            label: vt.label,
+            supported: false,
+          }))
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+      return
+    }
+  }
+
+  // Not sure what type to cast the event as here
+  uploadUserPhoto(e: any): void {
+    e.preventDefault()
+    if (!e.target?.files[0]) return
+
+    const file = e.target.files[0]
+    this.avatarLink = URL.createObjectURL(file)
+    const formData = new FormData()
+    formData.append('file', file)
+    this.uploadedPhoto = formData
   }
 
   updateVehicleTypes(vehicleTypeId: number, value: boolean): void {
     const supportedTypes =
       this.currentUserAsDriver.driverSupportedVehicles || []
+
+    // .find() does not match with a triple === here
     const matchingType = supportedTypes.find(
-      (t) => t.vehicleTypeId === vehicleTypeId
+      (t) => t.vehicleTypeId == vehicleTypeId
     )
     if (matchingType) {
       matchingType.supported = value
     }
   }
 
-  // Probably should be extracted elsewhere instead of hardcoded here?
-  userGroups: Group[] = [
-    {
-      groupId: 1,
-      label: 'Admin',
-      key: 'admin',
-    },
-    {
-      groupId: 2,
-      label: 'User',
-      key: 'user',
-    },
-    {
-      groupId: 4,
-      label: 'Driver',
-      key: 'driver',
-    },
-  ]
+  prepareModelForSubmit(): void {
+    const { drugTestExpirationMonth: month, drugTestExpirationYear: year } =
+      this.currentUserAsDriver
+    if (month && year) {
+      this.currentUserAsDriver.drugTestExpiration = dayjs(
+        new Date(year, month, 1)
+      ).format('YYYY-MM-DD')
+    } else {
+      this.currentUserAsDriver.drugTestExpiration = undefined
+    }
+
+    this.currentUser.active = true
+    this.currentUser.treatAsDriver = this.treatAsDriver
+  }
+
+  // Return the user ID of the added user
+  async addNewUser(): Promise<number> {
+    const res = await user.checkIfEmailExists(this.currentUser.email)
+    if (res.data.exists) {
+      this.validationErrors.email = 'This email already exists.'
+      return -1
+    }
+    if (this.treatAsDriver) {
+      const newDriverResponse = await user.createDriver(
+        this.currentUserAsDriver
+      )
+      return newDriverResponse.data
+    } else {
+      const newUserResponse = await user.createUser(this.currentUser)
+      return newUserResponse.data
+    }
+  }
+
+  async editExistingUser(): Promise<number> {
+    const userId = Number(this.$route.params.id)
+
+    if (this.treatAsDriver) {
+      await user.makeDriver(userId)
+      await user.updateDriver(userId, this.currentUserAsDriver)
+    } else {
+      await user.deactivateDriver(userId)
+      await user.updateUser(userId, this.currentUser)
+    }
+
+    return userId
+  }
+
+  resetFormValidation(): void {
+    this.validationErrors = {
+      email: '',
+    }
+  }
 
   async submit(): Promise<void> {
-    // Casting this prevents a TS error calling .validate()
+    this.resetFormValidation()
+
+    // Casting a ref to `any` prevents a TS error when calling .validate()
     const form: any = this.$refs.form
     if (!form.validate()) {
       return
     }
 
+    this.prepareModelForSubmit()
+
+    let userId: number
     if (this.mode === 'add') {
-      if (this.treatAsDriver) {
-        const response = await user.createDriver(this.currentUserAsDriver)
-        console.log("> response:", response)
-      } else {
-        const response = await user.createUser(this.currentUser)
-        console.log("> response:", response)
-      }
+      userId = await this.addNewUser()
+    } else {
+      userId = await this.editExistingUser()
     }
 
-    // else {
+    if (this.uploadedPhoto) {
+      user.uploadUserPhoto(userId, this.uploadedPhoto)
+    }
 
-    // }
+    this.$router.push({ name: 'users.view', params: { id: String(userId) } })
   }
 }
 </script>
 
 <style lang="scss" scoped>
+// Not sure if some of this should be converted to helper classes--
+// seems like it might be more intuitive to have all the styling in
+// one place though?
 .user-photo {
   position: relative;
   max-width: 200px;
-}
-.user-photo__src {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 5px solid $gray-border;
-}
 
-.user-photo__upload-btn {
-  width: 50px;
-  height: 50px;
-  background: #00a6f2;
-  outline: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
+  &__src {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid $gray-border;
+  }
 
-.user-photo__upload-group {
-  position: absolute;
-  right: 11px;
-  bottom: 2px;
-
-  input {
+  &__upload-btn {
     width: 50px;
     height: 50px;
-    position: absolute;
-    top: 0;
-    opacity: 0;
-    z-index: 100;
+    background: #00a6f2;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+  }
+
+  &__upload-group {
+    position: absolute;
+    right: 11px;
+    bottom: 2px;
+
+    input {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      top: 0;
+      opacity: 0;
+      z-index: 100;
+      cursor: pointer;
+    }
   }
 }
 </style>

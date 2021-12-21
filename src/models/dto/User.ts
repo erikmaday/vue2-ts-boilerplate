@@ -17,7 +17,8 @@ export interface UserDetail {
   linkedAccountProfileId?: number
   isRA?: boolean
   isSDR?: boolean
-  locale?: string
+  locale: string
+  treatAsDriver: boolean
 }
 
 export interface UserPhoto {
@@ -65,7 +66,7 @@ export interface UserAuthResult extends ApiResult {
 
 export interface UserDetailDriver extends UserDetail {
   drugTestNumber: string
-  drugTestExpiration: string
+  drugTestExpiration?: string
   drugTestExpirationMonth?: number
   drugTestExpirationYear?: number
   group?: Group

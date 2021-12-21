@@ -7,6 +7,7 @@ import { UserResult } from '@/models/dto/UserResult'
 import { RoleResult } from '@/models/dto/RoleResult'
 import { DriverResult } from '@/models/dto/DriverResult'
 import { ApiResult } from '@/models/dto/ApiResult'
+import { UserPhotoRequest } from '@/models/dto/UserPhotoRequest'
 
 const httpService: HttpService = new HttpService()
 
@@ -58,5 +59,37 @@ export default {
   },
   createDriver(driver: UserDetailDriver): Promise<AxiosResponse<number>> {
     return httpService.post(`https://${apiBaseUrl()}/v3/drivers`, driver)
+  },
+  checkIfEmailExists(
+    email: string
+  ): Promise<AxiosResponse<{ exists: boolean }>> {
+    return httpService.get(`https://${apiBaseUrl()}/users/check-email/${email}`)
+  },
+  makeDriver(userId: number): Promise<AxiosResponse> { // No response is sent back from this endpoint 
+    return httpService.get(`https://${apiBaseUrl()}/v3/drivers/makeDriver/${userId}`)
+  },
+  deactivateDriver(userId: number): Promise<AxiosResponse> {
+    return httpService.get(`https://${apiBaseUrl()}/drivers/deactivate/${userId}`)
+  },
+  updateDriver(
+    userId: number,
+    driver: UserDetailDriver
+  ): Promise<AxiosResponse<string>> {
+    return httpService.put(
+      `https://${apiBaseUrl()}/v3/drivers/${userId}`,
+      driver
+    )
+  },
+  updateUser(userId: number, user: UserDetail): Promise<AxiosResponse<string>> {
+    return httpService.patch(`https://${apiBaseUrl()}/user/${userId}`, user)
+  },
+  uploadUserPhoto(
+    userId: number,
+    photo: FormData
+  ): Promise<AxiosResponse<boolean>> {
+    return httpService.post(
+      `https://${apiBaseUrl()}/v2/photos/users/${userId}/userPhotos`,
+      photo
+    )
   },
 }

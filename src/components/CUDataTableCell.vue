@@ -7,10 +7,16 @@
         : ''
     "
   >
-    <h4 v-if="$vuetify.breakpoint.xs && column.type !== 'actions'">
+    <h4
+      v-if="
+        $vuetify.breakpoint.xs &&
+        column.type !== 'actions' &&
+        column.type !== 'details'
+      "
+    >
       {{ column.text }}
     </h4>
-    <template v-if="column.type === 'actions'">
+    <template v-if="column.type === 'actions' && !$vuetify.breakpoint.xs">
       <CUDataTableActionColumn
         :actions="actions"
         :row="row"
@@ -27,12 +33,22 @@
     </template>
     <template v-else-if="column.type === 'details'">
       <router-link
+        v-if="$vuetify.breakpoint.smAndUp"
         class="font-medium font-14"
         :to="{ path: `edit/${row.id}` }"
         :append="true"
       >
         Details
       </router-link>
+      <v-btn
+        v-else
+        color="primary"
+        small
+        class="w-full margin-t-4"
+        @click="$router.push({ path: `view/${row.id}` })"
+      >
+        Details
+      </v-btn>
     </template>
     <template v-else>
       {{ computedCellItemText }}

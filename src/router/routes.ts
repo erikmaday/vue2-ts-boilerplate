@@ -61,7 +61,15 @@ export const routes: RouteConfig[] = [
                     name: 'vehicles',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/CompanyVehicles.vue'
+                        /* webpackChunkName: "company-vehicles-list" */ '@/components/CompanyVehicles.vue'
+                      ),
+                  },
+                  {
+                    path: 'edit/:id',
+                    name: 'vehicles.edit',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-vehicles-edit" */ '@/components/CompanyVehicles.vue'
                       ),
                   },
                 ],
@@ -78,9 +86,17 @@ export const routes: RouteConfig[] = [
                     name: 'garages',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/CompanyGarages.vue'
+                        /* webpackChunkName: "company-garages-list" */ '@/components/CompanyGarages.vue'
                       ),
                   },
+                  {
+                    path: 'edit/:id', 
+                    name: 'garages.edit', 
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyGaragesEdit.vue'
+                      ),
+                  }
                 ],
               },
               {

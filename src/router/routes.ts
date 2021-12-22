@@ -130,6 +130,14 @@ export const routes: RouteConfig[] = [
                       import(
                         /* webpackChunkName: "company-garages-detail" */ '@/components/CompanyGaragesDetail.vue'
                       ),
+                  },
+                  {
+                    path: 'add', 
+                    name: 'garages.add', 
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-detail" */ '@/components/CompanyGaragesDetail.vue'
+                      ),
                   }
                 ],
               },

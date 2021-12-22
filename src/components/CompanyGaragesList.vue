@@ -1,6 +1,16 @@
 <template>
   <div>
-    <h1>Garages</h1>
+    <v-row justify="space-between" class="padding-b-6 padding-x-3">
+      <h1>Garages</h1>
+      <v-btn
+        primary
+        small
+        color="primary"
+        @click="$router.push({ name: 'garages.add' })"
+      >
+        Add New
+      </v-btn>
+    </v-row>
     <CUCollectionTable
       :actions="actions"
       :columns="columns"

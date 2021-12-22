@@ -1,54 +1,57 @@
 <template>
-  <v-menu
-    v-model="isFocused"
-    :open-on-click="false"
-    :close-on-click="false"
-    content-class="elevation-0"
-    nudge-bottom="50"
-  >
-    <template v-slot:activator="{ on }">
-      <v-text-field
-        ref="autoCompleteTextField"
-        v-bind="$attrs"
-        :autofocus="autoFocus"
-        :value="search"
-        :disabled="disabled"
-        :error-messages="errorMessages"
-        :rules="rules"
-        clearable
-        flat
-        autocomplete="off"
-        outlined
-        :tabindex="tabIndex"
-        v-on="on"
-        @blur="blur"
-        @input="addressAutoComplete"
-        @keyup.native="handleKeyEvent($event.keyCode)"
-        @focus="focus"
-      />
-      <div v-if="loading">
-        <v-progress-linear :indeterminate="true" height="1" />
-      </div>
-    </template>
-    <v-card v-if="autocompleteItems.length && !hideOptions">
-      <v-list>
-        <v-list-item
-          v-for="(item, index) in autocompleteItems"
-          :id="`address-autocomplete-item-${index}`"
-          :key="`address-autocomplete-item-${index}`"
-          class="cursor-pointer hover:background-black-5"
-          :class="{ 'background-black-5': arrowPosition === index }"
-          @mouseover="arrowPosition = index"
-          @mousedown="() => selectPlace(item)"
-        >
-          <CUIcon class="text-primary margin-r-2">place</CUIcon>
-          <v-list-item-title>
-            {{ item.description }}
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-card>
-  </v-menu>
+<div>
+    <label v-if="$attrs.label">{{ $attrs.label }}</label>
+    <v-menu
+      v-model="isFocused"
+      :open-on-click="false"
+      :close-on-click="false"
+      content-class="elevation-0"
+      nudge-bottom="50"
+    >
+      <template v-slot:activator="{ on }">
+        <v-text-field
+          ref="autoCompleteTextField"
+          v-bind="$attrs"
+          :label="undefined"
+          :autofocus="autoFocus"
+          :value="search"
+          :disabled="disabled"
+          clearable
+          flat
+          solo
+          autocomplete="off"
+          outlined
+          :tabindex="tabIndex"
+          v-on="on"
+          @blur="blur"
+          @input="addressAutoComplete"
+          @keyup.native="handleKeyEvent($event.keyCode)"
+          @focus="focus"
+        />
+        <div v-if="loading">
+          <v-progress-linear :indeterminate="true" height="1" />
+        </div>
+      </template>
+      <v-card v-if="autocompleteItems.length && !hideOptions">
+        <v-list>
+          <v-list-item
+            v-for="(item, index) in autocompleteItems"
+            :id="`address-autocomplete-item-${index}`"
+            :key="`address-autocomplete-item-${index}`"
+            class="cursor-pointer hover:background-black-5"
+            :class="{ 'background-black-5': arrowPosition === index }"
+            @mouseover="arrowPosition = index"
+            @mousedown="() => selectPlace(item)"
+          >
+            <CUIcon class="text-primary margin-r-2">place</CUIcon>
+            <v-list-item-title>
+              {{ item.description }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-menu>
+</div>
 </template>
 
 <script lang="ts">
@@ -60,7 +63,6 @@ import { Address, PlaceSearch } from '@/models/dto'
 export default class AutocompleteAddress extends Vue {
   @Model('change') readonly value!: Address | null
   @Prop({ default: false }) readonly autoFocus!: boolean
-  @Prop({ default: [] }) readonly rules!: []
   @Prop({ default: false }) readonly disabled!: boolean
   @Prop({ default: false }) readonly hideOptions!: boolean
   @Prop({ default: null }) readonly tabIndex!: number
@@ -73,7 +75,6 @@ export default class AutocompleteAddress extends Vue {
   debounce: number | null = null
   autocompleteItems: PlaceSearch[] = []
   arrowPosition: number | null = null
-  errorMessages = []
   isFocused = false
 
   created(): void {

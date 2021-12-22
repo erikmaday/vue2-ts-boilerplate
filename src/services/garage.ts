@@ -2,9 +2,11 @@ import { apiBaseUrl } from '@/utils/env'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
-import { Garage } from '@/models/dto/Garage'
-import { GarageResult } from '@/models/dto/GarageResult'
+import { CreateGarageResult, Garage } from '@/models/dto/Garage'
+import { GarageDetailResult } from '@/models/dto/Garage'
 import { ApiResult } from '@/models/dto/ApiResult'
+
+import { CreateGarageRequest } from '@/models/dto/Garage'
 
 const httpService: HttpService = new HttpService()
 
@@ -20,10 +22,15 @@ export default {
       }`
     )
   },
-  byId(garageId: number): Promise<AxiosResponse<GarageResult>> {
+  byId(garageId: number): Promise<AxiosResponse<GarageDetailResult>> {
     return httpService.get(`https://${apiBaseUrl()}/garages/${garageId}`)
   },
   delete(garageId: number): Promise<AxiosResponse<ApiResult>> {
     return httpService.delete(`https://${apiBaseUrl()}/garages/${garageId}`)
   },
+  create(
+    garage: CreateGarageRequest
+  ): Promise<AxiosResponse<CreateGarageResult>> {
+    return httpService.post(`https://${apiBaseUrl()}/companies/create`, garage)
+  }
 }

@@ -182,22 +182,47 @@ export default class CompanyUsersDetailDriverInfo extends Vue {
   }
 
   get vehicleTypeMap(): Record<number, SupportedVehicleType> {
-    let map: Record<number, SupportedVehicleType> = {}
-    this.vehicleTypes.map((vt: VehicleType) => {
-      map[vt.id] = {
-        vehicleTypeId: vt.id,
-        label: vt.label,
-        supported: false,
-      }
-    })
+    const map = this.vehicleTypes.reduce(
+      (map: Record<number, SupportedVehicleType>, item: VehicleType) => {
+        map[item.id] = {
+          vehicleTypeId: item.id,
+          label: item.label,
+          supported: false,
+        }
+        return map
+      },
+      {}
+    )
+
+    // let map: Record<number, SupportedVehicleType> = {}
+    // this.vehicleTypes.map((vt: VehicleType) => {
+    //   map[vt.id] = {
+    //     vehicleTypeId: vt.id,
+    //     label: vt.label,
+    //     supported: false,
+    //   }
+
+    //   const reduceFn = (map, item) => {
+    //     map[item.id] = {
+    //       vehicleTypeId: item.id,
+    //       label: item.label,
+    //       supported: false
+    //     }
+    //     return map
+    //   }
 
     if (this.driverModel.driverSupportedVehicles) {
       const supportedVehicles = this.driverModel.driverSupportedVehicles
-      supportedVehicles.map((st: SupportedVehicleType) => {
+      for (const st of supportedVehicles) {
         if (map[st.vehicleTypeId]) {
           map[st.vehicleTypeId].supported = st.supported
         }
-      })
+      }
+      // supportedVehicles.map((st: SupportedVehicleType) => {
+      //   if (map[st.vehicleTypeId]) {
+      //     map[st.vehicleTypeId].supported = st.supported
+      //   }
+      // })
     }
 
     return map

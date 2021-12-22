@@ -63,7 +63,7 @@ export default class CompanyUsers extends Vue {
       icon: 'trash',
       confirmModal: true,
       confirmModalText: 'Are you sure you want to delete this user?',
-      action: (row: User) => {
+      action: function (row: User): Promise<AxiosResponse> {
         return user.delete(row.userId)
       },
     },

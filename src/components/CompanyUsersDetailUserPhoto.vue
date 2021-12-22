@@ -1,5 +1,5 @@
 <template>
-  <div class="user-photo">
+  <div class="position-relative max-width-200">
     <div class="user-photo__src">
       <img v-if="photoSrc !== ''" class="h-full w-full" :src="photoSrc" />
       <template v-else>
@@ -48,8 +48,9 @@ export default class CompanyUsersDetailUserPhoto extends Vue {
 
 <style lang="scss" scoped>
 .user-photo {
-  position: relative;
-  max-width: 200px;
+  // position-relative max-width-200
+  // position: relative;
+  // max-width: 200px;
 
   &__src {
     width: 200px;

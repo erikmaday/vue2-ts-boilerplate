@@ -9,9 +9,11 @@ import i18n from './i18n'
 import '@/plugins/gmaps'
 import VueDayjs from '@/plugins/dayjs'
 import CUIcon from '@/components/CUIcon.vue'
+import CUModal from '@/components/CUModal.vue'
 
 Vue.use(VueDayjs)
 Vue.component('CUIcon', CUIcon)
+Vue.component('CUModal', CUModal)
 Vue.config.productionTip = false
 
 new Vue({

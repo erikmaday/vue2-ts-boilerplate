@@ -232,6 +232,12 @@
     }
   }
 
+  .v-dialog {
+    .v-card {
+      border: 0;
+    }
+  }
+
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity 0.1s;

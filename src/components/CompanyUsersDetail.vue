@@ -33,7 +33,7 @@
             All Users
           </v-btn>
           <v-btn
-            v-show="mode === 'edit'"
+            v-show="isModeEdit"
             class="margin-l-4"
             outlined
             small
@@ -49,7 +49,7 @@
           </v-btn>
           <v-btn
             class="margin-l-4"
-            v-show="mode === 'edit'"
+            v-show="isModeEdit"
             primary
             small
             color="primary"
@@ -58,7 +58,7 @@
             Change Password
           </v-btn>
           <v-btn
-            v-show="mode === 'view'"
+            v-show="isModeView"
             class="margin-l-4"
             small
             color="primary"
@@ -73,7 +73,7 @@
           </v-btn>
         </span>
       </v-row>
-      <v-form :disabled="mode === 'view'" ref="form" lazy-validation>
+      <v-form :disabled="isModeView" ref="form" lazy-validation>
         <v-row>
           <v-col
             cols="12"
@@ -113,7 +113,7 @@
                   label="Email"
                   placeholder="ajones@gmail.com"
                   :rules="[(val) => !!val || 'Email is Required']"
-                  :disabled="mode === 'edit'"
+                  :disabled="isModeEdit"
                   v-model="currentUser.email"
                   :error-messages="validationErrors.email"
                 />
@@ -155,7 +155,7 @@
                   color="primary"
                   @click="submit"
                 >
-                  {{ this.mode === 'add' ? 'Add User' : 'Update User' }}
+                  {{ isModeAdd ? 'Add User' : 'Update User' }}
                 </v-btn>
               </v-col>
             </v-row>
@@ -219,7 +219,7 @@ export default class CompanyUsersDetail extends Vue {
   mounted(): void {
     this.setVehicleTypes()
 
-    if (this.mode === 'edit' || this.mode === 'view') {
+    if (this.isModeEdit || this.isModeView) {
       this.getCurrentUser()
     }
   }
@@ -282,7 +282,7 @@ export default class CompanyUsersDetail extends Vue {
       this.currentUserAsDriver,
       updatedUser
     )
-    if (updatedUser.groupId === 4) {
+    if (updatedUser.groupId === this.DRIVER_GROUP_ID) {
       this.treatAsDriver = true
     }
   }
@@ -337,6 +337,18 @@ export default class CompanyUsersDetail extends Vue {
     return ''
   }
 
+  get isModeView(): boolean {
+    return this.mode === 'view'
+  }
+
+  get isModeEdit(): boolean {
+    return this.mode === 'edit'
+  }
+
+  get isModeAdd(): boolean {
+    return this.mode === 'add'
+  }
+
   async setVehicleTypes(): Promise<void> {
     let response: AxiosResponse
     try {
@@ -344,7 +356,7 @@ export default class CompanyUsersDetail extends Vue {
       const { data } = response
       this.vehicleTypes = data.resultList
 
-      if (this.mode === 'add' && this.currentUserAsDriver) {
+      if (this.isModeAdd && this.currentUserAsDriver) {
         this.currentUserAsDriver.driverSupportedVehicles =
           this.vehicleTypes.map((vt) => ({
             vehicleTypeId: vt.id,
@@ -459,7 +471,7 @@ export default class CompanyUsersDetail extends Vue {
     this.prepareModelForSubmit()
 
     let userId: number
-    if (this.mode === 'add') {
+    if (this.isModeAdd) {
       userId = await this.addNewUser()
     } else {
       userId = await this.editExistingUser()

@@ -1,6 +1,15 @@
 <template>
-  <div class="position-relative max-width-200">
-    <div class="user-photo__src">
+  <div class="position-relative max-w-200 white-space-nowrap">
+    <div
+      class="
+        w-200
+        h-200
+        object-fit-cover
+        border-radius-round
+        overflow-hidden
+        border-solid border-4 border-gray-border
+      "
+    >
       <img v-if="photoSrc !== ''" class="h-full w-full" :src="photoSrc" />
       <template v-else>
         <div
@@ -8,8 +17,8 @@
             d-flex
             align-center
             justify-center
-            h-190
-            w-190
+            h-192
+            w-192
             background-gray-header
           "
         >
@@ -19,11 +28,29 @@
         </div>
       </template>
     </div>
-    <div v-show="mode !== 'view'" class="user-photo__upload-group">
-      <button class="user-photo__upload-btn" @click="(e) => $emit('upload', e)">
+    <div v-show="mode !== 'view'" class="position-absolute right-11 bottom-2">
+      <button
+        class="
+          w-52
+          h-52
+          background-primary
+          outline-none
+          d-flex
+          align-center
+          justify-center
+          border-radius-round
+          cursor-pointer
+        "
+        @click="(e) => e.preventDefault()"
+      >
         <CUIcon color="white" width="24px" height="24px">upload</CUIcon>
       </button>
-      <input type="file" accept="image/*" @change="(e) => $emit('upload', e)" />
+      <input
+        class="w-52 h-52 position-absolute top-0 opacity-0 z-100 cursor-pointer"
+        type="file"
+        accept="image/*"
+        @change="(e) => $emit('upload', e)"
+      />
     </div>
   </div>
 </template>
@@ -45,51 +72,3 @@ export default class CompanyUsersDetailUserPhoto extends Vue {
   mode!: string
 }
 </script>
-
-<style lang="scss" scoped>
-.user-photo {
-  // position-relative max-width-200
-  // position: relative;
-  // max-width: 200px;
-
-  &__src {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 5px solid $gray-border;
-  }
-
-  &__upload-btn {
-    width: 50px;
-    height: 50px;
-    background: #00a6f2;
-    outline: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  &__upload-group {
-    position: absolute;
-    right: 11px;
-    bottom: 2px;
-
-    input {
-      width: 50px;
-      height: 50px;
-      position: absolute;
-      top: 0;
-      opacity: 0;
-      z-index: 100;
-      cursor: pointer;
-    }
-  }
-}
-</style>

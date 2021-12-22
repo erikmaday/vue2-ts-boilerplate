@@ -31,7 +31,7 @@ $dimensions: (
   'min': min-content,
   'max': max-content,
 );
-@for $i from 1 through 12 {
+@for $i from 0 through 12 {
   $dimensions: map-merge(
     $dimensions,
     (
@@ -53,7 +53,7 @@ $i: 16;
       '#{$i}': #{$i}px,
     )
   );
-  $i: $i + 1;
+  $i: $i + 4;
 }
 
 $padding-margin-dimensions: (

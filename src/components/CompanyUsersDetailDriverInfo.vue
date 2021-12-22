@@ -194,23 +194,6 @@ export default class CompanyUsersDetailDriverInfo extends Vue {
       {}
     )
 
-    // let map: Record<number, SupportedVehicleType> = {}
-    // this.vehicleTypes.map((vt: VehicleType) => {
-    //   map[vt.id] = {
-    //     vehicleTypeId: vt.id,
-    //     label: vt.label,
-    //     supported: false,
-    //   }
-
-    //   const reduceFn = (map, item) => {
-    //     map[item.id] = {
-    //       vehicleTypeId: item.id,
-    //       label: item.label,
-    //       supported: false
-    //     }
-    //     return map
-    //   }
-
     if (this.driverModel.driverSupportedVehicles) {
       const supportedVehicles = this.driverModel.driverSupportedVehicles
       for (const st of supportedVehicles) {
@@ -218,11 +201,6 @@ export default class CompanyUsersDetailDriverInfo extends Vue {
           map[st.vehicleTypeId].supported = st.supported
         }
       }
-      // supportedVehicles.map((st: SupportedVehicleType) => {
-      //   if (map[st.vehicleTypeId]) {
-      //     map[st.vehicleTypeId].supported = st.supported
-      //   }
-      // })
     }
 
     return map
@@ -231,7 +209,6 @@ export default class CompanyUsersDetailDriverInfo extends Vue {
   updateVehicleTypes(vehicleTypeId: number, value: boolean): void {
     const supportedTypes = this.driverModel.driverSupportedVehicles || []
 
-    // .find() does not match with a triple === here
     const matchingType = supportedTypes.find(
       (t) => Number(t.vehicleTypeId) === Number(vehicleTypeId)
     )
@@ -246,9 +223,6 @@ export default class CompanyUsersDetailDriverInfo extends Vue {
   }
 
   mounted(): void {
-    // console.log(">  deepClone(this.parentDriverModel)",  deepClone(this.parentDriverModel))
-    // this.driverModel = deepClone(this.parentDriverModel)
-
     const currentYear = dayjs().year()
     for (let i = currentYear - 1; i < currentYear + 20; i++) {
       this.years.push(i)

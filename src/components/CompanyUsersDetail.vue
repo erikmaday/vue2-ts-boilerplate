@@ -33,6 +33,21 @@
             All Users
           </v-btn>
           <v-btn
+            v-show="mode === 'edit'"
+            class="margin-l-4"
+            outlined
+            small
+            color="primary"
+            @click="
+              $router.push({
+                name: 'users.view',
+                params: { id: $route.params.id },
+              })
+            "
+          >
+            Cancel
+          </v-btn>
+          <v-btn
             class="margin-l-4"
             v-show="mode === 'edit'"
             primary
@@ -45,7 +60,6 @@
           <v-btn
             v-show="mode === 'view'"
             class="margin-l-4"
-            primary
             small
             color="primary"
             @click="
@@ -359,7 +373,7 @@ export default class CompanyUsersDetail extends Vue {
   // Not sure what type to cast the event as here
   uploadUserPhoto(e: any): void {
     e.preventDefault()
-    if (!e.target?.files[0]) return
+    if (!e.target.files || !e.target?.files[0]) return
 
     const file = e.target.files[0]
     this.avatarLink = URL.createObjectURL(file)

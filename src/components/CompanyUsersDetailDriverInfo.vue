@@ -116,7 +116,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-import { UserDetailDriver } from '@/models/dto/User'
+import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 import { SupportedVehicleType, VehicleType } from '@/models/dto'
 import { states } from '@/utils/states'
 import dayjs from 'dayjs'

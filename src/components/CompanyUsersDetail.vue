@@ -171,9 +171,10 @@ import auth from '@/store/modules/auth'
 import user from '@/services/user'
 import { getVehicleTypes } from '@/services/type'
 import { userGroups } from '@/data/userGroups'
-import { UserDetail, UserDetailDriver, VehicleType } from '@/models/dto'
+import { UserDetail, VehicleType } from '@/models/dto'
 import CompanyUsersDetailUserPhoto from '@/components/CompanyUsersDetailUserPhoto.vue'
 import CompanyUsersDetailDriverInfo from '@/components/CompanyUsersDetailDriverInfo.vue'
+import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 
 @Component({
   components: {

@@ -1,4 +1,4 @@
-import { ApiResult, SupportedVehicleType, VehicleType } from '.'
+import { ApiResult } from '.'
 import { Company } from './Company'
 
 export interface UserDetail {
@@ -64,19 +64,6 @@ export interface UserAuthResult extends ApiResult {
   user: UserDetail
 }
 
-export interface UserDetailDriver extends UserDetail {
-  drugTestNumber: string
-  drugTestExpiration?: string
-  drugTestExpirationMonth?: number
-  drugTestExpirationYear?: number
-  group?: Group
-  isSignedUp?: boolean
-  licensState: string
-  licenseNumber: string
-  licenseExpirationMonth: number
-  licenseExpirationYear: number
-  phoneNumber: string
-  notes?: string
-  timeZone?: string
-  driverSupportedVehicles: SupportedVehicleType[]
+export interface UserResult extends ApiResult {
+  user: UserDetail
 }

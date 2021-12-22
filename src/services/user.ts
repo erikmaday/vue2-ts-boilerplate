@@ -2,12 +2,10 @@ import { apiBaseUrl } from '@/utils/env'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
-import { UserDetail, UserDetailDriver } from '@/models/dto/User'
-import { UserResult } from '@/models/dto/UserResult'
+import { UserDetail, UserResult } from '@/models/dto'
+import { DriverResult } from '@/models/dto/UserDetailDriver'
 import { RoleResult } from '@/models/dto/RoleResult'
-import { DriverResult } from '@/models/dto/DriverResult'
-import { ApiResult } from '@/models/dto/ApiResult'
-import { UserPhotoRequest } from '@/models/dto/UserPhotoRequest'
+import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 
 const httpService: HttpService = new HttpService()
 

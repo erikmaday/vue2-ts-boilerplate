@@ -38,11 +38,12 @@ class AuthModule extends VuexModule {
   async login(payload: UserAuthPayload) {
     const response = await auth.login(payload)
     if (response.data.successful) {
+      save('user', response.data.user)
       save('token', response.data.token)
       this.token = response.data.token
+      this.user = response.data.user
       this.isTokenSet = true
       registerBearerToken(response.data.token)
-      this.getUserV2(response.data.user.userId)
     }
   }
 
@@ -77,8 +78,12 @@ class AuthModule extends VuexModule {
   }
 
   @Action
-  async getUserV2(id: number) {
-    const response = await user.byId(id)
+  async getUserDetail() {
+    if (!this.user.userId) {
+      return
+    }
+
+    const response = await user.byId(this.user.userId)
 
     // Seems like we don't have a `successful` property to check on this response?
     if (response.status === 200) {

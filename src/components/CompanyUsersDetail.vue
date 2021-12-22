@@ -162,12 +162,10 @@
           </v-col>
         </v-row>
       </v-form>
-      <v-dialog v-model="changePasswordIsOpen">
-        <CompanyUsersChangePassword
-          :user="currentUserAsDriver"
-          @close="changePasswordIsOpen = false"
-        />
-      </v-dialog>
+      <CompanyUsersChangePassword
+        v-model="changePasswordIsOpen"
+        :user="currentUserAsDriver"
+      />
     </v-container>
   </div>
 </template>

@@ -50,22 +50,17 @@
       <template #text>
         <v-form ref="form">
           <CUTextField
-            v-model="confirmPassword"
-            label="Confirm New Password"
-            :rules="[(val) => passwordsMatch(val) || 'Passwords must match']"
+            v-model="rejectNote"
+            label="Why are you rejecting the booking?"
+            placeholder="Add reasons for rejection here."
+            :rules="[(val) => !!val || 'This field is required.']"
             validate-on-blur
           />
         </v-form>
-        <v-textarea
-          v-model="rejectComment"
-          placeholder="Add reasons for rejection here."
-          auto-grow
-          outlined
-        ></v-textarea>
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" small text @click="cancelRejectComment">
+        <v-btn color="primary" small text @click="cancelrejectNote">
           Cancel
         </v-btn>
         <v-btn color="red" small @click="reject">Reject</v-btn>
@@ -92,7 +87,7 @@ export default class BookingDetailHeader extends Vue {
   @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
 
   isDialogOpen = false
-  rejectComment = ''
+  rejectNote = ''
 
   get reservationId(): string {
     return this.reservation?.managedId
@@ -157,8 +152,8 @@ export default class BookingDetailHeader extends Vue {
     return this.firstDropoff?.address?.city
   }
 
-  cancelRejectComment(): void {
-    this.rejectComment = ''
+  cancelrejectNote(): void {
+    this.rejectNote = ''
     this.isDialogOpen = false
   }
 
@@ -168,7 +163,9 @@ export default class BookingDetailHeader extends Vue {
   }
 
   async reject(): Promise<void> {
-    await reservation.reject(this.reservation.reservationId)
+    const form: any = this.$refs['form']
+    if (!form.validate()) return
+    await reservation.reject(this.reservation.reservationId, this.rejectNote)
     this.$emit('refresh')
   }
 }

@@ -396,6 +396,16 @@ $base-classes: 'padding', 'margin';
     }
   }
 }
+$base-classes: 'top', 'left', 'bottom', 'right';
+@each $base-class in $base-classes {
+  @include map-to-helpers(
+    $base-class,
+    $dimensions,
+    $base-class,
+    $pseudo-classes,
+    true
+  );
+}
 
 // WHITE SPACE
 $base-class: 'white-space';
@@ -414,6 +424,7 @@ $white-space-map: (
   $pseudo-classes,
   true
 );
+
 
 //TRANSFORM
 $base-class: 'transform';
@@ -435,6 +446,77 @@ $scale-map: (
   $base-class,
   $scale-map,
   'transform',
+  $pseudo-classes,
+  true
+);
+
+// POSITION
+$base-class: 'position';
+$position-map: (
+  'static': static,
+  'relative': relative,
+  'fixed': fixed,
+  'absolute': absolute,
+  'sticky': sticky,
+);
+@include map-to-helpers(
+  $base-class,
+  $position-map,
+  'position',
+  $pseudo-classes,
+  true
+);
+
+// OBJECT FIT
+$base-class: 'object-fit';
+$object-fit-map: (
+  'fill': fill,
+  'contain': contain,
+  'cover': cover,
+  'none': none,
+  'scale-down': scale-down,
+);
+@include map-to-helpers(
+  $base-class,
+  $object-fit-map,
+  'object-fit',
+  $pseudo-classes,
+  true
+);
+
+// OVERFLOW
+$base-class: 'overflow';
+$overflow-map: (
+  'visible': visible,
+  'hidden': hidden,
+  'scroll': scroll,
+  'auto': auto,
+);
+@include map-to-helpers(
+  $base-class,
+  $overflow-map,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+
+// OUTLINE
+$base-class: 'outline';
+$outline-style-map: (
+  'dotted': dotted, 
+  'dashed': dashed, 
+  'solid': solid, 
+  'double': double, 
+  'groove': groove, 
+  'ridge': ridge, 
+  'inset': inset, 
+  'none': none, 
+  'hidden': hidden
+);
+@include map-to-helpers(
+  $base-class,
+  $outline-style-map,
+  $base-class,
   $pseudo-classes,
   true
 );

@@ -31,7 +31,7 @@ $dimensions: (
   'min': min-content,
   'max': max-content,
 );
-@for $i from 1 through 12 {
+@for $i from 0 through 12 {
   $dimensions: map-merge(
     $dimensions,
     (
@@ -46,7 +46,7 @@ $dimensions: map-merge(
   )
 );
 $i: 16;
-@while $i <= 404 {
+@while $i <= 800 {
   $dimensions: map-merge(
     $dimensions,
     (

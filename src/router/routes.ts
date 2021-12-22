@@ -47,6 +47,23 @@ export const routes: RouteConfig[] = [
                         /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
                       ),
                   },
+                  {
+                    path: 'view/:id',
+                    name: 'users.view',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+                      ),
+                  },
+                  {
+                    path: 'add',
+                    name: 'users.add',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+                      ),
+                  },
+
                 ],
               },
               {
@@ -72,6 +89,15 @@ export const routes: RouteConfig[] = [
                         /* webpackChunkName: "company-vehicles-edit" */ '@/components/CompanyVehicles.vue'
                       ),
                   },
+
+                  {
+                    path: 'view/:id',
+                    name: 'vehicles.view',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-vehicles-edit" */ '@/components/CompanyVehicles.vue'
+                      ),
+                  },
                 ],
               },
               {
@@ -92,6 +118,14 @@ export const routes: RouteConfig[] = [
                   {
                     path: 'edit/:id', 
                     name: 'garages.edit', 
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyGaragesEdit.vue'
+                      ),
+                  },
+                  {
+                    path: 'view/:id', 
+                    name: 'garages.view', 
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyGaragesEdit.vue'

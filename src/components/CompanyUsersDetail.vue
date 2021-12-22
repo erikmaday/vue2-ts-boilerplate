@@ -183,7 +183,8 @@ import { apiBaseUrl } from '@/utils/env'
 
 import auth from '@/store/modules/auth'
 import user from '@/services/user'
-import { getVehicleTypes } from '@/services/type'
+import driver from '@/services/driver'
+import type from '@/services/type'
 import { userGroups } from '@/data/userGroups'
 import { UserDetail, VehicleType } from '@/models/dto'
 import CompanyUsersDetailUserPhoto from '@/components/CompanyUsersDetailUserPhoto.vue'
@@ -230,13 +231,11 @@ export default class CompanyUsersDetail extends Vue {
   async getCurrentUser(): Promise<void> {
     try {
       if (this.$route.params.id) {
-        const rolesResponse = await user.getRoles(Number(this.$route.params.id))
+        const rolesResponse = await user.roles(Number(this.$route.params.id))
         const roles = rolesResponse.data.roles
         if (roles.find((role) => role.roleName === 'is_driver')) {
           this.treatAsDriver = true
-          const response = await user.getDriverById(
-            Number(this.$route.params.id)
-          )
+          const response = await driver.byId(Number(this.$route.params.id))
           const userResponseData = response.data.driver
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
           this.currentUser = userResponseData as UserDetail
@@ -343,7 +342,7 @@ export default class CompanyUsersDetail extends Vue {
   async setVehicleTypes(): Promise<void> {
     let response: AxiosResponse
     try {
-      response = await getVehicleTypes({})
+      response = await type.vehicleTypeTableView({})
       const { data } = response
       this.vehicleTypes = data.resultList
 
@@ -415,12 +414,12 @@ export default class CompanyUsersDetail extends Vue {
       return -1
     }
     if (this.treatAsDriver) {
-      const newDriverResponse = await user.createDriver(
+      const newDriverResponse = await driver.create(
         this.currentUserAsDriver as UserDetailDriver
       )
       return newDriverResponse.data.driver.userId || 0
     } else {
-      const newUserResponse = await user.createUser(
+      const newUserResponse = await user.create(
         this.currentUser as UserDetail
       )
       return newUserResponse.data
@@ -431,14 +430,14 @@ export default class CompanyUsersDetail extends Vue {
     const userId = Number(this.$route.params.id)
 
     if (this.treatAsDriver) {
-      await user.makeDriver(userId)
-      await user.updateDriver(
+      await driver.makeDriver(userId)
+      await driver.update(
         userId,
         this.currentUserAsDriver as UserDetailDriver
       )
     } else {
-      await user.deactivateDriver(userId)
-      await user.updateUser(userId, this.currentUser as UserDetail)
+      await driver.deactivateDriver(userId)
+      await user.update(userId, this.currentUser as UserDetail)
     }
 
     return userId

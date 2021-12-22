@@ -3,9 +3,7 @@ import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
 import { UserDetail, UserResult } from '@/models/dto'
-import { DriverResult } from '@/models/dto/UserDetailDriver'
-import { RoleResult } from '@/models/dto/RoleResult'
-import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
+import { RoleResult } from '@/models/dto/Role'
 
 const httpService: HttpService = new HttpService()
 
@@ -31,14 +29,11 @@ export default {
   delete(userId: number): Promise<AxiosResponse> {
     return httpService.delete(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
   },
-  getRoles(userId: number): Promise<AxiosResponse<RoleResult>> {
+  roles(userId: number): Promise<AxiosResponse<RoleResult>> {
     const host = apiBaseUrl()
     const url = `https://${host}/user/roles/${userId}`
 
     return httpService.get(url)
-  },
-  getDriverById(userId: number): Promise<AxiosResponse<DriverResult>> {
-    return httpService.get(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
   },
   setPassword(
     userId: number,
@@ -52,33 +47,15 @@ export default {
       }
     )
   },
-  createUser(user: UserDetail): Promise<AxiosResponse<number>> {
+  create(user: UserDetail): Promise<AxiosResponse<number>> {
     return httpService.post(`https://${apiBaseUrl()}/user`, user)
-  },
-  createDriver(driver: UserDetailDriver): Promise<AxiosResponse<DriverResult>> {
-    return httpService.post(`https://${apiBaseUrl()}/v3/drivers`, driver)
   },
   checkIfEmailExists(
     email: string
   ): Promise<AxiosResponse<{ exists: boolean }>> {
     return httpService.get(`https://${apiBaseUrl()}/users/check-email/${email}`)
   },
-  makeDriver(userId: number): Promise<AxiosResponse> { // No response is sent back from this endpoint 
-    return httpService.get(`https://${apiBaseUrl()}/v3/drivers/makeDriver/${userId}`)
-  },
-  deactivateDriver(userId: number): Promise<AxiosResponse> {
-    return httpService.get(`https://${apiBaseUrl()}/drivers/deactivate/${userId}`)
-  },
-  updateDriver(
-    userId: number,
-    driver: UserDetailDriver
-  ): Promise<AxiosResponse<string>> {
-    return httpService.put(
-      `https://${apiBaseUrl()}/v3/drivers/${userId}`,
-      driver
-    )
-  },
-  updateUser(userId: number, user: UserDetail): Promise<AxiosResponse<string>> {
+  update(userId: number, user: UserDetail): Promise<AxiosResponse<string>> {
     return httpService.patch(`https://${apiBaseUrl()}/user/${userId}`, user)
   },
   uploadUserPhoto(

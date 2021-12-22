@@ -9,10 +9,14 @@ import i18n from './i18n'
 import '@/plugins/gmaps'
 import VueDayjs from '@/plugins/dayjs'
 import CUIcon from '@/components/CUIcon.vue'
+import CUTextField from '@/components/CUTextField.vue'
+import CUSelect from '@/components/CUSelect.vue'
 import CUModal from '@/components/CUModal.vue'
 
 Vue.use(VueDayjs)
 Vue.component('CUIcon', CUIcon)
+Vue.component('CUTextField', CUTextField)
+Vue.component('CUSelect', CUSelect)
 Vue.component('CUModal', CUModal)
 Vue.config.productionTip = false
 

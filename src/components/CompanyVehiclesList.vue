@@ -26,7 +26,14 @@ export default class CompanyVehiclesList extends Vue {
   columns: DataTableColumn[] = [
     { text: 'Name', value: 'vehicleName' },
     { text: 'Type', value: 'vehicleTypeName' },
+    { text: 'License Plate', value: 'licensePlate' },
     { text: 'Garage', value: 'garageName' },
+    {
+      text: 'Make',
+      value: 'vehicleMake',
+      computedText: (row) =>
+        `${row.vehicleYear} ${row.vehicleMake} ${row.vehicleModel} - ${row.passengerCapacity} pax`,
+    },
     { text: '', value: 'details', type: 'details' },
     { text: '', value: 'actions', type: 'actions' },
   ]

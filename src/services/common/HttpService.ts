@@ -17,6 +17,14 @@ export class HttpService {
     return axios.patch<P, AxiosResponse<T>>(url, payload, config)
   }
 
+  put<T, P>(
+    url: string,
+    payload: P,
+    config?: AxiosRequestConfig
+  ): Promise<AxiosResponse<T>> {
+    return axios.put<P, AxiosResponse<T>>(url, payload, config)
+  }
+
   get<T, P>(
     url: string,
     config?: AxiosRequestConfig

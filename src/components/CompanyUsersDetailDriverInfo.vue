@@ -108,7 +108,7 @@
           hide-details
           :value="vehicleTypeMap[key].supported"
           :label="type.label"
-          @change="(e) => updateVehicleTypes(key, e || false)"
+          @change="(e) => updateVehicleTypes(Number(key), e || false)"
         />
       </v-col>
     </v-row>
@@ -178,7 +178,6 @@ export default class CompanyUsersDetailDriverInfo extends Vue {
 
   @Watch('driverModel', { deep: true })
   onDriverModelUpdate(newDriverModel: UserDetailDriver): void {
-    console.log("> updated driver model")
     this.$emit('update-driver-model', newDriverModel)
   }
 
@@ -209,10 +208,15 @@ export default class CompanyUsersDetailDriverInfo extends Vue {
 
     // .find() does not match with a triple === here
     const matchingType = supportedTypes.find(
-      (t) => t.vehicleTypeId == vehicleTypeId
+      (t) => Number(t.vehicleTypeId) === Number(vehicleTypeId)
     )
     if (matchingType) {
       matchingType.supported = value
+    } else {
+      supportedTypes.push({
+        vehicleTypeId: vehicleTypeId,
+        supported: value,
+      })
     }
   }
 

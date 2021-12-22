@@ -57,7 +57,7 @@ export default {
   createUser(user: UserDetail): Promise<AxiosResponse<number>> {
     return httpService.post(`https://${apiBaseUrl()}/user`, user)
   },
-  createDriver(driver: UserDetailDriver): Promise<AxiosResponse<number>> {
+  createDriver(driver: UserDetailDriver): Promise<AxiosResponse<DriverResult>> {
     return httpService.post(`https://${apiBaseUrl()}/v3/drivers`, driver)
   },
   checkIfEmailExists(

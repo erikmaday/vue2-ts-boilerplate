@@ -2,21 +2,24 @@
   <div>
     <v-container>
       <v-row
+        class="padding-b-8"
+        align="center"
         justify-sm="space-between"
         justify="center"
-        class="padding-b-6 padding-x-3"
       >
-        <h1
-          class="padding-b-5"
-          :class="{
-            'w-full text-center': $vuetify.breakpoint.xs,
-          }"
-        >
-          {{ headerTitle }}
-        </h1>
+        <v-col cols="12" sm="auto">
+          <h1
+            class="margin-a-0"
+            :class="{
+              'text-center': $vuetify.breakpoint.xs,
+            }"
+          >
+            {{ headerTitle }}
+          </h1>
+        </v-col>
         <span>
           <v-btn
-            class="margin-x-2"
+            class="margin-l-4"
             primary
             outlined
             small
@@ -30,7 +33,7 @@
             All Users
           </v-btn>
           <v-btn
-            class="margin-x-2"
+            class="margin-l-4"
             v-show="mode === 'edit'"
             primary
             small
@@ -41,6 +44,7 @@
           </v-btn>
           <v-btn
             v-show="mode === 'view'"
+            class="margin-l-4"
             primary
             small
             color="primary"
@@ -64,39 +68,11 @@
               'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
             }"
           >
-            <div class="user-photo">
-              <div class="user-photo__src">
-                <img
-                  v-if="userPhoto !== ''"
-                  class="h-full w-full"
-                  :src="userPhoto"
-                />
-                <template v-else>
-                  <div
-                    class="
-                      d-flex
-                      align-center
-                      justify-center
-                      h-190
-                      w-190
-                      background-gray-header
-                    "
-                  >
-                    <CUIcon color="gray-mid-light" width="120px" height="120px">
-                      person
-                    </CUIcon>
-                  </div>
-                </template>
-              </div>
-              <div v-show="mode !== 'view'" class="user-photo__upload-group">
-                <button class="user-photo__upload-btn" @click="uploadUserPhoto">
-                  <CUIcon color="white" width="24px" height="24px">
-                    upload
-                  </CUIcon>
-                </button>
-                <input type="file" accept="image/*" @change="uploadUserPhoto" />
-              </div>
-            </div>
+            <CompanyUsersDetailUserPhoto
+              :photoSrc="avatarLink"
+              :mode="mode"
+              @upload="uploadUserPhoto"
+            />
           </v-col>
           <v-col cols="12" md="8">
             <v-row>
@@ -148,136 +124,13 @@
               </v-col>
             </v-row>
             <v-expand-transition>
-              <v-col
+              <CompanyUsersDetailDriverInfo
                 v-if="treatAsDriver"
-                class="background-gray-header border-radius-5 padding-a-5"
-              >
-                <v-row>
-                  <v-col cols="12" sm="6">
-                    <CUTextField
-                      v-model="currentUserAsDriver.phoneNumber"
-                      :rules="[(val) => !!val || 'Phone Number is Required']"
-                      label="Phone Number"
-                    />
-                  </v-col>
-                </v-row>
-                <div
-                  class="
-                    border-solid
-                    border-gray-mid-light
-                    border-x-0
-                    border-t-0
-                    border-b-1
-                    margin-b-6
-                  "
-                ></div>
-                <v-row>
-                  <v-col cols="12" sm="6">
-                    <CUTextField
-                      v-model="currentUserAsDriver.drugTestNumber"
-                      label="Drug Test #"
-                    />
-                  </v-col>
-                  <v-col cols="6" sm="3">
-                    <CUSelect
-                      v-model="currentUserAsDriver.drugTestExpirationMonth"
-                      label="Exp. Month"
-                      item-text="short"
-                      item-value="number"
-                      :items="months"
-                    />
-                  </v-col>
-                  <v-col cols="6" sm="3">
-                    <CUSelect
-                      v-model="currentUserAsDriver.drugTestExpirationYear"
-                      :items="years"
-                      label="Exp. Year"
-                    />
-                  </v-col>
-                </v-row>
-                <div
-                  class="
-                    border-solid
-                    border-gray-mid-light
-                    border-x-0
-                    border-t-0
-                    border-b-1
-                    margin-b-6
-                  "
-                ></div>
-                <v-row>
-                  <v-col cols="12" sm="6" class="padding-b-0">
-                    <CUTextField
-                      label="License #"
-                      v-model="currentUserAsDriver.licenseNumber"
-                      :rules="[(val) => !!val || 'License Number is Required']"
-                    />
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12" sm="6" class="padding-t-0">
-                    <CUSelect
-                      label="State"
-                      :items="states"
-                      v-model="currentUserAsDriver.licensState"
-                    />
-                  </v-col>
-                  <v-col cols="6" sm="3" class="padding-t-0">
-                    <CUSelect
-                      label="Exp. Month"
-                      item-text="short"
-                      item-value="number"
-                      :items="months"
-                      v-model="currentUserAsDriver.licenseExpirationMonth"
-                    />
-                  </v-col>
-                  <v-col cols="6" sm="3" class="padding-t-0">
-                    <CUSelect
-                      :items="years"
-                      label="Exp. Year"
-                      v-model="currentUserAsDriver.licenseExpirationYear"
-                    />
-                  </v-col>
-                </v-row>
-                <div
-                  class="
-                    border-solid
-                    border-gray-mid-light
-                    border-x-0
-                    border-t-0
-                    border-b-1
-                    margin-b-6
-                  "
-                ></div>
-                <v-row>
-                  <v-col>
-                    <v-textarea
-                      v-model="currentUserAsDriver.notes"
-                      label="Notes"
-                      outlined
-                      flat
-                      solo
-                    />
-                  </v-col>
-                </v-row>
-                <h4 class="padding-b-3">Vehicle Types</h4>
-                <v-row wrap>
-                  <v-col
-                    v-for="([key, type], vti) in Object.entries(vehicleTypeMap)"
-                    :key="`vehicle-type-${key}-${vti}`"
-                    cols="6"
-                    sm="4"
-                  >
-                    <v-checkbox
-                      class="padding-a-0 margin-a-0"
-                      hide-details
-                      :value="vehicleTypeMap[key].supported"
-                      :label="type.label"
-                      @change="(e) => updateVehicleTypes(key, e)"
-                    />
-                  </v-col>
-                </v-row>
-              </v-col>
+                ref="driverInfoForm"
+                :parent-driver-model="currentUserAsDriver"
+                :vehicle-types="vehicleTypes"
+                @update-driver-model="updateModels"
+              />
             </v-expand-transition>
             <v-row>
               <v-col class="margin-t-7">
@@ -310,32 +163,27 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import dayjs from 'dayjs'
 import { AxiosResponse } from 'axios'
 
-import CUTextField from '@/components/CUTextField.vue'
-import CUSelect from '@/components/CUSelect.vue'
 import CompanyUsersChangePassword from '@/components/CompanyUsersChangePassword.vue'
 
-import { states } from '@/utils/states'
-import { months } from '@/utils/dates'
 import { apiBaseUrl } from '@/utils/env'
 
 import auth from '@/store/modules/auth'
 import user from '@/services/user'
 import { getVehicleTypes } from '@/services/type'
 import { userGroups } from '@/data/userGroups'
-import {
-  UserDetail,
-  UserDetailDriver,
-  SupportedVehicleType,
-  VehicleType,
-} from '@/models/dto'
+import { UserDetail, UserDetailDriver, VehicleType } from '@/models/dto'
+import CompanyUsersDetailUserPhoto from '@/components/CompanyUsersDetailUserPhoto.vue'
+import CompanyUsersDetailDriverInfo from '@/components/CompanyUsersDetailDriverInfo.vue'
 
 @Component({
-  components: { CUTextField, CUSelect, CompanyUsersChangePassword },
+  components: {
+    CompanyUsersChangePassword,
+    CompanyUsersDetailUserPhoto,
+    CompanyUsersDetailDriverInfo,
+  },
 })
-export default class CompanyUsersEdit extends Vue {
+export default class CompanyUsersDetail extends Vue {
   DRIVER_GROUP_ID = 4
-  states = states
-  months = months
   userGroups = userGroups
 
   validationErrors = {
@@ -343,7 +191,6 @@ export default class CompanyUsersEdit extends Vue {
   }
 
   vehicleTypes: VehicleType[] = []
-  years: number[] = []
 
   notFound = false
   treatAsDriver = false
@@ -351,50 +198,12 @@ export default class CompanyUsersEdit extends Vue {
   avatarLink = ''
   uploadedPhoto: FormData | undefined = undefined
 
-  currentUser: UserDetail = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    groupId: 1,
-    userPhotoDTOs: [],
-    active: false,
-    companyId: auth.getUser.companyId,
-    companyName: auth.getUser.companyName,
-    userRoleNames: [],
-    treatAsDriver: false,
-    locale: 'en_US',
-  }
+  currentUser: UserDetail | Record<string, never> = {}
 
-  currentUserAsDriver: UserDetailDriver = {
-    active: true,
-    firstName: '',
-    lastName: '',
-    email: '',
-    groupId: 1,
-    companyId: auth.getUser.companyId,
-    companyName: auth.getUser.companyName,
-    userPhotoDTOs: [],
-    userRoleNames: ['is_driver'],
-    drugTestNumber: '',
-    drugTestExpiration: '',
-    licensState: '',
-    licenseNumber: '',
-    licenseExpirationMonth: dayjs().get('month') + 1,
-    licenseExpirationYear: dayjs().get('year'),
-    phoneNumber: '',
-    notes: '',
-    driverSupportedVehicles: [],
-    locale: 'en_US',
-    treatAsDriver: true,
-  }
+  currentUserAsDriver: UserDetailDriver | Record<string, never> = {}
 
   mounted(): void {
     this.setVehicleTypes()
-
-    const currentYear = dayjs().year()
-    for (let i = currentYear - 1; i < currentYear + 20; i++) {
-      this.years.push(i)
-    }
 
     if (this.mode === 'edit' || this.mode === 'view') {
       this.getCurrentUser()
@@ -414,12 +223,14 @@ export default class CompanyUsersEdit extends Vue {
             Number(this.$route.params.id)
           )
           const userResponseData = response.data.driver
+          userResponseData.userRoleNames = roles.map((role) => role.roleName)
           this.currentUser = userResponseData as UserDetail
           this.currentUserAsDriver = userResponseData
           this.populateDrugExpirationDateInputs()
         } else {
           const response = await user.byId(Number(this.$route.params.id))
           const userResponseData = response.data
+          userResponseData.userRoleNames = roles.map((role) => role.roleName)
 
           this.currentUser = userResponseData
           this.currentUserAsDriver = userResponseData as UserDetailDriver
@@ -459,7 +270,6 @@ export default class CompanyUsersEdit extends Vue {
       this.currentUserAsDriver,
       updatedUser
     )
-
     if (updatedUser.groupId === 4) {
       this.treatAsDriver = true
     }
@@ -467,6 +277,10 @@ export default class CompanyUsersEdit extends Vue {
 
   @Watch('treatAsDriver', { immediate: true })
   onTreatAsDriverChanged(isDriver: boolean): void {
+    if (!this.currentUser.userRoleNames) {
+      this.currentUser.userRoleNames = []
+    }
+
     const hasDriverRole = this.currentUser.userRoleNames.includes('is_driver')
     if (isDriver && !hasDriverRole) {
       this.currentUser.userRoleNames.push('is_driver')
@@ -504,33 +318,11 @@ export default class CompanyUsersEdit extends Vue {
       return this.avatarLink
     }
     if (this.currentUser?.userPhotoDTOs?.length) {
-      return `https://${apiBaseUrl(null)}${
+      return `https://${apiBaseUrl(undefined)}${
         this.currentUser.userPhotoDTOs[0].imagePath
       }`
     }
     return ''
-  }
-
-  get vehicleTypeMap(): Record<number, SupportedVehicleType> {
-    let map: Record<number, SupportedVehicleType> = {}
-    this.vehicleTypes.map((vt: VehicleType) => {
-      map[vt.id] = {
-        vehicleTypeId: vt.id,
-        label: vt.label,
-        supported: false,
-      }
-    })
-
-    if (this.currentUserAsDriver.driverSupportedVehicles) {
-      const supportedVehicles = this.currentUserAsDriver.driverSupportedVehicles
-      supportedVehicles.map((st: SupportedVehicleType) => {
-        if (map[st.vehicleTypeId]) {
-          map[st.vehicleTypeId].supported = st.supported
-        }
-      })
-    }
-
-    return map
   }
 
   async setVehicleTypes(): Promise<void> {
@@ -540,7 +332,7 @@ export default class CompanyUsersEdit extends Vue {
       const { data } = response
       this.vehicleTypes = data.resultList
 
-      if (this.mode === 'add') {
+      if (this.mode === 'add' && this.currentUserAsDriver) {
         this.currentUserAsDriver.driverSupportedVehicles =
           this.vehicleTypes.map((vt) => ({
             vehicleTypeId: vt.id,
@@ -555,6 +347,14 @@ export default class CompanyUsersEdit extends Vue {
     }
   }
 
+  updateModels(newModel: UserDetailDriver): void {
+    this.currentUserAsDriver = Object.assign(
+      {},
+      this.currentUserAsDriver,
+      newModel
+    )
+  }
+
   // Not sure what type to cast the event as here
   uploadUserPhoto(e: any): void {
     e.preventDefault()
@@ -567,32 +367,29 @@ export default class CompanyUsersEdit extends Vue {
     this.uploadedPhoto = formData
   }
 
-  updateVehicleTypes(vehicleTypeId: number, value: boolean): void {
-    const supportedTypes =
-      this.currentUserAsDriver.driverSupportedVehicles || []
-
-    // .find() does not match with a triple === here
-    const matchingType = supportedTypes.find(
-      (t) => t.vehicleTypeId == vehicleTypeId
-    )
-    if (matchingType) {
-      matchingType.supported = value
-    }
-  }
-
+  // Start Submit Methods
   prepareModelForSubmit(): void {
     const { drugTestExpirationMonth: month, drugTestExpirationYear: year } =
       this.currentUserAsDriver
     if (month && year) {
       this.currentUserAsDriver.drugTestExpiration = dayjs(
-        new Date(year, month, 1)
+        new Date(year, month - 1, 1)
       ).format('YYYY-MM-DD')
     } else {
       this.currentUserAsDriver.drugTestExpiration = undefined
     }
 
+    this.currentUser.companyId = auth.getUser.companyId
+    this.currentUser.companyName = auth.getUser.companyName
     this.currentUser.active = true
     this.currentUser.treatAsDriver = this.treatAsDriver
+    this.currentUser.locale = 'en_US'
+
+    this.currentUserAsDriver = Object.assign(
+      {},
+      this.currentUserAsDriver,
+      this.currentUser
+    )
   }
 
   // Return the user ID of the added user
@@ -604,11 +401,13 @@ export default class CompanyUsersEdit extends Vue {
     }
     if (this.treatAsDriver) {
       const newDriverResponse = await user.createDriver(
-        this.currentUserAsDriver
+        this.currentUserAsDriver as UserDetailDriver
       )
-      return newDriverResponse.data
+      return newDriverResponse.data.driver.userId || 0
     } else {
-      const newUserResponse = await user.createUser(this.currentUser)
+      const newUserResponse = await user.createUser(
+        this.currentUser as UserDetail
+      )
       return newUserResponse.data
     }
   }
@@ -618,10 +417,13 @@ export default class CompanyUsersEdit extends Vue {
 
     if (this.treatAsDriver) {
       await user.makeDriver(userId)
-      await user.updateDriver(userId, this.currentUserAsDriver)
+      await user.updateDriver(
+        userId,
+        this.currentUserAsDriver as UserDetailDriver
+      )
     } else {
       await user.deactivateDriver(userId)
-      await user.updateUser(userId, this.currentUser)
+      await user.updateUser(userId, this.currentUser as UserDetail)
     }
 
     return userId
@@ -659,53 +461,3 @@ export default class CompanyUsersEdit extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-// Not sure if some of this should be converted to helper classes--
-// seems like it might be more intuitive to have all the styling in
-// one place though?
-.user-photo {
-  position: relative;
-  max-width: 200px;
-
-  &__src {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 5px solid $gray-border;
-  }
-
-  &__upload-btn {
-    width: 50px;
-    height: 50px;
-    background: #00a6f2;
-    outline: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  &__upload-group {
-    position: absolute;
-    right: 11px;
-    bottom: 2px;
-
-    input {
-      width: 50px;
-      height: 50px;
-      position: absolute;
-      top: 0;
-      opacity: 0;
-      z-index: 100;
-      cursor: pointer;
-    }
-  }
-}
-</style>

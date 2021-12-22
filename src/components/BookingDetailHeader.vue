@@ -60,7 +60,7 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" small text @click="cancelrejectNote">
+        <v-btn color="primary" small text @click="cancelRejectNote">
           Cancel
         </v-btn>
         <v-btn color="red" small @click="reject">Reject</v-btn>
@@ -152,7 +152,7 @@ export default class BookingDetailHeader extends Vue {
     return this.firstDropoff?.address?.city
   }
 
-  cancelrejectNote(): void {
+  cancelRejectNote(): void {
     this.rejectNote = ''
     this.isDialogOpen = false
   }

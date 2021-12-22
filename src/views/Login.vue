@@ -6,7 +6,12 @@
           <h1 class="text-center">CharterUP for Operators</h1>
         </v-col>
         <v-col sm="6" offset-sm="3">
-          <v-text-field outlined v-model="email" label="E-mail"></v-text-field>
+          <v-text-field
+            outlined
+            v-model="email"
+            label="E-mail"
+            @keyup.enter="submit"
+          ></v-text-field>
         </v-col>
         <v-col sm="6" offset-sm="3">
           <v-text-field
@@ -14,6 +19,7 @@
             v-model="password"
             type="password"
             label="Password"
+            @keyup.enter="submit"
           ></v-text-field>
         </v-col>
         <v-col sm="6" offset-sm="3">
@@ -51,6 +57,7 @@ export default class Login extends Vue {
     try {
       await modules.auth.login({ email: this.email, password: this.password })
       await modules.auth.getUserProfile()
+      await modules.auth.getUserV2()
       this.isSubmitting = false
     } catch (error) {
       this.isSubmitting = false

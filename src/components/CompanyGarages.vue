@@ -8,7 +8,7 @@
 import { Component as VueComponent } from 'vue'
 import CompanyGaragesList from '@/components/CompanyGaragesList.vue'
 import { Vue, Component } from 'vue-property-decorator'
-import CompanyGaragesEdit from './CompanyGaragesEdit.vue'
+import CompanyGaragesEdit from './CompanyGaragesDetail.vue'
 import Main from '@/layouts/Main.vue'
 
 @Component({

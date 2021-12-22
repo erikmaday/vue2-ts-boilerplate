@@ -120,7 +120,7 @@ export const routes: RouteConfig[] = [
                     name: 'garages.edit', 
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyGaragesEdit.vue'
+                        /* webpackChunkName: "company-garages-detail" */ '@/components/CompanyGaragesDetail.vue'
                       ),
                   },
                   {
@@ -128,7 +128,7 @@ export const routes: RouteConfig[] = [
                     name: 'garages.view', 
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyGaragesEdit.vue'
+                        /* webpackChunkName: "company-garages-detail" */ '@/components/CompanyGaragesDetail.vue'
                       ),
                   }
                 ],

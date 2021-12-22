@@ -39,27 +39,20 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-dialog
-      v-model="isDialogOpen"
-      :fullscreen="$vuetify.breakpoint.xs"
-      width="500px"
-      max-width="500px"
-    >
-      <v-card>
-        <v-card-title class="background-primary text-white font-medium">
-          Add Comment
-        </v-card-title>
-        <v-card-text>
-          <v-textarea v-model="newComment" auto-grow outlined></v-textarea>
-        </v-card-text>
-        <v-card-actions class="d-flex justify-center">
-          <v-btn color="primary" small text @click="cancelAddComment">
-            Cancel
-          </v-btn>
-          <v-btn color="primary" small @click="submitComment">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <CUModal v-model="isDialogOpen">
+      <template #title>Add Comment</template>
+      <template #text>
+        <v-textarea v-model="newComment" auto-grow outlined></v-textarea>
+      </template>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="cancelAddComment">
+          Cancel
+        </v-btn>
+        <v-btn color="primary" small @click="submitComment">Save</v-btn>
+        <v-spacer />
+      </template>
+    </CUModal>
   </v-row>
 </template>
 

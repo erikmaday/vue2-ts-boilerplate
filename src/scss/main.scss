@@ -272,7 +272,6 @@
 
   .v-data-table__detail {
     .v-data-table {
-
       .v-data-table__wrapper {
         border: 1px solid $gray-border;
         border-radius: 5px;
@@ -280,17 +279,15 @@
 
       .v-data-table-header {
         background-color: $gray-header;
-      }
 
-      .v-data-table-header.v-data-table-header-mobile {
-        display: none;
+        &.v-data-table-header-mobile {
+          display: none;
+        }
       }
 
       tr {
         height: 55px;
       }
-
-
     }
   }
 

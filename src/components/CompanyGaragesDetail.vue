@@ -2,18 +2,18 @@
   <div>
     <v-container>
       <v-row justify="center">
-        <v-col cols="12" sm="8" md="6">
+        <v-col cols="12" sm="8" md="8">
           <v-row
             class="padding-b-8"
             align="center"
-            justify-sm="space-between"
+            justify-md="space-between"
             justify="center"
           >
-            <v-col cols="12" sm="auto">
+            <v-col cols="12" md="auto">
               <h1
                 class="margin-a-0"
                 :class="{
-                  'text-center': $vuetify.breakpoint.xs,
+                  'text-center': $vuetify.breakpoint.smAndDown,
                 }"
               >
                 {{ headerTitle }}
@@ -21,7 +21,9 @@
             </v-col>
             <span>
               <v-btn
-                class="margin-l-4"
+                :class="{
+                  'margin-l-4': !isModeAdd
+                }"
                 primary
                 outlined
                 small
@@ -77,7 +79,7 @@
         </v-col>
       </v-row>
       <v-row justify="center" no-gutters>
-        <v-col cols="12" sm="8" md="6">
+        <v-col cols="12" sm="8" md="8">
           <CompanyGaragesDetailForm
             :mode="mode"
             :current-garage="currentGarage"

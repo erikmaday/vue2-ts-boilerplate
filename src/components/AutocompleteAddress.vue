@@ -170,9 +170,3 @@ export default class AutocompleteAddress extends Vue {
   }
 }
 </script>
-
-<style scoped lang="scss">
-::v-deep button.v-icon.notranslate.v-icon--link.mdi.mdi-close.theme--light {
-  margin-top: -7px;
-}
-</style>

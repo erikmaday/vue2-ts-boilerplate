@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'v-data-table__detail': isDetailTable }">
     <v-data-table
       :headers="columns"
       :items="items"
@@ -21,6 +21,7 @@
               :column="col"
               :row="item"
               :actions="actions"
+              :is-detail-table="isDetailTable"
               @refresh="$emit('refresh')"
             />
           </td>
@@ -43,12 +44,14 @@
               :column="col"
               :row="item"
               :actions="actions"
+              :is-detail-table="isDetailTable"
               @refresh="$emit('refresh')"
             />
           </div>
         </div>
       </template>
       <v-pagination
+        v-if="!isDetailTable"
         v-model="options.page"
         :length="serverItemsLength"
       ></v-pagination>
@@ -100,5 +103,11 @@ export default class CUDataTable extends Vue {
     required: true,
   })
   options!: TableViewParameters
+
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isDetailTable!: boolean
 }
 </script>

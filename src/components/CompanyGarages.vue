@@ -8,7 +8,7 @@
 import { Component as VueComponent } from 'vue'
 import CompanyGaragesList from '@/components/CompanyGaragesList.vue'
 import { Vue, Component } from 'vue-property-decorator'
-import CompanyGaragesEdit from './CompanyGaragesDetail.vue'
+import CompanyGaragesDetail from './CompanyGaragesDetail.vue'
 import Main from '@/layouts/Main.vue'
 
 @Component({
@@ -18,7 +18,7 @@ export default class CompanyUsers extends Vue {
   get currentComponent(): VueComponent {
     switch (this.$route.name) {
       case 'garages.edit':
-        return CompanyGaragesEdit
+        return CompanyGaragesDetail
       default:
         return CompanyGaragesList
     }

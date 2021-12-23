@@ -1,6 +1,5 @@
 <template>
   <v-form ref="form">
-    <v-col>
       <CUTextField
         v-model="model.garageName"
         :rules="[(val) => isNotEmpty(val) || 'Name is Required']"
@@ -30,7 +29,6 @@
           <v-btn color="primary" small @click="addGarage">Add Garage</v-btn>
         </v-col>
       </v-row>
-    </v-col>
   </v-form>
 </template>
 <script lang="ts">

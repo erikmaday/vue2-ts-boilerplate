@@ -270,6 +270,26 @@
     border-color: $gray-border;
   }
 
+  .v-data-table__detail {
+    .v-data-table {
+
+      .v-data-table__wrapper {
+        border: 1px solid $gray-border;
+        border-radius: 5px;
+      }
+
+      .v-data-table-header {
+        background-color: $gray-header;
+      }
+
+      tr {
+        height: 55px;
+      }
+
+
+    }
+  }
+
   .v-data-table {
     font-size: 16px;
 

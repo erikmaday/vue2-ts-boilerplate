@@ -32,23 +32,30 @@
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
     </template>
     <template v-else-if="column.type === 'details'">
-      <router-link
-        v-if="$vuetify.breakpoint.smAndUp"
-        class="font-medium font-14"
-        :to="{ path: `view/${row.id}` }"
-        :append="true"
-      >
-        Details
-      </router-link>
-      <v-btn
-        v-else
-        color="primary"
-        small
-        class="w-full margin-t-4"
-        @click="$router.push({ path: `view/${row.id}` })"
-      >
-        Details
-      </v-btn>
+      <template v-if="isDetailTable">
+        <div class="d-flex">
+          <CUIcon color="primary">view</CUIcon>
+        </div>
+      </template>
+      <template v-else>
+        <router-link
+          v-if="$vuetify.breakpoint.smAndUp"
+          class="font-medium font-14"
+          :to="{ path: `view/${row.id}` }"
+          :append="true"
+        >
+          Details
+        </router-link>
+        <v-btn
+          v-else
+          color="primary"
+          small
+          class="w-full margin-t-4"
+          @click="$router.push({ path: `view/${row.id}` })"
+        >
+          Details
+        </v-btn>
+      </template>
     </template>
     <template v-else>
       {{ computedCellItemText }}
@@ -84,6 +91,12 @@ export default class CUDataTableCell extends Vue {
     default: undefined,
   })
   actions!: ActionColumn[]
+
+  @Prop({
+    required: false,
+    default: false,
+  })
+  isDetailTable!: boolean
 
   get cellItem(): any {
     return this.row[this.column.value]

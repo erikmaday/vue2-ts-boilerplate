@@ -1,71 +1,80 @@
 <template>
   <div>
     <v-container>
-      <v-row
-        class="padding-b-8"
-        align="center"
-        justify-sm="space-between"
-        justify="center"
-      >
-        <v-col cols="12" sm="auto">
-          <h1
-            class="margin-a-0"
-            :class="{
-              'text-center': $vuetify.breakpoint.xs,
-            }"
-          >
-            {{ headerTitle }}
-          </h1>
-        </v-col>
-        <span>
-          <v-btn
-            class="margin-l-4"
-            primary
-            outlined
-            small
-            color="primary"
-            @click="
-              $router.push({
-                name: 'garages',
-              })
-            "
-          >
-            All Garages
-          </v-btn>
-          <v-btn
-            v-show="isModeEdit"
-            class="margin-l-4"
-            outlined
-            small
-            color="primary"
-            @click="
-              $router.push({
-                name: 'garages.view',
-                params: { id: $route.params.id },
-              })
-            "
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            v-show="isModeView"
-            class="margin-l-4"
-            small
-            color="primary"
-            @click="
-              $router.push({
-                name: 'garages.edit',
-                params: { id: $route.params.id },
-              })
-            "
-          >
-            Edit
-          </v-btn>
-        </span>
-      </v-row>
       <v-row justify="center">
-        <v-col cols="8">
+        <v-col cols="12" sm="8" md="6">
+          <v-row
+            class="padding-b-8"
+            align="center"
+            justify-sm="space-between"
+            justify="center"
+          >
+            <v-col cols="12" sm="auto">
+              <h1
+                class="margin-a-0"
+                :class="{
+                  'text-center': $vuetify.breakpoint.xs,
+                }"
+              >
+                {{ headerTitle }}
+              </h1>
+            </v-col>
+            <span>
+              <v-btn
+                class="margin-l-4"
+                primary
+                outlined
+                small
+                color="primary"
+                @click="
+                  $router.push({
+                    name: 'garages',
+                  })
+                "
+              >
+                All Garages
+              </v-btn>
+              <v-btn
+                v-show="isModeEdit"
+                class="margin-l-4"
+                outlined
+                small
+                color="primary"
+                @click="
+                  $router.push({
+                    name: 'garages.view',
+                    params: { id: $route.params.id },
+                  })
+                "
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                v-show="isModeView"
+                class="margin-l-4"
+                small
+                color="primary"
+                @click="
+                  $router.push({
+                    name: 'garages.edit',
+                    params: { id: $route.params.id },
+                  })
+                "
+              >
+                Edit
+              </v-btn>
+            </span>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row justify="center" no-gutters>
+        <v-col cols="12" sm="8" md="6">
           <CompanyGaragesAddNew v-if="isModeAdd" />
+          <CompanyGaragesDetailEdit
+            v-else
+            :mode="mode"
+            :currentGarage="currentGarage"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -78,14 +87,22 @@ import garage from '@/services/garage'
 import { AxiosResponse } from 'axios'
 import { Garage } from '@/models/dto/Garage'
 import CompanyGaragesAddNew from '@/components/CompanyGaragesAddNew.vue'
+import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
+import { isNotEmpty } from '@/utils/validators'
+import CompanyGaragesDetailEdit from '@/components/CompanyGaragesDetailEdit.vue'
 
 @Component({
-  components: { CompanyGaragesAddNew },
+  components: {
+    CompanyGaragesAddNew,
+    AutocompleteAddress,
+    CompanyGaragesDetailEdit,
+  },
 })
-export default class CompanyGaragesEdit extends Vue {
+export default class CompanyGaragesDetail extends Vue {
   notFound = false
+  isNotEmpty = isNotEmpty
 
-  currentGarage: Garage | null = null
+  currentGarage: Garage | Record<string, never> = {}
 
   get mode(): string {
     switch (this.$route.name) {

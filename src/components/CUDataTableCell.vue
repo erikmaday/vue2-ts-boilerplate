@@ -32,31 +32,45 @@
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
     </template>
     <template v-else-if="column.type === 'details'">
-      <template v-if="isDetailTable">
+      <!-- <template v-if="isDetailTable">
         <div class="d-flex">
-          <CUIcon color="primary">view</CUIcon>
+          <CUIcon color="primary" @click="$router.push(detailCellLink(row))">
+            view
+          </CUIcon>
         </div>
-      </template>
-      <template v-else>
+      </template> -->
+      <!-- <template v-else> -->
+      <template v-if="$vuetify.breakpoint.smAndUp">
+        <div v-if="isDetailTable" class="d-flex">
+          <CUIcon
+            class="cursor-pointer"
+            color="primary"
+            ariaLabel="Click to view detail view"
+            @click="$router.push(detailCellLink(row))"
+          >
+            view
+          </CUIcon>
+        </div>
         <router-link
-          v-if="$vuetify.breakpoint.smAndUp"
+          v-else
           class="font-medium font-14"
-          :to="{ path: `view/${row.id}` }"
+          :to="detailCellLink(row)"
           :append="true"
         >
           Details
         </router-link>
-        <v-btn
-          v-else
-          color="primary"
-          small
-          class="w-full margin-t-4"
-          @click="$router.push({ path: `view/${row.id}` })"
-        >
-          Details
-        </v-btn>
       </template>
+      <v-btn
+        v-else
+        color="primary"
+        small
+        class="w-full margin-t-4"
+        @click="$router.push(detailCellLink(row))"
+      >
+        Details
+      </v-btn>
     </template>
+    <!-- </template> -->
     <template v-else>
       {{ computedCellItemText }}
     </template>
@@ -68,6 +82,7 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { phoneFormatFilter } from '@/utils/string'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: { CUDataTableActionColumn },
@@ -98,6 +113,18 @@ export default class CUDataTableCell extends Vue {
   })
   isDetailTable!: boolean
 
+  @Prop({
+    type: String,
+    required: false,
+  })
+  detailName!: string
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  itemKey!: string
+
   get cellItem(): any {
     return this.row[this.column.value]
   }
@@ -107,6 +134,15 @@ export default class CUDataTableCell extends Vue {
       return this.column.computedText(this.row)
     }
     return this.cellItem
+  }
+
+  detailCellLink(row: any): RawLocation {
+    const key = this.itemKey ? this.itemKey : 'id'
+
+    if (this.detailName) {
+      return { name: this.detailName, params: { id: row[key] } }
+    }
+    return { path: `view/${row[key]}` }
   }
 
   phoneFormatFilter = phoneFormatFilter

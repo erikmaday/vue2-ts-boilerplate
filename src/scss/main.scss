@@ -282,6 +282,10 @@
         background-color: $gray-header;
       }
 
+      .v-data-table-header.v-data-table-header-mobile {
+        display: none;
+      }
+
       tr {
         height: 55px;
       }

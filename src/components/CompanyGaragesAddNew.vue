@@ -1,34 +1,34 @@
 <template>
   <v-form ref="form">
-      <CUTextField
-        v-model="model.garageName"
-        :rules="[(val) => isNotEmpty(val) || 'Name is Required']"
-        label="Name"
-      />
-      <AutocompleteAddress
-        v-model="model.address"
-        label="Address"
-        :error-messages="formErrors.address"
-        :rules="[(val) => isNotEmpty(val) || 'Address is Required']"
-      />
-      <CUTextArea
-        v-model="model.defaultGarageNotes"
-        label="Default Garage Notes"
-        solo
-        flat
-        outlined
-        rows="2"
-      />
-      <v-row justify="space-between">
-        <v-col cols="auto">
-          <v-btn small plain @click="$router.push({ name: 'garages' })">
-            Cancel
-          </v-btn>
-        </v-col>
-        <v-col cols="auto">
-          <v-btn color="primary" small @click="addGarage">Add Garage</v-btn>
-        </v-col>
-      </v-row>
+    <CUTextField
+      v-model="model.garageName"
+      :rules="[(val) => isNotEmpty(val) || 'Name is Required']"
+      label="Name"
+    />
+    <AutocompleteAddress
+      v-model="model.address"
+      label="Address"
+      :error-messages="formErrors.address"
+      :rules="[(val) => isNotEmpty(val) || 'Address is Required']"
+    />
+    <CUTextArea
+      v-model="model.defaultGarageNotes"
+      label="Default Garage Notes"
+      solo
+      flat
+      outlined
+      rows="2"
+    />
+    <v-row justify="space-between">
+      <v-col cols="auto">
+        <v-btn small plain @click="$router.push({ name: 'garages' })">
+          Cancel
+        </v-btn>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn color="primary" small @click="addGarage">Add Garage</v-btn>
+      </v-col>
+    </v-row>
   </v-form>
 </template>
 <script lang="ts">

@@ -13,6 +13,7 @@ import CUTextField from '@/components/CUTextField.vue'
 import CUSelect from '@/components/CUSelect.vue'
 import CUModal from '@/components/CUModal.vue'
 import CUTextArea from '@/components/CUTextArea.vue'
+import CUDataTable from '@/components/CUDataTable.vue'
 
 Vue.use(VueDayjs)
 Vue.component('CUIcon', CUIcon)
@@ -20,6 +21,7 @@ Vue.component('CUTextField', CUTextField)
 Vue.component('CUTextArea', CUTextArea)
 Vue.component('CUSelect', CUSelect)
 Vue.component('CUModal', CUModal)
+Vue.component('CUDataTable', CUDataTable)
 Vue.config.productionTip = false
 
 new Vue({

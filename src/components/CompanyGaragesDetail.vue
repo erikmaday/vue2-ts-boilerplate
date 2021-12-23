@@ -35,6 +35,15 @@
                 All Garages
               </v-btn>
               <v-btn
+                v-show="isModeView || isModeEdit"
+                class="margin-l-4"
+                small
+                color="error"
+                @click="deleteModalIsOpen = true"
+              >
+                Delete
+              </v-btn>
+              <v-btn
                 v-show="isModeEdit"
                 class="margin-l-4"
                 outlined
@@ -69,15 +78,57 @@
       </v-row>
       <v-row justify="center" no-gutters>
         <v-col cols="12" sm="8" md="6">
-          <CompanyGaragesAddNew v-if="isModeAdd" />
-          <CompanyGaragesDetailEdit
-            v-else
+          <CompanyGaragesDetailForm
             :mode="mode"
-            :currentGarage="currentGarage"
+            :current-garage="currentGarage"
+            :garage-id="garageId"
           />
+          <template
+            v-if="!isModeAdd && currentGarage && currentGarage.vehicleDTOs"
+          >
+            <div
+              class="
+                border-solid
+                border-gray-mid-light
+                border-x-0
+                border-t-0
+                border-b-1
+                margin-y-6
+              "
+            ></div>
+            <h4 class="margin-b-3">Vehicles In Garage</h4>
+            <CUDataTable
+              :columns="columns"
+              :server-items-length="currentGarage.vehicleDTOs.length"
+              :items="currentGarage.vehicleDTOs"
+              item-key="vehicleId"
+              :options="{}"
+              is-detail-table
+              detail-name="vehicles.view"
+              no-data-text="No vehicles are in this garage"
+            />
+          </template>
         </v-col>
       </v-row>
     </v-container>
+    <CUModal v-model="deleteModalIsOpen">
+      <template #title>Delete Garage</template>
+      <template #text>Are you sure you want to delete this garage?</template>
+      <template #actions>
+        <v-spacer />
+        <v-btn
+          color="primary"
+          outlined
+          small
+          text
+          @click="deleteModalIsOpen = false"
+        >
+          Cancel
+        </v-btn>
+        <v-btn color="error" small @click="deleteGarage">Delete</v-btn>
+        <v-spacer />
+      </template>
+    </CUModal>
   </div>
 </template>
 
@@ -86,14 +137,16 @@ import { Vue, Component } from 'vue-property-decorator'
 import garage from '@/services/garage'
 import { AxiosResponse } from 'axios'
 import { Garage } from '@/models/dto/Garage'
-import CompanyGaragesAddNew from '@/components/CompanyGaragesAddNew.vue'
+import CompanyGaragesDetailForm from '@/components/CompanyGaragesDetailForm.vue'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
 import { isNotEmpty } from '@/utils/validators'
 import CompanyGaragesDetailEdit from '@/components/CompanyGaragesDetailEdit.vue'
+import { ApiResult, TableViewParameters } from '@/models/dto'
+import { DataTableColumn } from '@/models/DataTableColumn'
 
 @Component({
   components: {
-    CompanyGaragesAddNew,
+    CompanyGaragesDetailForm,
     AutocompleteAddress,
     CompanyGaragesDetailEdit,
   },
@@ -138,6 +191,22 @@ export default class CompanyGaragesDetail extends Vue {
     return this.mode === 'add'
   }
 
+  get garageId(): number | undefined {
+    if (this.$route.params.id) {
+      return Number(this.$route.params.id)
+    }
+    return undefined
+  }
+
+  columns: DataTableColumn[] = [
+    { text: 'Name', value: 'vehicleName' },
+    { text: 'Type', value: 'vehicleTypeName' },
+    { text: 'Detail', value: 'detail', type: 'details' },
+  ]
+
+  options: TableViewParameters = {}
+  deleteModalIsOpen = false
+
   mounted(): void {
     this.getCurrentGarage()
   }
@@ -157,6 +226,18 @@ export default class CompanyGaragesDetail extends Vue {
       this.notFound = true
       console.error(e)
       return
+    }
+  }
+
+  async deleteGarage(): Promise<void> {
+    if (!this.garageId) {
+      return
+    }
+
+    const res: AxiosResponse<ApiResult> = await garage.delete(this.garageId)
+    if (res.data.successful) {
+      this.deleteModalIsOpen = false
+      this.$router.push({ name: 'garages' })
     }
   }
 }

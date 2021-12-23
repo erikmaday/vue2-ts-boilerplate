@@ -12,10 +12,19 @@
           label="Address"
           :rules="[(val) => isNotEmpty(val) || 'Address is Required']"
         />
+        <v-btn
+          v-show="isModeEdit"
+          color="primary"
+          small
+          class="w-full"
+          @click="updateGarage"
+        >
+          Update Garage
+        </v-btn>
         <div
           class="
             border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1
-            margin-b-6
+            margin-y-6
           "
         ></div>
         <!-- TODO: Add v-if for if no vehicles in garage yet  -->
@@ -62,7 +71,6 @@ export default class CompanyGaragesDetailEdit extends Vue {
   })
   currentGarage!: Garage
 
-
   get isModeEdit(): boolean {
     return this.mode === 'edit'
   }
@@ -74,5 +82,20 @@ export default class CompanyGaragesDetailEdit extends Vue {
   ]
 
   options: TableViewParameters = {}
+  formErrors: Record<string, any> = {}
+
+  async updateGarage(): Promise<void> {
+    const form: any = this.$refs['form']
+    if (!form.validate()) {
+      return
+    }
+
+    if (!this.currentGarage?.address) {
+      this.formErrors.address = [
+        'An address must be selected from the dropdown',
+      ]
+      return
+    }
+  }
 }
 </script>

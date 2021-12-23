@@ -32,14 +32,6 @@
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
     </template>
     <template v-else-if="column.type === 'details'">
-      <!-- <template v-if="isDetailTable">
-        <div class="d-flex">
-          <CUIcon color="primary" @click="$router.push(detailCellLink(row))">
-            view
-          </CUIcon>
-        </div>
-      </template> -->
-      <!-- <template v-else> -->
       <template v-if="$vuetify.breakpoint.smAndUp">
         <div v-if="isDetailTable" class="d-flex">
           <CUIcon
@@ -70,7 +62,6 @@
         Details
       </v-btn>
     </template>
-    <!-- </template> -->
     <template v-else>
       {{ computedCellItemText }}
     </template>

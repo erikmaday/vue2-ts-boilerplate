@@ -3,14 +3,15 @@ import { Company } from './Company';
 
 export interface Garage {
   garageName: string
-  address: Address
+  address?: Address
+  addressDTO?: Address
   companyId: number
   defaultGarageNotes?: string
   garageId: number
   noOfVehicles: number
 }
 
-export interface CreateGarageRequest {
+export interface GarageRequest {
   address: Address
   defaultGarageNotes?: string
   garage: boolean
@@ -22,6 +23,6 @@ export interface GarageDetailResult extends ApiResult {
   garage: Garage
 }
 
-export interface CreateGarageResult extends ApiResult {
+export interface GarageResult extends ApiResult {
   company: Company
 }

@@ -50,6 +50,14 @@
         Details
       </v-btn>
     </template>
+    <template v-else-if="editable && column.value !== 'vehicleType'">
+      <CUTextField
+        class="max-w-72"
+        hide-details
+        :disabled="true"
+        :value="computedCellItemText"
+      />
+    </template>
     <template v-else>
       {{ computedCellItemText }}
     </template>
@@ -61,9 +69,10 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { phoneFormatFilter } from '@/utils/string'
+import CUTextField from '@/components/CUTextField.vue'
 
 @Component({
-  components: { CUDataTableActionColumn },
+  components: { CUDataTableActionColumn, CUTextField },
 })
 export default class CUDataTableCell extends Vue {
   @Prop({
@@ -84,6 +93,13 @@ export default class CUDataTableCell extends Vue {
     default: undefined,
   })
   actions!: ActionColumn[]
+
+  @Prop({
+    type: Boolean,
+    required: false,
+    default: false,
+  })
+  editable!: boolean
 
   get cellItem(): any {
     return this.row[this.column.value]

@@ -135,11 +135,36 @@ export const routes: RouteConfig[] = [
               },
               {
                 path: 'rates',
-                name: 'rates',
                 component: () =>
                   import(
                     /* webpackChunkName: "company-rates" */ '@/views/Empty.vue'
                   ),
+                children: [
+                  {
+                    path: '', 
+                    name: 'rates', 
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyRates.vue'
+                      ),
+                  },
+                  {
+                    path: 'adjustments', 
+                    name: 'rates.adjustments', 
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyRates.vue'
+                      ),
+                  },
+                  {
+                    path: 'calculator', 
+                    name: 'rates.calculator', 
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyRates.vue'
+                      ),
+                  },
+                ]
               },
               {
                 path: 'availability',

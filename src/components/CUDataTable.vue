@@ -21,6 +21,7 @@
               :column="col"
               :row="item"
               :actions="actions"
+              :editable="editable"
               @refresh="$emit('refresh')"
             />
           </td>
@@ -43,6 +44,7 @@
               :column="col"
               :row="item"
               :actions="actions"
+              :editable="editable"
               @refresh="$emit('refresh')"
             />
           </div>
@@ -100,5 +102,12 @@ export default class CUDataTable extends Vue {
     required: true,
   })
   options!: TableViewParameters
+
+  @Prop({
+    type: Boolean, 
+    required: false, 
+    default: false,
+  })
+  editable!: boolean
 }
 </script>

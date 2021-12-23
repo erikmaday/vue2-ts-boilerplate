@@ -17,6 +17,8 @@ import Main from '@/layouts/Main.vue'
 export default class CompanyUsers extends Vue {
   get currentComponent(): VueComponent {
     switch (this.$route.name) {
+      case 'garages.add':
+      case 'garages.view':
       case 'garages.edit':
         return CompanyGaragesDetail
       default:

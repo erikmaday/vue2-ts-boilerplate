@@ -46,10 +46,9 @@
     </template>
     <CUModal v-model="isDialogOpen">
       <template #title>Reject Booking</template>
-      <template #label>Why are you rejecting the booking?</template>
       <template #text>
         <v-form ref="form">
-          <CUTextField
+          <CUTextArea
             v-model="rejectNote"
             label="Why are you rejecting the booking?"
             placeholder="Add reasons for rejection here."
@@ -63,7 +62,7 @@
         <v-btn color="primary" small text @click="cancelRejectNote">
           Cancel
         </v-btn>
-        <v-btn color="red" small @click="reject">Reject</v-btn>
+        <v-btn color="red" class="white--text" small @click="reject">Reject</v-btn>
         <v-spacer />
       </template>
     </CUModal>

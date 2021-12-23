@@ -83,7 +83,7 @@
             }"
           >
             <CompanyUsersDetailUserPhoto
-              :photoSrc="avatarLink"
+              :photoSrc="userPhoto"
               :mode="mode"
               @upload="uploadUserPhoto"
             />
@@ -330,9 +330,16 @@ export default class CompanyUsersDetail extends Vue {
       return this.avatarLink
     }
     if (this.currentUser?.userPhotoDTOs?.length) {
-      return `https://${apiBaseUrl(undefined)}${
-        this.currentUser.userPhotoDTOs[0].imagePath
-      }`
+      // TODO:
+      // It seems like we don't currently have a way of setting the primaryImage
+      // property on the back-end. Creating a ticket to fix this, but 
+      // until then, this is the workaround we use in Coachrail
+      const userPhotoSrc =
+        this.currentUser.userPhotoDTOs[
+          this.currentUser.userPhotoDTOs.length - 1
+        ].imagePath
+
+      return `https://${apiBaseUrl(null)}${userPhotoSrc}`
     }
     return ''
   }
@@ -429,9 +436,7 @@ export default class CompanyUsersDetail extends Vue {
       )
       return newDriverResponse.data.driver.userId || 0
     } else {
-      const newUserResponse = await user.create(
-        this.currentUser as UserDetail
-      )
+      const newUserResponse = await user.create(this.currentUser as UserDetail)
       return newUserResponse.data
     }
   }
@@ -441,10 +446,7 @@ export default class CompanyUsersDetail extends Vue {
 
     if (this.treatAsDriver) {
       await driver.makeDriver(userId)
-      await driver.update(
-        userId,
-        this.currentUserAsDriver as UserDetailDriver
-      )
+      await driver.update(userId, this.currentUserAsDriver as UserDetailDriver)
     } else {
       await driver.deactivateDriver(userId)
       await user.update(userId, this.currentUser as UserDetail)

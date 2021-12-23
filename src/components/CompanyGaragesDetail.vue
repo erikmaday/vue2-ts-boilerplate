@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-row justify="center">
-        <v-col cols="12" sm="8" md="8">
+        <v-col cols="12" sm="8">
           <v-row
             class="padding-b-8"
             align="center"
@@ -79,7 +79,7 @@
         </v-col>
       </v-row>
       <v-row justify="center" no-gutters>
-        <v-col cols="12" sm="8" md="8">
+        <v-col cols="12" sm="8">
           <CompanyGaragesDetailForm
             :mode="mode"
             :current-garage="currentGarage"

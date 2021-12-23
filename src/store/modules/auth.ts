@@ -5,20 +5,24 @@ import auth from '@/services/auth'
 import user from '@/services/user'
 import router from '@/router'
 
-import { UserAuthPayload, Role } from '@/models/dto'
+import { UserAuthPayload, Role, User } from '@/models/dto'
 import { save, load } from '@/utils/localStorage'
 
 @Module({ generateMutationSetters: true })
 class AuthModule extends VuexModule {
   // state
-  user = {}
+  userId: number | null = load('userId') || null
+  user: User | null = load('user') || null
   token: string | null = load('token') || null
   isTokenSet = !!load('token')
-  roles: Role[] = []
+  roles: Role[] | null = load('roles') || null
 
   // getters
   get getUser() {
     return this.user
+  }
+  get getUserId() {
+    return this.userId
   }
   get getToken() {
     return this.token
@@ -37,7 +41,7 @@ class AuthModule extends VuexModule {
   async login(payload: UserAuthPayload) {
     const response = await auth.login(payload)
     if (response.data.successful) {
-      save('user', response.data.user)
+      save('userId', response.data.user.userId)
       save('token', response.data.token)
       this.token = response.data.token
       this.user = response.data.user
@@ -60,6 +64,7 @@ class AuthModule extends VuexModule {
   async logout() {
     window.localStorage.removeItem('token')
     window.localStorage.removeItem('user')
+    window.localStorage.removeItem('userId')
     window.localStorage.removeItem('roles')
     this.isTokenSet = false
     router.push({
@@ -78,16 +83,16 @@ class AuthModule extends VuexModule {
 
   @Action
   async getUserDetail() {
-    if (!this.user.userId) {
+    if (!this.userId) {
       return
     }
 
-    const response = await user.byId(this.user.userId)
+    const response = await user.byId(this.userId)
 
     // Seems like we don't have a `successful` property to check on this response?
     if (response.status === 200) {
       save('user', response.data)
-      this.user = response.data
+      console.log(response.data)
     }
   }
 }

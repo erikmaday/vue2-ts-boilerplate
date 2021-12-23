@@ -50,14 +50,14 @@
         </v-row>
         <v-row>
           <v-col
-            v-for="(trip, tripIndex) in tripsToDisplay"
+            v-for="(tripBundle, tripBundleIndex) in tripBundlesToDisplay"
             cols="12"
             sm="6"
             md="4"
             lg="3"
-            :key="`trip-${tripIndex}-${trip.tripId}`"
+            :key="`trip-${tripBundleIndex}-${tripBundle[0].quoteId}`"
           >
-            <MarketplaceCard :trip="trip" />
+            <MarketplaceCard show-pagination :trips="tripBundle" />
           </v-col>
         </v-row>
         <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
@@ -66,7 +66,7 @@
             active-color="white"
             inactive-color="black"
             hover-color="gray-light"
-            :items="trips"
+            :items="tripBundles"
           />
         </v-row>
       </v-col>
@@ -143,6 +143,7 @@ export default class TodayMarketplace extends Vue {
 
   trips: Trip[] = []
   tripCount = 0
+  tripBundles: Trip[][] | null = []
 
   params = {
     pageSize: 24,
@@ -171,10 +172,16 @@ export default class TodayMarketplace extends Vue {
     this.getTrips()
   }
 
-  get tripsToDisplay(): Trip[] {
+  get tripBundlesToDisplay(): Trip[] {
+    if (!this.tripBundles) {
+      return []
+    }
     const startIndex =
       (this.pagination.currentPage - 1) * this.pagination.pageSize
-    return this.trips.slice(startIndex, startIndex + this.pagination.pageSize)
+    return this.tripBundles.slice(
+      startIndex,
+      startIndex + this.pagination.pageSize
+    )
   }
 
   get currentTimestamp(): dayjs.Dayjs {
@@ -214,9 +221,22 @@ export default class TodayMarketplace extends Vue {
       quoteIdList
     )
     this.trips = tripResponse.data.resultList
+    this.tripBundles = this.bundleTrips(this.trips)
     if (setCount) {
       this.tripCount = preliminaryTripResponse.data.count
     }
+  }
+
+  bundleTrips(trips: Trip[]): Trip[][] {
+    const bundleMap: { [quoteId: number]: Trip } = {}
+    for (const trip of trips) {
+      if (bundleMap[trip.quoteId]) {
+        bundleMap[trip.quoteId].push(trip)
+      } else {
+        bundleMap[trip.quoteId] = [trip]
+      }
+    }
+    return Object.values(bundleMap)
   }
 
   handleFilterClick(filterChip: TableViewFilterChip): void {

@@ -1,19 +1,10 @@
 <template>
-  <v-card
-    class="
-      border
-      w-full
-      cursor-pointer
-      hover:shadow-primary-xl hover:border-white
-      border-radius-2x
-    "
-    @mouseenter="isActive = true"
-    @focus="isActive = true"
-    @mouseleave="isActive = false"
-    @blur="isActive = false"
-    @click="goToBid"
-  >
-    <v-card-text class="padding-a-4">
+  <v-card class="border w-full cursor-pointer border-radius-2x">
+    <v-card-text
+      class="padding-x-4 padding-t-4"
+      :class="{ 'padding-b-4': !showPagination, 'padding-b-1': showPagination }"
+      @click="goToBid"
+    >
       <p class="font-medium margin-t-0">
         {{ firstPickup.address.city }}
         <span class="text-gray-light">></span>
@@ -37,8 +28,24 @@
         <span class="font-14">{{ formattedRequiredDrivers }}</span>
       </div>
       <div class="d-flex justify-end">
+        <div
+          v-if="promptBid"
+          class="
+            d-flex
+            white-space-nowrap
+            font-bold font-16
+            text-primary
+            align-middle
+            margin-a-0
+            padding-a-0
+            justify-end
+          "
+        >
+          Bid
+          <CUIcon class="margin-l-1">arrow_right</CUIcon>
+        </div>
         <span
-          v-if="actionMessage"
+          v-else-if="actionMessage"
           class="white-space-nowrap font-bold font-12 text-error"
           :class="`text-${actionMessage.color}`"
         >
@@ -46,27 +53,78 @@
         </span>
       </div>
     </v-card-text>
+    <v-card-actions v-if="showPagination" class="padding-t-0">
+      <v-row class="justify-center margin-a-0 h-24">
+        <Pagination
+          v-if="tripsList.length > 1"
+          v-model="pagination"
+          active-color="gray-light"
+          inactive-color="gray-border"
+          hover-color="gray-mid-light"
+          :items="tripsList"
+        />
+      </v-row>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Inject, Prop, Vue } from 'vue-property-decorator'
 
 import { ColoredMessage } from '@/models/ColoredMessage'
-import { RequiredVehicle, Stop, Trip } from '@/models/dto'
+import { Bid, RequiredVehicle, Stop, Trip } from '@/models/dto'
+import Pagination from '@/components/Pagination.vue'
 
 import { pluralize } from '@/utils/string'
 import { timeDifferenceAsObject, timeObjectToString } from '@/utils/time'
+import { getExistingBidsByTripId } from '@/utils/bid'
 
-@Component
+@Component({ components: { Pagination } })
 export default class MarketplaceCard extends Vue {
-  @Prop() readonly trip!: Trip
+  @Inject({ from: 'isInBidDetail', default: false })
+  readonly isInBidDetail!: boolean
 
-  isActive = false
+  @Prop({ required: false }) readonly trip: Trip
+  @Prop({ required: false }) readonly trips: Trip[]
+  @Prop({ required: false }) readonly multiBidDetail: boolean
+  @Prop({ type: Boolean, required: false, default: false })
+  readonly showPagination: boolean
+
+  pagination = {
+    pageSize: 1,
+    currentPage: 1,
+    breakpointSizes: {
+      xs: 1,
+      sm: 1,
+      md: 1,
+      lg: 1,
+      xl: 1,
+    },
+  }
+
+  existingBid: Bid | null = null
+
+  get activeTripIndex(): number {
+    return this.pagination.currentPage - 1
+  }
+
+  get activeTrip(): Trip {
+    if (this.trips) {
+      return this.trips[this.activeTripIndex]
+    }
+    return this.trip
+  }
+
+  get tripsList(): Trip[] {
+    if (this.trips) {
+      return this.trips
+    }
+    return [this.trip]
+  }
 
   get actionMessage(): ColoredMessage {
     const now = this.$dayjs.utc()
-    const expiration = this.$dayjs(this.trip.biddingEndDate)
+    const expiration = this.$dayjs(this.activeTrip.biddingEndDate)
     const diff = timeDifferenceAsObject(now, expiration)
 
     return {
@@ -75,12 +133,16 @@ export default class MarketplaceCard extends Vue {
     }
   }
 
+  get promptBid(): boolean {
+    return this.isInBidDetail && !this.existingBid
+  }
+
   get firstPickup(): Stop {
-    return this.trip.stops[0]
+    return this.activeTrip.stops[0]
   }
 
   get firstDropoff(): Stop {
-    return this.trip.stops?.[1] || this.firstPickup
+    return this.activeTrip.stops?.[1] || this.firstPickup
   }
 
   get formattedStartDateTime(): string {
@@ -91,14 +153,20 @@ export default class MarketplaceCard extends Vue {
   }
 
   get requiredVehicles(): RequiredVehicle[] {
-    return this.trip.requiredVehicles || []
+    return this.activeTrip.requiredVehicles || []
   }
 
   get formattedRequiredDrivers(): string {
-    return `${this.trip.requiredDrivers} ${pluralize(
-      this.trip.requiredDrivers,
+    return `${this.activeTrip.requiredDrivers} ${pluralize(
+      this.activeTrip.requiredDrivers,
       'Driver'
     )}`
+  }
+
+  mounted(): void {
+    if (this.isInBidDetail) {
+      this.getExistingBid()
+    }
   }
 
   formattedRequiredVehicle(vehicle: RequiredVehicle): string {
@@ -108,11 +176,23 @@ export default class MarketplaceCard extends Vue {
     )}`
   }
 
+  async getExistingBid(): Promise<void> {
+    const bidsResult = await getExistingBidsByTripId(this.trip.tripId)
+    const existingBids = bidsResult.data.resultList.filter((bid) => bid.active)
+    this.existingBid = existingBids?.[0] || null
+  }
+
   goToBid(): void {
-    this.$router.push({
-      name: 'bid-detail',
-      params: { id: this.trip.tripId },
-    })
+    if (this.isInBidDetail) {
+      this.$emit('select', this.activeTrip.tripId)
+    } else {
+      const name = this.tripsList.length > 1 ? 'multi-bid-detail' : 'bid-detail'
+      const id =
+        this.tripsList.length > 1
+          ? this.activeTrip.quoteId
+          : this.activeTrip.tripId
+      this.$router.push({ name, params: { id } })
+    }
   }
 }
 </script>

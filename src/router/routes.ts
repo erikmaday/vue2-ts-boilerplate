@@ -90,13 +90,13 @@ export const routes: RouteConfig[] = [
                       ),
                   },
                   {
-                    path: 'edit/:id', 
-                    name: 'garages.edit', 
+                    path: 'edit/:id',
+                    name: 'garages.edit',
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyGaragesEdit.vue'
                       ),
-                  }
+                  },
                 ],
               },
               {
@@ -136,7 +136,15 @@ export const routes: RouteConfig[] = [
                 name: 'bid-detail',
                 component: () =>
                   import(
-                    /* webpackChunkName: "quote-detail" */ '@/views/BidDetail.vue'
+                    /* webpackChunkName: "bid-detail" */ '@/views/BidDetail.vue'
+                  ),
+              },
+              {
+                path: 'multi/:id',
+                name: 'multi-bid-detail',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "multi-bid-detail" */ '@/views/BidDetail.vue'
                   ),
               },
             ],

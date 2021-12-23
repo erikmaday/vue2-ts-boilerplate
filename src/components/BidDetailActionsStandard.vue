@@ -1,10 +1,9 @@
 <template>
   <div>
-    <p class="font-14">Calculated Price: $XXXX.XX</p>
-    <p class="font-14">Actual awarded price would be: $XXXX.XX</p>
-    <v-btn color="primary" small class="w-full margin-t-4">
-      Submit Bid for $XXXX.XX
-    </v-btn>
+    <template v-if="bid">
+      <p class="font-14">Calculated Price: {{ calculatedPrice }}</p>
+      <p class="font-14">Actual awarded price would be: {{ awardedPrice }}</p>
+    </template>
     <v-btn
       color="primary"
       outlined
@@ -12,7 +11,7 @@
       class="w-full margin-t-4"
       @click="$emit('start-custom-bid', true)"
     >
-      Submit Other Price
+      {{ customBidButtonText }}
     </v-btn>
     <v-divider class="margin-t-4" />
 
@@ -23,10 +22,34 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Bid } from '@/models/dto/Bid'
+import { currencyFilter } from '@/utils/string'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component
 export default class BidDetailActionsStandard extends Vue {
-  // @Prop({ required: true }) readonly trip!: Trip
+  @Prop({ required: true }) readonly bid!: Bid | null
+
+  get customBidButtonText(): string {
+    if (this.bid) {
+      return 'Edit Bid'
+    }
+    return 'Make Bid'
+  }
+
+  get calculatedPrice(): string {
+    if (this.bid) {
+      return currencyFilter(this.bid.bidAmount)
+    }
+    return ''
+  }
+
+  get awardedPrice(): string {
+    if (this.bid) {
+      const operatorTakePercent = (100 - this.bid.takeRate) / 100
+      return currencyFilter(this.bid.bidAmount * operatorTakePercent)
+    }
+    return ''
+  }
 }
 </script>

@@ -34,3 +34,15 @@ export enum PaymentStatus {
   PartiallyPaid = 'partially_paid',
   FullyPaid = 'fully_paid',
 }
+
+export enum BidStatus {
+  Pending = 'pending',
+  Accepted = 'accepted',
+  Rejected = 'rejected',
+}
+
+export enum BidStatusId {
+  Pending = 1,
+  Accepted = 2,
+  Rejected = 3,
+}

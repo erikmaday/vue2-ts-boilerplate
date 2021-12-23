@@ -22,7 +22,7 @@
             <span>
               <v-btn
                 :class="{
-                  'margin-l-4': !isModeAdd
+                  'margin-l-4': !isModeAdd,
                 }"
                 primary
                 outlined
@@ -142,7 +142,6 @@ import { Garage } from '@/models/dto/Garage'
 import CompanyGaragesDetailForm from '@/components/CompanyGaragesDetailForm.vue'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
 import { isNotEmpty } from '@/utils/validators'
-import CompanyGaragesDetailEdit from '@/components/CompanyGaragesDetailEdit.vue'
 import { ApiResult, TableViewParameters } from '@/models/dto'
 import { DataTableColumn } from '@/models/DataTableColumn'
 
@@ -150,14 +149,19 @@ import { DataTableColumn } from '@/models/DataTableColumn'
   components: {
     CompanyGaragesDetailForm,
     AutocompleteAddress,
-    CompanyGaragesDetailEdit,
   },
 })
 export default class CompanyGaragesDetail extends Vue {
   notFound = false
   isNotEmpty = isNotEmpty
-
   currentGarage: Garage | Record<string, never> = {}
+  columns: DataTableColumn[] = [
+    { text: 'Name', value: 'vehicleName' },
+    { text: 'Type', value: 'vehicleTypeName' },
+    { text: 'Detail', value: 'detail', type: 'details' },
+  ]
+  options: TableViewParameters = {}
+  deleteModalIsOpen = false
 
   get mode(): string {
     switch (this.$route.name) {
@@ -200,20 +204,19 @@ export default class CompanyGaragesDetail extends Vue {
     return undefined
   }
 
-  columns: DataTableColumn[] = [
-    { text: 'Name', value: 'vehicleName' },
-    { text: 'Type', value: 'vehicleTypeName' },
-    { text: 'Detail', value: 'detail', type: 'details' },
-  ]
-
-  options: TableViewParameters = {}
-  deleteModalIsOpen = false
-
   mounted(): void {
     this.getCurrentGarage()
   }
 
+  updated(): void {
+    this.getCurrentGarage()
+  }
+
   async getCurrentGarage(): Promise<void> {
+    if (this.isModeAdd) {
+      return
+    }
+
     let response: AxiosResponse
     try {
       if (this.$route.params.id) {

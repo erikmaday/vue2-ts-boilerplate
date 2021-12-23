@@ -42,11 +42,7 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
 import { isNotEmpty } from '@/utils/validators'
-import {
-  GarageRequest,
-  GarageResult,
-  Garage,
-} from '@/models/dto/Garage'
+import { GarageRequest, GarageResult, Garage } from '@/models/dto/Garage'
 import auth from '@/store/modules/auth'
 import garage from '@/services/garage'
 import { AxiosResponse } from 'axios'
@@ -56,10 +52,6 @@ import deepClone from '@/utils/deepClone'
   components: { AutocompleteAddress },
 })
 export default class CompanyGaragesDetailForm extends Vue {
-  model: Partial<Garage> = {}
-  formErrors: Record<string, string[]> = {}
-  isNotEmpty = isNotEmpty
-
   @Prop({
     required: true,
   })
@@ -74,6 +66,10 @@ export default class CompanyGaragesDetailForm extends Vue {
     required: false,
   })
   garageId!: number | undefined
+
+  model: Partial<Garage> = {}
+  formErrors: Record<string, string[]> = {}
+  isNotEmpty = isNotEmpty
 
   @Watch('currentGarage')
   onGarageUpdated(newGarage: Garage): void {

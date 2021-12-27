@@ -197,14 +197,14 @@ export const routes: RouteConfig[] = [
               import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
           },
           {
-            path: 'setPassword/:token',
+            path: 'setPassword/:hash',
             name: 'setPassword',
             component: () =>
               import(
                 /* webpackChunkName: "setPassword" */ '@/views/SetPassword.vue'
               ),
             props: (router) => ({
-              token: router.params.token,
+              hash: router.params.hash,
             }),
           },
         ],

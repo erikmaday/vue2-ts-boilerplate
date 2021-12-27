@@ -63,7 +63,7 @@ export default class SetPassword extends Vue {
   @Prop({
     required: true,
   })
-  token!: string
+  hash!: string
 
   newPassword = ''
   confirmPassword = ''
@@ -83,7 +83,7 @@ export default class SetPassword extends Vue {
     }
 
     try {
-      await user.setPasswordWithHash(this.token, this.newPassword)
+      await user.setPasswordWithHash(this.hash, this.newPassword)
     } catch (e) {
       this.loading = false
       console.log(e)

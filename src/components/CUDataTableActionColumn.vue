@@ -60,31 +60,6 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <!-- <template v-else>
-      <div class="d-flex flex-column w-full margin-t-4">
-        <v-btn
-          v-for="(action, actionIndex) in actions"
-          :key="`action-btn-${action.key}-${actionIndex}`"
-          :color="action.color"
-          small
-          class="margin-y-1"
-          @click="handleAction(action, row)"
-        >
-          <CUIcon
-            v-if="action.icon"
-            class="cu-data-table--actionable-icon"
-            width="24px"
-            height="24px"
-            color="white"
-            decorative
-            @click.native="() => action.action(row)"
-          >
-            {{ action.icon }}
-          </CUIcon>
-          <span class="ml-2">{{ action.displayText }}</span>
-        </v-btn>
-      </div>
-    </template> -->
     <v-dialog v-model="dialogOpen" max-width="500px">
       <v-card>
         <p class="wb-break-word font-22 font-medium padding-x-6 padding-y-2">

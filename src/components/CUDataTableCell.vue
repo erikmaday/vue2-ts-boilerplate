@@ -11,12 +11,16 @@
       v-if="
         $vuetify.breakpoint.xs &&
         column.type !== 'actions' &&
-        column.type !== 'details'
+        column.type !== 'details' &&
+        column.type !== 'slot'
       "
     >
       {{ column.text }}
     </h4>
-    <template v-if="column.type === 'actions' && !$vuetify.breakpoint.xs">
+    <template v-if="column.type === 'slot'">
+      <component :is="column.component" :row="row" :actions="actions" />
+    </template>
+    <template v-if="column.type === 'actions'">
       <CUDataTableActionColumn
         :actions="actions"
         :row="row"

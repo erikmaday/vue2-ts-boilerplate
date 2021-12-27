@@ -46,3 +46,11 @@ export enum BidStatusId {
   Accepted = 2,
   Rejected = 3,
 }
+
+export enum TripTypeKeys {
+  OneWay = 'one_way',
+  RoundTrip = 'round_trip',
+  Hourly = 'hourly',
+  Daily = 'daily',
+  Shuttle = 'shuttle',
+}

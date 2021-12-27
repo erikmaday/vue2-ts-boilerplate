@@ -25,31 +25,30 @@
 </template>
 
 <script lang="ts">
-import { Trip, Vehicle } from '@/models/dto'
+import { Vehicle } from '@/models/dto'
+import bidDetail from '@/store/modules/bidDetail'
 import { pluralize } from '@/utils/string'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component
 export default class BidDetailTripNumbers extends Vue {
-  @Prop({ required: true }) readonly trip!: Trip
-
   get tripType(): string {
-    return this.trip.tripType.label
+    return bidDetail.getTrip?.tripType.label
   }
 
   get passengerCount(): string {
-    return this.trip.passengerCount
+    return bidDetail.getTrip?.passengerCount
   }
 
   get formattedRequiredDrivers(): string {
-    return `${this.trip.requiredDrivers} ${pluralize(
-      this.trip.requiredDrivers,
+    return `${bidDetail.getTrip?.requiredDrivers} ${pluralize(
+      bidDetail.getTrip?.requiredDrivers,
       'Driver'
     )}`
   }
 
   get requiredVehicles(): Vehicle[] {
-    return this.trip.vehicles
+    return bidDetail.getTrip?.vehicles
   }
 
   formattedRequiredVehicle(vehicle: Vehicle): string {

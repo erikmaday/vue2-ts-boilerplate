@@ -12,14 +12,18 @@
           </CUIcon>
         </v-col>
         <BidDetailMultiSidebar
-          v-if="isModeMulti && !trip"
-          :trips="trips"
-          @select="selectTrip"
+          v-if="isModeMulti && !bidDetail.trip && !loading"
         />
-        <BidDetailSingleSidebar v-if="trip" :trip="trip" />
+        <BidDetailSingleSidebar
+          v-if="bidDetail.getTrip && !loading"
+          :trip="bidDetail.getTrip"
+          :is-multi-bid="isModeMulti"
+        />
       </v-row>
     </template>
-    <template v-slot:map><BidDetailMap v-if="trip" :trip="trip" /></template>
+    <template v-slot:map>
+      <BidDetailMap v-if="mapTrips && !loading" :trips="mapTrips" />
+    </template>
   </MapWithSidebar>
 </template>
 
@@ -30,14 +34,14 @@ import BidDetailMap from '@/components/BidDetailMap.vue'
 import BidDetailMultiSidebar from '@/components/BidDetailMultiSidebar.vue'
 import BidDetailSingleSidebar from '@/components/BidDetailSingleSidebar.vue'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
-import trip from '@/services/trip'
-import { Stop, Trip } from '@/models/dto'
+import { Trip } from '@/models/dto'
 import {
   formatDropoffTime,
   formatPickupTime,
   formatStopAddress,
 } from '@/utils/string'
 import app from '@/store/modules/app'
+import bidDetail from '@/store/modules/bidDetail'
 
 const MULTI_BID_ROUTE_NAME = 'multi-bid-detail'
 const SINGLE_BID_ROUTE_NAME = 'bid-detail'
@@ -55,16 +59,12 @@ export default class BidDetail extends Vue {
   @Provide('isInBidDetail') private isInBidDetail = true
   quoteId: number | null = null
   tripId: number | null = null
-  trip: Trip | null = null
-  trips: Trip[] = null
-  tripDetails: Trip[] | null = null
+  notFound = false
   formatStopAddress = formatStopAddress
   formatDropoffTime = formatDropoffTime
   formatPickupTime = formatPickupTime
-
-  get stops(): Stop[] {
-    return this.trip?.stops
-  }
+  bidDetail = bidDetail
+  loading = false
 
   get isModeMulti(): boolean {
     return this.$route.name === MULTI_BID_ROUTE_NAME
@@ -74,7 +74,17 @@ export default class BidDetail extends Vue {
     return this.$route.name === SINGLE_BID_ROUTE_NAME
   }
 
+  get mapTrips(): Trip[] {
+    if (bidDetail.getTrip) {
+      return bidDetail.getTripDetails.filter(
+        (trip) => trip.tripId === bidDetail.getTrip?.tripId
+      )
+    }
+    return bidDetail.getTripDetails
+  }
+
   created(): void {
+    bidDetail.reset()
     if (this.$route.name === MULTI_BID_ROUTE_NAME) {
       this.quoteId = parseInt(this.$route.params.id)
     } else {
@@ -84,20 +94,26 @@ export default class BidDetail extends Vue {
   mounted(): void {
     this.refresh()
   }
+
   async refresh(): Promise<void> {
+    this.loading = true
     await this.getTrips()
+    this.loading = false
   }
+
   async getTrips(): Promise<void> {
     try {
       let tripIds = this.isModeSingle ? [this.tripId] : []
       if (this.isModeMulti) {
-        this.trips = await this.getTripsList()
-        tripIds = this.trips.map((trip) => trip.tripId)
+        await bidDetail.fetchTripsListByQuoteId(this.quoteId)
+      } else {
+        await bidDetail.fetchTripsListByTripId(this.tripId)
       }
-      if (tripIds) {
-        this.tripDetails = await this.getAllTripDetails(tripIds)
+      if (tripIds.length || bidDetail.getTrips.length) {
+        await bidDetail.fetchAllTripDetails(tripIds)
+        await bidDetail.fetchExistingBids(tripIds)
         if (this.isModeSingle) {
-          this.selectTrip(this.tripId)
+          bidDetail.selectTrip(this.tripId)
         }
       } else {
         this.notFound = true
@@ -110,50 +126,14 @@ export default class BidDetail extends Vue {
     }
   }
 
-  async getTripsList(): Trip[] {
-    const params = {
-      page: 1,
-      pageSize: -1,
-      sorts: undefined,
-      filters: undefined,
-    }
-    const tripsResponse = await trip.tableView(params, false, this.quoteId)
-    return tripsResponse.data.resultList.map((trip) => this.processTrip(trip))
-  }
-
-  async getAllTripDetails(tripIds: number[]): Trip[] {
-    const tripDetails: Trip[] = []
-    for (const tripId of tripIds) {
-      const trip = await this.getTripDetail(tripId)
-      tripDetails.push(trip)
-    }
-    return tripDetails
-  }
-
-  async getTripDetail(tripId: number): Trip {
-    const tripResponse = await trip.byId(tripId)
-    return this.processTrip(tripResponse.data.trip)
-  }
-
-  processTrip(trip: Trip): Trip {
-    trip.stops = this.sortStopsByOrderIndex(trip.stops)
-    return trip
-  }
-
-  sortStopsByOrderIndex(stops: Stop[]): Stop[] {
-    return stops.sort((a, b) => a.orderIndex - b.orderIndex)
-  }
+  // get all existing bids and store them here
 
   goBack(): void {
-    if (this.isModeMulti && this.trip) {
-      this.trip = null
+    if (this.isModeMulti && bidDetail.getTrip) {
+      bidDetail.deselectTrip()
     } else {
       this.$router.push(app.getLastRoute)
     }
-  }
-
-  selectTrip(tripId: number): void {
-    this.trip = this.tripDetails.find((trip) => trip.tripId === tripId)
   }
 }
 </script>

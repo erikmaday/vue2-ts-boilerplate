@@ -2,7 +2,7 @@
   <GmapMap
     ref="map"
     :center="center"
-    :zoom="7"
+    :zoom="10"
     :options="options"
     class="w-full h-240"
   />
@@ -23,7 +23,7 @@ export default class BookingDetailMap extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
 
   map = null
-  center = { lat: 10, lng: 10 }
+  center = { lat: 33.7842735, lng: -84.3793076 }
   bounds = null
   options = {
     mapTypeControl: false,

@@ -92,7 +92,6 @@ class AuthModule extends VuexModule {
     // Seems like we don't have a `successful` property to check on this response?
     if (response.status === 200) {
       save('user', response.data)
-      console.log(response.data)
     }
   }
 }

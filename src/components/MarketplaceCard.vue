@@ -44,6 +44,9 @@
           Bid
           <CUIcon class="margin-l-1">arrow_right</CUIcon>
         </div>
+        <div v-else-if="bidAmount" class="text-success font-bold font-16">
+          {{ currency(bidAmount) }}
+        </div>
         <span
           v-else-if="actionMessage"
           class="white-space-nowrap font-bold font-12 text-error"
@@ -69,15 +72,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Inject, Prop, Vue } from 'vue-property-decorator'
+import { Component, Inject, Prop, Vue, Watch } from 'vue-property-decorator'
 
 import { ColoredMessage } from '@/models/ColoredMessage'
-import { Bid, RequiredVehicle, Stop, Trip } from '@/models/dto'
+import { RequiredVehicle, Stop, TableViewTrip, Trip } from '@/models/dto'
 import Pagination from '@/components/Pagination.vue'
 
-import { pluralize } from '@/utils/string'
+import { currencyFilter, pluralize } from '@/utils/string'
 import { timeDifferenceAsObject, timeObjectToString } from '@/utils/time'
-import { getExistingBidsByTripId } from '@/utils/bid'
+import bidDetail from '@/store/modules/bidDetail'
 
 @Component({ components: { Pagination } })
 export default class MarketplaceCard extends Vue {
@@ -85,10 +88,13 @@ export default class MarketplaceCard extends Vue {
   readonly isInBidDetail!: boolean
 
   @Prop({ required: false }) readonly trip: Trip
-  @Prop({ required: false }) readonly trips: Trip[]
+  @Prop({ required: false }) readonly trips: TableViewTrip[]
   @Prop({ required: false }) readonly multiBidDetail: boolean
   @Prop({ type: Boolean, required: false, default: false })
   readonly showPagination: boolean
+
+  currency = currencyFilter
+  bidAmounts = bidDetail.getBidAmounts
 
   pagination = {
     pageSize: 1,
@@ -102,7 +108,9 @@ export default class MarketplaceCard extends Vue {
     },
   }
 
-  existingBid: Bid | null = null
+  get bidAmount(): number | null {
+    return this.bidAmounts[this.activeTrip.tripId]
+  }
 
   get activeTripIndex(): number {
     return this.pagination.currentPage - 1
@@ -134,7 +142,7 @@ export default class MarketplaceCard extends Vue {
   }
 
   get promptBid(): boolean {
-    return this.isInBidDetail && !this.existingBid
+    return this.isInBidDetail && !this.bidAmount
   }
 
   get firstPickup(): Stop {
@@ -163,12 +171,6 @@ export default class MarketplaceCard extends Vue {
     )}`
   }
 
-  mounted(): void {
-    if (this.isInBidDetail) {
-      this.getExistingBid()
-    }
-  }
-
   formattedRequiredVehicle(vehicle: RequiredVehicle): string {
     return `${vehicle.requiredVehicles} ${pluralize(
       vehicle.requiredVehicles,
@@ -176,15 +178,9 @@ export default class MarketplaceCard extends Vue {
     )}`
   }
 
-  async getExistingBid(): Promise<void> {
-    const bidsResult = await getExistingBidsByTripId(this.trip.tripId)
-    const existingBids = bidsResult.data.resultList.filter((bid) => bid.active)
-    this.existingBid = existingBids?.[0] || null
-  }
-
   goToBid(): void {
     if (this.isInBidDetail) {
-      this.$emit('select', this.activeTrip.tripId)
+      bidDetail.selectTrip(this.activeTrip.tripId)
     } else {
       const name = this.tripsList.length > 1 ? 'multi-bid-detail' : 'bid-detail'
       const id =

@@ -1,18 +1,10 @@
 import dayjs from 'dayjs'
-import { ApiResult, PaymentMethod, PaymentType, Stop } from '.'
+import { ApiResult, Bid, PaymentMethod, PaymentType, Stop } from '.'
 import { CheckoutType } from './CheckoutType'
 import { Customer } from './Customer'
 import { GarageTimes } from './GarageTimes'
 import { Vehicle } from './Vehicle'
 import { TableViewResult } from './TableView'
-
-export enum TripTypeKeys {
-  ONE_WAY = 'one_way',
-  ROUND_TRIP = 'round_trip',
-  HOURLY = 'hourly',
-  DAILY = 'daily',
-  SHUTTLE = 'shuttle',
-}
 
 export interface Trip {
   tripStatusId: number
@@ -144,4 +136,56 @@ export interface TripResult extends ApiResult {
   trip: Trip
 }
 
-export type TripTableViewResult = TableViewResult<Trip>
+export type TripTableViewResult = TableViewResult<TableViewTrip>
+export interface TableViewTrip {
+  bidCount: number
+  parentReservationId?: number
+  biddingEndDate: string
+  bookItNowAmount?: number
+  companyName: string
+  bids?: Bid[] | null
+  stops?: TableViewTripStop[] | null
+  requiredVehicles?: TableViewTripRequiredVehicles[] | null
+  requiredDrivers: number
+  quoteId: number
+  quoteManagedId: number
+  tripId: number
+  reservationId?: number
+  managedId?: string
+  total: number
+  tripTypeLabel: string
+  passengerCount: number
+  referrals?: null
+  customerId: number
+  customerFirstName: string
+  customerLastName: string
+  maxBidAmount?: number
+  notes?: string
+}
+export interface TableViewTripStop {
+  stopId: number
+  orderIndex: number
+  address: Address
+  addressId?: null
+  pickupDate?: string | null
+  dropoffDate?: string | null
+}
+export interface Address {
+  addressId: number
+  addressName: string
+  street1: string
+  street2?: null
+  city: string
+  state: string
+  postalCode: number
+  lat: number
+  lng: number
+  timeZone: string
+  title: string
+  completeAddress: string
+}
+export interface TableViewTripRequiredVehicles {
+  vehicleTypeId: number
+  vehicleType: string
+  requiredVehicles: number
+}

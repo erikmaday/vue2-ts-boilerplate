@@ -25,26 +25,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import CUItinerary from '@/components/CUItinerary.vue'
 import CUItineraryItem from '@/components/CUItineraryItem.vue'
-import { Stop, Trip } from '@/models/dto'
-import {
-  formatDropoffTime,
-  formatPickupTime,
-  formatStopAddress,
-} from '@/utils/string'
+import { Stop } from '@/models/dto'
+import { formatDropoffTime, formatPickupTime } from '@/utils/string'
+import bidDetail from '@/store/modules/bidDetail'
 @Component({
   components: { CUItinerary, CUItineraryItem },
 })
 export default class BidDetailItinerary extends Vue {
-  @Prop({ required: true }) readonly trip!: Trip
-  formatStopAddress = formatStopAddress
   formatDropoffTime = formatDropoffTime
   formatPickupTime = formatPickupTime
 
   get stops(): Stop[] {
-    return this.trip?.stops
+    return bidDetail.getTrip?.stops
+  }
+
+  formatStopAddress(stop: Stop): string {
+    return `${stop.address.city}, ${stop.address.state}`
   }
 }
 </script>

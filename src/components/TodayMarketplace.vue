@@ -78,7 +78,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
 import Pagination from '@/components/Pagination.vue'
-import { Trip } from '@/models/dto'
+import { TableViewTrip } from '@/models/dto'
 import trip from '@/services/trip'
 import { filter } from '@/utils/filter'
 import { sort } from '@/utils/sort'
@@ -141,9 +141,9 @@ export default class TodayMarketplace extends Vue {
     },
   ]
 
-  trips: Trip[] = []
+  trips: TableViewTrip[] = []
   tripCount = 0
-  tripBundles: Trip[][] | null = []
+  tripBundles: TableViewTrip[][] | null = []
 
   params = {
     pageSize: 24,
@@ -172,7 +172,7 @@ export default class TodayMarketplace extends Vue {
     this.getTrips()
   }
 
-  get tripBundlesToDisplay(): Trip[] {
+  get tripBundlesToDisplay(): TableViewTrip[] {
     if (!this.tripBundles) {
       return []
     }
@@ -227,8 +227,8 @@ export default class TodayMarketplace extends Vue {
     }
   }
 
-  bundleTrips(trips: Trip[]): Trip[][] {
-    const bundleMap: { [quoteId: number]: Trip } = {}
+  bundleTrips(trips: TableViewTrip[]): TableViewTrip[][] {
+    const bundleMap: { [quoteId: number]: TableViewTrip } = {}
     for (const trip of trips) {
       if (bundleMap[trip.quoteId]) {
         bundleMap[trip.quoteId].push(trip)

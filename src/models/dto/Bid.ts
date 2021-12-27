@@ -1,5 +1,4 @@
 import { Address, TableViewResult, Type, VehicleType } from '.'
-
 export interface Bid {
   bidId: number
   tripId: number
@@ -119,6 +118,20 @@ export interface BidPayload {
   providerNotes: string
   tripId: number
   userId: number
+  existingBid?: number
+  originalBid?: {
+    active: boolean
+    bidAmount: number
+    bidPassengerCount: number
+    bidStatusId: number
+    bidVehicles: BidPayloadVehicle[] | null
+    companyId: number
+    driverCount: number
+    providerNotes: string
+    tripId: number
+    userId: number
+    existingBid?: number
+  }
 }
 
 export interface BidPayloadVehicle {

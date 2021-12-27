@@ -18,18 +18,18 @@
       color="primary"
       small
       class="w-full margin-t-4"
-      :loading="submitting"
-      @click="submit"
+      :loading="saving"
+      @click="handleSave"
     >
-      Submit
+      {{ submitButtonText }}
     </v-btn>
     <v-btn
       color="primary"
       text
       small
       class="w-full margin-t-4"
-      :loading="submitting"
-      @click="cancelCustomBid"
+      :loading="saving"
+      @click="bidDetail.setIsEnteringBid(false)"
     >
       Cancel
     </v-btn>
@@ -41,22 +41,26 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { currency as currencyMask } from '@/utils/mask'
 import { currencyFilter } from '@/utils/string'
 import auth from '@/store/modules/auth'
-import { Bid, BidPayload, BidPayloadVehicle, Trip } from '@/models/dto'
+import { BidPayload, BidPayloadVehicle } from '@/models/dto'
 import { BidStatusId } from '@/utils/enum'
 import bid from '@/services/bid'
+import bidDetail from '@/store/modules/bidDetail'
 
 @Component
 export default class BidDetailActionsCustom extends Vue {
-  @Prop({ required: true }) readonly trip!: Trip | null
-  @Prop({ required: true }) readonly bid!: Bid | null
+  @Prop({ required: true }) readonly isMultiBid!: boolean
 
   customBidPrice: string | null = null
   currencyMask = currencyMask
-  submitting = false
+  saving = false
+  bidDetail = bidDetail
 
   mounted(): void {
-    if (this.bid) {
-      this.customBidPrice = currencyFilter(this.bid.bidAmount).replace('$', '')
+    const bidAmount =
+      bidDetail.getBidAmounts[bidDetail.getTrip?.tripId] ||
+      bidDetail.getBid?.bidAmount
+    if (bidAmount) {
+      this.customBidPrice = currencyFilter(bidAmount).replace('$', '')
     }
   }
 
@@ -68,7 +72,7 @@ export default class BidDetailActionsCustom extends Vue {
   }
 
   get awardedPriceFormatted(): string | null {
-    const takeRate = this.bid?.takeRate || 10
+    const takeRate = bidDetail.getBid?.takeRate || 10
     const operatorTakePercent = (100 - takeRate) / 100
     if (this.customBidRawValue) {
       return currencyFilter(this.customBidRawValue * operatorTakePercent)
@@ -76,13 +80,12 @@ export default class BidDetailActionsCustom extends Vue {
     return null
   }
 
-  cancelCustomBid(): void {
-    this.$emit('cancel-custom-bid')
-    this.enterCustomBid = false
+  get submitButtonText(): string {
+    return this.isMultiBid ? 'Save' : 'Submit'
   }
 
   buildBidVehicles(): BidPayloadVehicle[] {
-    return this.trip?.vehicles.map((vehicle) => {
+    return bidDetail.getTrip?.vehicles.map((vehicle) => {
       const vehicleType = {
         active: true,
         companyId: null,
@@ -99,33 +102,52 @@ export default class BidDetailActionsCustom extends Vue {
   buildPayload(): BidPayload {
     return {
       active: true,
-      bidAmount: this.customBidRawValue,
+      bidAmount: bidDetail.getBidAmounts?.[bidDetail.getTrip?.tripId],
       bidPassengerCount:
-        this.bid?.bidPassengerCount || this.trip?.passengerCount,
+        bidDetail.getBid?.bidPassengerCount ||
+        bidDetail.getTrip?.passengerCount,
       bidStatusId: BidStatusId.Pending,
       bidVehicles: this.buildBidVehicles(),
       companyId: parseInt(auth.getUser?.companyId),
-      driverCount: this.bid?.driverCount || this.trip?.requiredDrivers,
+      driverCount:
+        bidDetail.getBid?.driverCount || bidDetail.getTrip?.requiredDrivers,
       providerNotes: null,
-      tripId: this.trip.tripId,
+      tripId: bidDetail.getTrip?.tripId,
       userId: auth.userId,
     }
   }
 
+  handleSave(): void {
+    this.saving = true
+    if (this.isMultiBid) {
+      bidDetail.setTripBidAmount({
+        tripId: bidDetail.getTrip?.tripId,
+        bidAmount: this.customBidRawValue,
+      })
+      bidDetail.setIsEnteringBid(false)
+    } else {
+      this.submit()
+    }
+    this.saving = false
+  }
+
   async submit(): Promise<void> {
-    this.submitting = true
+    bidDetail.setTripBidAmount({
+      tripId: bidDetail.getTrip?.tripId,
+      bidAmount: this.customBidRawValue,
+    })
     try {
       const payload = this.buildPayload()
-      if (this.bid) {
-        await bid.update(this.bid.bidId, payload)
+      if (bidDetail.getBid) {
+        await bid.update(bidDetail.getBid.bidId, payload)
       } else {
         await bid.create(payload)
       }
-      this.$emit('update')
+      await bidDetail.fetchExistingBids()
+      bidDetail.setIsEnteringBid(false)
     } catch (err) {
       console.error(err)
     }
-    this.submitting = false
   }
 }
 </script>

@@ -1,86 +1,133 @@
 <template>
   <div>
     <v-container>
+      <v-row justify="space-between">
+        <v-col cols="12" md="7">
+          <div
+            class="d-flex align-center"
+            :class="{
+              'flex-column': $vuetify.breakpoint.smAndDown,
+              'flex-row': $vuetify.breakpoint.mdAndUp,
+            }"
+          >
+            <v-btn
+              :icon="$vuetify.breakpoint.mdAndUp"
+              :xSmall="$vuetify.breakpoint.mdAndUp"
+              :small="$vuetify.breakpoint.smAndDown"
+              plain
+              @click="pushLastRoute"
+            >
+              <CUIcon width="20px" height="20px" color="primary">
+                arrow_left
+              </CUIcon>
+              <span
+                v-if="$vuetify.breakpoint.smAndDown"
+                class="margin-l-1 text-primary"
+              >
+                Back
+              </span>
+            </v-btn>
+            <h1
+              class="margin-a-0"
+              :class="{
+                'text-center': $vuetify.breakpoint.xs,
+              }"
+            >
+              {{ headerTitle }}
+            </h1>
+          </div>
+        </v-col>
+        <v-col cols="12" md="5">
+          <div
+            class="d-flex"
+            :class="{
+              'flex-row': $vuetify.breakpoint.smAndUp,
+              'justify-center': $vuetify.breakpoint.sm,
+              'flex-column': $vuetify.breakpoint.xs,
+            }"
+          >
+            <v-btn
+              v-show="isModeEdit"
+              :class="{
+                'w-full margin-y-2': $vuetify.breakpoint.xs,
+                'margin-l-4': $vuetify.breakpoint.smAndUp,
+              }"
+              outlined
+              small
+              color="primary"
+              @click="
+                $router.push({
+                  name: 'users.view',
+                  params: { id: $route.params.id },
+                })
+              "
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              :class="{
+                'w-full margin-y-2': $vuetify.breakpoint.xs,
+                'margin-l-4': $vuetify.breakpoint.smAndUp,
+              }"
+              v-show="isModeView"
+              primary
+              small
+              color="error"
+              @click="deleteModalIsOpen = true"
+            >
+              Delete
+            </v-btn>
+            <v-btn
+              :class="{
+                'w-full margin-y-2': $vuetify.breakpoint.xs,
+                'margin-l-4': $vuetify.breakpoint.smAndUp,
+              }"
+              v-show="isModeView"
+              primary
+              small
+              color="primary"
+              @click="changePasswordIsOpen = !changePasswordIsOpen"
+            >
+              Change Password
+            </v-btn>
+            <v-btn
+              v-show="isModeView"
+              :class="{
+                'w-full margin-y-2': $vuetify.breakpoint.xs,
+                'margin-l-4': $vuetify.breakpoint.smAndUp,
+              }"
+              small
+              color="primary"
+              @click="
+                $router.push({
+                  name: 'users.edit',
+                  params: { id: $route.params.id },
+                })
+              "
+            >
+              Edit
+            </v-btn>
+            <v-btn
+              v-show="isModeEdit || isModeAdd"
+              :class="{
+                'w-full margin-y-2': $vuetify.breakpoint.xs,
+                'margin-l-4': $vuetify.breakpoint.smAndUp,
+              }"
+              small
+              color="primary"
+              @click="submit"
+            >
+              {{ isModeAdd ? 'Add User' : 'Save' }}
+            </v-btn>
+          </div>
+        </v-col>
+      </v-row>
       <v-row
         class="padding-b-8"
         align="center"
         justify-sm="space-between"
         justify="center"
-      >
-        <v-col cols="12" sm="auto">
-          <v-btn plain class="position-absolute">
-            <CUIcon width="20px" height="20px" color="primary" >arrow_left</CUIcon>
-          </v-btn>
-          <h1
-            class="margin-a-0"
-            :class="{
-              'text-center': $vuetify.breakpoint.xs,
-            }"
-          >
-            {{ headerTitle }}
-          </h1>
-        </v-col>
-        <span>
-          <v-btn
-            v-show="isModeEdit"
-            class="margin-l-4"
-            outlined
-            small
-            color="primary"
-            @click="
-              $router.push({
-                name: 'users.view',
-                params: { id: $route.params.id },
-              })
-            "
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            class="margin-l-4"
-            v-show="isModeView"
-            primary
-            small
-            color="error"
-            @click="deleteModalIsOpen = true"
-          >
-            Delete
-          </v-btn>
-          <v-btn
-            class="margin-l-4"
-            v-show="isModeView"
-            primary
-            small
-            color="primary"
-            @click="changePasswordIsOpen = !changePasswordIsOpen"
-          >
-            Change Password
-          </v-btn>
-          <v-btn
-            v-show="isModeView"
-            class="margin-l-4"
-            small
-            color="primary"
-            @click="
-              $router.push({
-                name: 'users.edit',
-                params: { id: $route.params.id },
-              })
-            "
-          >
-            Edit
-          </v-btn>
-          <v-btn
-            v-show="isModeEdit || isModeAdd"
-            small
-            class="margin-l-4"
-            color="primary"
-            @click="submit"
-          >
-            {{ isModeAdd ? 'Add User' : 'Save' }}
-          </v-btn>
-        </span>
-      </v-row>
+      ></v-row>
       <v-form :disabled="isModeView" ref="form" lazy-validation>
         <v-row>
           <v-col
@@ -201,6 +248,7 @@ import { ApiResult, UserDetail, VehicleType } from '@/models/dto'
 import CompanyUsersDetailUserPhoto from '@/components/CompanyUsersDetailUserPhoto.vue'
 import CompanyUsersDetailDriverInfo from '@/components/CompanyUsersDetailDriverInfo.vue'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -216,6 +264,8 @@ export default class CompanyUsersDetail extends Vue {
   validationErrors = {
     email: '',
   }
+
+  app = app
 
   vehicleTypes: VehicleType[] = []
 
@@ -238,11 +288,15 @@ export default class CompanyUsersDetail extends Vue {
     }
   }
 
-  // updated(): void {
-  //   if (this.isModeEdit || this.isModeView) {
-  //     this.getCurrentUser()
-  //   }
-  // }
+  // When hitting back button, prevent infinite loop when going from
+  // view -> edit -> view, etc.
+  pushLastRoute(): void {
+    if (!app.getLastRoute?.name || app.getLastRoute?.name === 'users.view') {
+      this.$router.push({ name: 'users' })
+    } else {
+      this.$router.push(app.getLastRoute)
+    }
+  }
 
   // Get the user's roles. If we determine that the user is a driver,
   // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2

@@ -28,7 +28,7 @@
         </div>
       </template>
     </div>
-    <div v-show="mode !== 'view'" class="position-absolute right-11 bottom-2">
+    <div v-show="mode !== 'view'" class="position-absolute right-0 bottom-2">
       <button
         class="
           w-52

@@ -1,6 +1,28 @@
 <template>
   <div>
-    <v-container>
+    <v-container class="position-relative">
+      <div
+        :class="{
+          'position-absolute top-4': $vuetify.breakpoint.mdAndUp,
+          'd-flex justify-center align-center': $vuetify.breakpoint.smAndDown,
+        }"
+      >
+        <v-btn
+          plain
+          :icon="$vuetify.breakpoint.mdAndUp"
+          :xSmall="$vuetify.breakpoint.mdAndUp"
+          :small="$vuetify.breakpoint.smAndDown"
+          @click="pushLastRoute"
+        >
+          <CUIcon color="primary">arrow_left</CUIcon>
+          <span
+            v-if="$vuetify.breakpoint.smAndDown"
+            class="margin-l-1 text-primary"
+          >
+            Back
+          </span>
+        </v-btn>
+      </div>
       <v-row justify="center">
         <v-col cols="12" sm="8">
           <v-row
@@ -19,26 +41,18 @@
                 {{ headerTitle }}
               </h1>
             </v-col>
-            <span>
+            <div
+              :class="{
+                'w-full margin-x-3': $vuetify.breakpoint.xs
+              }"
+            >
               <v-btn
+                v-show="isModeView"
                 :class="{
-                  'margin-l-4': !isModeAdd,
+                  'w-full margin-y-2': $vuetify.breakpoint.xs,
+
+                  'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
-                primary
-                outlined
-                small
-                color="primary"
-                @click="
-                  $router.push({
-                    name: 'garages',
-                  })
-                "
-              >
-                All Garages
-              </v-btn>
-              <v-btn
-                v-show="isModeView || isModeEdit"
-                class="margin-l-4"
                 small
                 color="error"
                 @click="deleteModalIsOpen = true"
@@ -46,23 +60,25 @@
                 Delete
               </v-btn>
               <v-btn
-                v-show="isModeEdit"
-                class="margin-l-4"
+                v-show="isModeEdit || isModeAdd"
+                :class="{
+                  'w-full margin-y-2': $vuetify.breakpoint.xs,
+
+                  'margin-l-4': $vuetify.breakpoint.smAndUp,
+                }"
                 outlined
                 small
                 color="primary"
-                @click="
-                  $router.push({
-                    name: 'garages.view',
-                    params: { id: $route.params.id },
-                  })
-                "
+                @click="cancelUpdate"
               >
                 Cancel
               </v-btn>
               <v-btn
                 v-show="isModeView"
-                class="margin-l-4"
+                :class="{
+                  'w-full margin-y-2': $vuetify.breakpoint.xs,
+                  'margin-l-4': $vuetify.breakpoint.smAndUp,
+                }"
                 small
                 color="primary"
                 @click="
@@ -74,16 +90,42 @@
               >
                 Edit
               </v-btn>
-            </span>
+              <v-btn
+                v-show="isModeEdit"
+                :class="{
+                  'w-full margin-y-2': $vuetify.breakpoint.xs,
+                  'margin-l-4': $vuetify.breakpoint.smAndUp,
+                }"
+                small
+                color="primary"
+                @click="updateGarage"
+              >
+                Save
+              </v-btn>
+              <v-btn
+                v-show="isModeAdd"
+                :class="{
+                  'w-full margin-y-2': $vuetify.breakpoint.xs,
+                  'margin-l-4': $vuetify.breakpoint.smAndUp,
+                }"
+                small
+                color="primary"
+                @click="addGarage"
+              >
+                Add
+              </v-btn>
+            </div>
           </v-row>
         </v-col>
       </v-row>
       <v-row justify="center" no-gutters>
         <v-col cols="12" sm="8">
           <CompanyGaragesDetailForm
+            ref="form"
             :mode="mode"
             :current-garage="currentGarage"
             :garage-id="garageId"
+            @refresh="getCurrentGarage"
           />
           <template
             v-if="!isModeAdd && currentGarage && currentGarage.vehicleDTOs"
@@ -135,7 +177,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import garage from '@/services/garage'
 import { AxiosResponse } from 'axios'
 import { Garage } from '@/models/dto/Garage'
@@ -144,6 +186,7 @@ import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
 import { isNotEmpty } from '@/utils/validators'
 import { ApiResult, TableViewParameters } from '@/models/dto'
 import { DataTableColumn } from '@/models/DataTableColumn'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -162,6 +205,7 @@ export default class CompanyGaragesDetail extends Vue {
   ]
   options: TableViewParameters = {}
   deleteModalIsOpen = false
+  app = app
 
   get mode(): string {
     switch (this.$route.name) {
@@ -208,10 +252,6 @@ export default class CompanyGaragesDetail extends Vue {
     this.getCurrentGarage()
   }
 
-  updated(): void {
-    this.getCurrentGarage()
-  }
-
   async getCurrentGarage(): Promise<void> {
     if (this.isModeAdd) {
       return
@@ -243,6 +283,45 @@ export default class CompanyGaragesDetail extends Vue {
     if (res.data.successful) {
       this.deleteModalIsOpen = false
       this.$router.push({ name: 'garages' })
+    }
+  }
+
+  pushLastRoute(): void {
+    if (
+      !app.getLastRoute?.name ||
+      app.getLastRoute.name === 'garages.view' ||
+      app.getLastRoute.name === 'garages.add'
+    ) {
+      this.$router.push({ name: 'garages' })
+    } else {
+      this.$router.push(app.getLastRoute)
+    }
+  }
+
+  cancelUpdate(): void {
+    if (this.isModeAdd) {
+      this.$router.push({ name: 'garages' })
+      return
+    }
+
+    this.$router.push({
+      name: 'garages.view',
+      params: { id: this.$route.params.id },
+    })
+    this.getCurrentGarage()
+  }
+
+  updateGarage(): void {
+    const form: any = this.$refs['form']
+    if (form) {
+      form.updateGarage()
+    }
+  }
+
+  addGarage(): void {
+    const form: any = this.$refs['form']
+    if (form) {
+      form.addGarage()
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-form :disabled="isModeView" ref="form">
+  <v-form v-if="currentGarage" :disabled="isModeView" ref="form">
     <CUTextField
       v-model="model.garageName"
       :rules="[(val) => isNotEmpty(val) || 'Name is Required']"
@@ -11,31 +11,7 @@
       :error-messages="formErrors.address"
       :rules="[(val) => isNotEmpty(val) || 'Address is Required']"
     />
-    <CUTextArea
-      v-model="model.defaultGarageNotes"
-      label="Default Garage Notes"
-      solo
-      flat
-      outlined
-      rows="2"
-    />
-    <v-row v-if="isModeAdd" justify="space-between">
-      <v-col cols="auto">
-        <v-btn small plain @click="$router.push({ name: 'garages' })">
-          Cancel
-        </v-btn>
-      </v-col>
-      <v-col cols="auto">
-        <v-btn color="primary" small @click="addGarage">Add Garage</v-btn>
-      </v-col>
-    </v-row>
-    <v-row v-else-if="isModeEdit">
-      <v-col cols="12">
-        <v-btn class="w-full" color="primary" small @click="updateGarage">
-          Update Garage
-        </v-btn>
-      </v-col>
-    </v-row>
+    
   </v-form>
 </template>
 <script lang="ts">
@@ -108,7 +84,7 @@ export default class CompanyGaragesDetailForm extends Vue {
   buildGaragePayload(): GarageRequest {
     const payload: GarageRequest = {
       garage: true,
-      defaultGarageNotes: this.model.defaultGarageNotes,
+      defaultGarageNotes: '',
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       address: this.model.addressDTO!,
       parentCompanyId: auth.getUser.companyId,
@@ -130,6 +106,7 @@ export default class CompanyGaragesDetailForm extends Vue {
         name: 'garages.view',
         params: { id: String(res.data.company.companyId) },
       })
+      this.$emit('refresh')
     }
   }
 

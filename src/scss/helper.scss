@@ -405,6 +405,17 @@ $base-classes: 'top', 'left', 'bottom', 'right';
     $pseudo-classes,
     true
   );
+
+  @each $dimension-key, $dimension-value in $padding-margin-dimensions {
+    @include create-helper-with-pseudo-classes(
+      $base-class,
+      $dimension-key,
+      $dimension-value,
+      $base-class,
+      $pseudo-classes,
+      true
+    );
+  }
 }
 
 // WHITE SPACE

@@ -24,6 +24,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  modules.app.saveLastRoute(from)
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
   if (requiresAuth && !auth.getIsTokenSet) {
     next({ name: 'login' })

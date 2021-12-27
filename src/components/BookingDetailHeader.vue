@@ -47,7 +47,7 @@
     <CUModal v-model="isDialogOpen">
       <template #title>Reject Booking</template>
       <template #text>
-        <v-form ref="form">
+        <v-form ref="rejection-form">
           <CUTextArea
             v-model="rejectNote"
             label="Why are you rejecting the booking?"
@@ -62,7 +62,9 @@
         <v-btn color="primary" small text @click="cancelRejectNote">
           Cancel
         </v-btn>
-        <v-btn color="red" class="white--text" small @click="reject">Reject</v-btn>
+        <v-btn color="red" class="white--text" small @click="reject">
+          Reject
+        </v-btn>
         <v-spacer />
       </template>
     </CUModal>
@@ -162,7 +164,7 @@ export default class BookingDetailHeader extends Vue {
   }
 
   async reject(): Promise<void> {
-    const form: any = this.$refs['form']
+    const form: any = this.$refs['rejection-form']
     if (!form.validate()) return
     await reservation.reject(this.reservation.reservationId, this.rejectNote)
     this.$emit('refresh')

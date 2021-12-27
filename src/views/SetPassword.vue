@@ -7,6 +7,7 @@
         </v-col>
         <v-col sm="6" offset-sm="3">
           <CUTextField
+            type="password"
             :rules="[(val) => isNotEmpty(val) || 'This field is required']"
             v-model="newPassword"
             label="New Password"
@@ -14,6 +15,7 @@
         </v-col>
         <v-col sm="6" offset-sm="3">
           <CUTextField
+            type="password"
             v-model="confirmPassword"
             label="Confirm New Password"
             :rules="[
@@ -84,6 +86,7 @@ export default class SetPassword extends Vue {
       await user.setPasswordWithHash(this.token, this.newPassword)
     } catch (e) {
       this.loading = false
+      console.log(e)
       return
     }
     this.newPassword = ''

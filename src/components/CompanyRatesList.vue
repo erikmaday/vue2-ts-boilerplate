@@ -1,8 +1,8 @@
 <template>
   <div>
-    <CUDataTable 
-      :columns="columns" 
-      :items="ratesMap" 
+    <CUDataTable
+      :columns="columns"
+      :items="ratesMap"
       :options="{}"
       :serverItemsLength="ratesMap.length"
       editable

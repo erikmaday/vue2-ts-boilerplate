@@ -11,7 +11,7 @@
       @pagination="$emit('pagination', $event)"
       @update:options="$emit('update:options', $event)"
     >
-      <template #item="{ item, index }">
+      <template v-if="$vuetify.breakpoint.smAndUp" #item="{ item, index }">
         <tr>
           <td
             v-for="(col, colIndex) in columns"
@@ -25,6 +25,28 @@
             />
           </td>
         </tr>
+      </template>
+      <template v-else #item="{ item, index }">
+        <div
+          class="
+            d-flex
+            flex-column
+            padding-y-3
+            border-solid border-gray-mid-light border-x-0 border-t-0 border-b-2
+          "
+        >
+          <div
+            v-for="(col, colIndex) in columns"
+            :key="`column-${col.value}-${colIndex}-${index}`"
+          >
+            <CUDataTableCell
+              :column="col"
+              :row="item"
+              :actions="actions"
+              @refresh="$emit('refresh')"
+            />
+          </div>
+        </div>
       </template>
       <v-pagination
         v-model="options.page"

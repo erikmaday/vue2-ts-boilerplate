@@ -7,11 +7,17 @@ export type VehicleType = {
   companyId?: number
 }
 
+export type SupportedVehicleType = {
+  vehicleTypeId: number
+  supported?: boolean
+  label?: string
+}
+
 export interface Vehicle {
   tripVehicleId: number
   tripId: number
   vehicleTypeId: number
-  vehicleId?: number
+  vehicleId: number
   quantity: number
   vehicleType: VehicleType
   vehicleTypeKey: string

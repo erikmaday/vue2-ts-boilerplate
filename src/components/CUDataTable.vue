@@ -21,6 +21,7 @@
               :column="col"
               :row="item"
               :actions="actions"
+              v-on="$listeners"
               @refresh="$emit('refresh')"
             />
           </td>

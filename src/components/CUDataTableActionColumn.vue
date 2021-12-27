@@ -49,7 +49,7 @@
             class="cu-data-table--actionable-icon"
             width="24px"
             height="24px"
-            :color="'white'"
+            color="white"
             decorative
             @click.native="() => action.action(row)"
           >

@@ -3,7 +3,7 @@ import { Trip } from './Trip'
 import { CheckoutType } from './CheckoutType'
 import { Customer } from './Customer'
 import { LeadSourceType } from './LeadSource'
-import { User } from './User'
+import { UserDetail } from './User'
 
 export interface Quote {
   isActive: boolean
@@ -35,7 +35,7 @@ export interface Quote {
   leadSourceType: LeadSourceType
   checkoutPage?: CheckoutType
   customer: Customer
-  sentBy: User
+  sentBy: UserDetail
   trips: Trip[]
   randomMultiplier?: number
   allowEcheckout: boolean
@@ -60,7 +60,7 @@ export interface Quote {
   customEmail?: boolean
   busNeededForEntireTrip: boolean
   total: number
-  createdBy: User
+  createdBy: UserDetail
   pricingTimeLabel: string
   priceForAllPricingMethods: boolean
 }

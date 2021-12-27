@@ -50,7 +50,6 @@
                 v-show="isModeView"
                 :class="{
                   'w-full margin-y-2': $vuetify.breakpoint.xs,
-
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
                 small
@@ -63,7 +62,6 @@
                 v-show="isModeEdit || isModeAdd"
                 :class="{
                   'w-full margin-y-2': $vuetify.breakpoint.xs,
-
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
                 outlined

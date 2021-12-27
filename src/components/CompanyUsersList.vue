@@ -2,7 +2,14 @@
   <div>
     <v-row justify="space-between" class="padding-b-6 padding-x-3">
       <h1>Team</h1>
-      <v-btn primary small color="primary" @click="$router.push({ name: 'users.add' })">Add New</v-btn>
+      <v-btn
+        primary
+        small
+        color="primary"
+        @click="$router.push({ name: 'users.add' })"
+      >
+        Add New
+      </v-btn>
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -36,7 +43,6 @@ export default class CompanyUsers extends Vue {
     },
     { text: 'Email', value: 'email', type: 'email' },
     { text: 'Type', value: 'groupName' },
-    { text: 'Details', value: 'details', type: 'details' },
     { text: 'Actions', value: 'actions', type: 'actions' },
   ]
 
@@ -66,6 +72,16 @@ export default class CompanyUsers extends Vue {
       action: function (row: User): Promise<AxiosResponse> {
         return user.delete(row.userId)
       },
+    },
+    {
+      displayText: 'Details',
+      key: 'details',
+      color: 'primary',
+      icon: '',
+      confirmModal: false,
+      ariaLabel: 'View User Details',
+      isDetail: true,
+      detailName: 'users.view',
     },
   ]
 }

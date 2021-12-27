@@ -16,7 +16,7 @@
     >
       {{ column.text }}
     </h4>
-    <template v-if="column.type === 'actions' && !$vuetify.breakpoint.xs">
+    <template v-if="column.type === 'actions'">
       <CUDataTableActionColumn
         :actions="actions"
         :row="row"
@@ -31,7 +31,7 @@
     <template v-else-if="column.type === 'email'">
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
     </template>
-    <template v-else-if="column.type === 'details'">
+    <!-- <template v-else-if="column.type === 'details'">
       <router-link
         v-if="$vuetify.breakpoint.smAndUp"
         class="font-medium font-14"
@@ -49,7 +49,7 @@
       >
         Details
       </v-btn>
-    </template>
+    </template> -->
     <template v-else>
       {{ computedCellItemText }}
     </template>

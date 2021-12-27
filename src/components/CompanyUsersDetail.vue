@@ -8,6 +8,9 @@
         justify="center"
       >
         <v-col cols="12" sm="auto">
+          <v-btn plain class="position-absolute">
+            <CUIcon width="20px" height="20px" color="primary" >arrow_left</CUIcon>
+          </v-btn>
           <h1
             class="margin-a-0"
             :class="{
@@ -18,20 +21,6 @@
           </h1>
         </v-col>
         <span>
-          <v-btn
-            class="margin-l-4"
-            primary
-            outlined
-            small
-            color="primary"
-            @click="
-              $router.push({
-                name: 'users',
-              })
-            "
-          >
-            All Users
-          </v-btn>
           <v-btn
             v-show="isModeEdit"
             class="margin-l-4"
@@ -49,7 +38,17 @@
           </v-btn>
           <v-btn
             class="margin-l-4"
-            v-show="isModeEdit"
+            v-show="isModeView"
+            primary
+            small
+            color="error"
+            @click="deleteModalIsOpen = true"
+          >
+            Delete
+          </v-btn>
+          <v-btn
+            class="margin-l-4"
+            v-show="isModeView"
             primary
             small
             color="primary"
@@ -71,6 +70,15 @@
           >
             Edit
           </v-btn>
+          <v-btn
+            v-show="isModeEdit || isModeAdd"
+            small
+            class="margin-l-4"
+            color="primary"
+            @click="submit"
+          >
+            {{ isModeAdd ? 'Add User' : 'Save' }}
+          </v-btn>
         </span>
       </v-row>
       <v-form :disabled="isModeView" ref="form" lazy-validation>
@@ -90,7 +98,7 @@
           </v-col>
           <v-col cols="12" md="8">
             <v-row>
-              <v-col cols="6" class="py-0">
+              <v-col cols="12" sm="6" class="py-0">
                 <CUTextField
                   label="First Name"
                   placeholder="Andrea"
@@ -98,7 +106,7 @@
                   v-model="currentUser.firstName"
                 />
               </v-col>
-              <v-col cols="6" class="py-0">
+              <v-col cols="12" sm="6" class="py-0">
                 <CUTextField
                   label="Last Name"
                   placeholder="Jones"
@@ -108,7 +116,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="6" class="py-0">
+              <v-col cols="12" sm="6" class="py-0">
                 <CUTextField
                   label="Email"
                   placeholder="ajones@gmail.com"
@@ -118,7 +126,7 @@
                   :error-messages="validationErrors.email"
                 />
               </v-col>
-              <v-col cols="6" class="py-0">
+              <v-col cols="12" sm="6" class="py-0">
                 <CUSelect
                   v-model="currentUser.groupId"
                   :items="userGroups"
@@ -146,26 +154,31 @@
                 @update-driver-model="updateModels"
               />
             </v-expand-transition>
-            <v-row>
-              <v-col class="margin-t-7">
-                <v-btn
-                  v-show="this.mode !== 'view'"
-                  small
-                  :class="{ 'w-full': $vuetify.breakpoint.smAndDown }"
-                  color="primary"
-                  @click="submit"
-                >
-                  {{ isModeAdd ? 'Add User' : 'Update User' }}
-                </v-btn>
-              </v-col>
-            </v-row>
           </v-col>
         </v-row>
       </v-form>
       <CompanyUsersChangePassword
         v-model="changePasswordIsOpen"
-        :user="currentUserAsDriver"
+        :userId="currentUserAsDriver.userId || Number($route.params.id)"
       />
+      <CUModal v-model="deleteModalIsOpen">
+        <template #title>Delete User</template>
+        <template #text>Are you sure you want to delete this user?</template>
+        <template #actions>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            outlined
+            small
+            text
+            @click="deleteModalIsOpen = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn color="error" small @click="deleteUser">Delete</v-btn>
+          <v-spacer />
+        </template>
+      </CUModal>
     </v-container>
   </div>
 </template>
@@ -184,7 +197,7 @@ import user from '@/services/user'
 import driver from '@/services/driver'
 import type from '@/services/type'
 import { userGroups } from '@/data/userGroups'
-import { UserDetail, VehicleType } from '@/models/dto'
+import { ApiResult, UserDetail, VehicleType } from '@/models/dto'
 import CompanyUsersDetailUserPhoto from '@/components/CompanyUsersDetailUserPhoto.vue'
 import CompanyUsersDetailDriverInfo from '@/components/CompanyUsersDetailDriverInfo.vue'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
@@ -211,6 +224,7 @@ export default class CompanyUsersDetail extends Vue {
   changePasswordIsOpen = false
   avatarLink = ''
   uploadedPhoto: FormData | undefined = undefined
+  deleteModalIsOpen = false
 
   currentUser: UserDetail | Record<string, never> = {}
 
@@ -223,6 +237,12 @@ export default class CompanyUsersDetail extends Vue {
       this.getCurrentUser()
     }
   }
+
+  // updated(): void {
+  //   if (this.isModeEdit || this.isModeView) {
+  //     this.getCurrentUser()
+  //   }
+  // }
 
   // Get the user's roles. If we determine that the user is a driver,
   // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2
@@ -303,6 +323,13 @@ export default class CompanyUsersDetail extends Vue {
     }
   }
 
+  @Watch('mode')
+  onModeChange(newMode: string): void {
+    if (newMode === 'edit' || newMode === 'view') {
+      this.getCurrentUser()
+    }
+  }
+
   get headerTitle(): string {
     switch (this.mode) {
       case 'add':
@@ -347,6 +374,17 @@ export default class CompanyUsersDetail extends Vue {
 
   get isModeAdd(): boolean {
     return this.mode === 'add'
+  }
+
+  async deleteUser(): Promise<void> {
+    const userId = this.currentUser.userId || this.$route.params.id
+    if (!userId) return
+
+    const res: AxiosResponse<ApiResult> = await user.delete(Number(userId))
+    if (res.status === 200) {
+      this.deleteModalIsOpen = false
+      this.$router.push({ name: 'users' })
+    }
   }
 
   async setVehicleTypes(): Promise<void> {
@@ -429,9 +467,7 @@ export default class CompanyUsersDetail extends Vue {
       )
       return newDriverResponse.data.driver.userId || 0
     } else {
-      const newUserResponse = await user.create(
-        this.currentUser as UserDetail
-      )
+      const newUserResponse = await user.create(this.currentUser as UserDetail)
       return newUserResponse.data
     }
   }
@@ -441,10 +477,7 @@ export default class CompanyUsersDetail extends Vue {
 
     if (this.treatAsDriver) {
       await driver.makeDriver(userId)
-      await driver.update(
-        userId,
-        this.currentUserAsDriver as UserDetailDriver
-      )
+      await driver.update(userId, this.currentUserAsDriver as UserDetailDriver)
     } else {
       await driver.deactivateDriver(userId)
       await user.update(userId, this.currentUser as UserDetail)

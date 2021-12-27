@@ -1,5 +1,29 @@
 <template>
   <div class="align-center d-flex flex-grow-1">
+    <template v-if="detailAction">
+      <router-link
+        v-if="$vuetify.breakpoint.smAndUp"
+        class="font-medium font-14"
+        :to="{ name: detailAction.detailName, params: { id: row.id } }"
+        :append="true"
+      >
+        Details
+      </router-link>
+      <v-btn
+        v-else
+        color="primary"
+        small
+        class="w-full margin-t-4"
+        @click="
+          $router.push({
+            name: detailAction.detailName,
+            params: { id: row.id },
+          })
+        "
+      >
+        Details
+      </v-btn>
+    </template>
     <v-menu v-if="$vuetify.breakpoint.smAndUp" offset-x left>
       <template v-slot:activator="{ on }">
         <CUIcon
@@ -15,7 +39,9 @@
       </template>
       <v-list>
         <v-list-item
-          v-for="(action, actionIndex) in actions"
+          v-for="(action, actionIndex) in actions.filter(
+            (action) => !action.isDetail
+          )"
           :key="`action-${action.key}-${actionIndex}`"
           @click="handleAction(action, row)"
         >
@@ -34,31 +60,6 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <template v-else>
-      <div class="d-flex flex-column w-full margin-t-4">
-        <v-btn
-          v-for="(action, actionIndex) in actions"
-          :key="`action-btn-${action.key}-${actionIndex}`"
-          :color="action.color"
-          small
-          class="margin-y-1"
-          @click="handleAction(action, row)"
-        >
-          <CUIcon
-            v-if="action.icon"
-            class="cu-data-table--actionable-icon"
-            width="24px"
-            height="24px"
-            color="white"
-            decorative
-            @click.native="() => action.action(row)"
-          >
-            {{ action.icon }}
-          </CUIcon>
-          <span class="ml-2">{{ action.displayText }}</span>
-        </v-btn>
-      </div>
-    </template>
     <v-dialog v-model="dialogOpen" max-width="500px">
       <v-card>
         <p class="wb-break-word font-22 font-medium padding-x-6 padding-y-2">
@@ -122,6 +123,10 @@ export default class CUDataTableActionColumn extends Vue {
     } else if (action.action) {
       action.action(this.row)
     }
+  }
+
+  get detailAction(): ActionColumn | undefined {
+    return this.actions.find((action) => action.isDetail)
   }
 }
 </script>

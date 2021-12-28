@@ -110,24 +110,25 @@ export interface BidStatus extends Type {
 export interface BidPayload {
   active: boolean
   bidAmount: number
-  bidPassengerCount: number
+  bidPassengerCount?: number | null
   bidStatusId: number
   bidVehicles: BidPayloadVehicle[] | null
   companyId: number
   driverCount: number
-  providerNotes: string
+  providerNotes: string | null
   tripId: number
   userId: number
   existingBid?: number
+  soldOut?: boolean
   originalBid?: {
     active: boolean
     bidAmount: number
-    bidPassengerCount: number
+    bidPassengerCount?: number | null
     bidStatusId: number
     bidVehicles: BidPayloadVehicle[] | null
     companyId: number
     driverCount: number
-    providerNotes: string
+    providerNotes: string | null
     tripId: number
     userId: number
     existingBid?: number
@@ -135,7 +136,7 @@ export interface BidPayload {
 }
 
 export interface BidPayloadVehicle {
-  quanitity: number
+  quantity: number
   vehicleId: number | null
   vehicleType: VehicleType
 }

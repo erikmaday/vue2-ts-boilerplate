@@ -28,8 +28,14 @@
         <span class="font-14">{{ formattedRequiredDrivers }}</span>
       </div>
       <div class="d-flex justify-end">
+        <span
+          v-if="isSoldOut && !bidAmount"
+          class="text-error font-bold font-16"
+        >
+          Sold Out
+        </span>
         <div
-          v-if="promptBid"
+          v-else-if="promptBid"
           class="
             d-flex
             white-space-nowrap
@@ -72,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Inject, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Inject, Prop, Vue } from 'vue-property-decorator'
 
 import { ColoredMessage } from '@/models/ColoredMessage'
 import { RequiredVehicle, Stop, TableViewTrip, Trip } from '@/models/dto'
@@ -89,7 +95,6 @@ export default class MarketplaceCard extends Vue {
 
   @Prop({ required: false }) readonly trip: Trip
   @Prop({ required: false }) readonly trips: TableViewTrip[]
-  @Prop({ required: false }) readonly multiBidDetail: boolean
   @Prop({ type: Boolean, required: false, default: false })
   readonly showPagination: boolean
 
@@ -106,10 +111,6 @@ export default class MarketplaceCard extends Vue {
       lg: 1,
       xl: 1,
     },
-  }
-
-  get bidAmount(): number | null {
-    return this.bidAmounts[this.activeTrip.tripId]
   }
 
   get activeTripIndex(): number {
@@ -143,6 +144,14 @@ export default class MarketplaceCard extends Vue {
 
   get promptBid(): boolean {
     return this.isInBidDetail && !this.bidAmount
+  }
+
+  get isSoldOut(): boolean {
+    return this.isInBidDetail && bidDetail.getBids?.[this.trip.tripId]?.soldOut
+  }
+
+  get bidAmount(): number | null {
+    return this.isInBidDetail ? this.bidAmounts[this.activeTrip.tripId] : null
   }
 
   get firstPickup(): Stop {

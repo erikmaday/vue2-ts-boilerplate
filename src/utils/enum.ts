@@ -54,3 +54,7 @@ export enum TripTypeKeys {
   Daily = 'daily',
   Shuttle = 'shuttle',
 }
+
+export enum TakeRate {
+  Default = 10,
+}

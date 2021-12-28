@@ -11,48 +11,47 @@
       outlined
       small
       class="w-full margin-t-0"
+      :loading="bidDetail.getSubmitting"
       @click="bidDetail.setIsEnteringBid(true)"
     >
       {{ customBidButtonText }}
     </v-btn>
-
-    <template v-if="!isMultiBid">
-      <v-divider class="margin-t-4" />
-      <p
-        class="font-14 text-primary margin-t-5 text-align-center cursor-pointer"
+    <template v-if="!isMultiBid && !bidDetail.getIsSoldOut">
+      <v-divider class="margin-t-4 margin-b-2" />
+      <v-btn
+        text
+        small
+        color="primary"
+        class="w-full"
+        :loading="bidDetail.getSubmitting"
+        @click="markSoldOut"
       >
         Mark as Sold Out
-      </p>
+      </v-btn>
     </template>
   </div>
 </template>
 
 <script lang="ts">
 import bidDetail from '@/store/modules/bidDetail'
+import { TakeRate } from '@/utils/enum'
 import { currencyFilter } from '@/utils/string'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-
-// we may pull this dynamically later on
-const DEFAULT_TAKE_RATE = 10
 
 @Component
 export default class BidDetailActionsStandard extends Vue {
   @Prop({ required: true }) readonly isMultiBid!: boolean
   bidDetail = bidDetail
 
+  get currentBidPrice(): number | null {
+    return bidDetail.getBidAmount || bidDetail.getBid?.bidAmount || null
+  }
+
   get customBidButtonText(): string {
-    if (bidDetail.getBid) {
+    if (this.currentBidPrice) {
       return 'Edit Bid'
     }
     return 'Make Bid'
-  }
-
-  get currentBidPrice(): number | null {
-    return (
-      bidDetail.getBidAmounts[bidDetail.getTrip?.tripId] ||
-      bidDetail.getBid?.bidAmount ||
-      null
-    )
   }
 
   get calculatedPrice(): string {
@@ -64,11 +63,15 @@ export default class BidDetailActionsStandard extends Vue {
 
   get awardedPrice(): string {
     if (this.currentBidPrice) {
-      const brokerTakeRate = bidDetail.getBid?.takeRate || DEFAULT_TAKE_RATE
+      const brokerTakeRate = bidDetail.getBid?.takeRate || TakeRate.Default
       const operatorTakePercent = (100 - brokerTakeRate) / 100
       return currencyFilter(this.currentBidPrice * operatorTakePercent)
     }
     return ''
+  }
+
+  markSoldOut(): void {
+    bidDetail.markSingleTripSoldOut()
   }
 }
 </script>

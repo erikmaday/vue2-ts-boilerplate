@@ -18,7 +18,7 @@
       color="primary"
       small
       class="w-full margin-t-4"
-      :loading="saving"
+      :loading="bidDetail.getSubmitting"
       @click="handleSave"
     >
       {{ submitButtonText }}
@@ -28,7 +28,7 @@
       text
       small
       class="w-full margin-t-4"
-      :loading="saving"
+      :loading="bidDetail.getSubmitting"
       @click="bidDetail.setIsEnteringBid(false)"
     >
       Cancel
@@ -40,11 +40,8 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { currency as currencyMask } from '@/utils/mask'
 import { currencyFilter } from '@/utils/string'
-import auth from '@/store/modules/auth'
-import { BidPayload, BidPayloadVehicle } from '@/models/dto'
-import { BidStatusId } from '@/utils/enum'
-import bid from '@/services/bid'
 import bidDetail from '@/store/modules/bidDetail'
+import { TakeRate } from '@/utils/enum'
 
 @Component
 export default class BidDetailActionsCustom extends Vue {
@@ -52,7 +49,6 @@ export default class BidDetailActionsCustom extends Vue {
 
   customBidPrice: string | null = null
   currencyMask = currencyMask
-  saving = false
   bidDetail = bidDetail
 
   mounted(): void {
@@ -72,7 +68,7 @@ export default class BidDetailActionsCustom extends Vue {
   }
 
   get awardedPriceFormatted(): string | null {
-    const takeRate = bidDetail.getBid?.takeRate || 10
+    const takeRate = bidDetail.getBid?.takeRate || TakeRate.Default
     const operatorTakePercent = (100 - takeRate) / 100
     if (this.customBidRawValue) {
       return currencyFilter(this.customBidRawValue * operatorTakePercent)
@@ -84,70 +80,24 @@ export default class BidDetailActionsCustom extends Vue {
     return this.isMultiBid ? 'Save' : 'Submit'
   }
 
-  buildBidVehicles(): BidPayloadVehicle[] {
-    return bidDetail.getTrip?.vehicles.map((vehicle) => {
-      const vehicleType = {
-        active: true,
-        companyId: null,
-        ...vehicle.vehicleType,
-      }
-      return {
-        quantity: vehicle.quantity,
-        vehicleId: vehicle.vehicleId,
-        vehicleType: vehicleType,
-      }
-    })
-  }
-
-  buildPayload(): BidPayload {
-    return {
-      active: true,
-      bidAmount: bidDetail.getBidAmounts?.[bidDetail.getTrip?.tripId],
-      bidPassengerCount:
-        bidDetail.getBid?.bidPassengerCount ||
-        bidDetail.getTrip?.passengerCount,
-      bidStatusId: BidStatusId.Pending,
-      bidVehicles: this.buildBidVehicles(),
-      companyId: parseInt(auth.getUser?.companyId),
-      driverCount:
-        bidDetail.getBid?.driverCount || bidDetail.getTrip?.requiredDrivers,
-      providerNotes: null,
-      tripId: bidDetail.getTrip?.tripId,
-      userId: auth.userId,
-    }
-  }
-
   handleSave(): void {
-    this.saving = true
     if (this.isMultiBid) {
       bidDetail.setTripBidAmount({
         tripId: bidDetail.getTrip?.tripId,
         bidAmount: this.customBidRawValue,
       })
       bidDetail.setIsEnteringBid(false)
+      bidDetail.deselectTrip()
     } else {
       this.submit()
     }
-    this.saving = false
   }
 
   async submit(): Promise<void> {
-    bidDetail.setTripBidAmount({
+    await bidDetail.submitSingleTripBid({
       tripId: bidDetail.getTrip?.tripId,
       bidAmount: this.customBidRawValue,
     })
-    try {
-      const payload = this.buildPayload()
-      if (bidDetail.getBid) {
-        await bid.update(bidDetail.getBid.bidId, payload)
-      } else {
-        await bid.create(payload)
-      }
-      await bidDetail.fetchExistingBids()
-      bidDetail.setIsEnteringBid(false)
-    } catch (err) {
-      console.error(err)
-    }
   }
 }
 </script>

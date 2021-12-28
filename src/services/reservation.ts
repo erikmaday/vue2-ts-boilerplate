@@ -57,4 +57,28 @@ export default {
     const url = `https://${host}/reservations/rejectReferral/${reservationId}${query}`
     return httpService.get(url)
   },
+
+  sortForAvailability(
+    reservations: Array<Reservation>
+  ): Map<any, Array<Reservation>> {
+    const result = reservations.reduce(function (map, obj) {
+      if (obj?.vehicleAssignments?.length) {
+        obj.vehicleAssignments.forEach(va => {
+          if (map.has(va.vehicleId)) {
+            map.get(va.vehicleId).push(obj)
+          } else {
+            map.set(va.vehicleId, [obj])
+          }
+        })
+      } else {
+        if (map.has('unassigned')) {
+          map.get('unassigned').push(obj)
+        } else {
+          map.set('unassigned', [obj])
+        }
+      }
+      return map
+    }, new Map())
+    return result
+  },
 }

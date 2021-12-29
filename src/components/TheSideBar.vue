@@ -16,18 +16,38 @@
         </CUIcon>
       </v-row>
       <v-row>
-        <v-col
-          v-for="(item, index) in navigationItems"
-          cols="12"
-          :id="`side-bar-navigation-button-${item.label}`"
-          :key="`item-link-${index}`"
-          class="padding-x-0 padding-y-2 font-medium font-18"
-          @click="handleNavigationClick(item)"
-        >
-          <span class="cursor-pointer">{{ item.label }}</span>
-        </v-col>
+        <template v-for="(item, itemIndex) in navigationItems">
+          <v-col
+            v-if="!item.children"
+            cols="12"
+            :id="`side-bar-navigation-button-${item.label}`"
+            :key="`item-link-${itemIndex}`"
+            class="padding-x-0 padding-y-2 font-medium font-18"
+          >
+            <span class="cursor-pointer" @click="handleNavigationClick(item)">
+              {{ item.label }}
+            </span>
+          </v-col>
+          <template v-else>
+            <v-col
+              v-for="(childItem, childItemIndex) in item.children"
+              cols="12"
+              :id="`side-bar-navigation-button-${item.label}-${childItem.label}`"
+              :key="`item-link-${itemIndex}-child-item-${childItemIndex}`"
+              class="padding-x-0 padding-y-2 font-medium font-18"
+            >
+              <span
+                class="cursor-pointer"
+                @click="handleNavigationClick(childItem)"
+              >
+                {{ childItem.label }}
+              </span>
+            </v-col>
+          </template>
+        </template>
+
         <v-col cols="12" class="padding-x-0 padding-y-2 font-medium font-14">
-          First Last
+          {{ userName }}
         </v-col>
       </v-row>
     </v-container>
@@ -40,6 +60,7 @@ import CharterUPLogo from '@/components/CharterUPLogo.vue'
 import { navigation } from '@/data/navigation'
 import { NavigationLink } from '@/models/NavigationLink'
 import modules from '@/store/modules'
+import auth from '@/store/modules/auth'
 
 @Component({
   components: {
@@ -55,6 +76,10 @@ export default class TheSideBar extends Vue {
   }
   get isSidebarOpen(): boolean {
     return this.sidebar.isOpen
+  }
+
+  get userName(): string {
+    return `${auth.getUser?.firstName} ${auth.getUser?.lastName}`
   }
 
   @Watch('isSidebarOpen')

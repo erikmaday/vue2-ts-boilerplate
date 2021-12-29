@@ -2,8 +2,8 @@
   <div>
     <v-text-field
       outlined
-      v-mask="[...currencyMask]"
-      v-model="customBidPrice"
+      v-model.lazy="customBidPrice"
+      v-money="money"
       prepend-inner-icon="mdi-currency-usd"
       class="text-align-center"
       hide-details
@@ -38,20 +38,32 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { currency as currencyMask } from '@/utils/mask'
 import { currencyFilter } from '@/utils/string'
 import bidDetail from '@/store/modules/bidDetail'
 import { TakeRate } from '@/utils/enum'
+import { VMoney } from 'v-money'
 
-@Component
+@Component({
+  directives: {
+    money: VMoney,
+  },
+})
 export default class BidDetailActionsCustom extends Vue {
   @Prop({ required: true }) readonly isMultiBid!: boolean
 
   customBidPrice: string | null = null
-  currencyMask = currencyMask
   bidDetail = bidDetail
 
-  mounted(): void {
+  money = {
+    decimal: '.',
+    thousands: ',',
+    prefix: '',
+    suffix: '',
+    precision: 2,
+    masked: false /* doesn't work with directive */,
+  }
+
+  created(): void {
     const bidAmount =
       bidDetail.getBidAmounts[bidDetail.getTrip?.tripId] ||
       bidDetail.getBid?.bidAmount
@@ -60,9 +72,9 @@ export default class BidDetailActionsCustom extends Vue {
     }
   }
 
-  get customBidRawValue(): number | null {
+  get customBidRawValue(): number | string | null {
     if (this.customBidPrice) {
-      return parseFloat(this.customBidPrice.replace(',', ''))
+      return parseFloat(this.customBidPrice.replace(/,/g, ''))
     }
     return null
   }

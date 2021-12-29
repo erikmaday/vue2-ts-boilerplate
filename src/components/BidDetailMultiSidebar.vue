@@ -11,7 +11,7 @@
       color="primary"
       :disabled="!areAllBidsComplete"
       class="margin-t-4 w-full"
-      :loading="submitting"
+      :loading="bidDetail.getSubmitting"
       @click="submit"
     >
       Submit Bids
@@ -23,7 +23,7 @@
         small
         color="primary"
         class="w-full"
-        :loading="submitting"
+        :loading="bidDetail.getSubmitting"
         @click="markSoldOut"
       >
         Mark as Sold Out
@@ -41,7 +41,6 @@ import bid from '@/services/bid'
 @Component({ components: { MarketplaceCard } })
 export default class BidDetailMultiSidebar extends Vue {
   bidDetail = bidDetail
-  submitting = false
 
   get areAllBidsComplete(): boolean {
     let isComplete = false
@@ -58,23 +57,11 @@ export default class BidDetailMultiSidebar extends Vue {
   }
 
   async submit(): void {
-    this.submitting = true
-    for (const trip of bidDetail.getTripDetails) {
-      const payload = await bidDetail.buildMultiTripPayload(trip)
-      if (payload.originalBid) {
-        await bid.update(payload.existingBid, payload)
-      } else {
-        await bid.create(payload)
-      }
-    }
-    bidDetail.fetchExistingBids()
-    this.submitting = false
+    await bidDetail.submitMultiTripBids()
   }
 
   async markSoldOut(): Promise<void> {
-    this.submitting = true
     await bidDetail.markAllTripsSoldOut()
-    this.submitting = false
   }
 }
 </script>

@@ -204,10 +204,8 @@ class BidDetailModule extends VuexModule {
     const payload = await this.buildSingleTripPayload()
     if (payload) {
       try {
-        if (this.getBid || this.getIsSoldOut) {
-          if (this.getBid?.bidId) {
-            await bid.update(this.getBid.bidId, payload)
-          }
+        if (this.getBid?.bidId) {
+          await bid.update(this.getBid.bidId, payload)
         } else {
           await bid.create(payload)
         }
@@ -217,6 +215,24 @@ class BidDetailModule extends VuexModule {
         console.error(err)
       }
     }
+    this.submitting = false
+  }
+
+  @Action
+  async submitMultiTripBids(): Promise<void> {
+    this.submitting = true
+    for (const trip of this.getTripDetails) {
+      const payload = await this.buildMultiTripPayload(trip)
+      if (!payload) {
+        return
+      }
+      if (payload.existingBid) {
+        await bid.update(payload.existingBid, payload)
+      } else {
+        await bid.create(payload)
+      }
+    }
+    this.fetchExistingBids()
     this.submitting = false
   }
 
@@ -267,25 +283,25 @@ class BidDetailModule extends VuexModule {
     const isMultiTripBid = !!trip
     trip = trip || this.trip
     if (trip) {
-      console.log(trip)
       try {
         const payload = await buildSoldOutPayload(trip)
-        if (payload) {
-          const bidId = this.getBids?.[trip.tripId]?.bidId
-          if (bidId) {
-            await bid.update(bidId, payload)
-          } else {
-            await bid.create(payload)
-          }
-          if (this.trip?.tripId) {
-            this.bidAmounts[this.trip?.tripId] = null
-          }
-          if (!isMultiTripBid) {
-            await this.fetchExistingBids()
-            this.bidAmount = null
-            this.setIsEnteringBid(false)
-            this.submitting = false
-          }
+        if (!payload) {
+          return
+        }
+        const bidId = this.getBids?.[trip.tripId]?.bidId
+        if (bidId) {
+          await bid.update(bidId, payload)
+        } else {
+          await bid.create(payload)
+        }
+        if (this.trip?.tripId) {
+          this.bidAmounts[this.trip?.tripId] = null
+        }
+        if (!isMultiTripBid) {
+          await this.fetchExistingBids()
+          this.bidAmount = null
+          this.setIsEnteringBid(false)
+          this.submitting = false
         }
       } catch (err) {
         console.error(err)
@@ -396,6 +412,8 @@ const buildBidVehicles = (trip: Trip): BidPayloadVehicle[] => {
     }
   })
 }
+
+// const submitBid = async (): Promise<void> => {}
 
 // register module
 import store from '@/store/index'

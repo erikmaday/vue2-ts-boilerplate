@@ -19,7 +19,7 @@ import MainWithSidebar from '@/layouts/MainWithSidebar.vue'
 import TheAppBar from '@/components/TheAppBar.vue'
 import TheSideBar from '@/components/TheSideBar.vue'
 import CompanyUsers from '@/components/CompanyUsers.vue'
-import CompanyVehicles from '@/components/CompanyVehicles.vue'
+import Vehicles from '@/views/Vehicles.vue'
 import CompanyGarages from '@/components/CompanyGarages.vue'
 import CompanyRates from '@/components/CompanyRates.vue'
 import CompanySettings from '@/components/CompanySettings.vue'
@@ -38,7 +38,7 @@ import { Component as VueComponent } from 'vue'
     CompanyRates,
     CompanySettings,
     CompanyAvailability,
-    CompanyVehicles,
+    Vehicles,
   },
 })
 export default class Company extends Vue {
@@ -54,7 +54,7 @@ export default class Company extends Vue {
       label: 'Vehicles',
       href: 'vehicles',
       name: 'vehicles',
-      component: CompanyVehicles,
+      component: Vehicles,
       icon: 'directions_bus',
     },
     {

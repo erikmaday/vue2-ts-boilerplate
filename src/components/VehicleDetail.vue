@@ -16,7 +16,7 @@ import { AxiosResponse } from 'axios'
 import { Vehicle } from '@/models/dto/Vehicle'
 
 @Component
-export default class CompanyVehiclesEdit extends Vue {
+export default class VehicleDetail extends Vue {
   notFound = false
 
   currentVehicle: Vehicle | null = null

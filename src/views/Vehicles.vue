@@ -14,7 +14,7 @@ import Main from '@/layouts/Main.vue'
 @Component({
   components: { VehicleList, VehicleDetail, Main },
 })
-export default class CompanyUsers extends Vue {
+export default class Vehicles extends Vue {
   get currentComponent(): VueComponent {
     switch (this.$route.name) {
       case 'vehicles.add':

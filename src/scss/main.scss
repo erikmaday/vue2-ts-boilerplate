@@ -117,6 +117,19 @@
         color: $gray-mid-light;
       }
     }
+    .v-input__control {
+      .v-input__slot {
+        .v-input--selection-controls__input {
+          .v-input--selection-controls__ripple {
+            border-radius: $border-radius-root;
+            height: 28px;
+            width: 28px;
+            left: -9px;
+            top: -9px;
+          }
+        }
+      }
+    }
   }
 
   .v-btn {

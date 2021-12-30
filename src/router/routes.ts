@@ -140,6 +140,14 @@ export const routes: RouteConfig[] = [
                   ),
               },
               {
+                path: 'add',
+                name: 'vehicles.add',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "vehicles-add" */ '@/views/Vehicles.vue'
+                  ),
+              },
+              {
                 path: 'edit/:id',
                 name: 'vehicles.edit',
                 component: () =>
@@ -147,7 +155,6 @@ export const routes: RouteConfig[] = [
                     /* webpackChunkName: "vehicles-edit" */ '@/views/Vehicles.vue'
                   ),
               },
-
               {
                 path: 'view/:id',
                 name: 'vehicles.view',

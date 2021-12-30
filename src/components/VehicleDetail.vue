@@ -1,11 +1,46 @@
 <template>
   <div>
-    <!-- Placeholder for real view/edit page -->
-    <h1>Edit Vehicle</h1>
-    <h2 v-if="currentVehicle !== null">
-      {{ `${currentVehicle.vehicleName}` }}
-    </h2>
-    <h2 v-else>Vehicle not found</h2>
+    <v-row>
+      <v-col class="grow">
+        <h1>{{ headerText }}</h1>
+      </v-col>
+      <v-spacer />
+      <div class="d-flex shrink padding-a-3">
+        <v-btn
+          v-if="isModeAdd || isModeEdit"
+          color="primary"
+          small
+          text
+          class="margin-r-3"
+          @click="handleCancel"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          color="primary"
+          small
+          :outlined="isModeView"
+          @click="handleActionClick"
+        >
+          {{ isModeView ? 'Edit Vehicle' : 'Save' }}
+        </v-btn>
+      </div>
+    </v-row>
+    <v-row>
+      <v-col cols="12" md="5">
+        <VehicleDetailInformation
+          v-model="vehicle"
+          :is-mode-view="isModeView"
+        />
+      </v-col>
+      <v-col cols="12" md="7">
+        <VehicleDetailAmenities
+          v-model="vehicle.vehicleAmenityDTOs"
+          :is-mode-view="isModeView"
+          :is-mode-add="isModeAdd"
+        />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -13,25 +48,80 @@
 import { Vue, Component } from 'vue-property-decorator'
 import vehicle from '@/services/vehicle'
 import { AxiosResponse } from 'axios'
-import { Vehicle } from '@/models/dto/Vehicle'
+import { VehicleDetailEntity } from '@/models/dto'
+import { AmenityType } from '@/models/dto/Amenity'
+import app from '@/store/modules/app'
+import VehicleDetailAmenities from '@/components/VehicleDetailAmenities.vue'
+import VehicleDetailInformation from '@/components/VehicleDetailInformation.vue'
+import auth from '@/store/modules/auth'
 
-@Component
+@Component({ components: { VehicleDetailAmenities, VehicleDetailInformation } })
 export default class VehicleDetail extends Vue {
   notFound = false
 
-  currentVehicle: Vehicle | null = null
-
-  mounted(): void {
-    this.getCurrentVehicle()
+  vehicle: VehicleDetailEntity | null = {
+    vehicleId: null,
+    vehicleName: null,
+    vehicleTypeName: null,
+    vehicleTypeId: null,
+    vehicleMake: null,
+    vehicleModel: null,
+    vehicleYear: null,
+    passengerCapacity: null,
+    vinNumber: null,
+    licensePlate: null,
+    garageId: null,
+    garageName: null,
+    companyId: null,
+    vehicleAmenityDTOs: [],
+    vehiclePhotoDTOs: [],
+    active: null,
   }
 
-  async getCurrentVehicle(): Promise<void> {
+  amenityTypes: AmenityType[] = []
+
+  get isModeAdd(): boolean {
+    return this.$route.name === 'vehicles.add'
+  }
+  get isModeEdit(): boolean {
+    return this.$route.name === 'vehicles.edit'
+  }
+  get isModeView(): boolean {
+    return this.$route.name === 'vehicles.view'
+  }
+
+  get headerText(): string {
+    if (this.isModeAdd) {
+      return 'Add Vehicle'
+    }
+    if (this.isModeEdit && this.vehicle) {
+      return `Edit ${this.vehicle?.vehicleName}`
+    }
+    if (this.isModeView && this.vehicle) {
+      return this.vehicle.vehicleName
+    }
+    return ''
+  }
+
+  mounted(): void {
+    this.load()
+  }
+
+  async load(): Promise<void> {
+    if (this.isModeAdd) {
+      this.vehicle.active = true
+      this.vehicle.companyId = auth.getUser?.companyId
+    } else {
+      await this.getVehicle()
+    }
+  }
+
+  async getVehicle(): Promise<void> {
     let response: AxiosResponse
     try {
       if (this.$route.params.id) {
         response = await vehicle.byId(Number(this.$route.params.id))
-        const { data } = response
-        this.currentVehicle = data
+        this.vehicle = this.processVehicle(response.data)
       } else {
         this.notFound = true
         return
@@ -41,6 +131,82 @@ export default class VehicleDetail extends Vue {
       console.error(e)
       return
     }
+  }
+
+  processVehicle(vehicle: VehicleDetailEntity): VehicleDetailEntity {
+    vehicle.vehicleTypeId = parseInt(vehicle.vehicleTypeId)
+    vehicle.vehicleAmenityDTOs = vehicle.vehicleAmenityDTOs.sort(
+      (a, b) => a.amenityId - b.amenityId
+    )
+    return vehicle
+  }
+
+  async handleActionClick(): void {
+    if (this.isModeView) {
+      this.beginEdit()
+      return
+    }
+    if (this.isModeEdit) {
+      this.updateVehicle()
+      return
+    }
+    if (this.isModeAdd) {
+      this.addVehicle()
+      return
+    }
+  }
+
+  beginEdit(): void {
+    this.$router.push({
+      name: 'vehicles.edit',
+      params: { id: this.$route.params.id },
+    })
+  }
+
+  async updateVehicle(): Promise<void> {
+    try {
+      await vehicle.update(this.vehicle)
+      this.load()
+      this.$router.push({
+        name: 'vehicles.view',
+        params: { id: this.$route.params.id },
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async addVehicle(): Promise<void> {
+    try {
+      const vehicleResponse = await vehicle.create(this.vehicle)
+      const vehicleId = vehicleResponse.data
+      this.$router.push({
+        name: 'vehicles.view',
+        params: { id: vehicleId },
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  handleCancel(): void {
+    if (this.isModeAdd) {
+      this.goBack()
+    } else {
+      this.cancel()
+    }
+    this.load()
+  }
+
+  cancel(): void {
+    this.$router.push({
+      name: 'vehicles.view',
+      params: { id: this.$route.params.id },
+    })
+  }
+
+  goBack(): void {
+    this.$router.push(app.getLastRoute)
   }
 }
 </script>

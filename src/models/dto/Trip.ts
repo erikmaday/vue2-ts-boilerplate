@@ -165,12 +165,12 @@ export interface TableViewTrip {
 export interface TableViewTripStop {
   stopId: number
   orderIndex: number
-  address: Address
+  address: TripAddress
   addressId?: null
   pickupDate?: string | null
   dropoffDate?: string | null
 }
-export interface Address {
+export interface TripAddress {
   addressId: number
   addressName: string
   street1: string

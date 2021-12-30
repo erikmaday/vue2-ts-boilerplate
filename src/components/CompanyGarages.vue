@@ -14,7 +14,7 @@ import Main from '@/layouts/Main.vue'
 @Component({
   components: { Main },
 })
-export default class CompanyUsers extends Vue {
+export default class CompanyGarages extends Vue {
   get currentComponent(): VueComponent {
     switch (this.$route.name) {
       case 'garages.edit':

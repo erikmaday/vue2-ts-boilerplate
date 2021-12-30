@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label v-if="$attrs.label">{{ $attrs.label }}</label>
+    <label class="font-14" v-if="$attrs.label">{{ $attrs.label }}</label>
     <v-select
       v-bind="$attrs"
       :label="null"
@@ -8,6 +8,7 @@
       outlined
       solo
       flat
+      append-icon="mdi-chevron-down"
     />
   </div>
 </template>

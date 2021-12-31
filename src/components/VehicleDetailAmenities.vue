@@ -51,8 +51,8 @@ export default class VehicleDetailAmenities extends Vue {
   }
 
   async getAmenityTypes(): Promise<void> {
-    const response = await type.amenity()
-    const amenities = response.data.filter(
+    const response = await type.amenity({ pageSize: -1 })
+    const amenities = response.data.resultList.filter(
       (amenity) => !['CDC Compliant', 'DOD Compliant'].includes(amenity.label)
     )
     this.vehicleAmenityDTOs = this.mapAmenities(amenities)

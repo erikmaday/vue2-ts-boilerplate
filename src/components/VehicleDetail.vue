@@ -34,6 +34,13 @@
         />
       </v-col>
       <v-col cols="12" md="7">
+        <VehicleDetailImages
+          :vehicle-photos="vehicle.vehiclePhotoDTOs"
+          :is-mode-edit="isModeEdit"
+          :is-mode-view="isModeView"
+          :is-mode-add="isModeAdd"
+          @remove="deletedPhotos.push({ vehiclePhotoId: $event })"
+        />
         <VehicleDetailAmenities
           v-model="vehicle.vehicleAmenityDTOs"
           :is-mode-view="isModeView"
@@ -53,9 +60,16 @@ import { AmenityType } from '@/models/dto/Amenity'
 import app from '@/store/modules/app'
 import VehicleDetailAmenities from '@/components/VehicleDetailAmenities.vue'
 import VehicleDetailInformation from '@/components/VehicleDetailInformation.vue'
+import VehicleDetailImages from '@/components/VehicleDetailImages.vue'
 import auth from '@/store/modules/auth'
 
-@Component({ components: { VehicleDetailAmenities, VehicleDetailInformation } })
+@Component({
+  components: {
+    VehicleDetailAmenities,
+    VehicleDetailInformation,
+    VehicleDetailImages,
+  },
+})
 export default class VehicleDetail extends Vue {
   notFound = false
 
@@ -78,7 +92,7 @@ export default class VehicleDetail extends Vue {
     active: null,
   }
 
-  amenityTypes: AmenityType[] = []
+  deletedPhotos: { vehiclePhotoId: number }[] = []
 
   get isModeAdd(): boolean {
     return this.$route.name === 'vehicles.add'
@@ -165,6 +179,9 @@ export default class VehicleDetail extends Vue {
 
   async updateVehicle(): Promise<void> {
     try {
+      await vehicle.deletePhotos(this.vehicle.vehicleId, {
+        vehiclePhotos: this.deletedPhotos,
+      })
       await vehicle.update(this.vehicle)
       this.load()
       this.$router.push({

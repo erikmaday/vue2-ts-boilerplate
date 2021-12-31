@@ -27,9 +27,22 @@ export default {
     return httpService.get(url)
   },
 
-  amenity(): Promise<AxiosResponse<AmenityType>> {
+  amenity(
+    params: TableViewParameters
+  ): Promise<AxiosResponse<TableViewResult<AmenityType>>> {
+    const { pageSize = 10, page = 1, sorts = null, filters = null } = params
+    let query = `page=${page}&pageSize=${pageSize}`
+    if (sorts) {
+      query += `&${sorts}`
+    }
+    if (filters) {
+      query += `&${filters}`
+    }
+    query = encodeURI(query)
+
     const host = apiBaseUrl()
-    const url = `https://${host}/types/amenity-types`
+    const url = `https://${host}/tables/amenityTypes?${query}`
+
     return httpService.get(url)
   },
 }

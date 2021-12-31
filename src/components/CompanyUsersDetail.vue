@@ -83,7 +83,7 @@
             }"
           >
             <CompanyUsersDetailUserPhoto
-              :photoSrc="avatarLink"
+              :photoSrc="userPhoto"
               :mode="mode"
               @upload="uploadUserPhoto"
             />
@@ -177,7 +177,7 @@ import { AxiosResponse } from 'axios'
 
 import CompanyUsersChangePassword from '@/components/CompanyUsersChangePassword.vue'
 
-import { apiBaseUrl } from '@/utils/env'
+import { baseUrl } from '@/utils/env'
 
 import auth from '@/store/modules/auth'
 import user from '@/services/user'
@@ -330,7 +330,7 @@ export default class CompanyUsersDetail extends Vue {
       return this.avatarLink
     }
     if (this.currentUser?.userPhotoDTOs?.length) {
-      return `https://${apiBaseUrl(undefined)}${
+      return `https://${baseUrl()}${
         this.currentUser.userPhotoDTOs[0].imagePath
       }`
     }
@@ -429,9 +429,7 @@ export default class CompanyUsersDetail extends Vue {
       )
       return newDriverResponse.data.driver.userId || 0
     } else {
-      const newUserResponse = await user.create(
-        this.currentUser as UserDetail
-      )
+      const newUserResponse = await user.create(this.currentUser as UserDetail)
       return newUserResponse.data
     }
   }
@@ -441,10 +439,7 @@ export default class CompanyUsersDetail extends Vue {
 
     if (this.treatAsDriver) {
       await driver.makeDriver(userId)
-      await driver.update(
-        userId,
-        this.currentUserAsDriver as UserDetailDriver
-      )
+      await driver.update(userId, this.currentUserAsDriver as UserDetailDriver)
     } else {
       await driver.deactivateDriver(userId)
       await user.update(userId, this.currentUser as UserDetail)

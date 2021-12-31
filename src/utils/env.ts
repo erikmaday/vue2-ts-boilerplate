@@ -17,3 +17,7 @@ export const apiBaseUrl = (prefix = 'api'): string => {
   axios.defaults.baseURL = `https://${hostPrefix(prefix)}${host}`
   return `${hostPrefix(prefix)}${host}`
 }
+
+export const baseUrl = (prefixToRemove = 'api.'): string => {
+  return apiBaseUrl().replace(prefixToRemove, '')
+}

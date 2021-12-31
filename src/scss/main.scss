@@ -158,6 +158,14 @@
   .v-text-field {
     margin-bottom: 0px;
 
+    &.v-input--hide-details {
+      .v-input__control {
+        .v-input__slot {
+          margin-bottom: 0 !important;
+        }
+      }
+    }
+
     .v-input__prepend-inner {
       z-index: 5;
       margin-top: 13px;

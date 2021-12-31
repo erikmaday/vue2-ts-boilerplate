@@ -39,4 +39,21 @@ export default {
       `https://${apiBaseUrl()}/v2/vehicles/${vehicleId}`
     )
   },
+  uploadPhotos(
+    vehicleId: number,
+    form: FormData
+  ): Promise<AxiosResponse<boolean>> {
+    const url = `https://${apiBaseUrl()}/v2/photos/vehicles/${vehicleId}/vehiclePhotos`
+    return httpService.post<boolean, FormData>(url, form)
+  },
+  deletePhotos(
+    vehicleId: number,
+    vehiclePhotos: { vehiclePhotoId: number }[]
+  ): Promise<AxiosResponse<boolean>> {
+    const url = `https://${apiBaseUrl()}/v2/photos/vehicles/${vehicleId}/vehiclePhotos/remove`
+    return httpService.post<boolean, { vehiclePhotoId: number }[]>(
+      url,
+      vehiclePhotos
+    )
+  },
 }

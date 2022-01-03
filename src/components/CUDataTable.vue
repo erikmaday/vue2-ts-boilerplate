@@ -22,6 +22,7 @@
               :row="item"
               :actions="actions"
               :editable="editable"
+              v-on="$listeners"
               @refresh="$emit('refresh')"
             />
           </td>

@@ -29,4 +29,5 @@ export interface VehiclePhotoDTO {
   imagePath: string
   primaryImage: boolean
   active: boolean
+  file?: File
 }

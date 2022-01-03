@@ -5,24 +5,37 @@
     </v-col>
     <v-col cols="12">
       <VehicleDetailImageUpload
-        v-if="!isModeView"
-        v-model="vehiclePhotoList"
-        class="margin-t-3 margin-b-3"
+        v-if="!isModeView && activePhotos.length < 6"
+        :vehicle-photos="vehiclePhotoList"
+        class="margin-t-3"
+        :class="{
+          'margin-b-3': activePhotos.length,
+        }"
+        @add-photos="$emit('add-photos', $event)"
       />
     </v-col>
     <v-col
-      v-for="(photo, photoIndex) in vehiclePhotos"
-      :key="`vehicle-photo-${photoIndex}-${photo.vehiclePhotoId}`"
+      v-for="(photo, photoIndex) in activePhotos"
+      :key="`vehicle-photo-${photoIndex}-${photo.imagePath}`"
       cols="12"
       :class="{ 'padding-t-0': photoIndex === 0 }"
     >
       <VehicleDetailImage
+        v-if="photo"
         :photo="photo"
+        :upload-percentage="uploadPercentage"
         :is-mode-edit="isModeEdit"
         :is-mode-view="isModeView"
         :is-mode-add="isModeAdd"
         @delete="removePhoto"
       />
+    </v-col>
+    <v-col
+      v-if="!activePhotos.length && isModeView"
+      cols="12"
+      class="padding-t-0"
+    >
+      <VehicleDetailImage no-images-found />
     </v-col>
   </v-row>
 </template>
@@ -40,6 +53,7 @@ export default class VehicleDetailImages extends Vue {
   @Prop({ required: true, type: Boolean }) readonly isModeView!: boolean
   @Prop({ required: true, type: Boolean }) readonly isModeAdd!: boolean
   @Prop({ required: true, type: Boolean }) readonly isModeEdit!: boolean
+  @Prop({ required: true, type: Number }) readonly uploadPercentage!: number
 
   vehiclePhotoList: VehiclePhotoDTO[] | null = []
 
@@ -53,9 +67,15 @@ export default class VehicleDetailImages extends Vue {
     this.vehiclePhotoList = value
   }
 
+  get activePhotos(): VehiclePhotoDTO[] {
+    return this.vehiclePhotos.filter((photo) => photo.active)
+  }
+
   removePhoto(photo: VehiclePhotoDTO): void {
-    this.vehiclePhotoList = removeItem(this.vehiclePhotoList, photo)
-    this.$emit('remove', photo.vehiclePhotoId)
+    photo.active = false
+    if (photo.file) {
+      this.vehiclePhotoList = removeItem(this.vehiclePhotoList, photo)
+    }
   }
 }
 </script>

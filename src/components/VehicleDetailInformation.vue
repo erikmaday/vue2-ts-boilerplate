@@ -8,6 +8,7 @@
         <CUTextField
           v-model="vehicleInformation.vehicleName"
           :disabled="isModeView"
+          :rules="[(v) => !!v || 'Vehicle name is required']"
           label="Vehicle Name"
         />
       </v-col>
@@ -17,6 +18,7 @@
           :disabled="isModeView"
           label="Vehicle Type"
           :items="vehicleTypes"
+          :rules="[(v) => !!v || 'Vehicle type is required']"
           item-text="label"
           item-value="id"
         />
@@ -25,6 +27,7 @@
         <CUTextField
           v-model="vehicleInformation.vehicleMake"
           :disabled="isModeView"
+          :rules="[(v) => !!v || 'Vehicle make is required']"
           label="Vehicle Make"
         />
       </v-col>
@@ -32,6 +35,7 @@
         <CUTextField
           v-model="vehicleInformation.vehicleModel"
           :disabled="isModeView"
+          :rules="[(v) => !!v || 'Vehicle model is required']"
           label="Vehicle Model"
         />
       </v-col>
@@ -39,6 +43,7 @@
         <CUTextField
           v-model="vehicleInformation.vehicleYear"
           :disabled="isModeView"
+          :rules="[(v) => !!v || 'Vehicle year is required']"
           label="Vehicle Year"
         />
       </v-col>
@@ -46,6 +51,7 @@
         <CUTextField
           v-model="vehicleInformation.passengerCapacity"
           :disabled="isModeView"
+          :rules="[(v) => !!v || 'Passenger capacity is required']"
           label="Capacity"
         />
       </v-col>
@@ -53,6 +59,7 @@
         <CUTextField
           v-model="vehicleInformation.vinNumber"
           :disabled="isModeView"
+          :rules="[(v) => !!v || 'VIN # is required']"
           label="VIN #"
         />
       </v-col>
@@ -60,6 +67,7 @@
         <CUTextField
           v-model="vehicleInformation.licensePlate"
           :disabled="isModeView"
+          :rules="[(v) => !!v || 'License plate is required']"
           label="License Plate"
         />
       </v-col>
@@ -69,6 +77,7 @@
           :disabled="isModeView"
           label="Garage"
           :items="garages"
+          :rules="[(v) => !!v || 'Garage is required']"
           item-text="garageName"
           item-value="garageId"
         />

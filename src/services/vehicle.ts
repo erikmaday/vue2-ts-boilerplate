@@ -41,11 +41,31 @@ export default {
   },
   uploadPhotos(
     vehicleId: number,
-    form: FormData
+    form: FormData,
+    boundObject: any = {}
   ): Promise<AxiosResponse<boolean>> {
     const url = `https://${apiBaseUrl()}/v2/photos/vehicles/${vehicleId}/vehiclePhotos`
-    return httpService.post<boolean, FormData>(url, form)
+    const uploadProgressFunction = (progressEvent: any): void => {
+      const uploadPercentage = Math.round(
+        (progressEvent.loaded / progressEvent.total) * 100
+      )
+      console.log(uploadPercentage)
+      return
+    }
+    const config = {
+      onUploadProgress: (progressEvent: ProgressEvent) => {
+        const uploadPercentage = Math.round(
+          (progressEvent.loaded / progressEvent.total) * 100
+        )
+        boundObject.uploadPercentage = uploadPercentage
+      },
+      onUploadSuccess: (progressEvent: ProgressEvent) {
+        console.log(progressEvent)
+      }
+    }
+    return httpService.post<boolean, FormData>(url, form, config)
   },
+
   deletePhotos(
     vehicleId: number,
     vehiclePhotos: { vehiclePhotoId: number }[]

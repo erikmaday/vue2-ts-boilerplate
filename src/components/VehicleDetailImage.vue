@@ -7,10 +7,21 @@
       d-flex
       align-center
     "
-    :class="{ 'background-error': isConfirmingDelete }"
+    :class="{
+      'background-error': isConfirmingDelete,
+      'background-gray-header': noImagesFound,
+    }"
   >
     <div
-      v-if="isConfirmingDelete"
+      v-if="noImagesFound"
+      class="w-full h-full d-flex align-center justify-center"
+    >
+      <p class="margin-t-0 text-black font-medium">
+        No images found. Click edit to upload vehicle images.
+      </p>
+    </div>
+    <div
+      v-else-if="isConfirmingDelete"
       class="w-full h-full d-flex align-center padding-l-8 padding-r-5"
     >
       <p class="margin-t-0 text-white font-medium">
@@ -35,44 +46,51 @@
         Delete
       </v-btn>
     </div>
-    <template v-if="!isConfirmingDelete">
+    <template v-else-if="!isConfirmingDelete">
       <img
         class="
           h-full
           w-112
-          margin-r-10
           border-radius-top-left-regular border-radius-bottom-left-regular
+          object-fit-cover
         "
+        :class="{ 'opacity-50': isUploading }"
         :src="photoSource"
       />
-      <CUTextField
-        class="d-flex grow margin-r-4"
-        :disabled="isModeView"
-        placeholder="Add a title"
-        hide-details
-      />
-      <!-- <CUIcon
-      v-if="!isModeView"
-      color="success"
-      :key="`successful-icon`"
-      class="cursor-pointer margin-r-4"
-    >
-      check_circle
-    </CUIcon> -->
-      <CUIcon
-        v-if="isModeEdit"
-        :key="`delete-icon`"
+      <div
+        v-if="isUploading"
         class="
-          cursor-pointer
-          margin-r-4
-          text-gray-mid-light
-          hover:text-error
-          transition-all transition-duration-100
+          d-flex
+          h-full
+          background-blue-10
+          transition-all transition-duration-50
         "
-        @click="isConfirmingDelete = true"
-      >
-        trash
-      </CUIcon>
+        :style="{
+          width: `calc(${uploadPercentage}% - 112px)`,
+        }"
+      ></div>
+      <template v-else>
+        <CUTextField
+          class="d-flex grow margin-r-4 margin-l-10"
+          :disabled="isModeView"
+          placeholder="Add a title"
+          hide-details
+        />
+        <CUIcon
+          v-if="isModeEdit"
+          :key="`delete-icon`"
+          class="
+            cursor-pointer
+            margin-r-4
+            text-gray-mid-light
+            hover:text-error
+            transition-all transition-duration-100
+          "
+          @click="isConfirmingDelete = true"
+        >
+          trash
+        </CUIcon>
+      </template>
     </template>
   </div>
 </template>
@@ -88,12 +106,21 @@ export default class VehicleDetailImage extends Vue {
   @Prop({ required: true, type: Boolean }) readonly isModeView!: boolean
   @Prop({ required: true, type: Boolean }) readonly isModeAdd!: boolean
   @Prop({ required: true, type: Boolean }) readonly isModeEdit!: boolean
+  @Prop({ required: false, type: Boolean }) readonly noImagesFound!: boolean
+  @Prop({ required: true, type: Number }) readonly uploadPercentage!: number
 
   isConfirmingDelete = false
 
+  get isUploading(): boolean {
+    return this.uploadPercentage && this.photo.file
+  }
+
   get photoSource(): string {
     if (this.photo) {
-      return `https://${baseUrl()}${this.photo.imagePath}`
+      if (this.photo.vehiclePhotoId) {
+        return `https://${baseUrl()}${this.photo.imagePath}`
+      }
+      return this.photo.imagePath
     }
     return ''
   }

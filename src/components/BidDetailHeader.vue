@@ -31,7 +31,7 @@ export default class BidDetailHeader extends Vue {
   }
 
   get firstDropoffCity(): string {
-    return bidDetail.getTrip?.stops[1].address.city || this.firstPickupCity
+    return bidDetail.getTrip?.stops?.[1]?.address?.city || this.firstPickupCity
   }
 
   get formattedStartDateTime(): string {

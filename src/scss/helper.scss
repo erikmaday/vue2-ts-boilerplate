@@ -240,21 +240,6 @@ $base-class: 'background';
 $base-class: 'text';
 @include map-to-helpers($base-class, $colors, 'color', $pseudo-classes, true);
 
-// TEXT-ALIGN
-// .text-align-{value}
-$base-class: 'text-align';
-$alignments: left, right, center, justify, initial, inherit;
-@each $alignment in $alignments {
-  @include create-helper-with-pseudo-classes(
-    $base-class,
-    $alignment,
-    $alignment,
-    $base-class,
-    $pseudo-classes,
-    true
-  );
-}
-
 // WIDTH
 // .w-0, .w-1,..., .w-16, .w-20, .w-24, ... , .w-200
 $base-class: 'w';

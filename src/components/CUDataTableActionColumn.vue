@@ -40,7 +40,7 @@
       <v-list>
         <v-list-item
           v-for="(action, actionIndex) in actions.filter(
-            (action) => !action.isDetail
+            (action) => !action.isDetail && !action.hide
           )"
           :key="`action-${action.key}-${actionIndex}`"
           @click="handleAction(action, row)"

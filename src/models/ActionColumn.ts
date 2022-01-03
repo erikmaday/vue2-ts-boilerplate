@@ -9,4 +9,5 @@ export interface ActionColumn {
   action?: any
   isDetail?: boolean
   detailName?: string
+  hide?: boolean
 }

@@ -104,9 +104,10 @@ export default class CUDataTable extends Vue {
   })
   options!: TableViewParameters
 
+  // Make the table editable
   @Prop({
-    type: Boolean, 
-    required: false, 
+    type: Boolean,
+    required: false,
     default: false,
   })
   editable!: boolean

@@ -25,12 +25,25 @@
         v-on="$listeners"
       />
     </template>
-    <template v-if="column.type === 'actions'">
+    <template v-if="column.type === 'actions' && !row.isEditable">
       <CUDataTableActionColumn
         :actions="actions"
         :row="row"
         @refresh="$emit('refresh')"
       />
+    </template>
+    <template v-if="column.type === 'actions' && row.isEditable">
+      <v-row>
+        <v-btn xSmall icon @click="setEditableFalse(row)">
+          <CUIcon color="error">close</CUIcon>
+        </v-btn>
+        <v-btn xSmall icon @click="commitEdit(row)">
+          <CUIcon color="success">done</CUIcon>
+        </v-btn>
+      </v-row>
+    </template>
+    <template v-if="column.type === 'add-new-select' && row.isAddNew">
+      <CUSelect hide-details />
     </template>
     <template v-else-if="column.type === 'phone'">
       <a :href="`tel:${cellItem}`">
@@ -39,6 +52,13 @@
     </template>
     <template v-else-if="column.type === 'email'">
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
+    </template>
+    <template v-else-if="column.type === 'editable'">
+      <CUTextField
+        :value="computedCellItemText"
+        :disabled="!row.isEditable"
+        hide-details
+      />
     </template>
     <template v-else>
       {{ computedCellItemText }}
@@ -92,6 +112,19 @@ export default class CUDataTableCell extends Vue {
       return this.column.computedText(this.row)
     }
     return this.cellItem
+  }
+
+  get commitEdit(): (row: any) => void {
+    if (!this.actions) return this.setEditableFalse
+    const actionCol = this.actions.find(action => action.key === 'editable-commit')
+    if (!actionCol) return this.setEditableFalse
+    return actionCol.action
+  }
+
+  setEditableFalse(row: any): void {
+    if (row) {
+      row.isEditable = false
+    }
   }
 
   phoneFormatFilter = phoneFormatFilter

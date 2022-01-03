@@ -7,7 +7,7 @@
       <v-col cols="6" class="padding-y-0">
         <CUTextField
           v-model="vehicleInformation.vehicleName"
-          :disabled="isModeView"
+          :disabled="disabled"
           :rules="[(v) => !!v || 'Vehicle name is required']"
           label="Vehicle Name"
         />
@@ -15,7 +15,7 @@
       <v-col cols="6" class="padding-y-0">
         <CUSelect
           v-model="vehicleInformation.vehicleTypeId"
-          :disabled="isModeView"
+          :disabled="disabled"
           label="Vehicle Type"
           :items="vehicleTypes"
           :rules="[(v) => !!v || 'Vehicle type is required']"
@@ -26,7 +26,7 @@
       <v-col cols="6" class="padding-y-0">
         <CUTextField
           v-model="vehicleInformation.vehicleMake"
-          :disabled="isModeView"
+          :disabled="disabled"
           :rules="[(v) => !!v || 'Vehicle make is required']"
           label="Vehicle Make"
         />
@@ -34,7 +34,7 @@
       <v-col cols="6" class="padding-y-0">
         <CUTextField
           v-model="vehicleInformation.vehicleModel"
-          :disabled="isModeView"
+          :disabled="disabled"
           :rules="[(v) => !!v || 'Vehicle model is required']"
           label="Vehicle Model"
         />
@@ -42,7 +42,7 @@
       <v-col cols="6" class="padding-y-0">
         <CUTextField
           v-model="vehicleInformation.vehicleYear"
-          :disabled="isModeView"
+          :disabled="disabled"
           :rules="[(v) => !!v || 'Vehicle year is required']"
           label="Vehicle Year"
         />
@@ -50,7 +50,7 @@
       <v-col cols="6" class="padding-y-0">
         <CUTextField
           v-model="vehicleInformation.passengerCapacity"
-          :disabled="isModeView"
+          :disabled="disabled"
           :rules="[(v) => !!v || 'Passenger capacity is required']"
           label="Capacity"
         />
@@ -58,7 +58,7 @@
       <v-col cols="6" class="padding-y-0">
         <CUTextField
           v-model="vehicleInformation.vinNumber"
-          :disabled="isModeView"
+          :disabled="disabled"
           :rules="[(v) => !!v || 'VIN # is required']"
           label="VIN #"
         />
@@ -66,7 +66,7 @@
       <v-col cols="6" class="padding-y-0">
         <CUTextField
           v-model="vehicleInformation.licensePlate"
-          :disabled="isModeView"
+          :disabled="disabled"
           :rules="[(v) => !!v || 'License plate is required']"
           label="License Plate"
         />
@@ -74,7 +74,7 @@
       <v-col cols="6" class="padding-y-0">
         <CUSelect
           v-model="vehicleInformation.garageId"
-          :disabled="isModeView"
+          :disabled="disabled"
           label="Garage"
           :items="garages"
           :rules="[(v) => !!v || 'Garage is required']"
@@ -91,26 +91,40 @@ import { VehicleDetailEntity, VehicleType } from '@/models/dto'
 import { Garage } from '@/models/dto/Garage'
 import garage from '@/services/garage'
 import type from '@/services/type'
-import { Vue, Component, Model, Watch, Prop } from 'vue-property-decorator'
+import vehicleDetail from '@/store/modules/vehicleDetail'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 
 @Component
 export default class VehicleDetailInformation extends Vue {
-  @Model('change') readonly vehicle!: VehicleDetailEntity
-  @Prop({ required: true, type: Boolean }) readonly isModeView!: boolean
+  vehicleInformation: VehicleDetailEntity | null = null
+  debounce = null
+
+  @Watch('vehicleInformation', { deep: true })
+  vehicleChanged(value: VehicleDetailEntity): void {
+    if (this.debounce) {
+      window.clearTimeout(this.debounce)
+    }
+    this.debounce = window.setTimeout(async () => {
+      vehicleDetail.setVehicle(value)
+    }, 100)
+  }
+
+  @Watch('vehicle', { deep: true, immediate: true })
+  parentVehicleChanged(value: VehicleDetailEntity): void {
+    this.vehicleInformation = value
+  }
+
+  get vehicle(): VehicleDetailEntity {
+    return vehicleDetail.getVehicle
+  }
 
   garages: Garage[] | null = []
   vehicleTypes: VehicleType[] | null = []
 
   vehicleInformation: VehicleDetailEntity | null = null
 
-  @Watch('vehicleInformation', { deep: true })
-  vehicleChanged(value: VehicleDetailEntity[]): void {
-    this.$emit('change', value)
-  }
-
-  @Watch('vehicle', { deep: true, immediate: true })
-  parentVehicleChanged(value: VehicleDetailEntity[]): void {
-    this.vehicleInformation = value
+  get disabled(): boolean {
+    return vehicleDetail.getIsModeView
   }
 
   async mounted(): void {

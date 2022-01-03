@@ -51,29 +51,14 @@
 
 <script lang="ts">
 import { ColoredMessage } from '@/models/ColoredMessage'
-import { VehiclePhotoDTO } from '@/models/dto'
+import vehicleDetail from '@/store/modules/vehicleDetail'
 import { pluralize } from '@/utils/string'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 
 const MAX_NUM_OF_PHOTOS = 6
 
 @Component
 export default class VehicleDetailImageUpload extends Vue {
-  @Prop({ required: true }) readonly vehiclePhotos!: VehiclePhotoDTO[]
-
-  vehiclePhotoList: VehiclePhotoDTO[] | null = []
-
-  @Watch('vehiclePhotoList', { deep: true })
-  vehicleChanged(value: VehiclePhotoDTO[]): void {
-    this.$emit('change', value)
-  }
-
-  @Watch('vehiclePhotos', { deep: true, immediate: true })
-  parentPhotosChanged(value: VehiclePhotoDTO[]): void {
-    this.vehiclePhotoList = value
-  }
-
-  files: any[] = []
   errorMessage: string | null = null
 
   get message(): ColoredMessage {
@@ -94,7 +79,7 @@ export default class VehicleDetailImageUpload extends Vue {
   }
 
   get activePhotosCount(): number {
-    return this.vehiclePhotoList.filter((photo) => photo.active).length
+    return vehicleDetail.getVehiclePhotos.filter((photo) => photo.active).length
   }
 
   get morePhotosAllowedCount(): number {
@@ -111,13 +96,13 @@ export default class VehicleDetailImageUpload extends Vue {
   addPhotos(files: FileList): void {
     this.errorMessage = null
     files = Array.from(files)
-    // TODO: validate number of photos uploaded
-    // Check files count
     if (files.length > this.morePhotosAllowedCount) {
       this.errorMessage = `Only ${this.morePhotosAllowedCount} more ${pluralize(
         this.morePhotosAllowedCount,
         'file'
-      )} ${this.morePhotosAllowedCount !== 1 ? 'are' : 'is'} allowed to upload.`
+      )} ${
+        this.morePhotosAllowedCount !== 1 ? 'are' : 'is'
+      } allowed to upload. Please try again.`
       return
     }
 
@@ -132,7 +117,7 @@ export default class VehicleDetailImageUpload extends Vue {
       }
       return newImage
     })
-    this.$emit('add-photos', images)
+    vehicleDetail.addPhotos(images)
   }
 }
 </script>

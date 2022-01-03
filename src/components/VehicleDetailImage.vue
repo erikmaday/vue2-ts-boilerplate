@@ -41,7 +41,7 @@
         color="white"
         class="text-error"
         small
-        @click="$emit('delete', photo)"
+        @click="vehicleDetail.removePhoto(photo)"
       >
         Delete
       </v-btn>
@@ -66,18 +66,18 @@
           transition-all transition-duration-50
         "
         :style="{
-          width: `calc(${uploadPercentage}% - 112px)`,
+          width: `calc(${vehicleDetail.getUploadPercentage}% - 112px)`,
         }"
       ></div>
       <template v-else>
         <CUTextField
           class="d-flex grow margin-r-4 margin-l-10"
-          :disabled="isModeView"
+          :disabled="vehicleDetail.getIsModeView"
           placeholder="Add a title"
           hide-details
         />
         <CUIcon
-          v-if="isModeEdit"
+          v-if="vehicleDetail.getIsModeEdit"
           :key="`delete-icon`"
           class="
             cursor-pointer
@@ -97,22 +97,20 @@
 
 <script lang="ts">
 import { VehiclePhotoDTO } from '@/models/dto'
+import vehicleDetail from '@/store/modules/vehicleDetail'
 import { baseUrl } from '@/utils/env'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component
 export default class VehicleDetailImage extends Vue {
   @Prop({ required: true }) readonly photo!: VehiclePhotoDTO
-  @Prop({ required: true, type: Boolean }) readonly isModeView!: boolean
-  @Prop({ required: true, type: Boolean }) readonly isModeAdd!: boolean
-  @Prop({ required: true, type: Boolean }) readonly isModeEdit!: boolean
   @Prop({ required: false, type: Boolean }) readonly noImagesFound!: boolean
-  @Prop({ required: true, type: Number }) readonly uploadPercentage!: number
 
   isConfirmingDelete = false
+  vehicleDetail = vehicleDetail
 
   get isUploading(): boolean {
-    return this.uploadPercentage && this.photo.file
+    return vehicleDetail.getUploadPercentage && this.photo.file
   }
 
   get photoSource(): string {

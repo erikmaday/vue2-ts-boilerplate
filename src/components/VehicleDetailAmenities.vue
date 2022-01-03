@@ -11,7 +11,7 @@
     >
       <v-checkbox
         v-model="amenity.isSupported"
-        :disabled="isModeView"
+        :disabled="disabled"
         :label="amenity.amenityName"
         hide-details
         class="margin-t-2"
@@ -24,28 +24,33 @@
 import { VehicleAmenityDTO } from '@/models/dto'
 import { AmenityType } from '@/models/dto/Amenity'
 import type from '@/services/type'
-import { Component, Model, Prop, Vue, Watch } from 'vue-property-decorator'
+import vehicleDetail from '@/store/modules/vehicleDetail'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 
 @Component
 export default class VehicleDetailAmenities extends Vue {
-  @Model('change') readonly vehicleAmenities!: VehicleAmenityDTO[]
-  @Prop({ required: true, type: Boolean }) readonly isModeView!: boolean
-  @Prop({ required: true, type: Boolean }) readonly isModeAdd!: boolean
-
   vehicleAmenityDTOs: VehicleAmenityDTO[] = []
 
   @Watch('vehicleAmenityDTOs', { deep: true })
   amenitiesChanged(value: VehicleAmenityDTO[]): void {
-    this.$emit('change', value)
+    vehicleDetail.setAmenities(value)
   }
 
   @Watch('vehicleAmenities', { deep: true })
-  parentaAmenitiesChanged(value: VehicleAmenityDTO[]): void {
+  parentAmenitiesChanged(value: VehicleAmenityDTO[]): void {
     this.vehicleAmenityDTOs = value
   }
 
+  get vehicleAmenities(): VehicleAmenityDTO[] {
+    return vehicleDetail.getVehicle.vehicleAmenityDTOs
+  }
+
+  get disabled(): boolean {
+    return vehicleDetail.getIsModeView
+  }
+
   mounted(): void {
-    if (this.isModeAdd) {
+    if (vehicleDetail.getIsModeAdd) {
       this.getAmenityTypes()
     }
   }

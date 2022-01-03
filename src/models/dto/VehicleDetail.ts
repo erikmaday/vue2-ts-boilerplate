@@ -1,18 +1,18 @@
 export interface VehicleDetailEntity {
-  vehicleId: number
+  vehicleId: number | null
   vehicleName: string
   vehiclePhotoDTOs: VehiclePhotoDTO[]
   vehicleTypeName: string
-  vehicleTypeId: string
+  vehicleTypeId: string | number | null
   vehicleMake: string
   vehicleModel: string
-  vehicleYear: number
-  passengerCapacity: number
+  vehicleYear: number | null
+  passengerCapacity: number | null
   vinNumber: string
   licensePlate: string
-  garageId: number
+  garageId: number | null
   garageName: string
-  companyId: number
+  companyId: number | null
   vehicleAmenityDTOs: VehicleAmenityDTO[]
   active: boolean
 }
@@ -30,4 +30,8 @@ export interface VehiclePhotoDTO {
   primaryImage: boolean
   active: boolean
   file?: File
+}
+
+export interface DeleteVehiclePhotoPayload {
+  vehiclePhotos: { vehiclePhotoId: number }[]
 }

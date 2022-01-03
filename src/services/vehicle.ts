@@ -3,8 +3,12 @@ import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { TableViewParameters, TableViewResult } from '@/models/TableView'
 import { Vehicle } from '@/models/dto/Vehicle'
-import { VehicleResult } from '@/models/dto/VehicleResult'
-import { ApiResult, VehicleDetailEntity } from '@/models/dto'
+import {
+  ApiResult,
+  DeleteVehiclePhotoPayload,
+  VehicleDetailEntity,
+} from '@/models/dto'
+import vehicleDetail from '@/store/modules/vehicleDetail'
 
 const httpService: HttpService = new HttpService()
 
@@ -22,7 +26,7 @@ export default {
       }`
     )
   },
-  byId(vehicleId: number): Promise<AxiosResponse<VehicleResult>> {
+  byId(vehicleId: number): Promise<AxiosResponse<VehicleDetailEntity>> {
     return httpService.get(`https://${apiBaseUrl()}/v2/vehicles/${vehicleId}`)
   },
   create(vehicle: VehicleDetailEntity): Promise<AxiosResponse<number>> {
@@ -41,37 +45,26 @@ export default {
   },
   uploadPhotos(
     vehicleId: number,
-    form: FormData,
-    boundObject: any = {}
+    form: FormData
   ): Promise<AxiosResponse<boolean>> {
     const url = `https://${apiBaseUrl()}/v2/photos/vehicles/${vehicleId}/vehiclePhotos`
-    const uploadProgressFunction = (progressEvent: any): void => {
-      const uploadPercentage = Math.round(
-        (progressEvent.loaded / progressEvent.total) * 100
-      )
-      console.log(uploadPercentage)
-      return
-    }
     const config = {
       onUploadProgress: (progressEvent: ProgressEvent) => {
         const uploadPercentage = Math.round(
           (progressEvent.loaded / progressEvent.total) * 100
         )
-        boundObject.uploadPercentage = uploadPercentage
+        vehicleDetail.setUploadPercentage(uploadPercentage)
       },
-      onUploadSuccess: (progressEvent: ProgressEvent) {
-        console.log(progressEvent)
-      }
     }
     return httpService.post<boolean, FormData>(url, form, config)
   },
 
   deletePhotos(
     vehicleId: number,
-    vehiclePhotos: { vehiclePhotoId: number }[]
+    vehiclePhotos: DeleteVehiclePhotoPayload
   ): Promise<AxiosResponse<boolean>> {
     const url = `https://${apiBaseUrl()}/v2/photos/vehicles/${vehicleId}/vehiclePhotos/remove`
-    return httpService.post<boolean, { vehiclePhotoId: number }[]>(
+    return httpService.post<boolean, DeleteVehiclePhotoPayload>(
       url,
       vehiclePhotos
     )

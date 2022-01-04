@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'v-data-table__detail': isDetailTable }">
     <v-data-table
       :headers="columns"
       :items="items"
@@ -24,6 +24,9 @@
               :row-index="index"
               :actions="actions"
               :editable="editable"
+              :is-detail-table="isDetailTable"
+              :detail-name="detailName"
+              :item-key="itemKey"
               v-on="$listeners"
               @refresh="$emit('refresh')"
             />
@@ -36,8 +39,12 @@
             d-flex
             flex-column
             padding-y-3
-            border-solid border-gray-mid-light border-x-0 border-t-0 border-b-2
+            border-solid border-gray-mid-light border-x-0 border-t-0
           "
+          :class="{
+            'padding-x-3 border-b-1': isDetailTable,
+            'border-b-2': !isDetailTable,
+          }"
         >
           <div
             v-for="(col, colIndex) in columns"
@@ -48,12 +55,16 @@
               :row="item"
               :actions="actions"
               :editable="editable"
+              :is-detail-table="isDetailTable"
+              :detail-name="detailName"
+              :item-key="itemKey"
               @refresh="$emit('refresh')"
             />
           </div>
         </div>
       </template>
       <v-pagination
+        v-if="!isDetailTable"
         v-model="options.page"
         :length="serverItemsLength"
       ></v-pagination>
@@ -113,5 +124,22 @@ export default class CUDataTable extends Vue {
     default: false,
   })
   editable!: boolean
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isDetailTable!: boolean
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  detailName!: string
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  itemKey!: string
 }
 </script>

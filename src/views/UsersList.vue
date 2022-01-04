@@ -30,11 +30,12 @@ import { User } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { AxiosResponse } from 'axios'
+import { Location } from 'vue-router'
 
 @Component({
   components: { CUDataTable, CUCollectionTable },
 })
-export default class CompanyUsers extends Vue {
+export default class Users extends Vue {
   columns: DataTableColumn[] = [
     {
       text: 'Name',
@@ -81,7 +82,12 @@ export default class CompanyUsers extends Vue {
       confirmModal: false,
       ariaLabel: 'View User Details',
       isDetail: true,
-      detailRouteName: 'users.view',
+      detailRoute: (row: User): Location => {
+        return {
+          name: 'users.view',
+          params: { id: row?.userId },
+        }
+      },
     },
   ]
 }

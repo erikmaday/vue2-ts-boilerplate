@@ -1,25 +1,19 @@
 <template>
   <div class="align-center d-flex flex-grow-1">
     <template v-if="detailAction">
-      <router-link
+      <a
         v-if="$vuetify.breakpoint.smAndUp"
         class="font-medium font-14"
-        :to="{ name: detailAction.detailRouteName, params: { id: row.id } }"
-        :append="true"
+        @click="pushDetailRoute"
       >
         Details
-      </router-link>
+      </a>
       <v-btn
         v-else
         color="primary"
         small
         class="w-full margin-t-4"
-        @click="
-          $router.push({
-            name: detailAction.detailRouteName,
-            params: { id: row.id },
-          })
-        "
+        @click="pushDetailRoute"
       >
         Details
       </v-btn>
@@ -133,6 +127,16 @@ export default class CUDataTableActionColumn extends Vue {
 
   get detailAction(): ActionColumn | undefined {
     return this.actions.find((action) => action.isDetail)
+  }
+
+  pushDetailRoute(): void {
+    const detailAction = this.actions.find((action) => action.key === 'details')
+
+    if (detailAction?.detailRoute) {
+      this.$router.push(detailAction.detailRoute(this.row))
+      return
+    }
+    this.$router.push({ path: `view/${this.row[this.row.id]}` })
   }
 }
 </script>

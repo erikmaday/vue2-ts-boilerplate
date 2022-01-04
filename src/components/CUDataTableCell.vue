@@ -11,7 +11,6 @@
       v-if="
         $vuetify.breakpoint.xs &&
         column.type !== 'actions' &&
-        column.type !== 'details' &&
         column.type !== 'slot'
       "
     >
@@ -110,6 +109,7 @@ import { DataTableColumn } from '@/models/DataTableColumn'
 import { phoneFormatFilter } from '@/utils/string'
 import CUTextField from '@/components/CUTextField.vue'
 import op from 'simple-object-path'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: { CUDataTableActionColumn, CUTextField },
@@ -148,6 +148,24 @@ export default class CUDataTableCell extends Vue {
   editable!: boolean
 
   op = op
+  @Prop({
+    type: Boolean,
+    required: false,
+    default: false,
+  })
+  isDetailTable!: boolean
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  detailName!: string
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  itemKey!: string
 
   get cellItem(): any {
     return op(this.row, this.column.value)
@@ -159,6 +177,7 @@ export default class CUDataTableCell extends Vue {
     }
     return this.cellItem
   }
+
 
   phoneFormatFilter = phoneFormatFilter
 }

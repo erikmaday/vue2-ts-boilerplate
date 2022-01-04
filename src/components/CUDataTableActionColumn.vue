@@ -4,7 +4,7 @@
       <router-link
         v-if="$vuetify.breakpoint.smAndUp"
         class="font-medium font-14"
-        :to="{ name: detailAction.detailName, params: { id: row.id } }"
+        :to="{ name: detailAction.detailRouteName, params: { id: row.id } }"
         :append="true"
       >
         Details
@@ -16,7 +16,7 @@
         class="w-full margin-t-4"
         @click="
           $router.push({
-            name: detailAction.detailName,
+            name: detailAction.detailRouteName,
             params: { id: row.id },
           })
         "

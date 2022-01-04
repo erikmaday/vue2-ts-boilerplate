@@ -47,6 +47,13 @@ export default {
       }
     )
   },
+  setPasswordWithHash(
+    hash: string,
+    password: string
+  ): Promise<AxiosResponse<UserResult>> {
+    const url = `https://${apiBaseUrl()}/password/reset`
+    return httpService.post(url, { hash, password })
+  },
   create(user: UserDetail): Promise<AxiosResponse<number>> {
     return httpService.post(`https://${apiBaseUrl()}/user`, user)
   },

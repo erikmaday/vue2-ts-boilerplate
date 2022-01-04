@@ -11,7 +11,6 @@
       v-if="
         $vuetify.breakpoint.xs &&
         column.type !== 'actions' &&
-        column.type !== 'details' &&
         column.type !== 'slot'
       "
     >
@@ -51,6 +50,7 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { phoneFormatFilter } from '@/utils/string'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: { CUDataTableActionColumn },
@@ -75,6 +75,24 @@ export default class CUDataTableCell extends Vue {
   })
   actions!: ActionColumn[]
 
+  @Prop({
+    required: false,
+    default: false,
+  })
+  isDetailTable!: boolean
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  detailName!: string
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  itemKey!: string
+
   get cellItem(): any {
     return this.row[this.column.value]
   }
@@ -85,6 +103,7 @@ export default class CUDataTableCell extends Vue {
     }
     return this.cellItem
   }
+
 
   phoneFormatFilter = phoneFormatFilter
 }

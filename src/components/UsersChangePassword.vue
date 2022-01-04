@@ -44,7 +44,7 @@ import { isNotEmpty } from '@/utils/validators'
 import user from '@/services/user'
 
 @Component
-export default class CompanyUsersChangePassword extends Vue {
+export default class UsersChangePassword extends Vue {
   @Prop({
     required: true,
   })

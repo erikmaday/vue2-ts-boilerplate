@@ -274,7 +274,7 @@
     .v-data-table {
       .v-data-table__wrapper {
         border: 1px solid $gray-border;
-        border-radius: 5px;
+        border-radius: $border-radius-root;
       }
 
       .v-data-table-header {
@@ -286,7 +286,7 @@
       }
 
       tr {
-        height: 55px;
+        height: $data-table-detail-row-height;
       }
     }
   }

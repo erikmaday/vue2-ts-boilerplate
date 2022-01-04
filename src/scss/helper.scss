@@ -396,6 +396,9 @@ $base-classes: 'padding', 'margin';
     }
   }
 }
+
+// ABSOLUTE POSITIONING 
+// top-#, left-#, etc. 
 $base-classes: 'top', 'left', 'bottom', 'right';
 @each $base-class in $base-classes {
   @include map-to-helpers(

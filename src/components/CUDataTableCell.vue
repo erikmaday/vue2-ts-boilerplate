@@ -25,7 +25,7 @@
         v-on="$listeners"
       />
     </template>
-    <template v-if="column.type === 'actions'">
+    <template v-else-if="column.type === 'actions'">
       <CUDataTableActionColumn
         :actions="actions"
         :row="row"

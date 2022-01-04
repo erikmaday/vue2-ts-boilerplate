@@ -8,5 +8,5 @@ export interface ActionColumn {
   confirmModalText?: string
   action?: any
   isDetail?: boolean
-  detailName?: string
+  detailRouteName?: string
 }

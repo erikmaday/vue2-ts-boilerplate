@@ -12,7 +12,7 @@
           >
             <v-btn
               :icon="$vuetify.breakpoint.mdAndUp"
-              :xSmall="$vuetify.breakpoint.mdAndUp"
+              :x-small="$vuetify.breakpoint.mdAndUp"
               :small="$vuetify.breakpoint.smAndDown"
               plain
               @click="pushLastRoute"
@@ -73,7 +73,7 @@
               primary
               small
               color="error"
-              @click="deleteModalIsOpen = true"
+              @click="isDeleteModalOpen = true"
             >
               Delete
             </v-btn>
@@ -86,7 +86,7 @@
               primary
               small
               color="primary"
-              @click="changePasswordIsOpen = !changePasswordIsOpen"
+              @click="isChangePasswordOpen = !isChangePasswordOpen"
             >
               Change Password
             </v-btn>
@@ -205,10 +205,10 @@
         </v-row>
       </v-form>
       <CompanyUsersChangePassword
-        v-model="changePasswordIsOpen"
+        v-model="isChangePasswordOpen"
         :userId="currentUserAsDriver.userId || Number($route.params.id)"
       />
-      <CUModal v-model="deleteModalIsOpen">
+      <CUModal v-model="isDeleteModalOpen">
         <template #title>Delete User</template>
         <template #text>Are you sure you want to delete this user?</template>
         <template #actions>
@@ -218,7 +218,7 @@
             outlined
             small
             text
-            @click="deleteModalIsOpen = false"
+            @click="isDeleteModalOpen = false"
           >
             Cancel
           </v-btn>
@@ -271,10 +271,10 @@ export default class CompanyUsersDetail extends Vue {
 
   notFound = false
   treatAsDriver = false
-  changePasswordIsOpen = false
+  isChangePasswordOpen = false
   avatarLink = ''
   uploadedPhoto: FormData | undefined = undefined
-  deleteModalIsOpen = false
+  isDeleteModalOpen = false
 
   currentUser: UserDetail | Record<string, never> = {}
 
@@ -443,7 +443,7 @@ export default class CompanyUsersDetail extends Vue {
 
     const res: AxiosResponse<ApiResult> = await user.delete(Number(userId))
     if (res.status === 200) {
-      this.deleteModalIsOpen = false
+      this.isDeleteModalOpen = false
       this.$router.push({ name: 'users' })
     }
   }

@@ -81,7 +81,7 @@ export default class CompanyUsers extends Vue {
       confirmModal: false,
       ariaLabel: 'View User Details',
       isDetail: true,
-      detailName: 'users.view',
+      detailRouteName: 'users.view',
     },
   ]
 }

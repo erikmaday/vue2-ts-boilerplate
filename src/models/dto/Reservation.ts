@@ -4,7 +4,6 @@ import { Stop } from './Stop'
 import { Customer } from './Customer'
 import { VehicleAssignment } from './VehicleAssignment'
 import { TableViewResult } from './TableView'
-import { RequiredVehicleType } from './Vehicle'
 
 export interface Reservation {
   active: boolean

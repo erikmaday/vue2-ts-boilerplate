@@ -9,7 +9,7 @@
       <v-card-title class="background-primary text-white font-medium">
         <slot name="title" />
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="margin-t-4">
         <slot name="text" />
       </v-card-text>
       <v-card-actions>

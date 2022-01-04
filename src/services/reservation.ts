@@ -50,9 +50,12 @@ export default {
     const url = `https://${host}/reservations/acceptReferral/${reservationId}${query}`
     return httpService.get(url)
   },
-  reject(reservationId: number): Promise<AxiosResponse<ApiResult>> {
+  reject(
+    reservationId: number,
+    rejectNote: string
+  ): Promise<AxiosResponse<ApiResult>> {
     const host = apiBaseUrl()
-    let query = '?notes='
+    let query = `?notes=${rejectNote}`
     query = encodeURI(query)
     const url = `https://${host}/reservations/rejectReferral/${reservationId}${query}`
     return httpService.get(url)

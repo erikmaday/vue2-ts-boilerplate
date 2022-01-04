@@ -3,9 +3,6 @@
     <template #navigation>
       <MainWithSidebarNavigation :links="links" :mode="mode" />
     </template>
-    <template v-slot:section-title>
-      {{ toTitle(mode) }}
-    </template>
     <template v-slot:default>
       <component :is="companyComponent" />
     </template>

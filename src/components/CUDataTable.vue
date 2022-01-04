@@ -19,7 +19,9 @@
           >
             <CUDataTableCell
               :column="col"
+              :key="`data-table-cell-${col.value}-${colIndex}-${index}`"
               :row="item"
+              :row-index="index"
               :actions="actions"
               :editable="editable"
               v-on="$listeners"

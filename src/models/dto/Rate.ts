@@ -12,3 +12,8 @@ export interface Rate {
   vehicleType: string
   vehicleTypeId: number
 }
+
+export interface RateTableRow extends Rate {
+  isEditable?: boolean
+  isNewRow?: boolean
+}

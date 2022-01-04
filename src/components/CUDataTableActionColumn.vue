@@ -52,7 +52,7 @@
             height="24px"
             :color="action.color || 'gray-mid-light'"
             decorative
-            @click.native="() => action.action(row)"
+            @click.native="() => action.action(row, rowIndex)"
           >
             {{ action.icon }}
           </CUIcon>
@@ -95,6 +95,12 @@ export default class CUDataTableActionColumn extends Vue {
   })
   row!: any
 
+  @Prop({
+    type: Number,
+    required: true,
+  })
+  rowIndex!: number
+
   dialogOpen = false
   dialogText: string | undefined = ''
   dialogConfirmFn = () => ({})
@@ -121,7 +127,7 @@ export default class CUDataTableActionColumn extends Vue {
       this.dialogText = action.confirmModalText
       this.currentAction = action
     } else if (action.action) {
-      action.action(this.row)
+      action.action(this.row, this.rowIndex)
     }
   }
 

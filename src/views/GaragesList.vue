@@ -28,6 +28,7 @@ import garage from '@/services/garage'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Garage } from '@/models/dto/Garage'
+import { Location } from 'vue-router'
 
 @Component({
   components: { CUCollectionTable },
@@ -46,7 +47,6 @@ export default class GaragesList extends Vue {
       computedText: (row) => `${row.address.city}, ${row.address.state}`,
     },
     { text: 'Vehicles', value: 'noOfVehicles' },
-    { text: 'Details', value: 'details', type: 'details' },
     { text: 'Actions', value: 'actions', type: 'actions' },
   ]
 
@@ -76,6 +76,21 @@ export default class GaragesList extends Vue {
       confirmModalText: 'Are you sure you want to delete this garage?',
       action: async (row: Garage) => {
         return garage.delete(row.garageId)
+      },
+    },
+    {
+      displayText: 'Details',
+      key: 'details',
+      color: 'primary',
+      icon: '',
+      confirmModal: false,
+      ariaLabel: 'View User Details',
+      isDetail: true,
+      detailRoute: (row: Garage): Location => {
+        return {
+          name: 'garages.view',
+          params: { id: String(row?.garageId) },
+        }
       },
     },
   ]

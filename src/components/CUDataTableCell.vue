@@ -11,7 +11,6 @@
       v-if="
         $vuetify.breakpoint.xs &&
         column.type !== 'actions' &&
-        column.type !== 'details' &&
         column.type !== 'slot'
       "
     >
@@ -39,37 +38,6 @@
     </template>
     <template v-else-if="column.type === 'email'">
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
-    </template>
-    <template v-else-if="column.type === 'details'">
-      <template v-if="$vuetify.breakpoint.smAndUp">
-        <div v-if="isDetailTable" class="d-flex">
-          <CUIcon
-            class="cursor-pointer"
-            color="primary"
-            ariaLabel="Click to view detail view"
-            @click="$router.push(detailCellLink(row))"
-          >
-            view
-          </CUIcon>
-        </div>
-        <router-link
-          v-else
-          class="font-medium font-14"
-          :to="detailCellLink(row)"
-          :append="true"
-        >
-          Details
-        </router-link>
-      </template>
-      <v-btn
-        v-else
-        color="primary"
-        small
-        class="w-full margin-t-4"
-        @click="$router.push(detailCellLink(row))"
-      >
-        Details
-      </v-btn>
     </template>
     <template v-else>
       {{ computedCellItemText }}
@@ -136,14 +104,6 @@ export default class CUDataTableCell extends Vue {
     return this.cellItem
   }
 
-  detailCellLink(row: any): RawLocation {
-    const key = this.itemKey ? this.itemKey : 'id'
-
-    if (this.detailName) {
-      return { name: this.detailName, params: { id: row[key] } }
-    }
-    return { path: `view/${row[key]}` }
-  }
 
   phoneFormatFilter = phoneFormatFilter
 }

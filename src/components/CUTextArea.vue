@@ -1,11 +1,11 @@
 <template>
   <div>
     <label v-if="$attrs.label">{{ $attrs.label }}</label>
-    <v-text-field
+    <v-textarea
       v-bind="$attrs"
-      solo
-      :label="null"
       v-on="listeners"
+      :label="undefined"
+      solo
       flat
       outlined
     />
@@ -15,7 +15,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 
 @Component
-export default class CUTextField extends Vue {
+export default class CUTextArea extends Vue {
   get listeners(): Record<string, unknown> {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const vm = this

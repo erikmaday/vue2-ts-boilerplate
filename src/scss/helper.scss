@@ -396,6 +396,9 @@ $base-classes: 'padding', 'margin';
     }
   }
 }
+
+// ABSOLUTE POSITIONING 
+// top-#, left-#, etc. 
 $base-classes: 'top', 'left', 'bottom', 'right';
 @each $base-class in $base-classes {
   @include map-to-helpers(
@@ -405,7 +408,19 @@ $base-classes: 'top', 'left', 'bottom', 'right';
     $pseudo-classes,
     true
   );
+
+  @each $dimension-key, $dimension-value in $padding-margin-dimensions {
+    @include create-helper-with-pseudo-classes(
+      $base-class,
+      $dimension-key,
+      $dimension-value,
+      $base-class,
+      $pseudo-classes,
+      true
+    );
+  }
 }
+
 
 // WHITE SPACE
 $base-class: 'white-space';
@@ -424,7 +439,6 @@ $white-space-map: (
   $pseudo-classes,
   true
 );
-
 
 //TRANSFORM
 $base-class: 'transform';
@@ -451,7 +465,6 @@ $scale-map: (
 );
 
 // POSITION
-$base-class: 'position';
 $position-map: (
   'static': static,
   'relative': relative,
@@ -459,10 +472,43 @@ $position-map: (
   'absolute': absolute,
   'sticky': sticky,
 );
+$base-class: 'position';
 @include map-to-helpers(
   $base-class,
   $position-map,
   'position',
+  $pseudo-classes,
+  true
+);
+$base-class: 'top';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+$base-class: 'left';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+$base-class: 'right';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  $base-class,
+  $pseudo-classes,
+  true
+);
+$base-class: 'bottom';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  $base-class,
   $pseudo-classes,
   true
 );
@@ -503,15 +549,15 @@ $overflow-map: (
 // OUTLINE
 $base-class: 'outline';
 $outline-style-map: (
-  'dotted': dotted, 
-  'dashed': dashed, 
-  'solid': solid, 
-  'double': double, 
-  'groove': groove, 
-  'ridge': ridge, 
-  'inset': inset, 
-  'none': none, 
-  'hidden': hidden
+  'dotted': dotted,
+  'dashed': dashed,
+  'solid': solid,
+  'double': double,
+  'groove': groove,
+  'ridge': ridge,
+  'inset': inset,
+  'none': none,
+  'hidden': hidden,
 );
 @include map-to-helpers(
   $base-class,

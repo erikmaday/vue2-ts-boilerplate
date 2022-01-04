@@ -32,7 +32,7 @@ import { Garage } from '@/models/dto/Garage'
 @Component({
   components: { CUCollectionTable },
 })
-export default class CompanyGaragesList extends Vue {
+export default class GaragesList extends Vue {
   columns: DataTableColumn[] = [
     { text: 'Name', value: 'garageName' },
     {

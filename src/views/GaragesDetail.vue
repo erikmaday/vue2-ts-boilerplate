@@ -118,7 +118,7 @@
       </v-row>
       <v-row justify="center" no-gutters>
         <v-col cols="12" sm="8">
-          <CompanyGaragesDetailForm
+          <GaragesDetailForm
             ref="form"
             :mode="mode"
             :current-garage="currentGarage"
@@ -179,7 +179,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import garage from '@/services/garage'
 import { AxiosResponse } from 'axios'
 import { Garage } from '@/models/dto/Garage'
-import CompanyGaragesDetailForm from '@/components/CompanyGaragesDetailForm.vue'
+import GaragesDetailForm from '@/components/GaragesDetailForm.vue'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
 import { isNotEmpty } from '@/utils/validators'
 import { ApiResult, TableViewParameters } from '@/models/dto'
@@ -188,11 +188,11 @@ import app from '@/store/modules/app'
 
 @Component({
   components: {
-    CompanyGaragesDetailForm,
+    GaragesDetailForm,
     AutocompleteAddress,
   },
 })
-export default class CompanyGaragesDetail extends Vue {
+export default class GaragesDetail extends Vue {
   notFound = false
   isNotEmpty = isNotEmpty
   currentGarage: Garage | Record<string, never> = {}

@@ -27,7 +27,7 @@ import { AxiosResponse } from 'axios'
 @Component({
   components: { CUDataTable, CUCollectionTable },
 })
-export default class CompanyUsers extends Vue {
+export default class Users extends Vue {
   columns: DataTableColumn[] = [
     {
       text: 'Name',

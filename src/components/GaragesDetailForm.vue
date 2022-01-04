@@ -27,7 +27,7 @@ import deepClone from '@/utils/deepClone'
 @Component({
   components: { AutocompleteAddress },
 })
-export default class CompanyGaragesDetailForm extends Vue {
+export default class GaragesDetailForm extends Vue {
   @Prop({
     required: true,
   })

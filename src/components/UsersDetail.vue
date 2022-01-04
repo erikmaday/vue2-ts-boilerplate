@@ -82,7 +82,7 @@
               'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
             }"
           >
-            <CompanyUsersDetailUserPhoto
+            <UsersDetailUserPhoto
               :photoSrc="userPhoto"
               :mode="mode"
               @upload="uploadUserPhoto"
@@ -138,7 +138,7 @@
               </v-col>
             </v-row>
             <v-expand-transition>
-              <CompanyUsersDetailDriverInfo
+              <UsersDetailDriverInfo
                 v-if="treatAsDriver"
                 ref="driverInfoForm"
                 :parent-driver-model="currentUserAsDriver"
@@ -162,7 +162,7 @@
           </v-col>
         </v-row>
       </v-form>
-      <CompanyUsersChangePassword
+      <UsersChangePassword
         v-model="changePasswordIsOpen"
         :user="currentUserAsDriver"
       />
@@ -175,7 +175,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import dayjs from 'dayjs'
 import { AxiosResponse } from 'axios'
 
-import CompanyUsersChangePassword from '@/components/CompanyUsersChangePassword.vue'
+import UsersChangePassword from '@/components/UsersChangePassword.vue'
 
 import { apiBaseUrl } from '@/utils/env'
 
@@ -185,18 +185,18 @@ import driver from '@/services/driver'
 import type from '@/services/type'
 import { userGroups } from '@/data/userGroups'
 import { UserDetail, VehicleType } from '@/models/dto'
-import CompanyUsersDetailUserPhoto from '@/components/CompanyUsersDetailUserPhoto.vue'
-import CompanyUsersDetailDriverInfo from '@/components/CompanyUsersDetailDriverInfo.vue'
+import UsersDetailUserPhoto from '@/components/UsersDetailUserPhoto.vue'
+import UsersDetailDriverInfo from '@/components/UsersDetailDriverInfo.vue'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 
 @Component({
   components: {
-    CompanyUsersChangePassword,
-    CompanyUsersDetailUserPhoto,
-    CompanyUsersDetailDriverInfo,
+    UsersChangePassword,
+    UsersDetailUserPhoto,
+    UsersDetailDriverInfo,
   },
 })
-export default class CompanyUsersDetail extends Vue {
+export default class UsersDetail extends Vue {
   DRIVER_GROUP_ID = 4
   userGroups = userGroups
 

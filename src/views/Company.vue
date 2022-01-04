@@ -18,12 +18,12 @@ import MainWithSidebarNavigation from '@/components/MainWithSidebarNavigation.vu
 import MainWithSidebar from '@/layouts/MainWithSidebar.vue'
 import TheAppBar from '@/components/TheAppBar.vue'
 import TheSideBar from '@/components/TheSideBar.vue'
-import CompanyUsers from '@/components/CompanyUsers.vue'
-import CompanyVehicles from '@/components/CompanyVehicles.vue'
-import CompanyGarages from '@/components/CompanyGarages.vue'
-import CompanyRates from '@/components/CompanyRates.vue'
-import CompanySettings from '@/components/CompanySettings.vue'
-import CompanyAvailability from '@/components/CompanyAvailability.vue'
+import Users from '@/components/Users.vue'
+import Vehicles from '@/components/Vehicles.vue'
+import Garages from '@/views/Garages.vue'
+import CompanyRates from '@/components/Rates.vue'
+import CompanySettings from '@/components/Settings.vue'
+import CompanyAvailability from '@/components/Availability.vue'
 import { toTitle } from '@/utils/string'
 import { Component as VueComponent } from 'vue'
 
@@ -33,12 +33,12 @@ import { Component as VueComponent } from 'vue'
     MainWithSidebar,
     TheAppBar,
     TheSideBar,
-    CompanyUsers,
-    CompanyGarages,
+    Users,
+    Garages,
     CompanyRates,
     CompanySettings,
     CompanyAvailability,
-    CompanyVehicles,
+    Vehicles,
   },
 })
 export default class Company extends Vue {
@@ -47,21 +47,21 @@ export default class Company extends Vue {
       label: 'Users',
       href: 'users',
       name: 'users',
-      component: CompanyUsers,
+      component: Users,
       icon: 'users',
     },
     {
       label: 'Vehicles',
       href: 'vehicles',
       name: 'vehicles',
-      component: CompanyVehicles,
+      component: Vehicles,
       icon: 'directions_bus',
     },
     {
       label: 'Garages',
       href: 'garages',
       name: 'garages',
-      component: CompanyGarages,
+      component: Garages,
       icon: 'garages',
     },
     {
@@ -101,7 +101,7 @@ export default class Company extends Vue {
     if (link) {
       return link.component
     }
-    return CompanyUsers
+    return Users
   }
 
   toTitle = toTitle

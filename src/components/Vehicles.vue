@@ -6,21 +6,21 @@
 
 <script lang="ts">
 import { Component as VueComponent } from 'vue'
-import CompanyVehiclesList from '@/components/CompanyVehiclesList.vue'
+import VehiclesList from '@/components/VehiclesList.vue'
 import { Vue, Component } from 'vue-property-decorator'
-import CompanyVehiclesEdit from './CompanyVehiclesEdit.vue'
+import VehiclesEdit from './VehiclesEdit.vue'
 import Main from '@/layouts/Main.vue'
 
 @Component({
-  components: { CompanyVehiclesList, CompanyVehiclesEdit, Main },
+  components: { VehiclesList, VehiclesEdit, Main },
 })
-export default class CompanyUsers extends Vue {
+export default class Users extends Vue {
   get currentComponent(): VueComponent {
     switch (this.$route.name) {
       case 'vehicles.edit':
-        return CompanyVehiclesEdit
+        return VehiclesEdit
       default:
-        return CompanyVehiclesList
+        return VehiclesList
     }
   }
 }

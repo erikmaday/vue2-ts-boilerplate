@@ -24,6 +24,7 @@
               :is-detail-table="isDetailTable"
               :detail-name="detailName"
               :item-key="itemKey"
+              v-on="$listeners"
               @refresh="$emit('refresh')"
             />
           </td>

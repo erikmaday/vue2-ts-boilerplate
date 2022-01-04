@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const hostPrefix = (prefix: string) => (prefix ? `${prefix}.` : '')
+const hostPrefix = (prefix: string | null) => (prefix ? `${prefix}.` : '')
 
 export const apiBaseUrl = (prefix = 'api'): string => {
   let host

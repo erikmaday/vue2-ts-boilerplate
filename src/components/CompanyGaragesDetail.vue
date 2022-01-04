@@ -10,7 +10,7 @@
         <v-btn
           plain
           :icon="$vuetify.breakpoint.mdAndUp"
-          :xSmall="$vuetify.breakpoint.mdAndUp"
+          :x-small="$vuetify.breakpoint.mdAndUp"
           :small="$vuetify.breakpoint.smAndDown"
           @click="pushLastRoute"
         >
@@ -285,8 +285,7 @@ export default class CompanyGaragesDetail extends Vue {
   }
 
   pushLastRoute(): void {
-    if (
-      !app.getLastRoute?.name ||
+    if (!app.getLastRoute?.name ||
       app.getLastRoute.name === 'garages.view' ||
       app.getLastRoute.name === 'garages.add'
     ) {
@@ -298,7 +297,11 @@ export default class CompanyGaragesDetail extends Vue {
 
   cancelUpdate(): void {
     if (this.isModeAdd) {
-      this.$router.push({ name: 'garages' })
+      if (app.getLastRoute?.name) {
+        this.$router.push(app.getLastRoute)
+      } else {
+        this.$router.push({ name: 'garages' })
+      }
       return
     }
 

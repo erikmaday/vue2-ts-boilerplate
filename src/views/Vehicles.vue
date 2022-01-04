@@ -6,9 +6,9 @@
 
 <script lang="ts">
 import { Component as VueComponent } from 'vue'
-import VehiclesList from '@/components/VehiclesList.vue'
+import VehiclesList from '@/views/VehiclesList.vue'
 import { Vue, Component } from 'vue-property-decorator'
-import VehiclesEdit from './VehiclesEdit.vue'
+import VehiclesEdit from '../components/VehiclesEdit.vue'
 import Main from '@/layouts/Main.vue'
 
 @Component({

@@ -36,7 +36,7 @@ export const routes: RouteConfig[] = [
                     name: 'users',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/Users.vue'
+                        /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
                   {
@@ -44,7 +44,7 @@ export const routes: RouteConfig[] = [
                     name: 'users.edit',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/Users.vue'
+                        /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
                   {
@@ -52,7 +52,7 @@ export const routes: RouteConfig[] = [
                     name: 'users.view',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/Users.vue'
+                        /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
                   {
@@ -60,7 +60,7 @@ export const routes: RouteConfig[] = [
                     name: 'users.add',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/Users.vue'
+                        /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
 
@@ -78,7 +78,7 @@ export const routes: RouteConfig[] = [
                     name: 'vehicles',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-vehicles-list" */ '@/components/Vehicles.vue'
+                        /* webpackChunkName: "company-vehicles-list" */ '@/views/Vehicles.vue'
                       ),
                   },
                   {
@@ -86,7 +86,7 @@ export const routes: RouteConfig[] = [
                     name: 'vehicles.edit',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-vehicles-edit" */ '@/components/Vehicles.vue'
+                        /* webpackChunkName: "company-vehicles-edit" */ '@/views/Vehicles.vue'
                       ),
                   },
 
@@ -95,7 +95,7 @@ export const routes: RouteConfig[] = [
                     name: 'vehicles.view',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-vehicles-view" */ '@/components/Vehicles.vue'
+                        /* webpackChunkName: "company-vehicles-view" */ '@/views/Vehicles.vue'
                       ),
                   },
                 ],

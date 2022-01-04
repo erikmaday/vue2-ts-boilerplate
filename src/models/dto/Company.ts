@@ -71,3 +71,7 @@ export interface Company {
   isTrackingOdometry: boolean
   preferred: boolean
 }
+
+export interface GetCompanyResult {
+  company: Company
+}

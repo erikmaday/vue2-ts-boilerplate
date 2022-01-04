@@ -20,4 +20,16 @@ export default {
       }`
     )
   },
+  create(payload) {
+    const url = `https://${apiBaseUrl()}/v2/market-rates`
+    return httpService.post(url, payload)
+  },
+  delete(marketRateId: number) {
+    const url = `https://${apiBaseUrl()}/v2/market-rates/${marketRateId}`
+    return httpService.delete(url)
+  },
+  update(payload) {
+    const url = `https://${apiBaseUrl()}/v2/market-rates/${payload.marketRateId}`
+    return httpService.patch(url, payload)
+  },
 }

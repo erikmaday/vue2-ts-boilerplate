@@ -17,3 +17,14 @@ export interface RateTableRow extends Rate {
   isEditable?: boolean
   isNewRow?: boolean
 }
+
+export interface CreateRatePayload {
+  companyId: number
+  highRate: number | string
+  lowRate: number | string
+  marketId: number
+  marketRateType: string
+  marketRateTypeKey: string 
+  marketplace: number
+  vehicleType: string
+}

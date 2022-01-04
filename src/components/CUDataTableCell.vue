@@ -57,7 +57,18 @@
       </v-row>
     </template>
     <template v-if="column.type === 'add-new-select' && row.isNewRow">
-      <CUSelect hide-details :items="row.items" />
+      <CUSelect
+        hide-details
+        :items="row.items"
+        @input="
+          (e) =>
+            $emit('update-editable-select', {
+              value: e,
+              rowIndex: rowIndex,
+              columnValue: column.value,
+            })
+        "
+      />
     </template>
     <template v-else-if="column.type === 'phone'">
       <a :href="`tel:${cellItem}`">
@@ -73,6 +84,7 @@
         :disabled="!row.isEditable"
         hide-details
         type="number"
+        validate-on-blur
         min="0"
         :rules="[(val) => !!val]"
         @input="

@@ -20,6 +20,7 @@
       @add="(e) => addRate(e)"
       @update="(e) => updateRow(e)"
       @update-editable-input="(e) => updateInput(e)"
+      @update-editable-select="(e) => updateSelect(e)"
     />
   </div>
 </template>
@@ -27,7 +28,7 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import rate from '@/services/rate'
 import { filter } from '@/utils/filter'
-import { Rate } from '@/models/dto/Rate'
+import { CreateRatePayload, Rate } from '@/models/dto/Rate'
 import CUDataTable from '@/components/CUDataTable.vue'
 import { titleCaseToCamelCase } from '@/utils/string'
 import { ActionColumn } from '@/models/ActionColumn'
@@ -35,6 +36,10 @@ import typeService from '@/services/type'
 import { AxiosResponse } from 'axios'
 import deepClone from '@/utils/deepClone'
 import op from 'simple-object-path'
+import { buildAddRatePayload } from '@/utils/rate'
+import auth from '@/store/modules/auth'
+import company from '@/services/company'
+
 
 @Component({
   components: { CUDataTable },
@@ -129,8 +134,18 @@ export default class CompanyRatesList extends Vue {
     this.dataTableItems = this.dataTableItems.filter((item) => !item.isNewRow)
   }
 
-  addRate(row) {
-    console.log('> add', row)
+  async addRate(row) {
+    
+    const companyId = auth.getUser.companyId
+    const res = await company.getById(companyId)
+    const marketId = res.data.company.address.nearestMarketId
+    const ratePayloads = buildAddRatePayload(row, companyId, marketId || 1)
+  
+    for (const payload of ratePayloads) {
+      await rate.create(payload)
+    }
+
+    this.$nextTick(() => this.getCompanyRates())
   }
 
   updateRow(row) {
@@ -163,15 +178,31 @@ export default class CompanyRatesList extends Vue {
     this.dataTableItems[rowIndex][columnName].value = value
   }
 
+  updateSelect({ rowIndex, value }: { rowIndex: number; value: string }): void {
+    this.dataTableItems[rowIndex].vehicleType = value
+  }
+
   addNew(): void {
     let item = {
       vehicleType: undefined,
-      mileageRate: 0,
-      dailyRate: 0,
-      deadMileRate: 0,
-      transferRate: 0,
-      hourlyRate: 0,
-      hourlyMinimum: 0,
+      mileageRate: {
+        value: 0,
+      },
+      dailyRate: {
+        value: 0,
+      },
+      deadMileRate: {
+        value: 0,
+      },
+      transferRate: {
+        value: 0,
+      },
+      hourlyRate: {
+        value: 0,
+      },
+      hourlyMinimum: {
+        value: 0,
+      },
       isEditable: true,
       isNewRow: true,
       items: this.vehicleTypes.map((vt) => ({

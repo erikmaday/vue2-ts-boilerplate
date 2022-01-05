@@ -37,6 +37,7 @@ import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
 import { Reservation } from '@/models/dto'
 import { ReferralStatus } from '@/utils/enum'
 import { roundedCurrencyFilter } from '@/utils/string'
+import dayjs from 'dayjs'
 
 @Component({
   components: {
@@ -69,7 +70,7 @@ export default class BookingCard extends Vue {
   }
 
   get formattedStartDateTime(): string {
-    const datetime = this.$dayjs(this.reservation.startDate).tz(
+    const datetime = dayjs(this.reservation.startDate).tz(
       this.reservation.firstStopAddressTimeZone
     )
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
@@ -82,7 +83,7 @@ export default class BookingCard extends Vue {
   goToBooking(): void {
     this.$router.push({
       name: 'booking-detail',
-      params: { id: this.reservation.reservationId },
+      params: { id: this.reservation.reservationId.toString() },
     })
   }
 }

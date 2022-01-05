@@ -50,6 +50,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import dayjs from 'dayjs'
 
 import { ColoredMessage } from '@/models/ColoredMessage'
 import { RequiredVehicle, Stop, Trip } from '@/models/dto'
@@ -64,8 +65,8 @@ export default class MarketplaceCard extends Vue {
   isActive = false
 
   get actionMessage(): ColoredMessage {
-    const now = this.$dayjs.utc()
-    const expiration = this.$dayjs(this.trip.biddingEndDate)
+    const now = (this as any).$dayjs.utc()
+    const expiration = (this as any).$dayjs(this.trip.biddingEndDate)
     const diff = timeDifferenceToObject(now, expiration)
 
     return {
@@ -83,7 +84,7 @@ export default class MarketplaceCard extends Vue {
   }
 
   get formattedStartDateTime(): string {
-    const datetime = this.$dayjs(this.firstPickup.pickupDate).tz(
+    const datetime = (this as any).$dayjs(this.firstPickup.pickupDate).tz(
       this.firstPickup.address.timeZone
     )
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`

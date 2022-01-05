@@ -48,7 +48,7 @@ export default class VehiclesList extends Vue {
       color: 'primary',
       ariaLabel: 'Edit Vehicle',
       action: (row: Vehicle): void => {
-        this.$router.push({
+        (this as any).$router.push({
           name: 'vehicles.edit',
           params: { id: String(row.vehicleId) },
         })

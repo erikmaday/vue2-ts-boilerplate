@@ -48,7 +48,7 @@ export default class BookingDetailMap extends Vue {
   }
 
   async loadData(): Promise<void> {
-    const map = await this.$refs.map.$mapPromise.then((map) => map)
+    const map = await (this as any).$refs.map.$mapPromise.then((map) => map)
     this.map = map
     const bounds = new this.google.maps.LatLngBounds()
 
@@ -118,7 +118,10 @@ export default class BookingDetailMap extends Vue {
     )
   }
 
-  getIconImage(waypoints: [], waypointIndex: number): any {
+  getIconImage(
+    waypoints: { location: any; stopover: boolean }[],
+    waypointIndex: number
+  ): any {
     if (waypointIndex === waypoints.length - 1) {
       return last
     }

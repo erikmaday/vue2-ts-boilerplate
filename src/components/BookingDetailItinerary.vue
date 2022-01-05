@@ -28,6 +28,7 @@ import { formatStopAddress } from '@/utils/string'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import CUItinerary from '@/components/CUItinerary.vue'
 import CUItineraryItem from '@/components/CUItineraryItem.vue'
+import dayjs from 'dayjs'
 
 @Component({ components: { CUItinerary, CUItineraryItem } })
 export default class BookingDetailHeader extends Vue {
@@ -38,7 +39,7 @@ export default class BookingDetailHeader extends Vue {
   }
 
   formatStopTime(time: string, timezone: string): string {
-    const datetime = this.$dayjs(time).tz(timezone)
+    const datetime = (this as any).$dayjs(time).tz(timezone)
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
   }
 

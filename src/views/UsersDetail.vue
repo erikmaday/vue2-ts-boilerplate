@@ -359,18 +359,19 @@ export default class UsersDetail extends Vue {
   async getCurrentUser(): Promise<void> {
     try {
       if (this.isModeProfile) {
-        const rolesResponse = await user.roles(Number(2)) //TODO: getUserId for logged in user
+        console.log(auth.getUserId)
+        const rolesResponse = await user.roles(Number(auth.getUserId))
         const roles = rolesResponse.data.roles
         if (roles.find((role) => role.roleName === 'is_driver')) {
           this.treatAsDriver = true
-          const response = await driver.byId(Number(2)) //TODO: getUserId for logged in user
+          const response = await driver.byId(Number(auth.getUserId))
           const userResponseData = response.data.driver
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
           this.currentUser = userResponseData as UserDetail
           this.currentUserAsDriver = userResponseData
           this.populateDrugExpirationDateInputs()
         } else {
-          const response = await user.byId(Number(2)) //TODO: getUserId for logged in user
+          const response = await user.byId(Number(auth.getUserId))
           const userResponseData = response.data
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
 

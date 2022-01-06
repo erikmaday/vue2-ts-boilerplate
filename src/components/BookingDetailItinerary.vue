@@ -40,7 +40,6 @@ export default class BookingDetailHeader extends Vue {
   get stops(): ReservationDetailStop[] {
     return this.reservation.stops
   }
-
   formatStopAddress = formatStopAddress
   formatDropoffTime = formatDropoffTime
   formatPickupTime = formatPickupTime

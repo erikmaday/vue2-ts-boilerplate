@@ -22,7 +22,7 @@ import { Vehicle } from '@/models/dto/Vehicle'
 @Component({
   components: { CUCollectionTable },
 })
-export default class VehicleList extends Vue {
+export default class VehiclesList extends Vue {
   columns: DataTableColumn[] = [
     { text: 'Name', value: 'vehicleName' },
     { text: 'Type', value: 'vehicleTypeName' },

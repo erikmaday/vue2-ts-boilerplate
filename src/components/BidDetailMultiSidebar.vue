@@ -16,19 +16,17 @@
     >
       Submit Bids
     </v-btn>
-    <template v-if="!bidDetail.getAreAllSoldOut">
-      <v-divider class="margin-t-4 margin-b-2" />
-      <v-btn
-        text
-        small
-        color="primary"
-        class="w-full"
-        :loading="bidDetail.getSubmitting"
-        @click="markSoldOut"
-      >
-        Mark as Sold Out
-      </v-btn>
-    </template>
+    <v-btn
+      v-if="!bidDetail.getAreAllSoldOut"
+      text
+      small
+      color="primary"
+      class="w-full margin-t-4"
+      :loading="bidDetail.getSubmitting"
+      @click="markSoldOut"
+    >
+      Mark as Sold Out
+    </v-btn>
   </v-col>
 </template>
 

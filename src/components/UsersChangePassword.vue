@@ -40,16 +40,15 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { UserDetail } from '@/models/dto/User'
 import { isNotEmpty } from '@/utils/validators'
 import user from '@/services/user'
 
 @Component
-export default class CompanyUsersEdit extends Vue {
+export default class UsersChangePassword extends Vue {
   @Prop({
     required: true,
   })
-  user!: UserDetail
+  userId!: number
 
   @Prop({
     required: true,
@@ -63,12 +62,13 @@ export default class CompanyUsersEdit extends Vue {
   async updatePassword(): Promise<void> {
     const form: any = this.$refs['form']
     if (!form.validate()) return
-    if (!this.user.userId) return
+    if (!this.userId) return
 
-    await user.setPassword(this.user.userId, this.newPassword)
+    await user.setPassword(this.userId, this.newPassword)
     this.newPassword = ''
     this.confirmPassword = ''
     this.$emit('input', false)
+    form.reset()
   }
 
   passwordsMatch(password: string): boolean {

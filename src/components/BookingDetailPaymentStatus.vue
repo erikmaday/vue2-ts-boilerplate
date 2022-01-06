@@ -64,17 +64,17 @@ export default class BookingDetailPaymentStatus extends Vue {
     return status
   }
 
-  get bidPrice(): string | null {
+  get bidPrice(): number | null {
     const bidAmount = 7380.0
     return bidAmount
   }
 
-  get serviceFee(): string | null {
+  get serviceFee(): number | null {
     const serviceAmount = -615.0
     return serviceAmount
   }
 
-  get total(): string | null {
+  get total(): number | null {
     const bidAmount = 7380.0
     const serviceAmount = -615.0
     return bidAmount + serviceAmount

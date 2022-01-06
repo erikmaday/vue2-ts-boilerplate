@@ -60,10 +60,10 @@ export default {
 
   sortForAvailability(
     reservations: Array<Reservation>
-  ): Map<any, Array<Reservation>> {
+  ): Map<number, Array<Reservation>> {
     const result = reservations.reduce(function (map, obj) {
       if (obj?.vehicleAssignments?.length) {
-        obj.vehicleAssignments.forEach(va => {
+        obj.vehicleAssignments.forEach((va) => {
           if (map.has(va.vehicleId)) {
             map.get(va.vehicleId).push(obj)
           } else {
@@ -71,10 +71,11 @@ export default {
           }
         })
       } else {
-        if (map.has('unassigned')) {
-          map.get('unassigned').push(obj)
+        // If there are no vehicles assigned, add it to value -1
+        if (map.has(-1)) {
+          map.get(-1).push(obj)
         } else {
-          map.set('unassigned', [obj])
+          map.set(-1, [obj])
         }
       }
       return map

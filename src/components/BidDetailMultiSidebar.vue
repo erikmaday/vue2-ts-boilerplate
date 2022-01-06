@@ -54,7 +54,7 @@ export default class BidDetailMultiSidebar extends Vue {
     return isComplete
   }
 
-  async submit(): void {
+  async submit(): Promise<void> {
     await bidDetail.submitMultiTripBids()
   }
 

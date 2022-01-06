@@ -69,7 +69,7 @@ export default class BidDetailActionsStandard extends Vue {
   }
 
   markSoldOut(): void {
-    bidDetail.markSingleTripSoldOut()
+    bidDetail.markSingleTripSoldOut(null)
   }
 }
 </script>

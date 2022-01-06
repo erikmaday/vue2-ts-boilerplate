@@ -4,7 +4,7 @@ export type VehicleType = {
   label?: string
   description?: string
   active?: boolean
-  companyId?: number
+  companyId?: number | null
 }
 
 export type SupportedVehicleType = {

@@ -53,7 +53,7 @@ export default class BookingDetailTripNumbers extends Vue {
     return this.reservation?.tripType
   }
 
-  get passengerCount(): string {
+  get passengerCount(): number {
     return this.reservation?.referralPassengerCount
   }
 }

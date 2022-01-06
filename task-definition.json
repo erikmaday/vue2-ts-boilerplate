@@ -3,7 +3,7 @@
     "containerDefinitions": [
       {
         "name": "charterup-operators",
-        "image": "dock.coachrail.com:5000/charterup-operators:latest",
+        "image": "dock.coachrail.com:5000/charterup-operators:2022.1.1",
         "cpu": 2,
         "memory": 256,
         "essential": true,

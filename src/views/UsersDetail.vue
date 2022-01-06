@@ -46,6 +46,7 @@
               'flex-row': $vuetify.breakpoint.smAndUp,
               'justify-center': $vuetify.breakpoint.sm,
               'flex-column': $vuetify.breakpoint.xs,
+              'justify-end': isModeProfile,
             }"
           >
             <v-btn
@@ -242,6 +243,7 @@
             <v-row>
               <v-col>
                 <v-checkbox
+                  v-if="!isModeProfile"
                   v-model="treatAsDriver"
                   label="This user is also a driver"
                   :disabled="currentUser.groupId === DRIVER_GROUP_ID"
@@ -358,39 +360,20 @@ export default class UsersDetail extends Vue {
   // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2
   async getCurrentUser(): Promise<void> {
     try {
-      if (this.isModeProfile) {
-        console.log(auth.getUserId)
-        const rolesResponse = await user.roles(Number(auth.getUserId))
+      const userId = this.isModeProfile ? auth.getUserId : this.$route.params.id
+      if (userId) {
+        const rolesResponse = await user.roles(Number(userId))
         const roles = rolesResponse.data.roles
         if (roles.find((role) => role.roleName === 'is_driver')) {
           this.treatAsDriver = true
-          const response = await driver.byId(Number(auth.getUserId))
+          const response = await driver.byId(Number(userId))
           const userResponseData = response.data.driver
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
           this.currentUser = userResponseData as UserDetail
           this.currentUserAsDriver = userResponseData
           this.populateDrugExpirationDateInputs()
         } else {
-          const response = await user.byId(Number(auth.getUserId))
-          const userResponseData = response.data
-          userResponseData.userRoleNames = roles.map((role) => role.roleName)
-
-          this.currentUser = userResponseData
-          this.currentUserAsDriver = userResponseData as UserDetailDriver
-        }
-      } else if (this.$route.params.id) {
-        const rolesResponse = await user.roles(Number(this.$route.params.id))
-        const roles = rolesResponse.data.roles
-        if (roles.find((role) => role.roleName === 'is_driver')) {
-          this.treatAsDriver = true
-          const response = await driver.byId(Number(this.$route.params.id))
-          const userResponseData = response.data.driver
-          userResponseData.userRoleNames = roles.map((role) => role.roleName)
-          this.currentUser = userResponseData as UserDetail
-          this.currentUserAsDriver = userResponseData
-          this.populateDrugExpirationDateInputs()
-        } else {
-          const response = await user.byId(Number(this.$route.params.id))
+          const response = await user.byId(Number(userId))
           const userResponseData = response.data
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
 

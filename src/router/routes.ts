@@ -21,30 +21,25 @@ export const routes: RouteConfig[] = [
           },
           {
             path: 'profile',
-            name: 'profile',
-            component: () => import('@/views/Profile.vue'),
+            name: '',
+            component: () => import('@/views/Empty.vue'),
             children: [
               {
-                path: 'profile',
+                path: '',
                 name: 'profile',
                 component: () => import('@/views/Profile.vue'),
               },
               {
-                path: 'profile/edit',
+                path: 'edit',
                 name: 'profile.edit',
                 component: () => import('@/views/Profile.vue'),
               },
               {
-                path: 'profile/password',
+                path: 'password',
                 name: 'profile.password',
-                component: () => import('@/views/ProfilePassword.vue'),
+                component: () => import('@/views/Profile.vue'),
               },
             ],
-          },
-          {
-            path: 'profile/edit',
-            name: 'profile.edit',
-            component: () => import('@/views/Profile.vue'),
           },
           {
             path: 'company',

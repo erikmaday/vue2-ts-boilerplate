@@ -49,7 +49,7 @@
     <template v-slot:default>
       <v-container class="background-gray-header">
         <v-col cols="12" align="center" class="margin-b-8">
-          <h1 class="font-30">CharterUP For Operators</h1>
+          <h1 class="font-30">CharterUP for Operators</h1>
           <p class="font-18">
             Create a password to continue setting up your account
           </p>

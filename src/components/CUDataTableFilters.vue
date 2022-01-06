@@ -134,14 +134,13 @@ export default class CUDataTableFilters extends Vue {
     if (!doesFilterAlreadyExist) {
       const newFilter = { column }
       this.filterList.push(newFilter)
-      const activeFilter = newFilter
-      if (activeFilter.column.method) {
+      if (newFilter.column.method) {
         const grandParent = this.filters.createParent('and')
         const parent = this.filters.createParent('or', grandParent)
-        this.filters.add(parent, activeFilter)
+        this.filters.add(parent, newFilter)
         this.$emit('update:filters', this.filters)
       } else {
-        this.filters.and(activeFilter).add(activeFilter)
+        this.filters.and(newFilter).add(newFilter)
         this.$emit('update:filters', this.filters)
       }
       // LEAVE FOR NOW, WILL LIKELY UNCOMMENT WHEN WE ADD PREDEFINED FILTERS SHORTLY

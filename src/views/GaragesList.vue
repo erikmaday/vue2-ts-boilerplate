@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row justify="space-between" class="padding-b-6 padding-x-3">
+    <v-row class="padding-b-6">
       <v-col class="shrink">
         <h1>Garages</h1>
       </v-col>

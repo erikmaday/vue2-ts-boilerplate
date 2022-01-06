@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row>
+    <v-row class="padding-b-6">
       <v-col class="shrink">
         <h1>Vehicles</h1>
       </v-col>

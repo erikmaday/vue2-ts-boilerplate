@@ -46,7 +46,7 @@ export default class VehicleAssignmentIcons extends Vue {
     return this.trip ? this.trip : this.reservation.trip
   }
 
-  get computedVehicleAssignments(): Trip {
+  get computedVehicleAssignments(): VehicleAssignment[] {
     return this.vehicleAssignments
       ? this.vehicleAssignments
       : this.reservation.vehicleAssignments

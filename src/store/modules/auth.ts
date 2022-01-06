@@ -12,7 +12,7 @@ import { save, load } from '@/utils/localStorage'
 @Module({ generateMutationSetters: true })
 class AuthModule extends VuexModule {
   // state
-  user = {}
+  user: UserDetail | null = null
   token: string | null = load('token') || null
   isTokenSet = !!load('token')
   roles: Role[] = []

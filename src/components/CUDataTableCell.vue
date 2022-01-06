@@ -11,12 +11,20 @@
       v-if="
         $vuetify.breakpoint.xs &&
         column.type !== 'actions' &&
-        column.type !== 'details'
+        column.type !== 'slot'
       "
     >
       {{ column.text }}
     </h4>
-    <template v-if="column.type === 'actions' && !$vuetify.breakpoint.xs">
+    <template v-if="column.type === 'slot'">
+      <component
+        :is="column.component"
+        :row="row"
+        :actions="actions"
+        v-on="$listeners"
+      />
+    </template>
+    <template v-else-if="column.type === 'actions'">
       <CUDataTableActionColumn
         :actions="actions"
         :row="row"
@@ -31,25 +39,6 @@
     <template v-else-if="column.type === 'email'">
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
     </template>
-    <template v-else-if="column.type === 'details'">
-      <router-link
-        v-if="$vuetify.breakpoint.smAndUp"
-        class="font-medium font-14"
-        :to="{ path: `view/${row.id}` }"
-        :append="true"
-      >
-        Details
-      </router-link>
-      <v-btn
-        v-else
-        color="primary"
-        small
-        class="w-full margin-t-4"
-        @click="$router.push({ path: `view/${row.id}` })"
-      >
-        Details
-      </v-btn>
-    </template>
     <template v-else>
       {{ computedCellItemText }}
     </template>
@@ -61,6 +50,7 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { phoneFormatFilter } from '@/utils/string'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: { CUDataTableActionColumn },
@@ -85,6 +75,24 @@ export default class CUDataTableCell extends Vue {
   })
   actions!: ActionColumn[]
 
+  @Prop({
+    required: false,
+    default: false,
+  })
+  isDetailTable!: boolean
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  detailName!: string
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  itemKey!: string
+
   get cellItem(): any {
     return this.row[this.column.value]
   }
@@ -95,6 +103,7 @@ export default class CUDataTableCell extends Vue {
     }
     return this.cellItem
   }
+
 
   phoneFormatFilter = phoneFormatFilter
 }

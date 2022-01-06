@@ -132,8 +132,8 @@ export default class MarketplaceCard extends Vue {
   }
 
   get actionMessage(): ColoredMessage {
-    const now = this.$dayjs.utc()
-    const expiration = this.$dayjs(this.activeTrip.biddingEndDate)
+    const now = (this as any).$dayjs.utc()
+    const expiration = (this as any).$dayjs(this.trip.biddingEndDate)
     const diff = timeDifferenceAsObject(now, expiration)
 
     return {
@@ -163,9 +163,9 @@ export default class MarketplaceCard extends Vue {
   }
 
   get formattedStartDateTime(): string {
-    const datetime = this.$dayjs(this.firstPickup.pickupDate).tz(
-      this.firstPickup.address.timeZone
-    )
+    const datetime = (this as any)
+      .$dayjs(this.firstPickup.pickupDate)
+      .tz(this.firstPickup.address.timeZone)
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
   }
 

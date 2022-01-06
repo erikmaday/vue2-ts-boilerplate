@@ -5,7 +5,7 @@ import auth from '@/services/auth'
 import user from '@/services/user'
 import router from '@/router'
 
-import { UserAuthPayload, Role, UserDetail } from '@/models/dto'
+import { UserAuthPayload, UserDetail, Role } from '@/models/dto'
 import { save, load } from '@/utils/localStorage'
 
 @Module({ generateMutationSetters: true })
@@ -66,6 +66,10 @@ class AuthModule extends VuexModule {
     window.localStorage.removeItem('user')
     window.localStorage.removeItem('userId')
     window.localStorage.removeItem('roles')
+    this.userId = null
+    this.user = null
+    this.token = null
+    this.roles = null
     this.isTokenSet = false
     router.push({
       name: 'login',

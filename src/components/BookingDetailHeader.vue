@@ -32,12 +32,42 @@
     <template v-if="needsAcceptance">
       <v-spacer />
       <v-col cols="auto">
-        <v-btn small text color="error" class="margin-r-2" @click="reject">
+        <v-btn
+          small
+          text
+          color="error"
+          class="margin-r-2"
+          @click="isDialogOpen = true"
+        >
           Reject
         </v-btn>
         <v-btn small text color="primary" @click="accept">Accept</v-btn>
       </v-col>
     </template>
+    <CUModal v-model="isDialogOpen">
+      <template #title>Reject Booking</template>
+      <template #text>
+        <v-form ref="rejection-form">
+          <CUTextArea
+            v-model="rejectNote"
+            label="Why are you rejecting the booking?"
+            placeholder="Add reasons for rejection here."
+            :rules="[(val) => !!val || 'This field is required.']"
+            validate-on-blur
+          />
+        </v-form>
+      </template>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="cancelRejectNote">
+          Cancel
+        </v-btn>
+        <v-btn color="red" class="white--text" small @click="reject">
+          Reject
+        </v-btn>
+        <v-spacer />
+      </template>
+    </CUModal>
   </v-row>
 </template>
 
@@ -47,6 +77,7 @@ import {
   RequiredVehicleType,
   VehicleAssignment,
   Stop,
+  ReservationDetailStop,
 } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ReferralStatus } from '@/utils/enum'
@@ -56,6 +87,9 @@ import reservation from '@/services/reservation'
 export default class BookingDetailHeader extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
   @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
+
+  isDialogOpen = false
+  rejectNote = ''
 
   get reservationId(): string {
     return this.reservation?.managedId
@@ -104,11 +138,11 @@ export default class BookingDetailHeader extends Vue {
     return null
   }
 
-  get firstPickup(): Stop {
+  get firstPickup(): ReservationDetailStop {
     return this.reservation?.stops?.[0]
   }
 
-  get firstDropoff(): Stop {
+  get firstDropoff(): ReservationDetailStop {
     return this.reservation?.stops?.[1] || this.firstPickup
   }
 
@@ -120,13 +154,20 @@ export default class BookingDetailHeader extends Vue {
     return this.firstDropoff?.address?.city
   }
 
+  cancelRejectNote(): void {
+    this.rejectNote = ''
+    this.isDialogOpen = false
+  }
+
   async accept(): Promise<void> {
     await reservation.accept(this.reservation.reservationId)
     this.$emit('refresh')
   }
 
   async reject(): Promise<void> {
-    await reservation.reject(this.reservation.reservationId)
+    const form: any = this.$refs['rejection-form']
+    if (!form.validate()) return
+    await reservation.reject(this.reservation.reservationId, this.rejectNote)
     this.$emit('refresh')
   }
 }

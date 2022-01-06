@@ -1,3 +1,3 @@
 // colors.scss.d.ts
-export const colors: any
+export const colors: string
 export default colors

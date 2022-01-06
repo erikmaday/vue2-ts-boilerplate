@@ -122,7 +122,7 @@ import { states } from '@/utils/states'
 import dayjs from 'dayjs'
 
 @Component
-export default class CompanyUsersDetailDriverInfo extends Vue {
+export default class UsersDetailDriverInfo extends Vue {
   states = states
   months = dayjs
     .monthsShort()

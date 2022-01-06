@@ -240,21 +240,6 @@ $base-class: 'background';
 $base-class: 'text';
 @include map-to-helpers($base-class, $colors, 'color', $pseudo-classes, true);
 
-// TEXT-ALIGN
-// .text-align-{value}
-$base-class: 'text-align';
-$alignments: left, right, center, justify, initial, inherit;
-@each $alignment in $alignments {
-  @include create-helper-with-pseudo-classes(
-    $base-class,
-    $alignment,
-    $alignment,
-    $base-class,
-    $pseudo-classes,
-    true
-  );
-}
-
 // WIDTH
 // .w-0, .w-1,..., .w-16, .w-20, .w-24, ... , .w-200
 $base-class: 'w';
@@ -411,6 +396,9 @@ $base-classes: 'padding', 'margin';
     }
   }
 }
+
+// ABSOLUTE POSITIONING 
+// top-#, left-#, etc. 
 $base-classes: 'top', 'left', 'bottom', 'right';
 @each $base-class in $base-classes {
   @include map-to-helpers(
@@ -420,7 +408,19 @@ $base-classes: 'top', 'left', 'bottom', 'right';
     $pseudo-classes,
     true
   );
+
+  @each $dimension-key, $dimension-value in $padding-margin-dimensions {
+    @include create-helper-with-pseudo-classes(
+      $base-class,
+      $dimension-key,
+      $dimension-value,
+      $base-class,
+      $pseudo-classes,
+      true
+    );
+  }
 }
+
 
 // WHITE SPACE
 $base-class: 'white-space';

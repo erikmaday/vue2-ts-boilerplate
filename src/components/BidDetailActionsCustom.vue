@@ -5,12 +5,12 @@
       v-model.lazy="customBidPrice"
       v-money="money"
       prepend-inner-icon="mdi-currency-usd"
-      class="text-align-center"
+      class="text-center"
       hide-details
     />
     <p
       v-if="awardedPriceFormatted"
-      class="font-14 text-gray-light text-align-center padding-t-0"
+      class="font-14 text-gray-light text-center padding-t-0"
     >
       Actual awarded price would be {{ awardedPriceFormatted }}
     </p>
@@ -51,7 +51,7 @@ import { VMoney } from 'v-money'
 export default class BidDetailActionsCustom extends Vue {
   @Prop({ required: true }) readonly isMultiBid!: boolean
 
-  customBidPrice: string | null = null
+  customBidPrice = ''
   bidDetail = bidDetail
 
   money = {

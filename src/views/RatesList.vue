@@ -15,14 +15,14 @@
         :items="dataTableItems"
         :actions="actions"
         :options="{}"
-        :mobile-view="'md'"
-        :serverItemsLength="dataTableItems.length"
+        mobile-view-on-breakpoint="md"
+        :server-items-length="dataTableItems.length"
         is-editable-table
         display-actions-on-mobile
         @cancel-add="closeNewRow"
         @cancel-update="(e) => cancelUpdate(e)"
         @add="(e) => addRate(e)"
-        @update="(e) => updateRow(e)"
+        @update="(e) => updateRate(e)"
         @update-editable-input="(e) => updateInput(e)"
         @update-editable-select="(e) => updateSelect(e)"
       />
@@ -34,7 +34,6 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import rate from '@/services/rate'
 import { filter } from '@/utils/filter'
 import { Rate, RateMapItem, RateTableRow } from '@/models/dto/Rate'
-import CUDataTable from '@/components/CUDataTable.vue'
 import { titleCaseToCamelCase } from '@/utils/string'
 import { ActionColumn } from '@/models/ActionColumn'
 import typeService from '@/services/type'
@@ -46,14 +45,13 @@ import {
   buildEmptyRateRow,
   buildUpdateRatePayload,
   getMarketRateIdsForRow,
+  getVehicleTypeKeyForLabel,
 } from '@/utils/rate'
 import auth from '@/store/modules/auth'
 import company from '@/services/company'
 import { VehicleType } from '@/models/dto'
 
-@Component({
-  components: { CUDataTable },
-})
+@Component({})
 export default class RatesList extends Vue {
   companyRates: Rate[] = []
   vehicleTypes = []
@@ -85,26 +83,12 @@ export default class RatesList extends Vue {
       },
     },
   ]
-
-  mounted(): void {
-    EventBus.$on('refresh', this.getCompanyRates)
-    this.getCompanyRates()
-    this.setVehicleTypes()
-  }
-
-  @Watch('ratesMap', { deep: true, immediate: true })
-  onRatesMapChange(newVal: any): void {
-    if (newVal != null) {
-      this.dataTableItems = deepClone(newVal)
-    }
-  }
-
   columns = [
     {
       text: 'Vehicle Type',
       value: 'vehicleType',
       type: 'add-new-select',
-      styleClasses: 'min-w-132 max-w-132',
+      classes: 'min-w-152 max-w-152',
     },
     {
       text: 'Transfer',
@@ -139,6 +123,80 @@ export default class RatesList extends Vue {
     { text: 'Actions', value: 'actions', type: 'actions' },
   ]
 
+  mounted(): void {
+    EventBus.$on('refresh', this.getCompanyRates)
+    this.getCompanyRates()
+    this.getVehicleTypes()
+  }
+
+  @Watch('ratesMap', { deep: true, immediate: true })
+  onRatesMapChange(newVal: any): void {
+    if (newVal != null) {
+      this.dataTableItems = deepClone(newVal)
+    }
+  }
+
+  // Each rate comes back individually, so group rates of 
+  // the same vehicleType, and return an array where each 
+  // item is an object that represent all rates for 
+  // a given vehicleType 
+  get ratesMap(): RateMapItem[] {
+    const reduceFn = (newObj: any, item: any) => {
+      newObj[item.vehicleType] = newObj[item.vehicleType] || {
+        vehicleTypeId: item.vehicleTypeId,
+      }
+      const marketRateType = titleCaseToCamelCase(item.marketRateType)
+
+      newObj[item.vehicleType][marketRateType] = {
+        value: item.highRate, // Always equal to the lowRate
+        marketRateId: item.marketRateId,
+        companyId: item.companyId,
+        marketId: item.marketId,
+        marketplace: item.marketplace,
+        marketRateType: item.marketRateType,
+        vehicleTypeId: item.vehicleTypeId,
+      }
+      // Hourly minimum is a property on the hourlyRate response, but we treat it as its own  
+      // rate type with a value to display it separately
+      if (marketRateType === 'hourlyRate') {
+        newObj[item.vehicleType].hourlyMinimum = {
+          value: item.hourlyMinimum,
+          marketRateId: item.marketRateId,
+          companyId: item.companyId,
+          marketId: item.marketId,
+          marketplace: item.marketplace,
+          marketRateType: item.marketRateType,
+          vehicleTypeId: item.vehicleTypeId,
+        }
+      }
+
+      return newObj
+    }
+    if (!this.companyRates) return []
+    const vehicleObjects = this.companyRates.reduce(reduceFn, {})
+    return Object.entries(vehicleObjects).map(([key, val]) => ({
+      vehicleType: key,
+      isEditable: false,
+      items: deepClone(this.vehicleTypes),
+      ...val,
+    }))
+  }
+
+  // Array of vehicleTypes which aren't associated with a 
+  // saved market rate
+  get availableVehicleTypes(): VehicleType[] {
+    if (!this.vehicleTypes?.length) return []
+    let availableVehicleTypes = this.vehicleTypes
+
+    for (const rate of this.ratesMap) {
+      const vehicleType = rate.vehicleType
+      availableVehicleTypes = availableVehicleTypes.filter((vt: VehicleType) => vt.label !== vehicleType && vt.key !== vehicleType)
+    }
+
+    return availableVehicleTypes
+  }
+
+
   // We need this auxilary function to prevent issues with
   // accessing `this` within the actions column (running into
   // issues where it believes `this` within the function
@@ -147,20 +205,17 @@ export default class RatesList extends Vue {
     this.dataTableItems[rowIndex].isEditable = value
   }
 
+
+  // Add/Update/Cancel Rate Actions 
   cancelUpdate(rowIndex: number): void {
     this.dataTableItems[rowIndex].isEditable = false
   }
 
-  closeNewRow() {
+  closeNewRow(): void {
     this.dataTableItems = this.dataTableItems.filter((item) => !item.isNewRow)
   }
 
   async addRate(row: RateTableRow): Promise<void> {
-    // Close any of the edit rows before validating the form
-    // I tried wrapping individual rows in v-forms to validate them,
-    // but that introduced a ton of layout issues. Alternative would
-    // be to manually verify each input, but for now just wrapping
-    // the whole table in a v-form
     for (const rate of this.dataTableItems) {
       if (!rate.isNewRow) {
         rate.isEditable = false
@@ -173,6 +228,10 @@ export default class RatesList extends Vue {
       return
     }
 
+    const vehicleTypeKey = getVehicleTypeKeyForLabel(row.vehicleType, this.vehicleTypes)
+    if (vehicleTypeKey) {
+      row.vehicleType = vehicleTypeKey
+    }
     const companyId = auth.getUser.companyId
     const res = await company.getById(companyId)
     const marketId = res.data.company.address.nearestMarketId || 1
@@ -188,10 +247,10 @@ export default class RatesList extends Vue {
     })
   }
 
-  async updateRow(row: RateTableRow): Promise<void> {
+  async updateRate(row: RateTableRow): Promise<void> {
     this.closeNewRow()
     const form: any = this.$refs['rates-form']
-    const vehicleTypeKey = this.getVehicleTypeKeyForLabel(row.vehicleType)
+    const vehicleTypeKey = getVehicleTypeKeyForLabel(row.vehicleType, this.vehicleTypes)
     if (!form.validate() || !vehicleTypeKey) {
       return
     }
@@ -205,6 +264,7 @@ export default class RatesList extends Vue {
       marketId,
       vehicleTypeKey
     )
+
     for (const payload of payloads) {
       await rate.update(payload)
     }
@@ -214,6 +274,7 @@ export default class RatesList extends Vue {
     })
   }
 
+  // Modify dataTableRow textfields/selects based on input events
   updateInput({
     columnValue,
     rowIndex,
@@ -242,47 +303,8 @@ export default class RatesList extends Vue {
     this.dataTableItems.unshift(emptyRateRow)
   }
 
-  get ratesMap(): RateMapItem[] {
-    const reduceFn = (newObj: any, item: any) => {
-      newObj[item.vehicleType] = newObj[item.vehicleType] || {
-        vehicleTypeId: item.vehicleTypeId,
-      }
-      const marketRateType = titleCaseToCamelCase(item.marketRateType)
-
-      newObj[item.vehicleType][marketRateType] = {
-        value: item.highRate,
-        marketRateId: item.marketRateId,
-        companyId: item.companyId,
-        marketId: item.marketId,
-        marketplace: item.marketplace,
-        marketRateType: item.marketRateType,
-        vehicleTypeId: item.vehicleTypeId,
-      }
-      if (marketRateType === 'hourlyRate') {
-        newObj[item.vehicleType].hourlyMinimum = {
-          value: item.hourlyMinimum,
-          marketRateId: item.marketRateId,
-          companyId: item.companyId,
-          marketId: item.marketId,
-          marketplace: item.marketplace,
-          marketRateType: item.marketRateType,
-          vehicleTypeId: item.vehicleTypeId,
-        }
-      }
-
-      return newObj
-    }
-    if (!this.companyRates) return []
-    const vehicleObjects = this.companyRates.reduce(reduceFn, {})
-    return Object.entries(vehicleObjects).map(([key, val]) => ({
-      vehicleType: key,
-      isEditable: false,
-      items: deepClone(this.vehicleTypes),
-      ...val,
-    }))
-  }
-
-  async setVehicleTypes(): Promise<void> {
+  // Initializers
+  async getVehicleTypes(): Promise<void> {
     let response: AxiosResponse
     try {
       response = await typeService.vehicleTypeTableView({})
@@ -297,16 +319,6 @@ export default class RatesList extends Vue {
       console.error(e)
       return
     }
-  }
-
-  getVehicleTypeKeyForLabel(label: string): string | null {
-    const vehicleType: VehicleType | undefined = this.vehicleTypes.find(
-      (vt: VehicleType) => vt.label === label || vt.key === label
-    )
-    if (vehicleType) {
-      return vehicleType.key
-    }
-    return vehicleType || null
   }
 
   async getCompanyRates(): Promise<void> {
@@ -331,18 +343,6 @@ export default class RatesList extends Vue {
     })
 
     this.companyRates = res.data.resultList
-  }
-
-  get availableVehicleTypes(): VehicleType[] {
-    if (!this.vehicleTypes?.length) return []
-    let availableVehicleTypes = this.vehicleTypes
-
-    for (const rate of this.ratesMap) {
-      const vehicleType = rate.vehicleType
-      availableVehicleTypes = availableVehicleTypes.filter((vt: VehicleType) => vt.label !== vehicleType && vt.key !== vehicleType)
-    }
-
-    return availableVehicleTypes
   }
 }
 </script>

@@ -29,7 +29,7 @@
         :actions="actions"
         :key="`action-column-${rowIndex}`"
         :row="row"
-        :rowIndex="rowIndex"
+        :row-index="rowIndex"
         :display-actions-on-mobile="displayActionsOnMobile"
         :is-mobile="isMobile"
         @refresh="$emit('refresh')"
@@ -38,64 +38,22 @@
     <template
       v-else-if="column.type === 'actions' && row.isEditable && row.isNewRow"
     >
-      <v-row v-if="!isMobile">
-        <v-btn x-small icon @click="$emit('cancel-add')">
-          <CUIcon color="error">close</CUIcon>
-        </v-btn>
-        <v-btn x-small icon @click="$emit('add', row)">
-          <CUIcon color="success">done</CUIcon>
-        </v-btn>
-      </v-row>
-      <v-col v-else>
-        <v-btn
-          x-small
-          class="w-full margin-t-4"
-          color="error"
-          @click="$emit('cancel-add')"
-        >
-          <CUIcon>close</CUIcon>
-          Close
-        </v-btn>
-        <v-btn
-          x-small
-          color="success"
-          class="w-full margin-t-4"
-          @click="$emit('add', row)"
-        >
-          <CUIcon>done</CUIcon>
-          Save
-        </v-btn>
-      </v-col>
+      <CUDataTableRowEditActions
+        :is-mobile="isMobile"
+        :row="row"
+        :row-index="rowIndex"
+        event-name="add"
+        v-on="$listeners"
+      />
     </template>
     <template v-else-if="column.type === 'actions' && row.isEditable">
-      <v-row v-if="!isMobile">
-        <v-btn xSmall icon @click="$emit('cancel-update', rowIndex)">
-          <CUIcon color="error">close</CUIcon>
-        </v-btn>
-        <v-btn xSmall icon @click="$emit('update', row)">
-          <CUIcon color="success">done</CUIcon>
-        </v-btn>
-      </v-row>
-      <v-col v-else>
-        <v-btn
-          small
-          class="w-full margin-t-4"
-          color="error"
-          @click="$emit('cancel-update', rowIndex)"
-        >
-          <CUIcon>close</CUIcon>
-          Close
-        </v-btn>
-        <v-btn
-          small
-          color="success"
-          class="w-full margin-t-4"
-          @click="$emit('update', row)"
-        >
-          <CUIcon>done</CUIcon>
-          Save
-        </v-btn>
-      </v-col>
+      <CUDataTableRowEditActions
+        :is-mobile="isMobile"
+        :row="row"
+        :row-index="rowIndex"
+        event-name="update"
+        v-on="$listeners"
+      />
     </template>
     <template
       v-if="column.type === 'add-new-select' && (row.isNewRow || isMobile)"
@@ -160,12 +118,12 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { phoneFormatFilter } from '@/utils/string'
-import CUTextField from '@/components/CUTextField.vue'
 import op from 'simple-object-path'
 import { isNotEmptyInput, isNotNegative } from '@/utils/validators'
+import CUDataTableRowEditActions from '@/components/CUDataTableRowEditActions.vue'
 
 @Component({
-  components: { CUDataTableActionColumn, CUTextField },
+  components: { CUDataTableActionColumn, CUDataTableRowEditActions },
 })
 export default class CUDataTableCell extends Vue {
   @Prop({

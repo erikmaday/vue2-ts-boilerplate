@@ -11,7 +11,9 @@
       :items="items"
       :server-items-length="serverItemsLength"
       disable-sort
-      :mobile-breakpoint="$vuetify.breakpoint.thresholds[mobileView]"
+      :mobile-breakpoint="
+        $vuetify.breakpoint.thresholds[mobileViewOnBreakpoint]
+      "
       disable-filtering
       :loader-height="2"
       v-bind="$attrs"
@@ -23,7 +25,7 @@
           <td
             v-for="(col, colIndex) in columns"
             :key="`column-${col.value}-${colIndex}-${index}`"
-            :class="col.styleClasses ? col.styleClasses : ''"
+            :class="col.classes ? col.classes : ''"
           > 
             <CUDataTableCell
               :column="col"
@@ -31,7 +33,7 @@
               :row="item"
               :row-index="index"
               :actions="actions"
-              :isMobile="false"
+              :is-mobile="false"
               :is-detail-table="isDetailTable"
               :display-actions-on-mobile="displayActionsOnMobile"
               :detail-name="detailName"
@@ -57,11 +59,11 @@
           }"
         >
           <div
-            :style="`${
-              col.type === 'actions'
-                ? 'flex-basis: 100%'
-                : 'flex-basis: 48%; margin-left: 1%; margin-right: 1%; '
-            }`"
+            :class="{
+              'flex-basis-48-percent margin-x-1-percent':
+                isEditableTable && col.type !== 'actions',
+              'flex-basis-full': isEditableTable && col.type === 'actions',
+            }"
             v-for="(col, colIndex) in columns"
             :key="`column-${col.value}-${colIndex}-${index}`"
           >
@@ -164,7 +166,7 @@ export default class CUDataTable extends Vue {
     required: false,
     default: 'xs',
   })
-  mobileView!: string
+  mobileViewOnBreakpoint!: string
 
   @Prop({
     type: Boolean,
@@ -173,7 +175,7 @@ export default class CUDataTable extends Vue {
   displayActionsOnMobile!: boolean
 
   get isMobile(): boolean {
-    switch (this.mobileView) {
+    switch (this.mobileViewOnBreakpoint) {
       case 'xs':
         return this.$vuetify.breakpoint.xs
       case 'sm':

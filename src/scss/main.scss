@@ -427,4 +427,9 @@
       }
     }
   }
+  // Wasn't sure whether it's worth adding percentages as helper classes/if 
+  // that would mess with our standards--if so, I'll add them. 
+  .margin-x-1-percent {
+    margin: 0 1%;
+  }
 }

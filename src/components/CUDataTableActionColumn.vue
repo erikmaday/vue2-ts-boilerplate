@@ -21,7 +21,7 @@
           height="20px"
           color="primary"
           class="cursor-pointer"
-          ariaLabel="More Actions"
+          aria-label="More Actions"
           v-on="on"
         >
           more_vert
@@ -50,7 +50,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-col v-if="isMobile && displayActionsOnMobile">
+    <v-col v-else-if="isMobile && displayActionsOnMobile">
       <template
         v-for="(action, actionIndex) in actions.filter(
           (action) => !action.isDetail && !action.hide

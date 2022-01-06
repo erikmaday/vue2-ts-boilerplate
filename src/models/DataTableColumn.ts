@@ -5,6 +5,5 @@ export interface DataTableColumn extends TextValue {
   computedText?: (row: any) => string
   type?: string
   component?: Component
-  selectItems: any[]
-  styleClasses?: string
+  classes?: string
 }

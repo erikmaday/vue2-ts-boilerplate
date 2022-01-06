@@ -7,7 +7,6 @@ export const buildAddRatePayload = (
   companyId: number, 
   marketId: number
 ): CreateRatePayload[] => {
-  
   const newRates = [
     {
       lowRate: row.dailyRate.value,
@@ -149,4 +148,17 @@ export function buildEmptyRateRow(
     items: deepClone(vehicleTypes),
   }
   return item
+}
+
+export function getVehicleTypeKeyForLabel(
+  label: string,
+  vehicleTypes: VehicleType[]
+): string | null {
+  const vehicleType: VehicleType | undefined = vehicleTypes.find(
+    (vt: VehicleType) => vt.label === label || vt.key === label
+  )
+  if (vehicleType) {
+    return vehicleType.key
+  }
+  return vehicleType || null
 }

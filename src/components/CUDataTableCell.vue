@@ -2,15 +2,15 @@
   <!-- eslint-disable vue/valid-v-slot -->
   <div
     :class="
-      $vuetify.breakpoint.xs
-        ? 'd-flex justify-space-between align-center margin-y-1'
-        : ''
+      isMobile ? 'd-flex justify-space-between align-center margin-y-1' : ''
     "
   >
     <h4
       v-if="
-        $vuetify.breakpoint.xs &&
+        isMobile &&
         column.type !== 'actions' &&
+        column.type !== 'editable' &&
+        column.type !== 'add-new-select' &&
         column.type !== 'slot'
       "
     >
@@ -30,23 +30,45 @@
         :key="`action-column-${rowIndex}`"
         :row="row"
         :rowIndex="rowIndex"
+        :display-actions-on-mobile="displayActionsOnMobile"
+        :is-mobile="isMobile"
         @refresh="$emit('refresh')"
       />
     </template>
     <template
       v-else-if="column.type === 'actions' && row.isEditable && row.isNewRow"
     >
-      <v-row>
-        <v-btn xSmall icon @click="$emit('cancel-add')">
+      <v-row v-if="!isMobile">
+        <v-btn x-small icon @click="$emit('cancel-add')">
           <CUIcon color="error">close</CUIcon>
         </v-btn>
-        <v-btn xSmall icon @click="$emit('add', row)">
+        <v-btn x-small icon @click="$emit('add', row)">
           <CUIcon color="success">done</CUIcon>
         </v-btn>
       </v-row>
+      <v-col v-else>
+        <v-btn
+          x-small
+          class="w-full margin-t-4"
+          color="error"
+          @click="$emit('cancel-add')"
+        >
+          <CUIcon>close</CUIcon>
+          Close
+        </v-btn>
+        <v-btn
+          x-small
+          color="success"
+          class="w-full margin-t-4"
+          @click="$emit('add', row)"
+        >
+          <CUIcon>done</CUIcon>
+          Save
+        </v-btn>
+      </v-col>
     </template>
     <template v-else-if="column.type === 'actions' && row.isEditable">
-      <v-row>
+      <v-row v-if="!isMobile">
         <v-btn xSmall icon @click="$emit('cancel-update', rowIndex)">
           <CUIcon color="error">close</CUIcon>
         </v-btn>
@@ -54,11 +76,39 @@
           <CUIcon color="success">done</CUIcon>
         </v-btn>
       </v-row>
+      <v-col v-else>
+        <v-btn
+          small
+          class="w-full margin-t-4"
+          color="error"
+          @click="$emit('cancel-update', rowIndex)"
+        >
+          <CUIcon>close</CUIcon>
+          Close
+        </v-btn>
+        <v-btn
+          small
+          color="success"
+          class="w-full margin-t-4"
+          @click="$emit('update', row)"
+        >
+          <CUIcon>done</CUIcon>
+          Save
+        </v-btn>
+      </v-col>
     </template>
-    <template v-if="column.type === 'add-new-select' && row.isNewRow">
+    <template
+      v-if="column.type === 'add-new-select' && (row.isNewRow || isMobile)"
+    >
       <CUSelect
         hide-details
+        :label="isMobile ? column.text : null"
         :items="row.items"
+        class="w-full"
+        :rules="[(val) => isNotEmptyInput(val)]"
+        :disabled="!row.isNewRow"
+        :value="op(row, column.value)"
+        validate-on-blur
         @input="
           (e) =>
             $emit('update-editable-select', {
@@ -81,11 +131,14 @@
       <CUTextField
         :value="op(row, column.value)"
         :disabled="!row.isEditable"
+        class="w-full"
+        :label="isMobile ? column.text : null"
         hide-details
         type="number"
         validate-on-blur
         min="0"
-        :rules="[(val) => !!val]"
+        step="0.01"
+        :rules="[(val) => isNotEmptyInput(val), (val) => isNotNegative(val)]"
         @input="
           (e) =>
             $emit('update-editable-input', {
@@ -109,7 +162,7 @@ import { DataTableColumn } from '@/models/DataTableColumn'
 import { phoneFormatFilter } from '@/utils/string'
 import CUTextField from '@/components/CUTextField.vue'
 import op from 'simple-object-path'
-import { RawLocation } from 'vue-router'
+import { isNotEmptyInput, isNotNegative } from '@/utils/validators'
 
 @Component({
   components: { CUDataTableActionColumn, CUTextField },
@@ -140,13 +193,6 @@ export default class CUDataTableCell extends Vue {
   })
   actions!: ActionColumn[]
 
-  @Prop({
-    type: Boolean,
-    required: false,
-    default: false,
-  })
-  editable!: boolean
-
   op = op
   @Prop({
     type: Boolean,
@@ -167,6 +213,18 @@ export default class CUDataTableCell extends Vue {
   })
   itemKey!: string
 
+  @Prop({
+    type: Boolean,
+    required: true,
+  })
+  isMobile!: boolean
+
+  @Prop({
+    type: Boolean,
+    required: false,
+  })
+  displayActionsOnMobile!: boolean
+
   get cellItem(): any {
     return op(this.row, this.column.value)
   }
@@ -178,7 +236,8 @@ export default class CUDataTableCell extends Vue {
     return this.cellItem
   }
 
-
   phoneFormatFilter = phoneFormatFilter
+  isNotEmptyInput = isNotEmptyInput
+  isNotNegative = isNotNegative
 }
 </script>

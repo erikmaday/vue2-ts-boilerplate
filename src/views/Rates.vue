@@ -13,7 +13,7 @@ import MainWithSidebar from '@/layouts/MainWithSidebar.vue'
 
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import MainWithSidebarNavigation from '@/components/MainWithSidebarNavigation.vue'
-import CompanyRatesList from '@/components/CompanyRatesList.vue'
+import RatesList from '@/views/RatesList.vue'
 import CompanyRatesAdjustments from '@/components/CompanyRatesAdjustments.vue'
 import CompanyRatesCalculator from '@/components/CompanyRatesCalculator.vue'
 import { SidebarLink } from '@/models/SidebarLink'
@@ -22,7 +22,7 @@ import { toTitle } from '@/utils/string'
   components: {
     MainWithSidebarNavigation,
     MainWithSidebar,
-    CompanyRatesList,
+    RatesList,
     CompanyRatesAdjustments,
     CompanyRatesCalculator,
   },
@@ -34,7 +34,7 @@ export default class CompanyRates extends Vue {
       label: 'Rates',
       href: '',
       name: 'rates',
-      component: CompanyRatesList,
+      component: RatesList,
       icon: 'rates',
     },
     {
@@ -67,7 +67,7 @@ export default class CompanyRates extends Vue {
     if (link) {
       return link.component
     }
-    return CompanyRatesList
+    return RatesList
   }
 }
 </script>

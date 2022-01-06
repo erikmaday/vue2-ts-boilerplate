@@ -6,4 +6,5 @@ export interface DataTableColumn extends TextValue {
   type?: string
   component?: Component
   selectItems: any[]
+  styleClasses?: string
 }

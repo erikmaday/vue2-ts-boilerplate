@@ -291,6 +291,12 @@
     }
   }
 
+  .v-data-table__editable {
+    .v-data-table-header-mobile {
+      display: none;
+    }
+  }
+
   .v-data-table {
     font-size: 16px;
 

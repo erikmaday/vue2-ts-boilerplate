@@ -5,6 +5,7 @@ export interface Rate {
   hourlyMinimum: number
   lowRate: number
   marketId: number
+  marketRateType?: string
   marketRateId: number
   marketplace: number
   vehicleId?: number
@@ -13,9 +14,40 @@ export interface Rate {
   vehicleTypeId: number
 }
 
-export interface RateTableRow extends Rate {
+export interface RateMapItem extends Rate {
   isEditable?: boolean
   isNewRow?: boolean
+}
+export interface RateTableRow {
+  dailyRate: RateTableRowRate
+  deadMileRate: RateTableRowRate
+  hourlyMinimum: RateTableRowRate
+  hourlyRate: RateTableRowRate
+  isEditable?: boolean
+  isNewRow?: boolean
+  mileageRate: RateTableRowRate
+  transferRate: RateTableRowRate
+  vehicleType: string
+  vehicleTypeId: number
+  companyId?: number
+  vehicleName?: string
+  companyName?: string
+  marketId?: number
+  marketRateType?: string
+  marketRateId?: number
+  marketplace: number
+  vehicleId?: number
+  highRate?: number
+  lowRate?: number
+}
+
+export interface RateTableRowRate {
+  companyId: number
+  marketId: number
+  marketRateId: number
+  marketRateType: string
+  marketplace: number
+  value: number
 }
 
 export interface CreateRatePayload {
@@ -26,5 +58,6 @@ export interface CreateRatePayload {
   marketRateType: string
   marketRateTypeKey: string 
   marketplace: number
-  vehicleType: string
+  vehicleType?: string
+  vehicleId?: number | null
 }

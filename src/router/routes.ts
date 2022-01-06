@@ -153,7 +153,7 @@ export const routes: RouteConfig[] = [
                     name: 'rates', 
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-garages-edit" */ '@/components/Rates.vue'
+                        /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
                       ),
                   },
                   {
@@ -161,7 +161,7 @@ export const routes: RouteConfig[] = [
                     name: 'rates.adjustments', 
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-garages-edit" */ '@/components/Rates.vue'
+                        /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
                       ),
                   },
                   {
@@ -169,7 +169,7 @@ export const routes: RouteConfig[] = [
                     name: 'rates.calculator', 
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-garages-edit" */ '@/components/Rates.vue'
+                        /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
                       ),
                   },
                 ]

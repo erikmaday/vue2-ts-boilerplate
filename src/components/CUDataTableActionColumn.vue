@@ -1,11 +1,7 @@
 <template>
   <div class="align-center d-flex flex-grow-1">
     <template v-if="detailAction">
-      <a
-        v-if="$vuetify.breakpoint.smAndUp"
-        class="font-medium font-14"
-        @click="pushDetailRoute"
-      >
+      <a v-if="!isMobile" class="font-medium font-14" @click="pushDetailRoute">
         Details
       </a>
       <v-btn
@@ -18,7 +14,7 @@
         Details
       </v-btn>
     </template>
-    <v-menu v-if="$vuetify.breakpoint.smAndUp" offset-x left>
+    <v-menu v-if="!isMobile" offset-x left>
       <template v-slot:activator="{ on }">
         <CUIcon
           width="20px"
@@ -54,6 +50,26 @@
         </v-list-item>
       </v-list>
     </v-menu>
+    <v-col v-if="isMobile && displayActionsOnMobile">
+      <template
+        v-for="(action, actionIndex) in actions.filter(
+          (action) => !action.isDetail && !action.hide
+        )"
+      >
+        <v-btn
+          :key="`action-btn-${actionIndex}`"
+          :color="action.color"
+          small
+          class="w-full margin-t-4"
+          @click="handleAction(action, row)"
+        >
+          <CUIcon v-if="action.icon" width="24px" height="24px" decorative>
+            {{ action.icon }}
+          </CUIcon>
+          <span class="ml-2">{{ action.displayText }}</span>
+        </v-btn>
+      </template>
+    </v-col>
     <v-dialog v-model="dialogOpen" max-width="500px">
       <v-card>
         <p class="wb-break-word font-22 font-medium padding-x-6 padding-y-2">
@@ -95,6 +111,18 @@ export default class CUDataTableActionColumn extends Vue {
   })
   rowIndex!: number
 
+  @Prop({
+    type: Boolean,
+    required: true,
+  })
+  isMobile!: boolean
+
+  @Prop({
+    type: Boolean,
+    required: false,
+  })
+  displayActionsOnMobile!: boolean
+
   dialogOpen = false
   dialogText: string | undefined = ''
   dialogConfirmFn = () => ({})
@@ -104,11 +132,11 @@ export default class CUDataTableActionColumn extends Vue {
     const action = this.currentAction
     if (action) {
       const res: AxiosResponse = await action.action(this.row)
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         this.$emit('refresh')
       }
     }
-    this.dialogOpen = false
+    this.closeDialog()
   }
 
   closeDialog(): void {

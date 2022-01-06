@@ -1,0 +1,139 @@
+<template>
+  <MapWithSidebar>
+    <template v-slot:sidebar>
+      <v-row>
+        <v-col class="shrink padding-r-0">
+          <CUIcon
+            color="primary"
+            class="margin-t-1 cursor-pointer"
+            @click="goBack"
+          >
+            arrow_left
+          </CUIcon>
+        </v-col>
+        <BidDetailMultiSidebar
+          v-if="isModeMulti && !bidDetail.trip && !loading"
+        />
+        <BidDetailSingleSidebar
+          v-if="bidDetail.getTrip && !loading"
+          :trip="bidDetail.getTrip"
+          :is-multi-bid="isModeMulti"
+        />
+      </v-row>
+    </template>
+    <template v-slot:map>
+      <BidDetailMap v-if="mapTrips && !loading" :trips="mapTrips" />
+    </template>
+  </MapWithSidebar>
+</template>
+
+<script lang="ts">
+import { Component, Provide, Vue } from 'vue-property-decorator'
+import MapWithSidebar from '@/layouts/MapWithSidebar.vue'
+import BidDetailMap from '@/components/BidDetailMap.vue'
+import BidDetailMultiSidebar from '@/components/BidDetailMultiSidebar.vue'
+import BidDetailSingleSidebar from '@/components/BidDetailSingleSidebar.vue'
+import MarketplaceCard from '@/components/MarketplaceCard.vue'
+import { Trip } from '@/models/dto'
+import {
+  formatDropoffTime,
+  formatPickupTime,
+  formatStopAddress,
+} from '@/utils/string'
+import app from '@/store/modules/app'
+import bidDetail from '@/store/modules/bidDetail'
+
+const MULTI_BID_ROUTE_NAME = 'multi-bid-detail'
+const SINGLE_BID_ROUTE_NAME = 'bid-detail'
+
+@Component({
+  components: {
+    MapWithSidebar,
+    MarketplaceCard,
+    BidDetailMap,
+    BidDetailMultiSidebar,
+    BidDetailSingleSidebar,
+  },
+})
+export default class BidDetail extends Vue {
+  @Provide('isInBidDetail') private isInBidDetail = true
+  quoteId: number | null = null
+  tripId: number | null = null
+  notFound = false
+  formatStopAddress = formatStopAddress
+  formatDropoffTime = formatDropoffTime
+  formatPickupTime = formatPickupTime
+  bidDetail = bidDetail
+  loading = false
+
+  get isModeMulti(): boolean {
+    return this.$route.name === MULTI_BID_ROUTE_NAME
+  }
+
+  get isModeSingle(): boolean {
+    return this.$route.name === SINGLE_BID_ROUTE_NAME
+  }
+
+  get mapTrips(): Trip[] {
+    if (bidDetail.getTrip) {
+      return bidDetail.getTripDetails.filter(
+        (trip) => trip.tripId === bidDetail.getTrip?.tripId
+      )
+    }
+    return bidDetail.getTripDetails
+  }
+
+  created(): void {
+    bidDetail.reset()
+    if (this.$route.name === MULTI_BID_ROUTE_NAME) {
+      this.quoteId = parseInt(this.$route.params.id)
+    } else {
+      this.tripId = parseInt(this.$route.params.id)
+    }
+  }
+  mounted(): void {
+    this.refresh()
+  }
+
+  async refresh(): Promise<void> {
+    this.loading = true
+    await this.getTrips()
+    this.loading = false
+  }
+
+  async getTrips(): Promise<void> {
+    try {
+      let tripIds = this.isModeSingle ? [this.tripId] : []
+      if (this.isModeMulti) {
+        await bidDetail.fetchTripsListByQuoteId(this.quoteId)
+      } else {
+        await bidDetail.fetchTripsListByTripId(this.tripId)
+      }
+      if (tripIds.length || bidDetail.getTrips.length) {
+        await bidDetail.fetchAllTripDetails(tripIds)
+        await bidDetail.fetchExistingBids(tripIds)
+        if (this.isModeSingle) {
+          bidDetail.selectTrip(this.tripId)
+        }
+      } else {
+        this.notFound = true
+        return
+      }
+    } catch (e) {
+      this.notFound = true
+      console.error(e)
+      return
+    }
+  }
+
+  // get all existing bids and store them here
+
+  goBack(): void {
+    if (this.isModeMulti && bidDetail.getTrip) {
+      bidDetail.deselectTrip()
+    } else {
+      this.$router.push(app.getLastRoute)
+    }
+  }
+}
+</script>

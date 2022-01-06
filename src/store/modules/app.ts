@@ -1,6 +1,5 @@
-import { Action, VuexModule, Module } from 'vuex-class-modules'
+import { Action, Module, VuexModule } from 'vuex-class-modules'
 import { Route, Location } from 'vue-router/types/router'
-
 @Module({ generateMutationSetters: true })
 class AppModule extends VuexModule {
   // state

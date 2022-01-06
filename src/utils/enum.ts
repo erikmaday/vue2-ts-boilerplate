@@ -34,3 +34,27 @@ export enum PaymentStatus {
   PartiallyPaid = 'partially_paid',
   FullyPaid = 'fully_paid',
 }
+
+export enum BidStatus {
+  Pending = 'pending',
+  Accepted = 'accepted',
+  Rejected = 'rejected',
+}
+
+export enum BidStatusId {
+  Pending = 1,
+  Accepted = 2,
+  Rejected = 3,
+}
+
+export enum TripTypeKeys {
+  OneWay = 'one_way',
+  RoundTrip = 'round_trip',
+  Hourly = 'hourly',
+  Daily = 'daily',
+  Shuttle = 'shuttle',
+}
+
+export enum TakeRate {
+  Default = 10,
+}

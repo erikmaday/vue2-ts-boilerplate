@@ -20,6 +20,33 @@ export const routes: RouteConfig[] = [
             component: () => import('@/views/Today.vue'),
           },
           {
+            path: 'profile',
+            name: 'profile',
+            component: () => import('@/views/Profile.vue'),
+            children: [
+              {
+                path: 'profile',
+                name: 'profile',
+                component: () => import('@/views/Profile.vue'),
+              },
+              {
+                path: 'profile/edit',
+                name: 'profile.edit',
+                component: () => import('@/views/Profile.vue'),
+              },
+              {
+                path: 'profile/password',
+                name: 'profile.password',
+                component: () => import('@/views/ProfilePassword.vue'),
+              },
+            ],
+          },
+          {
+            path: 'profile/edit',
+            name: 'profile.edit',
+            component: () => import('@/views/Profile.vue'),
+          },
+          {
             path: 'company',
             name: 'company',
             redirect: 'company/users',
@@ -63,7 +90,6 @@ export const routes: RouteConfig[] = [
                         /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
-
                 ],
               },
               {
@@ -116,29 +142,29 @@ export const routes: RouteConfig[] = [
                       ),
                   },
                   {
-                    path: 'edit/:id', 
-                    name: 'garages.edit', 
+                    path: 'edit/:id',
+                    name: 'garages.edit',
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-detail-edit" */ '@/views/GaragesDetail.vue'
                       ),
                   },
                   {
-                    path: 'view/:id', 
-                    name: 'garages.view', 
+                    path: 'view/:id',
+                    name: 'garages.view',
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-detail-view" */ '@/views/GaragesDetail.vue'
                       ),
                   },
                   {
-                    path: 'add', 
-                    name: 'garages.add', 
+                    path: 'add',
+                    name: 'garages.add',
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-detail-add" */ '@/views/GaragesDetail.vue'
                       ),
-                  }
+                  },
                 ],
               },
               {

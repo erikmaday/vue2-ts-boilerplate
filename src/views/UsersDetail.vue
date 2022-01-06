@@ -11,6 +11,7 @@
             }"
           >
             <v-btn
+              v-if="!isModeProfile"
               :icon="$vuetify.breakpoint.mdAndUp"
               :x-small="$vuetify.breakpoint.mdAndUp"
               :small="$vuetify.breakpoint.smAndDown"
@@ -28,6 +29,7 @@
               </span>
             </v-btn>
             <h1
+              v-if="!isModeProfile"
               class="margin-a-0"
               :class="{
                 'text-center': $vuetify.breakpoint.xs,
@@ -47,6 +49,7 @@
             }"
           >
             <v-btn
+              v-if="!isModeProfile"
               v-show="isModeEdit"
               :class="{
                 'w-full margin-y-2': $vuetify.breakpoint.xs,
@@ -65,6 +68,25 @@
               Cancel
             </v-btn>
             <v-btn
+              v-else-if="isModeProfile"
+              v-show="isModeEdit"
+              :class="{
+                'w-full margin-y-2': $vuetify.breakpoint.xs,
+                'margin-l-4': $vuetify.breakpoint.smAndUp,
+              }"
+              outlined
+              small
+              color="primary"
+              @click="
+                $router.push({
+                  name: 'profile',
+                })
+              "
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              v-if="!isModeProfile"
               :class="{
                 'w-full margin-y-2': $vuetify.breakpoint.xs,
                 'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -78,6 +100,7 @@
               Delete
             </v-btn>
             <v-btn
+              v-if="!isModeProfile"
               :class="{
                 'w-full margin-y-2': $vuetify.breakpoint.xs,
                 'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -91,6 +114,7 @@
               Change Password
             </v-btn>
             <v-btn
+              v-if="!isModeProfile"
               v-show="isModeView"
               :class="{
                 'w-full margin-y-2': $vuetify.breakpoint.xs,
@@ -108,6 +132,24 @@
               Edit
             </v-btn>
             <v-btn
+              v-else-if="isModeProfile"
+              v-show="isModeView"
+              :class="{
+                'w-full margin-y-2': $vuetify.breakpoint.xs,
+                'margin-l-4': $vuetify.breakpoint.smAndUp,
+              }"
+              small
+              color="primary"
+              @click="
+                $router.push({
+                  name: 'profile.edit',
+                })
+              "
+            >
+              Edit
+            </v-btn>
+            <v-btn
+              v-if="!isModeProfile"
               v-show="isModeEdit || isModeAdd"
               :class="{
                 'w-full margin-y-2': $vuetify.breakpoint.xs,
@@ -118,6 +160,19 @@
               @click="submit"
             >
               {{ isModeAdd ? 'Add User' : 'Save' }}
+            </v-btn>
+            <v-btn
+              v-else-if="isModeProfile"
+              v-show="isModeEdit"
+              :class="{
+                'w-full margin-y-2': $vuetify.breakpoint.xs,
+                'margin-l-4': $vuetify.breakpoint.smAndUp,
+              }"
+              small
+              color="primary"
+              @click="submit"
+            >
+              Save
             </v-btn>
           </div>
         </v-col>
@@ -175,6 +230,7 @@
               </v-col>
               <v-col cols="12" sm="6" class="py-0">
                 <CUSelect
+                  :disabled="isModeProfile"
                   v-model="currentUser.groupId"
                   :items="userGroups"
                   item-text="label"
@@ -194,7 +250,7 @@
             </v-row>
             <v-expand-transition>
               <UsersDetailDriverInfo
-                v-if="treatAsDriver"
+                v-if="treatAsDriver && !isModeProfile"
                 ref="driverInfoForm"
                 :parent-driver-model="currentUserAsDriver"
                 :vehicle-types="vehicleTypes"
@@ -283,7 +339,7 @@ export default class UsersDetail extends Vue {
   mounted(): void {
     this.setVehicleTypes()
 
-    if (this.isModeEdit || this.isModeView) {
+    if (this.isModeEdit || this.isModeView || this.isModeProfile) {
       this.getCurrentUser()
     }
   }
@@ -302,7 +358,26 @@ export default class UsersDetail extends Vue {
   // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2
   async getCurrentUser(): Promise<void> {
     try {
-      if (this.$route.params.id) {
+      if (this.isModeProfile) {
+        const rolesResponse = await user.roles(Number(2)) //TODO: getUserId for logged in user
+        const roles = rolesResponse.data.roles
+        if (roles.find((role) => role.roleName === 'is_driver')) {
+          this.treatAsDriver = true
+          const response = await driver.byId(Number(2)) //TODO: getUserId for logged in user
+          const userResponseData = response.data.driver
+          userResponseData.userRoleNames = roles.map((role) => role.roleName)
+          this.currentUser = userResponseData as UserDetail
+          this.currentUserAsDriver = userResponseData
+          this.populateDrugExpirationDateInputs()
+        } else {
+          const response = await user.byId(Number(2)) //TODO: getUserId for logged in user
+          const userResponseData = response.data
+          userResponseData.userRoleNames = roles.map((role) => role.roleName)
+
+          this.currentUser = userResponseData
+          this.currentUserAsDriver = userResponseData as UserDetailDriver
+        }
+      } else if (this.$route.params.id) {
         const rolesResponse = await user.roles(Number(this.$route.params.id))
         const roles = rolesResponse.data.roles
         if (roles.find((role) => role.roleName === 'is_driver')) {
@@ -398,8 +473,10 @@ export default class UsersDetail extends Vue {
   get mode(): string {
     switch (this.$route.name) {
       case 'users.edit':
+      case 'profile.edit':
         return 'edit'
       case 'users.view':
+      case 'profile':
         return 'view'
       default:
         return 'add'
@@ -435,6 +512,10 @@ export default class UsersDetail extends Vue {
 
   get isModeAdd(): boolean {
     return this.mode === 'add'
+  }
+
+  get isModeProfile(): boolean {
+    return this.$route.name === 'profile' || this.$route.name === 'profile.edit'
   }
 
   async deleteUser(): Promise<void> {
@@ -534,7 +615,12 @@ export default class UsersDetail extends Vue {
   }
 
   async editExistingUser(): Promise<number> {
-    const userId = Number(this.$route.params.id)
+    let userId
+    if (this.isModeProfile) {
+      userId = Number(2) //TODO: getUserId for logged in user
+    } else {
+      userId = Number(this.$route.params.id)
+    }
 
     if (this.treatAsDriver) {
       await driver.makeDriver(userId)
@@ -575,7 +661,7 @@ export default class UsersDetail extends Vue {
       user.uploadUserPhoto(userId, this.uploadedPhoto)
     }
 
-    this.$router.push({ name: 'users.view', params: { id: String(userId) } })
+    this.$router.push({ name: 'profile' })
   }
 }
 </script>

@@ -5,7 +5,7 @@ export interface Rate {
   hourlyMinimum: number
   lowRate: number
   marketId: number
-  marketRateType?: string
+  marketRateType: string
   marketRateId: number
   marketplace: number
   vehicleId?: number
@@ -14,50 +14,60 @@ export interface Rate {
   vehicleTypeId: number
 }
 
-export interface RateMapItem extends Rate {
-  isEditable?: boolean
-  isNewRow?: boolean
-}
+// Technically extends RateMapItem, but not indexable by string
+// Represents the object passed to v-data-table, rather than just
+// a compliation of all rates associated with a vehicleType
 export interface RateTableRow {
   dailyRate: RateTableRowRate
   deadMileRate: RateTableRowRate
   hourlyMinimum: RateTableRowRate
   hourlyRate: RateTableRowRate
-  isEditable?: boolean
-  isNewRow?: boolean
   mileageRate: RateTableRowRate
   transferRate: RateTableRowRate
+  isEditable?: boolean
+  isNewRow?: boolean
+  items?: unknown[]
   vehicleType: string
-  vehicleTypeId: number
-  companyId?: number
-  vehicleName?: string
-  companyName?: string
-  marketId?: number
-  marketRateType?: string
-  marketRateId?: number
-  marketplace: number
-  vehicleId?: number
-  highRate?: number
-  lowRate?: number
 }
-
+export interface RateMapItem {
+  [index: string]: RateTableRowRate
+  dailyRate: RateTableRowRate
+  deadMileRate: RateTableRowRate
+  hourlyMinimum: RateTableRowRate
+  hourlyRate: RateTableRowRate
+  mileageRate: RateTableRowRate
+  transferRate: RateTableRowRate
+}
 export interface RateTableRowRate {
-  companyId: number
-  marketId: number
-  marketRateId: number
-  marketRateType: string
-  marketplace: number
+  companyId?: number
+  marketId?: number
+  marketRateId?: number
+  marketRateType?: string
+  marketplace?: number
   value: number
+  vehicleTypeId?: number
 }
 
+// Requests
 export interface CreateRatePayload {
+  companyId: number
+  highRate: number | string
+  lowRate: number | string
+  marketId?: number
+  marketRateType: string
+  marketRateTypeKey: string
+  marketplace: number
+  vehicleTypeKey: string
+  vehicleId?: number | null
+}
+export interface UpdateRatePayload {
   companyId: number
   highRate: number | string
   lowRate: number | string
   marketId: number
   marketRateType: string
-  marketRateTypeKey: string 
+  marketRateTypeKey: string
   marketplace: number
-  vehicleType?: string
+  vehicleTypeKey: string
   vehicleId?: number | null
 }

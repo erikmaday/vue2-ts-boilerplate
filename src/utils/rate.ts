@@ -4,7 +4,7 @@ import deepClone from './deepClone'
 
 export const buildAddRatePayload = (
   row: RateTableRow,
-  companyId: number, 
+  companyId: number,
   marketId: number
 ): CreateRatePayload[] => {
   const newRates = [
@@ -48,7 +48,7 @@ export const buildAddRatePayload = (
       marketId,
       companyId,
       marketplace: 1,
-      vehicleId: null
+      vehicleId: null,
     }
   })
 }
@@ -65,9 +65,9 @@ export const getMarketRateIdsForRow = (row: RateTableRow): number[] => {
 
 export const buildUpdateRatePayload = (
   row: RateTableRow,
-  companyId: number, 
-  marketId: number, 
-  vehicleTypeKey: string,
+  companyId: number,
+  marketId: number,
+  vehicleTypeKey: string
 ): CreateRatePayload[] => {
   const newRates = [
     {

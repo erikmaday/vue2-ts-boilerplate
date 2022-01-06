@@ -33,7 +33,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import rate from '@/services/rate'
 import { filter } from '@/utils/filter'
-import { Rate, RateMapItem, RateTableRow } from '@/models/dto/Rate'
+import { Rate, RateMapItem, RateTableRow, RateTableRowRate } from '@/models/dto/Rate'
 import { titleCaseToCamelCase } from '@/utils/string'
 import { ActionColumn } from '@/models/ActionColumn'
 import typeService from '@/services/type'
@@ -50,6 +50,7 @@ import {
 import auth from '@/store/modules/auth'
 import company from '@/services/company'
 import { VehicleType } from '@/models/dto'
+import { hasKey } from '@/utils/validators'
 
 @Component({})
 export default class RatesList extends Vue {
@@ -140,11 +141,27 @@ export default class RatesList extends Vue {
   // the same vehicleType, and return an array where each 
   // item is an object that represent all rates for 
   // a given vehicleType 
-  get ratesMap(): RateMapItem[] {
-    const reduceFn = (newObj: any, item: any) => {
-      newObj[item.vehicleType] = newObj[item.vehicleType] || {
-        vehicleTypeId: item.vehicleTypeId,
-      }
+  get ratesMap(): RateTableRow[] {
+    const reduceFn = (newObj: Record<string, RateMapItem>, item: Rate) => {
+      let existingVehicleTypeRow = newObj[item.vehicleType] || {
+          deadMileRate: {
+            value: 0
+          },
+          hourlyMinimum: {
+            value: 0
+          },
+          hourlyRate: {
+            value: 0
+          },
+          mileageRate: {
+            value: 0
+          },
+          transferRate: {
+            value: 0
+          }
+        } as RateMapItem
+
+      newObj[item.vehicleType] = existingVehicleTypeRow
       const marketRateType = titleCaseToCamelCase(item.marketRateType)
 
       newObj[item.vehicleType][marketRateType] = {
@@ -155,9 +172,10 @@ export default class RatesList extends Vue {
         marketplace: item.marketplace,
         marketRateType: item.marketRateType,
         vehicleTypeId: item.vehicleTypeId,
-      }
-      // Hourly minimum is a property on the hourlyRate response, but we treat it as its own  
-      // rate type with a value to display it separately
+      } as RateTableRowRate
+      
+      // Hourly minimum is a property on the hourlyRate response, but 
+      // for the UI inputs we treat it as its own rate type
       if (marketRateType === 'hourlyRate') {
         newObj[item.vehicleType].hourlyMinimum = {
           value: item.hourlyMinimum,
@@ -167,19 +185,20 @@ export default class RatesList extends Vue {
           marketplace: item.marketplace,
           marketRateType: item.marketRateType,
           vehicleTypeId: item.vehicleTypeId,
-        }
+        } as RateTableRowRate
       }
 
       return newObj
     }
     if (!this.companyRates) return []
-    const vehicleObjects = this.companyRates.reduce(reduceFn, {})
-    return Object.entries(vehicleObjects).map(([key, val]) => ({
-      vehicleType: key,
-      isEditable: false,
-      items: deepClone(this.vehicleTypes),
-      ...val,
-    }))
+    const vehicleObjects: Record<string, RateMapItem> = this.companyRates.reduce(reduceFn, {})
+    return Object.entries(vehicleObjects)
+      .map(([key, val]: [string, RateMapItem]) => ({
+        vehicleType: key,
+        isEditable: false,
+        items: deepClone(this.vehicleTypes),
+        ...val,
+      }))
   }
 
   // Array of vehicleTypes which aren't associated with a 

@@ -50,7 +50,6 @@ import {
 import auth from '@/store/modules/auth'
 import company from '@/services/company'
 import { VehicleType } from '@/models/dto'
-import { hasKey } from '@/utils/validators'
 
 @Component({})
 export default class RatesList extends Vue {

@@ -113,9 +113,7 @@
 
   .v-input--checkbox {
     &.v-input--is-disabled {
-
       .v-input--selection-controls__input {
-
         color: $gray-mid-light;
       }
     }
@@ -147,7 +145,11 @@
   .v-text-field {
     margin-bottom: 0px;
 
-    input[type=password] {
+    .v-input__prepend-inner {
+      z-index: 5;
+      margin-top: 13px;
+    }
+    input[type='password'] {
       font-size: 24px;
     }
 

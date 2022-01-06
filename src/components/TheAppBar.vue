@@ -36,7 +36,11 @@
       >
         <v-menu v-if="item.children" bottom offset-y nudge-top="15px">
           <template v-slot:activator="{ on }">
-            <span class="h-full d-flex align-center" v-on="on">
+            <span
+              class="h-full d-flex align-center"
+              style="margin-top: -1px"
+              v-on="on"
+            >
               {{ item.label }}
               <CUIcon
                 class="margin-r-3"
@@ -78,25 +82,29 @@
             hover:border-black
             active:border-black
           "
-          :class="{ 'border-black': item.link === $route.name }"
+          :class="{ 'border-black': item.name === $route.name }"
         >
           <span>{{ item.label }}</span>
         </span>
       </div>
-      <v-spacer />
-      <CUIcon class="text-gray-mid-light margin-r-4" large :key="`search-icon`">
-        search
-      </CUIcon>
+    </template>
+    <v-spacer />
 
-      <v-badge bordered color="error" :content="0" :value="0" overlap>
-        <CUIcon
-          class="text-gray-mid-light margin-r-2"
-          large
-          :key="`notification-icon`"
-        >
-          notifications
-        </CUIcon>
-      </v-badge>
+    <CUIcon class="text-gray-mid-light margin-r-4" large :key="`search-icon`">
+      search
+    </CUIcon>
+
+    <v-badge bordered color="error" :content="0" :value="0" overlap>
+      <CUIcon
+        class="text-gray-mid-light margin-r-2"
+        large
+        :key="`notification-icon`"
+      >
+        notifications
+      </CUIcon>
+    </v-badge>
+
+    <template v-if="$vuetify.breakpoint.mdAndUp">
       <v-btn small text color="primary" class="margin-r-2">Support</v-btn>
       <v-menu class="border-0">
         <template #activator="{ on }">
@@ -105,7 +113,7 @@
             class="d-flex align-center cursor-pointer"
             v-on="on"
           >
-            <span class="font-14 font-medium text-no-wrap">First Last</span>
+            <span class="font-14 font-medium text-no-wrap">{{ userName }}</span>
             <CUIcon class="text-black">keyboard_arrow_down</CUIcon>
           </div>
         </template>
@@ -122,9 +130,8 @@
       </v-menu>
     </template>
     <template v-else>
-      <v-spacer />
       <CUIcon
-        class="text-black cursor-pointer"
+        class="text-black cursor-pointer margin-l-3"
         :key="`menu-icon`"
         @click="openSidebar"
       >
@@ -140,6 +147,7 @@ import CharterUPLogo from '@/components/CharterUPLogo.vue'
 import { navigation } from '@/data/navigation'
 import { NavigationLink } from '@/models/NavigationLink'
 import modules from '@/store/modules'
+import auth from '@/store/modules/auth'
 
 @Component({
   components: {
@@ -153,6 +161,10 @@ export default class TheAppBar extends Vue {
 
   get dropdownNavigationItems(): NavigationLink[] {
     return navigation.filter((item) => item.location === 'dropdown')
+  }
+
+  get userName(): string {
+    return auth.getFullName
   }
 
   openSidebar(): void {

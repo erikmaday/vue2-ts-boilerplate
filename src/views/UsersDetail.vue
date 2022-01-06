@@ -490,7 +490,7 @@ export default class UsersDetail extends Vue {
     if (this.currentUser?.userPhotoDTOs?.length) {
       // TODO:
       // It seems like we don't currently have a way of setting the primaryImage
-      // property on the back-end. Creating a ticket to fix this, but 
+      // property on the back-end. Creating a ticket to fix this, but
       // until then, this is the workaround we use in Coachrail
       const userPhotoSrc =
         this.currentUser.userPhotoDTOs[
@@ -525,7 +525,9 @@ export default class UsersDetail extends Vue {
     const res: AxiosResponse<ApiResult> = await user.delete(Number(userId))
     if (res.status === 200) {
       this.isDeleteModalOpen = false
-      this.$router.push({ name: 'users' })
+      this.$router.push({
+        name: 'users',
+      })
     }
   }
 
@@ -661,7 +663,14 @@ export default class UsersDetail extends Vue {
       user.uploadUserPhoto(userId, this.uploadedPhoto)
     }
 
-    this.$router.push({ name: 'profile' })
+    if (this.isModeProfile) {
+      this.$router.push({ name: 'profile' })
+    } else {
+      this.$router.push({
+        name: 'users.view',
+        params: { id: String(userId) },
+      })
+    }
   }
 }
 </script>

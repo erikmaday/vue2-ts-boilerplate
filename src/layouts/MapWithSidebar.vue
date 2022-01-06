@@ -9,7 +9,7 @@
           'w-404': $vuetify.breakpoint.smAndUp,
           'shadow-right': $vuetify.breakpoint.smAndUp,
         }"
-        class="padding-a-6 z-3"
+        class="padding-t-6 padding-x-6 z-3 bid-panel padding-b-0"
         style="overflow-y: scroll; height: calc(100vh - 68px)"
       >
         <slot name="sidebar" />
@@ -67,5 +67,16 @@ export default class MapWithSidebar extends Vue {
 <style lang="scss" scoped>
 .shadow-right {
   box-shadow: 0px 0px 35px 0px rgba($black-true, 0.35);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.bid-panel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.bid-panel {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 </style>

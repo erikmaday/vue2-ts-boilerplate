@@ -320,11 +320,15 @@ const processTrip = (trip: Trip | TableViewTrip): Trip | TableViewTrip => {
 }
 
 const buildSoldOutPayload = (trip: Trip): BidPayload => {
+  const userId = auth.getUserId
+  if (!userId) {
+    return
+  }
   return {
     tripId: trip.tripId,
-    companyId: auth.getUser.companyId,
+    companyId: auth.getUser!.companyId,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    userId: auth.getUserId!,
+    userId: userId,
     bidStatusId: BidStatusId.Pending,
     providerNotes: null,
     active: true,

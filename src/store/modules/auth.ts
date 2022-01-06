@@ -4,16 +4,15 @@ import axios from 'axios'
 import auth from '@/services/auth'
 import user from '@/services/user'
 import router from '@/router'
-import { UserDetail } from '@/models/dto/User'
 
-import { UserAuthPayload, Role, User } from '@/models/dto'
+import { UserAuthPayload, UserDetail, Role } from '@/models/dto'
 import { save, load } from '@/utils/localStorage'
 
 @Module({ generateMutationSetters: true })
 class AuthModule extends VuexModule {
   // state
   userId: number | null = load('userId') || null
-  user: User | null = load('user') || null
+  user: UserDetail | null = load('user') || null
   token: string | null = load('token') || null
   isTokenSet = !!load('token')
   roles: Role[] | null = load('roles') || null
@@ -67,6 +66,10 @@ class AuthModule extends VuexModule {
     window.localStorage.removeItem('user')
     window.localStorage.removeItem('userId')
     window.localStorage.removeItem('roles')
+    this.userId = null
+    this.user = null
+    this.token = null
+    this.roles = null
     this.isTokenSet = false
     router.push({
       name: 'login',

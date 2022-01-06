@@ -35,7 +35,7 @@ export default class BidDetailHeader extends Vue {
   }
 
   get formattedStartDateTime(): string {
-    const datetime = this.$dayjs(bidDetail.getTrip.startDate).tz(
+    const datetime = (this as any).$dayjs(bidDetail.getTrip.startDate).tz(
       bidDetail.getTrip?.stops[0].address.timeZone
     )
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`

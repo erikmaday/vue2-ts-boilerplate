@@ -2,7 +2,14 @@
   <div>
     <v-row justify="space-between" class="padding-b-6 padding-x-3">
       <h1>Team</h1>
-      <v-btn primary small color="primary" @click="$router.push({ name: 'users.add' })">Add New</v-btn>
+      <v-btn
+        primary
+        small
+        color="primary"
+        @click="$router.push({ name: 'users.add' })"
+      >
+        Add New
+      </v-btn>
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -23,11 +30,12 @@ import { User } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { AxiosResponse } from 'axios'
+import { Location } from 'vue-router'
 
 @Component({
   components: { CUDataTable, CUCollectionTable },
 })
-export default class CompanyUsers extends Vue {
+export default class Users extends Vue {
   columns: DataTableColumn[] = [
     {
       text: 'Name',
@@ -36,7 +44,6 @@ export default class CompanyUsers extends Vue {
     },
     { text: 'Email', value: 'email', type: 'email' },
     { text: 'Type', value: 'groupName' },
-    { text: 'Details', value: 'details', type: 'details' },
     { text: 'Actions', value: 'actions', type: 'actions' },
   ]
 
@@ -65,6 +72,21 @@ export default class CompanyUsers extends Vue {
       confirmModalText: 'Are you sure you want to delete this user?',
       action: function (row: User): Promise<AxiosResponse> {
         return user.delete(row.userId)
+      },
+    },
+    {
+      displayText: 'Details',
+      key: 'details',
+      color: 'primary',
+      icon: '',
+      confirmModal: false,
+      ariaLabel: 'View User Details',
+      isDetail: true,
+      detailRoute: (row: User): Location => {
+        return {
+          name: 'users.view',
+          params: { id: row?.userId },
+        }
       },
     },
   ]

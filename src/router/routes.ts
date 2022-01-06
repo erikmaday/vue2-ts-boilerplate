@@ -36,7 +36,7 @@ export const routes: RouteConfig[] = [
                     name: 'users',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+                        /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
                   {
@@ -44,7 +44,7 @@ export const routes: RouteConfig[] = [
                     name: 'users.edit',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+                        /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
                   {
@@ -52,7 +52,7 @@ export const routes: RouteConfig[] = [
                     name: 'users.view',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+                        /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
                   {
@@ -60,7 +60,7 @@ export const routes: RouteConfig[] = [
                     name: 'users.add',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-users" */ '@/components/CompanyUsers.vue'
+                        /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
                 ],
@@ -77,7 +77,7 @@ export const routes: RouteConfig[] = [
                     name: 'vehicles',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-vehicles-list" */ '@/components/CompanyVehicles.vue'
+                        /* webpackChunkName: "company-vehicles-list" */ '@/views/Vehicles.vue'
                       ),
                   },
                   {
@@ -85,7 +85,7 @@ export const routes: RouteConfig[] = [
                     name: 'vehicles.edit',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-vehicles-edit" */ '@/components/CompanyVehicles.vue'
+                        /* webpackChunkName: "company-vehicles-edit" */ '@/views/Vehicles.vue'
                       ),
                   },
 
@@ -94,7 +94,7 @@ export const routes: RouteConfig[] = [
                     name: 'vehicles.view',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-vehicles-edit" */ '@/components/CompanyVehicles.vue'
+                        /* webpackChunkName: "company-vehicles-view" */ '@/views/Vehicles.vue'
                       ),
                   },
                 ],
@@ -111,7 +111,7 @@ export const routes: RouteConfig[] = [
                     name: 'garages',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-garages-list" */ '@/components/CompanyGarages.vue'
+                        /* webpackChunkName: "company-garages-list" */ '@/views/Garages.vue'
                       ),
                   },
                   {
@@ -119,7 +119,7 @@ export const routes: RouteConfig[] = [
                     name: 'garages.edit',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyGaragesEdit.vue'
+                        /* webpackChunkName: "company-garages-detail-edit" */ '@/views/GaragesDetail.vue'
                       ),
                   },
                   {
@@ -127,7 +127,15 @@ export const routes: RouteConfig[] = [
                     name: 'garages.view',
                     component: () =>
                       import(
-                        /* webpackChunkName: "company-garages-edit" */ '@/components/CompanyGaragesEdit.vue'
+                        /* webpackChunkName: "company-garages-detail-view" */ '@/views/GaragesDetail.vue'
+                      ),
+                  },
+                  {
+                    path: 'add', 
+                    name: 'garages.add', 
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-detail-add" */ '@/views/GaragesDetail.vue'
                       ),
                   },
                 ],

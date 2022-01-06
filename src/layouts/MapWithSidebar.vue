@@ -9,27 +9,35 @@
           'w-404': $vuetify.breakpoint.smAndUp,
           'shadow-right': $vuetify.breakpoint.smAndUp,
         }"
-        class="padding-a-6 z-3"
+        class="padding-t-6 padding-x-6 z-3 bid-panel padding-b-0"
+        style="overflow-y: scroll; height: calc(100vh - 68px)"
       >
-        <slot name="sidebar-content" />
+        <slot name="sidebar" />
       </v-col>
       <v-col v-if="showMap" sm="auto" cols="12" class="flex-grow-1 z-2">
-        <slot name="map-content" />
+        <slot name="map" />
       </v-col>
     </v-row>
     <v-row
       v-if="$vuetify.breakpoint.xsOnly"
-      class="margin-x-0 margin-t-n8 padding-y-1 margin-b-0 justify-center z-4"
+      class="
+        margin-x-0 margin-t-n8
+        padding-y-1
+        margin-b-0
+        justify-center
+        z-4
+        background-white
+      "
     >
       <CUIcon
-        class="text-black"
+        class="text-black cursor-pointer"
         :class="{ 'opacity-25': !showPanel }"
         @click="mobileShowMap = false"
       >
         dot
       </CUIcon>
       <CUIcon
-        class="text-black"
+        class="text-black cursor-pointer"
         :class="{ 'opacity-25': !showMap }"
         @click="mobileShowMap = true"
       >
@@ -59,5 +67,16 @@ export default class MapWithSidebar extends Vue {
 <style lang="scss" scoped>
 .shadow-right {
   box-shadow: 0px 0px 35px 0px rgba($black-true, 0.35);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.bid-panel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.bid-panel {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 </style>

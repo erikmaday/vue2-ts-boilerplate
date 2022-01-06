@@ -1,3 +1,4 @@
+import { Location } from 'vue-router'
 export interface ActionColumn {
   displayText: string
   key: string
@@ -7,4 +8,6 @@ export interface ActionColumn {
   confirmModal?: boolean
   confirmModalText?: string
   action?: any
+  isDetail?: boolean
+  detailRoute?: (row: any) => Location
 }

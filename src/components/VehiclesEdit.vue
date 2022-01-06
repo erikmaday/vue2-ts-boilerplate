@@ -1,37 +1,37 @@
 <template>
   <div>
     <!-- Placeholder for real view/edit page -->
-    <h1>Edit Garage</h1>
-    <h2 v-if="currentGarage !== null">
-      {{ `${currentGarage.garageName}` }}
+    <h1>Edit Vehicle</h1>
+    <h2 v-if="currentVehicle !== null">
+      {{ `${currentVehicle.vehicleName}` }}
     </h2>
-    <h2 v-else>Garage not found</h2>
+    <h2 v-else>Vehicle not found</h2>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import garage from '@/services/garage'
+import vehicle from '@/services/vehicle'
 import { AxiosResponse } from 'axios'
-import { Garage } from '@/models/dto/Garage'
+import { Vehicle } from '@/models/dto/Vehicle'
 
 @Component
-export default class CompanyGaragesEdit extends Vue {
+export default class VehiclesEdit extends Vue {
   notFound = false
 
-  currentGarage: Garage | null = null
+  currentVehicle: Vehicle | null = null
 
   mounted(): void {
-    this.getCurrentGarage()
+    this.getCurrentVehicle()
   }
 
-  async getCurrentGarage(): Promise<void> {
+  async getCurrentVehicle(): Promise<void> {
     let response: AxiosResponse
     try {
       if (this.$route.params.id) {
-        response = await garage.byId(Number(this.$route.params.id))
+        response = await vehicle.byId(Number(this.$route.params.id))
         const { data } = response
-        this.currentGarage = data
+        this.currentVehicle = data
       } else {
         this.notFound = true
         return

@@ -11,11 +11,11 @@
         <p class="font-medium margin-t-0">{{ formatStopAddress(stop) }}</p>
         <p v-if="stop.dropoffDatetime" class="text-gray-light margin-t-0">
           Estimated arrival:
-          {{ formatStopTime(stop.dropoffDatetime, stop.address.timeZone) }}
+          {{ formatDropoffTime(stop) }}
         </p>
         <p v-if="stop.pickupDatetime" class="text-gray-light margin-t-0">
           Departure time:
-          {{ formatStopTime(stop.pickupDatetime, stop.address.timeZone) }}
+          {{ formatPickupTime(stop) }}
         </p>
       </div>
     </CUItineraryItem>
@@ -24,7 +24,11 @@
 
 <script lang="ts">
 import { ReservationDetail, ReservationDetailStop } from '@/models/dto'
-import { formatStopAddress } from '@/utils/string'
+import {
+  formatDropoffTime,
+  formatPickupTime,
+  formatStopAddress,
+} from '@/utils/string'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import CUItinerary from '@/components/CUItinerary.vue'
 import CUItineraryItem from '@/components/CUItineraryItem.vue'
@@ -36,13 +40,9 @@ export default class BookingDetailHeader extends Vue {
   get stops(): ReservationDetailStop[] {
     return this.reservation.stops
   }
-
-  formatStopTime(time: string, timezone: string): string {
-    const datetime = this.$dayjs(time).tz(timezone)
-    return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
-  }
-
   formatStopAddress = formatStopAddress
+  formatDropoffTime = formatDropoffTime
+  formatPickupTime = formatPickupTime
 }
 </script>
 

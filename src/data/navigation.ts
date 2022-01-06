@@ -27,6 +27,14 @@ export const navigation: NavigationLink[] = [
     permission: [],
   },
   {
+    label: 'Availability',
+    href: 'availability',
+    name: 'availability',
+    location: 'top',
+    params: {},
+    permission: [],
+  },
+  {
     label: 'My Trips',
     href: 'trips',
     name: 'trips',

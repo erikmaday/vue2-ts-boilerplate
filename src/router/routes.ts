@@ -154,7 +154,7 @@ export const routes: RouteConfig[] = [
                 name: 'availability',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-availability" */ '@/views/Empty.vue'
+                    /* webpackChunkName: "company-availability" */ '@/views/Availability.vue'
                   ),
               },
               {

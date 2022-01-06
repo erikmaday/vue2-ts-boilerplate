@@ -4,28 +4,13 @@
       <v-col cols="12">
         <v-row>
           <h3
-            class="
-              col
-              shrink
-              white-space-nowrap
-              font-book font-weight-400
-              text-white
-              font-20
-            "
+            class="col shrink white-space-nowrap font-book font-weight-400 text-white font-20"
           >
             Marketplace
           </h3>
           <v-spacer />
           <p
-            class="
-              col
-              shrink
-              white-space-nowrap
-              text-white
-              font-14 font-medium
-              text-decoration-underline
-              cursor-pointer
-            "
+            class="col shrink white-space-nowrap text-white font-14 font-medium text-decoration-underline cursor-pointer"
           >
             All Bids ({{ tripCount }})
           </p>
@@ -172,7 +157,7 @@ export default class TodayMarketplace extends Vue {
     this.getTrips()
   }
 
-  get tripBundlesToDisplay(): TableViewTrip[] {
+  get tripBundlesToDisplay(): TableViewTrip[][] {
     if (!this.tripBundles) {
       return []
     }
@@ -228,7 +213,7 @@ export default class TodayMarketplace extends Vue {
   }
 
   bundleTrips(trips: TableViewTrip[]): TableViewTrip[][] {
-    const bundleMap: { [quoteId: number]: TableViewTrip } = {}
+    const bundleMap: { [quoteId: number]: TableViewTrip[] } = {}
     for (const trip of trips) {
       if (bundleMap[trip.quoteId]) {
         bundleMap[trip.quoteId].push(trip)

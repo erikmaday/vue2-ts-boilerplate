@@ -12,13 +12,15 @@
           width: `${sidebarWidth}px`,
           'max-width': `${sidebarWidth}px`,
         }"
-        :class="`background-${sidebarColor}
+        class="
           padding-a-6
-          border-y-0 border-l-0 border-r border-gray-border border-solid`"
+          border-y-0 border-l-0 border-r border-gray-border border-solid
+        "
+        :class="`background-${sidebarColor}`"
       >
         <slot name="navigation" />
       </v-col>
-      <v-col :class="`background-${mainColor} padding-a-6`">
+      <v-col class="padding-a-6" :class="`background-${mainColor}`">
         <v-row align="center">
           <v-col cols="auto">
             <h1><slot name="section-title" /></h1>

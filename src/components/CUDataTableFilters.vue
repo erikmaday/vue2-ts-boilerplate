@@ -144,6 +144,7 @@ export default class CUDataTableFilters extends Vue {
         this.filters.and(activeFilter).add(activeFilter)
         this.$emit('update:filters', this.filters)
       }
+      // LEAVE FOR NOW, WILL LIKELY UNCOMMENT WHEN WE ADD PREDEFINED FILTERS SHORTLY
       // if (column.recalculate) {
       //   newFilter.recalculate = column.recalculate
       // }
@@ -168,8 +169,6 @@ export default class CUDataTableFilters extends Vue {
   }
 
   unsetFilter(column: DataTableColumn): void {
-    // HANDLE REMOVING EPHEMERAL COLUMN FILTERS CREATED BY FILTER COMPONENTS
-    // IDENTIFIED BY STEPPARENT PROP.
     const filter = this.filterList.find((f) => f.column._t_id === column._t_id)
     if (!filter) {
       return

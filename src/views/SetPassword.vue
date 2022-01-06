@@ -1,7 +1,11 @@
 <template>
-  <MainWithSidebar :sidebar-width="404">
+  <MainWithSidebar
+    sidebar-width="404"
+    sidebar-color="white"
+    main-color="gray-header"
+  >
     <template v-slot:navigation>
-      <v-container class="background-white padding-x-2 padding-t-12">
+      <v-container class="padding-x-2 padding-t-12">
         <v-col class="padding-x-0" align="center">
           <BusJoinUs class="w-220 margin-b-9" />
           <h1 class="margin-b-5 font-28 text-left">
@@ -47,7 +51,7 @@
       </v-container>
     </template>
     <template v-slot:default>
-      <v-container class="background-gray-header">
+      <v-container>
         <v-col cols="12" align="center" class="margin-b-8">
           <h1 class="font-30">CharterUP for Operators</h1>
           <p class="font-18">

@@ -1,16 +1,28 @@
 <template>
   <div>
-    <v-row justify="space-between" class="padding-b-6 padding-x-3">
-      <h1>Team</h1>
-      <v-btn
-        primary
-        small
-        color="primary"
-        @click="$router.push({ name: 'users.add' })"
-      >
-        Add New
-      </v-btn>
+    <v-row class="padding-b-6 padding-x-3">
+      <v-col class="shrink">
+        <h1>Team</h1>
+      </v-col>
+      <v-spacer />
+      <v-col class="shrink">
+        <v-btn
+          primary
+          small
+          color="primary"
+          @click="$router.push({ name: 'users.add' })"
+        >
+          Add New
+        </v-btn>
+      </v-col>
+      <v-col class="shrink">
+        <v-btn color="primary" small @click="isFilterDialogOpen = true">
+          <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+          Filter
+        </v-btn>
+      </v-col>
     </v-row>
+
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
@@ -18,6 +30,7 @@
       collection="users"
       :fetch-method="usersTableView"
     />
+    <CUDataTableFilters v-model="isFilterDialogOpen" :columns="columns" />
   </div>
 </template>
 
@@ -25,6 +38,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
+import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import user from '@/services/user'
 import { User } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
@@ -33,16 +47,21 @@ import { AxiosResponse } from 'axios'
 import { Location } from 'vue-router'
 
 @Component({
-  components: { CUDataTable, CUCollectionTable },
+  components: { CUDataTable, CUCollectionTable, CUDataTableFilters },
 })
 export default class Users extends Vue {
+  isFilterDialogOpen = false
   columns: DataTableColumn[] = [
     {
       text: 'Name',
       value: 'name',
       computedText: (row: User): string => `${row.firstName} ${row.lastName}`,
     },
-    { text: 'Email', value: 'email', type: 'email' },
+    {
+      text: 'Email',
+      value: 'email',
+      type: 'email',
+    },
     { text: 'Type', value: 'groupName' },
     { text: 'Actions', value: 'actions', type: 'actions' },
   ]

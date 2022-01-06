@@ -10,14 +10,16 @@
     @update:options="load"
     @pagination="options = $event"
     @refresh="load"
+    v-on="$listeners"
   />
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import { TableViewParameters } from '@/models/TableView'
 import { AxiosResponse } from 'axios'
 import { DataTableColumn } from '@/models/DataTableColumn'
+import { EventBus } from '@/utils/eventBus'
 
 @Component({
   components: { CUDataTable },
@@ -52,9 +54,22 @@ export default class CUCollectionTable extends Vue {
   @Prop(Function)
   fetchMethod!: any
 
+  @Prop({
+    required: false,
+    default: () => null,
+  })
+  filters: any
+
+  @Prop({
+    required: false,
+    default: () => null,
+  })
+  sorts: any
+
   items: unknown[] = []
   loading = false
   serverItemsLength = 0
+  debounce: any = null
 
   options: TableViewParameters = {
     page: 1,
@@ -63,12 +78,39 @@ export default class CUCollectionTable extends Vue {
 
   mounted(): void {
     this.load()
+
+    EventBus.$on('set-tableview-page', (page) => {
+      this.options.page = page
+    })
+    EventBus.$on('refresh-tableview', () => {
+      this.load()
+    })
+  }
+
+  @Watch('isOpen')
+  isDialogOpenChanged(value: boolean): void {
+    this.$emit('input', value)
+  }
+  @Watch('value', { immediate: true })
+  valueChanged(value: boolean): void {
+    this.isOpen = value
   }
 
   async load(): Promise<void> {
     this.loading = true
     await this.$nextTick(async () => {
-      const response: AxiosResponse = await this.fetchMethod(this.options)
+      let sorts, filters
+      if (this.filters) {
+        filters = this.filters.asQueryParams()
+      }
+      if (this.sorts) {
+        sorts = this.sorts.asQueryParams()
+      }
+      const response: AxiosResponse = await this.fetchMethod({
+        ...this.options,
+        sorts,
+        filters,
+      })
       const { data } = response
 
       this.serverItemsLength = data.count

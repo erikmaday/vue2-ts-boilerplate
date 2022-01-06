@@ -9,16 +9,21 @@ import { ApiResult } from '@/models/dto'
 const httpService: HttpService = new HttpService()
 
 export default {
-  tableView(params: TableViewParameters): Promise<AxiosResponse<TableViewResult<Vehicle>>> {
-    const { sorts, filters, pageSize = 10, page = 1 } = params
-    return httpService.get(
-      `https://${apiBaseUrl()}/tables/vehicles?${
-        (pageSize ? `pageSize=${pageSize}` : '') +
-        (page ? `&page=${page}` : '') +
-        (sorts ? `&${sorts}` : '') +
-        (filters ? `&${filters}` : '')
-      }`
-    )
+  tableView(
+    params: TableViewParameters
+  ): Promise<AxiosResponse<TableViewResult<Vehicle>>> {
+    const { sorts = null, filters = null, pageSize = 10, page = 1 } = params
+    let query = `page=${page}&pageSize=${pageSize}`
+    if (sorts) {
+      query += `&${sorts}`
+    }
+    if (filters) {
+      query += `&${filters}`
+    }
+    query = encodeURI(query)
+    const host = apiBaseUrl()
+
+    return httpService.get(`https://${host}/tables/vehicles?${query}`)
   },
   byId(vehicleId: number): Promise<AxiosResponse<VehicleResult>> {
     return httpService.get(`https://${apiBaseUrl()}/v2/vehicles/${vehicleId}`)

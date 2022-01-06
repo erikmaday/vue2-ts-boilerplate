@@ -26,7 +26,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import user from '@/services/user'
-import { User } from '@/models/dto'
+import { UserDetail } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { AxiosResponse } from 'axios'
@@ -40,7 +40,7 @@ export default class Users extends Vue {
     {
       text: 'Name',
       value: 'name',
-      computedText: (row: User): string => `${row.firstName} ${row.lastName}`,
+      computedText: (row: UserDetail): string => `${row.firstName} ${row.lastName}`,
     },
     { text: 'Email', value: 'email', type: 'email' },
     { text: 'Type', value: 'groupName' },
@@ -56,7 +56,7 @@ export default class Users extends Vue {
       icon: 'edit',
       color: 'primary',
       ariaLabel: 'Edit User',
-      action: (row: User): void => {
+      action: (row: UserDetail): void => {
         this.$router.push({
           name: 'users.edit',
           params: { id: String(row.userId) },
@@ -70,7 +70,7 @@ export default class Users extends Vue {
       icon: 'trash',
       confirmModal: true,
       confirmModalText: 'Are you sure you want to delete this user?',
-      action: function (row: User): Promise<AxiosResponse> {
+      action: function (row: UserDetail): Promise<AxiosResponse> {
         return user.delete(row.userId)
       },
     },
@@ -82,10 +82,10 @@ export default class Users extends Vue {
       confirmModal: false,
       ariaLabel: 'View User Details',
       isDetail: true,
-      detailRoute: (row: User): Location => {
+      detailRoute: (row: UserDetail): Location => {
         return {
           name: 'users.view',
-          params: { id: row?.userId },
+          params: { id: row?.userId.toString() },
         }
       },
     },

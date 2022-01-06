@@ -10,11 +10,11 @@ export interface Stop {
   isDropoffEstimated: boolean
   stopId: number
   tripId: number
-  pickupDatetime?: dayjs.Dayjs
-  dropoffDatetime?: dayjs.Dayjs
-  startDatetime?: dayjs.Dayjs
-  createdOn: dayjs.Dayjs
-  updatedOn?: dayjs.Dayjs
+  pickupDatetime: string
+  dropoffDatetime: string
+  startDatetime?: string
+  createdOn: string
+  updatedOn?: string
   address: Address
   spotTime?: SpotTime
   notes?: string

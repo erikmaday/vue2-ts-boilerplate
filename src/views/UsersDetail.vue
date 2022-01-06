@@ -292,9 +292,9 @@ export default class UsersDetail extends Vue {
   // view -> edit -> view, etc.
   pushLastRoute(): void {
     if (!app.getLastRoute?.name || app.getLastRoute?.name === 'users.view') {
-      this.$router.push({ name: 'users' })
+      ;this.$router.push({ name: 'users' })
     } else {
-      this.$router.push(app.getLastRoute)
+      ;this.$router.push(app.getLastRoute)
     }
   }
 
@@ -303,18 +303,24 @@ export default class UsersDetail extends Vue {
   async getCurrentUser(): Promise<void> {
     try {
       if (this.$route.params.id) {
-        const rolesResponse = await user.roles(Number(this.$route.params.id))
+        const rolesResponse = await user.roles(
+          Number(this.$route.params.id)
+        )
         const roles = rolesResponse.data.roles
         if (roles.find((role) => role.roleName === 'is_driver')) {
           this.treatAsDriver = true
-          const response = await driver.byId(Number(this.$route.params.id))
+          const response = await driver.byId(
+            Number(this.$route.params.id)
+          )
           const userResponseData = response.data.driver
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
           this.currentUser = userResponseData as UserDetail
           this.currentUserAsDriver = userResponseData
           this.populateDrugExpirationDateInputs()
         } else {
-          const response = await user.byId(Number(this.$route.params.id))
+          const response = await user.byId(
+            Number(this.$route.params.id)
+          )
           const userResponseData = response.data
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
 
@@ -413,7 +419,7 @@ export default class UsersDetail extends Vue {
     if (this.currentUser?.userPhotoDTOs?.length) {
       // TODO:
       // It seems like we don't currently have a way of setting the primaryImage
-      // property on the back-end. Creating a ticket to fix this, but 
+      // property on the back-end. Creating a ticket to fix this, but
       // until then, this is the workaround we use in Coachrail
       const userPhotoSrc =
         this.currentUser.userPhotoDTOs[
@@ -443,8 +449,10 @@ export default class UsersDetail extends Vue {
 
     const res: AxiosResponse<ApiResult> = await user.delete(Number(userId))
     if (res.status === 200) {
-      this.isDeleteModalOpen = false
-      this.$router.push({ name: 'users' })
+      this.isDeleteModalOpen = false;
+      this.$router.push({
+        name: 'users',
+      })
     }
   }
 
@@ -575,7 +583,10 @@ export default class UsersDetail extends Vue {
       user.uploadUserPhoto(userId, this.uploadedPhoto)
     }
 
-    this.$router.push({ name: 'users.view', params: { id: String(userId) } })
+    ;this.$router.push({
+      name: 'users.view',
+      params: { id: String(userId) },
+    })
   }
 }
 </script>

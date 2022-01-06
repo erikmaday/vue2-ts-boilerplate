@@ -35,9 +35,9 @@ export const navigation: NavigationLink[] = [
     permission: [],
   },
   {
-    label: 'My Trips',
-    href: 'trips',
-    name: 'trips',
+    label: 'Metrics',
+    href: 'metrics',
+    name: 'metrics',
     location: 'top',
     params: {},
     permission: [],
@@ -96,18 +96,6 @@ export const navigation: NavigationLink[] = [
         icon: 'business',
       },
     ],
-  },
-  {
-    label: 'Search',
-    location: 'mobile',
-    params: {},
-    permission: [],
-  },
-  {
-    label: 'Notifications',
-    location: 'mobile',
-    params: {},
-    permission: [],
   },
   {
     label: 'Support',

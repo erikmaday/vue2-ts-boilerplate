@@ -75,7 +75,7 @@ export default class BookingDetailComments extends Vue {
   }
 
   formatTimestamp(timestamp: string): string {
-    const datetime = (this as any).$dayjs(timestamp)
+    const datetime = this.$dayjs(timestamp)
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
   }
 

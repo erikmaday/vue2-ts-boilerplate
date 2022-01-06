@@ -292,9 +292,9 @@ export default class UsersDetail extends Vue {
   // view -> edit -> view, etc.
   pushLastRoute(): void {
     if (!app.getLastRoute?.name || app.getLastRoute?.name === 'users.view') {
-      ;(this as any).$router.push({ name: 'users' })
+      ;this.$router.push({ name: 'users' })
     } else {
-      ;(this as any).$router.push(app.getLastRoute)
+      ;this.$router.push(app.getLastRoute)
     }
   }
 
@@ -302,15 +302,15 @@ export default class UsersDetail extends Vue {
   // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2
   async getCurrentUser(): Promise<void> {
     try {
-      if ((this as any).$route.params.id) {
+      if (this.$route.params.id) {
         const rolesResponse = await user.roles(
-          Number((this as any).$route.params.id)
+          Number(this.$route.params.id)
         )
         const roles = rolesResponse.data.roles
         if (roles.find((role) => role.roleName === 'is_driver')) {
           this.treatAsDriver = true
           const response = await driver.byId(
-            Number((this as any).$route.params.id)
+            Number(this.$route.params.id)
           )
           const userResponseData = response.data.driver
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
@@ -319,7 +319,7 @@ export default class UsersDetail extends Vue {
           this.populateDrugExpirationDateInputs()
         } else {
           const response = await user.byId(
-            Number((this as any).$route.params.id)
+            Number(this.$route.params.id)
           )
           const userResponseData = response.data
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
@@ -402,7 +402,7 @@ export default class UsersDetail extends Vue {
   }
 
   get mode(): string {
-    switch ((this as any).$route.name) {
+    switch (this.$route.name) {
       case 'users.edit':
         return 'edit'
       case 'users.view':
@@ -444,13 +444,13 @@ export default class UsersDetail extends Vue {
   }
 
   async deleteUser(): Promise<void> {
-    const userId = this.currentUser.userId || (this as any).$route.params.id
+    const userId = this.currentUser.userId || this.$route.params.id
     if (!userId) return
 
     const res: AxiosResponse<ApiResult> = await user.delete(Number(userId))
     if (res.status === 200) {
       this.isDeleteModalOpen = false;
-      (this as any).$router.push({
+      this.$router.push({
         name: 'users',
       })
     }
@@ -583,7 +583,7 @@ export default class UsersDetail extends Vue {
       user.uploadUserPhoto(userId, this.uploadedPhoto)
     }
 
-    ;(this as any).$router.push({
+    ;this.$router.push({
       name: 'users.view',
       params: { id: String(userId) },
     })

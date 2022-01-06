@@ -197,7 +197,6 @@ export interface ReservationDetailStop {
   pickupDatetime?: Date
   dropoffDatetime?: Date
 }
-
 export interface PaymentSummary {
   entryType: number
   amount: number

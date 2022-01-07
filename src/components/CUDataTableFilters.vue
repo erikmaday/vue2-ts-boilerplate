@@ -116,7 +116,7 @@ export default class CUDataTableFilters extends Vue {
     return this.currentSort.id === column._t_id
   }
 
-  getColumnSortIcon(column: DataTableColumn): boolean {
+  getColumnSortIcon(column: DataTableColumn): string {
     if (this.isColumnSortActive(column)) {
       if (this.currentSort.direction === 'asc') {
         return 'arrow_up'
@@ -183,16 +183,17 @@ export default class CUDataTableFilters extends Vue {
     this.unsetPeerFilters(filter)
     this.filters.remove(filter)
     this.$emit('update:filters', this.filters)
-    setTimeout(() => {
-      this.filterList = this.filterList.filter(
-        (f) => f.column._t_id !== filter.column._t_id
-      )
-      const nextDefaultFilter = this.filterList.find((f) => !f.hideOnFilterBar)
-      if (nextDefaultFilter && nextDefaultFilter.column) {
-        this.setFilter({}, nextDefaultFilter.column)
-      }
+    this.$nextTick(() => {
+      // LEAVE THIS FOR NOW, MAY NEED TO ADD BACK SIMILAR LOGIC WHEN ADDIING DEFAULT FILTERS SHORTLY
+      // this.filterList = this.filterList.filter(
+      //   (f) => f.column._t_id !== filter.column._t_id
+      // )
+      // const nextDefaultFilter = this.filterList.find((f) => !f.hideOnFilterBar)
+      // if (nextDefaultFilter && nextDefaultFilter.column) {
+      //   this.setFilter({}, nextDefaultFilter.column)
+      // }
       this.handleFilterRemoved()
-    }, 0)
+    })
   }
 
   unsetPeerFilters(filter: any): void {
@@ -222,7 +223,7 @@ export default class CUDataTableFilters extends Vue {
   }
 
   initSort(column: DataTableColumn): void {
-    const sortProp = column.sortProp || column.prop
+    const sortProp = column.sortProp || column.value
     this.currentSort.key = uuidv4()
     if (this.currentSort && this.currentSort.prop === sortProp) {
       this.currentSort.direction =

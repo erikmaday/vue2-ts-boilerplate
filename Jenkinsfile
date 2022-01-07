@@ -1,4 +1,4 @@
 #!/usr/bin/env groovy
-@Library('charterup-operators') _
+@Library('charterup') _
 
 ecsBuild("charterup-operators","local")

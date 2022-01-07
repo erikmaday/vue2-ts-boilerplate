@@ -43,7 +43,7 @@
             </v-col>
             <div
               :class="{
-                'w-full margin-x-3': $vuetify.breakpoint.xs
+                'w-full margin-x-3': $vuetify.breakpoint.xs,
               }"
             >
               <v-btn
@@ -197,9 +197,22 @@ export default class GaragesDetail extends Vue {
   isNotEmpty = isNotEmpty
   currentGarage: Garage | Record<string, never> = {}
   columns: DataTableColumn[] = [
-    { text: 'Name', value: 'vehicleName' },
-    { text: 'Type', value: 'vehicleTypeName' },
-    { text: 'Detail', value: 'detail', type: 'details' },
+    {
+      _t_id: 'd863456c-8159-4bc5-8b95-fc2950029d9a',
+      text: 'Name',
+      value: 'vehicleName',
+    },
+    {
+      _t_id: '4653dc8d-c905-4e26-86ac-2dc4541d6b75',
+      text: 'Type',
+      value: 'vehicleTypeName',
+    },
+    {
+      _t_id: 'b296e307-906a-49ce-9c91-56ed58d21e62',
+      text: 'Detail',
+      value: 'detail',
+      type: 'details',
+    },
   ]
   options: TableViewParameters = {}
   deleteModalIsOpen = false
@@ -285,7 +298,8 @@ export default class GaragesDetail extends Vue {
   }
 
   pushLastRoute(): void {
-    if (!app.getLastRoute?.name ||
+    if (
+      !app.getLastRoute?.name ||
       app.getLastRoute.name === 'garages.view' ||
       app.getLastRoute.name === 'garages.add'
     ) {

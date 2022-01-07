@@ -92,7 +92,7 @@ export default class VehicleDetail extends Vue {
     return vehicleDetail.getIsModeView ? 'Edit Vehicle' : 'Save'
   }
 
-  async handleActionClick(): void {
+  async handleActionClick(): Promise<void> {
     vehicleDetail.setSaving(true)
     if (vehicleDetail.getIsModeView) {
       vehicleDetail.beginEdit()
@@ -106,7 +106,7 @@ export default class VehicleDetail extends Vue {
     vehicleDetail.setSaving(false)
   }
 
-  validate(): void {
+  validate(): boolean {
     return this.$refs.form.validate()
   }
 }

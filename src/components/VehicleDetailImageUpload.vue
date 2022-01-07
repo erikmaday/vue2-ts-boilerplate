@@ -95,8 +95,8 @@ export default class VehicleDetailImageUpload extends Vue {
 
   addPhotos(files: FileList): void {
     this.errorMessage = null
-    files = Array.from(files)
-    if (files.length > this.morePhotosAllowedCount) {
+    const filesArray = Array.from(files)
+    if (filesArray.length > this.morePhotosAllowedCount) {
       this.errorMessage = `Only ${this.morePhotosAllowedCount} more ${pluralize(
         this.morePhotosAllowedCount,
         'file'

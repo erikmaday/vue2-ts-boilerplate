@@ -18,6 +18,7 @@ import vehicle from '@/services/vehicle'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vehicle } from '@/models/dto/Vehicle'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: { CUCollectionTable },
@@ -31,10 +32,9 @@ export default class VehiclesList extends Vue {
     {
       text: 'Make',
       value: 'vehicleMake',
-      computedText: (row) =>
+      computedText: (row): string =>
         `${row.vehicleYear} ${row.vehicleMake} ${row.vehicleModel} - ${row.passengerCapacity} pax`,
     },
-    { text: '', value: 'details', type: 'details' },
     { text: '', value: 'actions', type: 'actions' },
   ]
 
@@ -64,6 +64,21 @@ export default class VehiclesList extends Vue {
       confirmModalText: 'Are you sure you want to delete this vehicle?',
       action: async (row: Vehicle) => {
         return vehicle.delete(row.vehicleId)
+      },
+    },
+    {
+      displayText: 'Details',
+      key: 'details',
+      color: 'primary',
+      icon: '',
+      confirmModal: false,
+      ariaLabel: 'View Vehicle Details',
+      isDetail: true,
+      detailRoute: (row: Vehicle): RawLocation => {
+        return {
+          name: 'vehicles.view',
+          params: { id: row.vehicleId.toString() },
+        }
       },
     },
   ]

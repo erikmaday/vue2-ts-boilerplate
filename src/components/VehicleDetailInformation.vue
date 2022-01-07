@@ -96,6 +96,8 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 
 @Component
 export default class VehicleDetailInformation extends Vue {
+  garages: Garage[] | null = []
+  vehicleTypes: VehicleType[] | null = []
   vehicleInformation: VehicleDetailEntity | null = null
   debounce = null
 
@@ -118,16 +120,11 @@ export default class VehicleDetailInformation extends Vue {
     return vehicleDetail.getVehicle
   }
 
-  garages: Garage[] | null = []
-  vehicleTypes: VehicleType[] | null = []
-
-  vehicleInformation: VehicleDetailEntity | null = null
-
   get disabled(): boolean {
     return vehicleDetail.getIsModeView
   }
 
-  async mounted(): void {
+  mounted(): void {
     this.getVehicleTypes()
     this.getGarages()
   }

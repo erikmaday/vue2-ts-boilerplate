@@ -51,7 +51,7 @@
         class="
           h-full
           w-112
-          border-radius-top-left-regular border-radius-bottom-left-regular
+          border-radius-top-left-3 border-radius-bottom-left-3
           object-fit-cover
         "
         :class="{ 'opacity-50': isUploading }"
@@ -110,7 +110,7 @@ export default class VehicleDetailImage extends Vue {
   vehicleDetail = vehicleDetail
 
   get isUploading(): boolean {
-    return vehicleDetail.getUploadPercentage && this.photo.file
+    return vehicleDetail.getUploadPercentage && !!this.photo.file
   }
 
   get photoSource(): string {

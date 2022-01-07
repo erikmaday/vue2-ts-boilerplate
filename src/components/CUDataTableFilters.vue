@@ -101,7 +101,7 @@ export default class CUDataTableFilters extends Vue {
   }
 
   isOpen = false
-  filterList = []
+  filterList: any[] = []
   currentSort: any = {
     prop: undefined,
     direction: undefined,
@@ -129,7 +129,20 @@ export default class CUDataTableFilters extends Vue {
     return this.filterList.find((f) => f.column._t_id === column._t_id)
   }
 
-  setFilter(column: DataTableColumn): void {
+  async setInitialFilters(): Promise<void> {
+    for (const initialFilter of this.initialFilters) {
+      await this.setFilter(initialFilter.column, initialFilter.hideOnFilterBar)
+      this.updateFilterCriteria(initialFilter.value)
+    }
+    this.receiveFilters(this.filterUtil)
+    this.handleFilterAdded()
+  }
+
+  receiveFilters(filterList: any[]): void {
+    this.filterList = filterList
+  }
+
+  setFilter(column: DataTableColumn, hideOnFilterBar: boolean): void {
     const doesFilterAlreadyExist = this.filters.find({ column })
     if (!doesFilterAlreadyExist) {
       const newFilter = { column }

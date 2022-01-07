@@ -107,12 +107,6 @@ export default class GaragesList extends Vue {
       sortProp: 'noOfVehicles',
     },
     {
-      _t_id: 'ddd327a2-6e44-4464-af45-c377538786a2',
-      text: 'Details',
-      value: 'details',
-      type: 'details',
-    },
-    {
       _t_id: '86f7f500-a9b1-4df1-bff8-f43bff32fb2c',
       text: 'Actions',
       value: 'actions',

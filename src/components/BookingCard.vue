@@ -75,7 +75,9 @@ export default class BookingCard extends Vue {
     const datetime = (this as any)
       .$dayjs(this.reservation.pickupDate)
       .tz(this.reservation.firstPickupTimeZone)
-    return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
+    return `${datetime.format('MM/DD/YYYY')} • ${datetime.format(
+      'MM/DD/YYYY h:mm a z'
+    )}`
   }
 
   get price(): string {

@@ -335,6 +335,7 @@ export function filter(): any {
     createParent,
     parents,
     parent,
+    children,
     remove,
     clear,
     find,

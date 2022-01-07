@@ -15,7 +15,7 @@ export default {
     filterNotBidOn = false,
     quoteIdList: string | null = null
   ): Promise<AxiosResponse<TripTableViewResult>> {
-    const { sorts, filters, pageSize = 10, page = 1 } = params
+    const { sorts = null, filters = null, pageSize = 10, page = 1 } = params
 
     let query = `page=${page}&pageSize=${pageSize}`
     if (sorts) {

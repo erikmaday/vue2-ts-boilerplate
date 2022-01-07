@@ -8,20 +8,21 @@ import { RoleResult } from '@/models/dto/Role'
 const httpService: HttpService = new HttpService()
 
 export default {
-  tableView({
-    pageSize,
-    page,
-    sorts,
-    filters,
-  }: TableViewParameters): Promise<AxiosResponse<TableViewResult<UserDetail>>> {
-    return httpService.get(
-      `https://${apiBaseUrl()}/tables/users?${
-        (pageSize ? `pageSize=${pageSize}&` : '') +
-        (page ? `page=${page}&` : '') +
-        (sorts ? `${sorts}&` : '') +
-        (filters ? `${filters}` : '')
-      }`
-    )
+  tableView(
+    params: TableViewParameters
+  ): Promise<AxiosResponse<TableViewResult<UserDetail>>> {
+    const { sorts = null, filters = null, pageSize = 10, page = 1 } = params
+    let query = `page=${page}&pageSize=${pageSize}`
+    if (sorts) {
+      query += `&${sorts}`
+    }
+    if (filters) {
+      query += `&${filters}`
+    }
+    query = encodeURI(query)
+    const host = apiBaseUrl()
+
+    return httpService.get(`https://${host}/tables/users?${query}`)
   },
   byId(userId: number): Promise<AxiosResponse<UserDetail>> {
     return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
@@ -46,6 +47,17 @@ export default {
         password,
       }
     )
+  },
+  changePassword(
+    userId: number,
+    new_password: string,
+    password: string
+  ): Promise<AxiosResponse<UserResult>> {
+    return httpService.post(`https://${apiBaseUrl()}/users/set-password/`, {
+      id: String(userId),
+      new_password,
+      password,
+    })
   },
   setPasswordWithHash(
     hash: string,

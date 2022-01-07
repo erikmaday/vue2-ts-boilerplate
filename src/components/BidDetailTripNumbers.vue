@@ -36,7 +36,7 @@ export default class BidDetailTripNumbers extends Vue {
     return bidDetail.getTrip?.tripType.label
   }
 
-  get passengerCount(): string {
+  get passengerCount(): number {
     return bidDetail.getTrip?.passengerCount
   }
 

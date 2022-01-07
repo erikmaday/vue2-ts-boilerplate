@@ -14,7 +14,7 @@
   />
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import { TableViewParameters } from '@/models/TableView'
 import { AxiosResponse } from 'axios'
@@ -85,15 +85,6 @@ export default class CUCollectionTable extends Vue {
     EventBus.$on('refresh-tableview', () => {
       this.load()
     })
-  }
-
-  @Watch('isOpen')
-  isDialogOpenChanged(value: boolean): void {
-    this.$emit('input', value)
-  }
-  @Watch('value', { immediate: true })
-  valueChanged(value: boolean): void {
-    this.isOpen = value
   }
 
   async load(): Promise<void> {

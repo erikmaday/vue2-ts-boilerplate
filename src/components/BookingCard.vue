@@ -2,13 +2,16 @@
   <v-card @click="goToBooking" class="border-radius-2x">
     <v-card-text class="padding-a-4">
       <p class="font-medium margin-t-0">
-        {{ reservation.firstPickupAddress.city }}
+        <!-- {{ reservation.firstPickupAddress.city }} TODO: fix -->
+        Atlanta
         <span class="text-gray-light">></span>
-        {{ reservation.firstDropoffAddress.city }}
+        <!-- {{ reservation.firstDropoffAddress.city }} TODO: fix -->
+        Chicago
       </p>
       <p class="font-14 margin-t-0">{{ formattedStartDateTime }}</p>
       <div class="d-inline-flex margin-t-4 margin-b-2">
         <VehicleAssignmentIcons
+          v-if="reservation"
           :reservation="reservation"
           class="margin-r-4 h-32"
         />
@@ -37,7 +40,6 @@ import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
 import { Reservation } from '@/models/dto'
 import { ReferralStatus } from '@/utils/enum'
 import { roundedCurrencyFilter } from '@/utils/string'
-import dayjs from 'dayjs'
 
 @Component({
   components: {
@@ -70,9 +72,9 @@ export default class BookingCard extends Vue {
   }
 
   get formattedStartDateTime(): string {
-    const datetime = (this as any).$dayjs(this.reservation.startDate).tz(
-      this.reservation.firstStopAddressTimeZone
-    )
+    const datetime = (this as any)
+      .$dayjs(this.reservation.startDate)
+      .tz(this.reservation.firstStopAddressTimeZone)
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
   }
 

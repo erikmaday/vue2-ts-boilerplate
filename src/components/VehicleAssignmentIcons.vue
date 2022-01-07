@@ -22,12 +22,14 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import VehicleAssignmentIcon from '@/components/VehicleAssignmentIcon.vue'
 import { Reservation, Trip } from '@/models/dto'
 import { VehicleAssignment } from '@/models/dto'
 import { pluralize } from '@/utils/string'
 import { ColoredMessage } from '@/models/ColoredMessage'
+import trip from '@/services/trip'
+import tripAssignment from '@/services/tripAssignment'
 
 const MAX_DISPLAY = 3
 
@@ -37,23 +39,44 @@ const MAX_DISPLAY = 3
   },
 })
 export default class VehicleAssignmentIcons extends Vue {
-  @Prop({ required: false }) readonly reservation: Reservation
   @Prop({ required: false }) readonly vehicleAssignments: VehicleAssignment[]
   @Prop({ required: false }) readonly trip: Trip
+  @Prop({ required: false }) readonly reservation: Reservation
   @Prop({ required: false }) readonly showLabel: boolean
 
+  fetchedTrip: Trip | null = null
+  fetchedVehicleAssignments: VehicleAssignment[] = []
+
+  @Watch('reservation', { immediate: true })
+  async reservationChanged(reservation: Reservation): void {
+    if (!this.trip) {
+      const tripResponse = await trip.byId(reservation.tripId)
+      this.fetchedTrip = tripResponse.data.trip
+    }
+    if (!this.vehicleAssignments) {
+      const tripAssignmentResponse = await tripAssignment.byReservationIds([
+        reservation.reservationId,
+      ])
+      this.fetchedVehicleAssignments =
+        tripAssignmentResponse.data.vehicleAssignments
+    }
+  }
+
   get computedTrip(): Trip {
-    return this.trip ? this.trip : this.reservation.trip
+    return this.trip ? this.trip : this.fetchedTrip
   }
 
   get computedVehicleAssignments(): VehicleAssignment[] {
     return this.vehicleAssignments
       ? this.vehicleAssignments
-      : this.reservation.vehicleAssignments
+      : this.fetchedVehicleAssignments
   }
 
   get totalRequiredVehicles(): number {
-    return this.computedTrip.vehicles.reduce(
+    if (!this.computedTrip?.vehicles) {
+      return 0
+    }
+    return this.computedTrip?.vehicles.reduce(
       (sum, vehicle) => sum + vehicle.quantity,
       0
     )

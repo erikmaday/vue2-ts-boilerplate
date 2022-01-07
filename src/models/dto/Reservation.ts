@@ -1,68 +1,62 @@
-import { Address } from './Address'
-import { Trip } from './Trip'
-import { Stop } from './Stop'
-import { Customer } from './Customer'
-import { VehicleAssignment } from './VehicleAssignment'
+import { VehicleAssignment } from '.'
 import { TableViewResult } from './TableView'
-
 export interface Reservation {
+  reservationId: number
+  managedId: number
+  amount: number
+  referredAmount: number
+  referralStatusKey: string | null
+  referralStatus: string
+  paymentStatus: string
+  referralPaymentStatus: string
+  balance: number
+  cancelledOn: string | null
   active: boolean
+  grossProfit: number
   assignedDriverPercentage: number
   assignedVehiclePercentage: number
-  balance?: number
-  bookingsPerYear?: number
-  cancelledOn?: string
-  childReservationId: number
-  contractId?: number
   createdOn: string
-  customer: Customer
-  customerEmail: string
-  customerId: number
+  driverInfoEmailSent: boolean
+  sentDate: string
+  firstSentDate: string | null
   customerName: string
-  customerPhone: number
-  customerTotal: number
+  bookedByName: string
+  customerEmail: string
+  customerAccountName: null
+  contractId: number | null
+  managedContractId: string | null
+  quoteManagedId: number
+  referringCompany: string
+  pickupLocation: string
+  pickupDate: string
+  dropoffDate: string
+  firstPickupTimeZone: string
+  firstPickupAddressName: string
+  firstDropoffAddressName: string
+  tripTypeLabel: string
   distance: number
   drivingTime: number
-  dueDate?: string
-  firstDropoffAddress: Address
-  firstPickupAddress: Address
-  firstSentDate: string
-  firstStopAddress: string
-  firstStopAddressTimeZone: string
-  hash: string
-  lastDropoffDate: string
-  managedContractId?: string
-  managedId: number
-  marketplaceClientTotal: number
-  nearestMarketId: number
-  nearestMarketName: string
   openForBid: boolean
-  organization?: string
-  parentReservationId: number
-  parentReservationManagedId?: string
-  passengerCount: number
-  paymentStatus: string
-  paymentStatusLabel: string
-  quoteId: number
-  quoteManagedId: number
-  quoteType: number
-  referralPassengerCount: number
-  referralPaymentStatus: string
-  referralPaymentStatusLabel: string
-  referralStatus: string
-  referralStatusLabel: string
-  requiredVehiclesCount: number
-  reservationId: number
+  dueDate: string | null
+  customerTotal: number
+  marketplaceClientTotal: number | null
+  reservationStatusKey: string | null
   reservationStatus: string
-  reservationStatusKey: string
-  reservationStatusLabel: string
-  startDate: string
-  stops?: Stop[]
-  trip: Trip
+  ccVerified: boolean
+  confirmed: boolean
+  parentReservationId: number | null
+  reservationType: number
+  requiredDrivers: null
+  referralId: null
+  referralPassengerCount: number | null
+  quotedOn: null
+  enterpriseTrackingOnly: null
   tripId: number
-  tripRouteName?: string
-  tripTypeLabel: string
-  vehicleAssignments?: VehicleAssignment[]
+  childId: null
+  hash: string | null
+  checkoutPageId: null
+  vehicleAssignments: VehicleAssignment[]
+  charterUpQuote: boolean
 }
 
 export type ReservationTableViewResult = TableViewResult<Reservation>

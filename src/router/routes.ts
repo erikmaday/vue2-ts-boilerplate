@@ -131,8 +131,8 @@ export const routes: RouteConfig[] = [
                       ),
                   },
                   {
-                    path: 'add', 
-                    name: 'garages.add', 
+                    path: 'add',
+                    name: 'garages.add',
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-detail-add" */ '@/views/GaragesDetail.vue'
@@ -196,11 +196,19 @@ export const routes: RouteConfig[] = [
             component: () => import('@/views/Empty.vue'),
             children: [
               {
+                path: '',
+                name: 'bookings',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "bookings-list" */ '@/views/Bookings.vue'
+                  ),
+              },
+              {
                 path: ':id',
                 name: 'booking-detail',
                 component: () =>
                   import(
-                    /* webpackChunkName: "quote-detail" */ '@/views/BookingDetail.vue'
+                    /* webpackChunkName: "booking-detail" */ '@/views/BookingDetail.vue'
                   ),
               },
             ],

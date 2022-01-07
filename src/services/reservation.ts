@@ -27,7 +27,7 @@ export default {
     }
     query = encodeURI(query)
     const host = apiBaseUrl()
-    const url = `https://${host}/tables/referrals?${query}`
+    const url = `https://${host}/tables/reservations?${query}`
     return httpService.get(url)
   },
   byId(id: number): Promise<AxiosResponse<ReservationDetail>> {

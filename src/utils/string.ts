@@ -1,7 +1,8 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import { ReservationDetailStop, Stop } from '@/models/dto'
+import { Reservation, ReservationDetailStop, Stop } from '@/models/dto'
+import { anyNumberPattern, stateAbbreviationPattern } from './regex'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -145,4 +146,20 @@ export const formatDropoffTime = (stop: Stop): string => {
 
 export const formatPickupTime = (stop: Stop): string => {
   return formatStopTime(stop.pickupDatetime, stop.address.timeZone)
+}
+
+export const cityFromAddressName = (addressName: string): string => {
+  const addressNameSplit = addressName.replace(anyNumberPattern, '').split(',')
+  const stateIndex = addressNameSplit.findIndex((string) =>
+    stateAbbreviationPattern.test(string)
+  )
+  return addressNameSplit[stateIndex - 1]
+}
+
+export const formatReservationPickupDestinationText = (
+  reservation: Reservation
+): string => {
+  const pickupCity = reservation.pickupLocation.split(',')[0]
+  const dropOffCity = cityFromAddressName(reservation.firstDropoffAddressName)
+  return `${pickupCity} > ${dropOffCity}`
 }

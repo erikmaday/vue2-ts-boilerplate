@@ -35,14 +35,14 @@ export default class CompanyRates extends Vue {
       href: '',
       name: 'profile',
       component: UsersDetail,
-      icon: '',
+      icon: 'person',
     },
     {
       label: 'Password',
       href: 'password',
       name: 'profile.password',
       component: ProfilePassword,
-      icon: '',
+      icon: 'lock',
     },
   ]
 

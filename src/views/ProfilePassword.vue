@@ -1,78 +1,67 @@
 <template>
-  <v-form ref="form" v-model="valid" lazy-validation>
-    <v-row no-gutters>
-      <v-col cols="12">
-        <span v-if="error" style="color: red">
-          Please correct errors and submit again
-        </span>
-        <v-form
-          ref="changePasswordForm"
-          v-model="valid"
-          :lazy-validation="true"
-        >
-          <label>Old Password</label>
-          <v-text-field
-            id="my-profile-password-text-old-password"
-            ref="oldPassword"
-            v-model="formFields.oldPassword"
-            :rules="[(v) => !!v || 'Old password is required']"
-            type="password"
-            required
-            outlined
-          />
-          <label>New Password</label>
-          <v-text-field
-            id="my-profile-password-text-new-password"
-            ref="newPassword"
-            v-model="formFields.newPassword"
-            :rules="[(v) => !!v || 'New password is required']"
-            type="password"
-            required
-            outlined
-          />
-          <label>Confirm New Password</label>
-          <v-text-field
-            id="my-profile-password-text-confirm-new-password"
-            ref="confirmNewPassword"
-            v-model="formFields.confirmNewPassword"
-            :rules="[
-              (v) => !!v || 'Confirm new password is required',
-              (v) =>
-                v === this.formFields.newPassword || 'New passwords must match',
-            ]"
-            type="password"
-            required
-            outlined
-          />
-        </v-form>
-      </v-col>
-      <v-btn
-        medium
-        :disabled="disabled"
-        :color="submitButtonOptions.color"
-        :loading="submitting"
-        style="min-width: 230px"
-        :style="success || error ? 'color: white;' : ''"
-        @click="submit"
-      >
-        {{ submitButtonOptions.text }}
-      </v-btn>
-    </v-row>
-  </v-form>
+  <v-row no-gutters>
+    <v-col cols="12">
+      <span v-if="error">Please correct errors and submit again</span>
+      <v-form ref="changePasswordForm" v-model="valid" :lazy-validation="true">
+        <label>Old Password</label>
+        <CUTextField
+          id="my-profile-password-text-old-password"
+          v-model="formFields.oldPassword"
+          :rules="[(v) => !!v || 'Old password is required']"
+          type="password"
+          required
+          outlined
+        />
+        <label>New Password</label>
+        <CUTextField
+          id="my-profile-password-text-new-password"
+          v-model="formFields.newPassword"
+          :rules="[(v) => !!v || 'New password is required']"
+          type="password"
+          required
+          outlined
+        />
+        <label>Confirm New Password</label>
+        <CUTextField
+          id="my-profile-password-text-confirm-new-password"
+          v-model="formFields.confirmNewPassword"
+          :rules="[
+            (v) => !!v || 'Confirm new password is required',
+            (v) =>
+              v === this.formFields.newPassword || 'New passwords must match',
+          ]"
+          type="password"
+          required
+          outlined
+        />
+      </v-form>
+    </v-col>
+    <v-btn
+      medium
+      :disabled="disabled"
+      :color="submitButtonOptions.color"
+      :loading="submitting"
+      class="min-w-232 text-white"
+      @click="submit"
+    >
+      {{ submitButtonOptions.text }}
+    </v-btn>
+  </v-row>
 </template>
 
 <script lang="ts">
 import user from '@/services/user'
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import auth from '@/store/modules/auth'
+import { ColoredMessage } from '@/models/ColoredMessage'
 
 @Component({})
 export default class ProfilePassword extends Vue {
   valid = false
   formFields: Record<string, string> = {
-    oldPassword: null,
-    newPassword: null,
-    confirmNewPassword: null,
+    oldPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
   }
   rules = []
   success = false
@@ -80,7 +69,7 @@ export default class ProfilePassword extends Vue {
   submitting = false
   disabled = true
 
-  get submitButtonOptions(): Record<string, string> {
+  get submitButtonOptions(): ColoredMessage {
     const color = this.success ? 'success' : this.error ? 'error' : 'primary'
     const text = this.success
       ? 'Password Changed!'
@@ -100,24 +89,15 @@ export default class ProfilePassword extends Vue {
   }
 
   isDisabled(): boolean {
-    if (this.formFields.oldPassword === null || !this.formFields.oldPassword) {
-      return true
-    }
-    if (this.formFields.newPassword === null || !this.formFields.newPassword) {
-      return true
-    }
-    if (
-      this.formFields.confirmNewPassword === null ||
-      !this.formFields.confirmNewPassword
-    ) {
-      return true
-    }
-    return false
+    return !(
+      this.formFields.oldPassword &&
+      this.formFields.newPassword &&
+      this.formFields.confirmNewPassword
+    )
   }
   submit(): void {
     this.$nextTick(async () => {
-      const form: any = this.$refs['form']
-      form.validate()
+      const form: any = this.$refs['changePasswordForm']
       this.valid = form.validate()
       if (this.valid) {
         try {

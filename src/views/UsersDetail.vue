@@ -603,7 +603,7 @@ export default class UsersDetail extends Vue {
   async editExistingUser(): Promise<number> {
     let userId
     if (this.isModeProfile) {
-      userId = Number(2) //TODO: getUserId for logged in user
+      userId = Number(auth.getUserId)
     } else {
       userId = Number(this.$route.params.id)
     }

@@ -105,7 +105,7 @@ export const navigation: NavigationLink[] = [
     permission: [],
   },
   {
-    label: 'Profile',
+    label: 'My Profile',
     location: 'dropdown',
     name: 'profile',
     params: {},

@@ -164,7 +164,7 @@ export default class TheAppBar extends Vue {
   }
 
   get userName(): string {
-    return `${auth.getUser?.firstName} ${auth.getUser?.lastName}`
+    return auth.getFullName
   }
 
   openSidebar(): void {

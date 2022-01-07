@@ -79,7 +79,7 @@ export default class TheSideBar extends Vue {
   }
 
   get userName(): string {
-    return `${auth.getUser?.firstName} ${auth.getUser?.lastName}`
+    return auth.getFullName
   }
 
   @Watch('isSidebarOpen')

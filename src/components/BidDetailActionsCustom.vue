@@ -72,7 +72,7 @@ export default class BidDetailActionsCustom extends Vue {
     }
   }
 
-  get customBidRawValue(): number | string | null {
+  get customBidRawValue(): number | null {
     if (this.customBidPrice) {
       return parseFloat(this.customBidPrice.replace(/,/g, ''))
     }

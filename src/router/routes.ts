@@ -206,8 +206,9 @@ export const routes: RouteConfig[] = [
             ],
           },
           {
-            path: 'trips',
-            name: 'trips',
+            path: 'metrics',
+            name: 'metrics',
+            component: () => import('@/views/Empty.vue'),
           },
         ],
       },

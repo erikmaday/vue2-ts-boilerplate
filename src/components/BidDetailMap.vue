@@ -1,18 +1,7 @@
 <template>
   <div class="position-relative w-full h-full">
     <span
-      class="
-        position-absolute
-        top-12
-        left-12
-        z-5
-        font-12 font-medium
-        text-white
-        padding-y-3 padding-l-3 padding-r-4
-        background-error
-        d-flex
-        align-center
-      "
+      class="position-absolute top-12 left-12 z-5 font-12 font-medium text-white padding-y-3 padding-l-3 padding-r-4 background-error d-flex align-center"
     >
       <CUIcon color="white" class="margin-r-2">timer</CUIcon>
       Expires in {{ formattedExpiration }}
@@ -37,7 +26,7 @@ import inprogress from '@/assets/images/stopIcons/inprogress.png'
 import completed from '@/assets/images/stopIcons/completed.png'
 import last from '@/assets/images/stopIcons/last.png'
 import { timeDifferenceAsObject, timeObjectToString } from '@/utils/time'
-import { DirectionsResult, LatLngLiteral, Marker } from '@types/googlemaps'
+//import { DirectionsResult, LatLngLiteral, Marker } from '@types/googlemaps'
 
 @Component
 export default class BidDetailMap extends Vue {
@@ -58,9 +47,9 @@ export default class BidDetailMap extends Vue {
   markerOptions = {
     visible: false,
   }
-  tripDirections: { [tripId: number]: DirectionsResult } = {}
+  tripDirections: { [tripId: number]: any } = {}
   directionsRenderer = null
-  markers: Marker[] = []
+  markers: any[] = []
   directionDisplays = []
 
   @Watch('trips', { deep: true })
@@ -77,8 +66,8 @@ export default class BidDetailMap extends Vue {
     if (!this.trips.length) {
       return ''
     }
-    const now = this.$dayjs.utc()
-    const expiration = this.$dayjs(this.trips[0].biddingEndDate)
+    const now = (this as any).$dayjs.utc()
+    const expiration = (this as any).$dayjs(this.trips[0].biddingEndDate)
     return timeObjectToString(timeDifferenceAsObject(now, expiration))
   }
 
@@ -88,18 +77,18 @@ export default class BidDetailMap extends Vue {
   }
 
   async establishMap(): Promise<void> {
-    const map = await this.$refs.map.$mapPromise.then((map) => map)
+    const map = await (this as any).$refs.map.$mapPromise.then((map) => map)
     this.map = map
   }
 
-  async draw(firstLoad = false): void {
+  async draw(firstLoad = false): Promise<void> {
     this.fitBounds()
     for (const trip of this.trips) {
       if (firstLoad) {
         const directions = await this.getDirections(trip)
         this.tripDirections[trip.tripId] = directions
       }
-      this.drawRoute(this.tripDirections[trip.tripId], trip.tripId)
+      this.drawRoute(this.tripDirections[trip.tripId])
       this.drawMarkers(trip)
     }
   }
@@ -109,7 +98,7 @@ export default class BidDetailMap extends Vue {
     this.clearRoutes()
   }
 
-  createDirectionsRenderer(): void {
+  createDirectionsRenderer(): any {
     const routeLineOptions = {
       strokeColor: this.$vuetify.theme.themes.light.primary,
       strokeOpacity: 1.0,
@@ -126,7 +115,7 @@ export default class BidDetailMap extends Vue {
     return directionsRenderer
   }
 
-  fitBounds(): Promise<void> {
+  fitBounds(): void {
     const bounds = new this.google.maps.LatLngBounds()
     for (const trip of this.trips) {
       for (const stop of trip.stops) {
@@ -189,20 +178,20 @@ export default class BidDetailMap extends Vue {
     this.markers = []
   }
 
-  drawRoute(directions: DirectionsResult): Promise<void> {
+  drawRoute(directions: any): void {
     let directionsRenderer = this.createDirectionsRenderer()
     directionsRenderer.setDirections(directions)
     this.directionDisplays.push(directionsRenderer)
   }
 
-  clearRoutes() {
+  clearRoutes(): void {
     for (const directionDisplay of this.directionDisplays) {
       directionDisplay.setMap(null)
     }
     this.directionDisplays = []
   }
 
-  getWaypoints(trip: Trip): { location: LatLngLiteral; stopover: boolean }[] {
+  getWaypoints(trip: Trip): { location: any; stopover: boolean }[] {
     return trip.stops.map((stop) => {
       return {
         location: new this.google.maps.LatLng(
@@ -214,7 +203,7 @@ export default class BidDetailMap extends Vue {
     })
   }
 
-  getIconImage(waypoints: [], waypointIndex: number): any {
+  getIconImage(waypoints: any[], waypointIndex: number): any {
     if (waypointIndex === waypoints.length - 1) {
       return last
     }

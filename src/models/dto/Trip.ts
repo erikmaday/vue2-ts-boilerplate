@@ -5,6 +5,7 @@ import { Customer } from './Customer'
 import { GarageTimes } from './GarageTimes'
 import { Vehicle } from './Vehicle'
 import { TableViewResult } from './TableView'
+import { Address } from './Address'
 
 export interface Trip {
   tripStatusId: number
@@ -169,20 +170,6 @@ export interface TableViewTripStop {
   addressId?: null
   pickupDate?: string | null
   dropoffDate?: string | null
-}
-export interface Address {
-  addressId: number
-  addressName: string
-  street1: string
-  street2?: null
-  city: string
-  state: string
-  postalCode: number
-  lat: number
-  lng: number
-  timeZone: string
-  title: string
-  completeAddress: string
 }
 export interface TableViewTripRequiredVehicles {
   vehicleTypeId: number

@@ -8,6 +8,7 @@
       disable-filtering
       :loader-height="2"
       v-bind="$attrs"
+      :options="options"
       @pagination="$emit('pagination', $event)"
       @update:options="$emit('update:options', $event)"
     >

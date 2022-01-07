@@ -11,16 +11,21 @@ import { GarageRequest } from '@/models/dto/Garage'
 const httpService: HttpService = new HttpService()
 
 export default {
-  tableView(params: TableViewParameters): Promise<AxiosResponse<TableViewResult<Garage>>> {
-    const { sorts, filters, pageSize = 10, page = 1 } = params
-    return httpService.get(
-      `https://${apiBaseUrl()}/tables/garages?${
-        (pageSize ? `pageSize=${pageSize}` : '') +
-        (page ? `&page=${page}` : '') +
-        (sorts ? `&${sorts}` : '') +
-        (filters ? `&${filters}` : '')
-      }`
-    )
+  tableView(
+    params: TableViewParameters
+  ): Promise<AxiosResponse<TableViewResult<Garage>>> {
+    const { sorts = null, filters = null, pageSize = 10, page = 1 } = params
+    let query = `page=${page}&pageSize=${pageSize}`
+    if (sorts) {
+      query += `&${sorts}`
+    }
+    if (filters) {
+      query += `&${filters}`
+    }
+    query = encodeURI(query)
+    const host = apiBaseUrl()
+
+    return httpService.get(`https://${host}/tables/garages?${query}`)
   },
   byId(garageId: number): Promise<AxiosResponse<GarageDetailResult>> {
     return httpService.get(`https://${apiBaseUrl()}/garages/${garageId}`)

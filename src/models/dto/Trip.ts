@@ -13,8 +13,8 @@ export interface Trip {
   openForAllCompanies: boolean
   tripId: number
   active: boolean
-  dueDate: dayjs.Dayjs
-  startDate: dayjs.Dayjs
+  dueDate: string
+  startDate: string
   total: number
   depositPercentage: number
   amountDueNow: number
@@ -78,7 +78,7 @@ export interface Trip {
   marketplaceDiscountPercent: number
   istripContactSelected: boolean
   processingFeeCharge: number
-  endDate: dayjs.Dayjs
+  endDate?: string
   hourlyDiff: number
   estimatedTimeLabel: string
   deadMileLabel: string

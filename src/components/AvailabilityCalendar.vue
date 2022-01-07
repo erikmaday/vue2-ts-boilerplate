@@ -1,11 +1,11 @@
 <template>
   <CalendarView :show-date="showDate" display-period-uom="week">
     <template #dayHeader="{ index, label }">
-      <div 
-        class="cv-week-day-header" 
-        style="flex-basis: calc(100% / 7);"
+      <div
+        class="cv-week-day-header"
+        style="flex-basis: calc(100% / 7)"
         :class="{
-          'background-gray-mid-light border-width-1 border-style-1 border-color-gray-mid-light':
+          'background-gray-lighter border-width-1 border-style-1 border-color-gray-lighter':
             isHeaderToday(index.charAt(3)),
         }"
       >
@@ -35,7 +35,6 @@ export default class AvailabilityCalendar extends Vue {
 
   isHeaderToday(index: number) {
     const headerDate = dayjs(this.showDate).startOf('week').add(index, 'day')
-    console.log("> comparing:", headerDate.toString())
     return dayjs().isSame(headerDate, 'day')
   }
 }
@@ -52,6 +51,6 @@ export default class AvailabilityCalendar extends Vue {
 }
 
 ::v-deep .cv-day.today {
-  background: $gray-mid-light;
+  background: $gray-lighter;
 }
 </style>

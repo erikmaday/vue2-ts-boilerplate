@@ -5,9 +5,9 @@ export interface GarageTimes {
   tripId: number
   garageTimeId?: number
   garageId?: number
-  departureTime?: dayjs.Dayjs
+  departureTime?: string
   returnGarageId?: number
-  returnTime?: dayjs.Dayjs
+  returnTime?: string
   garageTimeNotes?: string
   returnGarageTimeNotes?: string
 }

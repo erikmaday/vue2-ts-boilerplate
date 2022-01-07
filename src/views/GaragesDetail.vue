@@ -175,7 +175,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import garage from '@/services/garage'
 import { AxiosResponse } from 'axios'
 import { Garage } from '@/models/dto/Garage'

@@ -41,6 +41,8 @@ import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vehicle } from '@/models/dto/Vehicle'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
+import { AxiosResponse } from 'axios'
+import { ApiResult } from '@/models/dto'
 
 @Component({
   components: { CUCollectionTable, CUDataTableFilters },
@@ -136,7 +138,7 @@ export default class VehiclesList extends Vue {
       confirmModal: true,
       ariaLabel: 'Delete Vehicle',
       confirmModalText: 'Are you sure you want to delete this vehicle?',
-      action: async (row: Vehicle) => {
+      action: async (row: Vehicle): Promise<AxiosResponse<ApiResult>> => {
         return vehicle.delete(row.vehicleId)
       },
     },

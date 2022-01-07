@@ -73,8 +73,8 @@ export default class BookingCard extends Vue {
 
   get formattedStartDateTime(): string {
     const datetime = (this as any)
-      .$dayjs(this.reservation.startDate)
-      .tz(this.reservation.firstStopAddressTimeZone)
+      .$dayjs(this.reservation.pickupDate)
+      .tz(this.reservation.firstPickupTimeZone)
     return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
   }
 

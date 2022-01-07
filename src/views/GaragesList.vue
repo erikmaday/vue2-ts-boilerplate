@@ -48,9 +48,11 @@ import garage from '@/services/garage'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Garage } from '@/models/dto/Garage'
-import { Location } from 'vue-router'
+import { RawLocation } from 'vue-router'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
+import { AxiosResponse } from 'axios'
+import { ApiResult } from '@/models/dto'
 
 @Component({
   components: { CUCollectionTable, CUDataTableFilters },
@@ -142,7 +144,7 @@ export default class GaragesList extends Vue {
       confirmModal: true,
       ariaLabel: 'Delete Garage',
       confirmModalText: 'Are you sure you want to delete this garage?',
-      action: async (row: Garage) => {
+      action: async (row: Garage): Promise<AxiosResponse<ApiResult>> => {
         return garage.delete(row.garageId)
       },
     },
@@ -154,7 +156,7 @@ export default class GaragesList extends Vue {
       confirmModal: false,
       ariaLabel: 'View User Details',
       isDetail: true,
-      detailRoute: (row: Garage): Location => {
+      detailRoute: (row: Garage): RawLocation => {
         return {
           name: 'garages.view',
           params: { id: String(row?.garageId) },

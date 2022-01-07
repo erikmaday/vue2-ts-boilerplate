@@ -43,17 +43,18 @@ export default class VehicleAssignmentIcons extends Vue {
   @Prop({ required: false }) readonly trip: Trip
   @Prop({ required: false }) readonly reservation: Reservation
   @Prop({ required: false }) readonly showLabel: boolean
+  @Prop({ required: false }) readonly row: Reservation
 
   fetchedTrip: Trip | null = null
   fetchedVehicleAssignments: VehicleAssignment[] = []
 
-  @Watch('reservation', { immediate: true })
-  async reservationChanged(reservation: Reservation): void {
+  @Watch('computedReservation', { immediate: true })
+  async reservationChanged(reservation: Reservation): Promise<void> {
     if (!this.trip) {
       const tripResponse = await trip.byId(reservation.tripId)
       this.fetchedTrip = tripResponse.data.trip
     }
-    if (!this.vehicleAssignments) {
+    if (!this.vehicleAssignments && reservation?.reservationId) {
       const tripAssignmentResponse = await tripAssignment.byReservationIds([
         reservation.reservationId,
       ])
@@ -70,6 +71,16 @@ export default class VehicleAssignmentIcons extends Vue {
     return this.vehicleAssignments
       ? this.vehicleAssignments
       : this.fetchedVehicleAssignments
+  }
+
+  get computedReservation(): Reservation | null {
+    if (this.reservation) {
+      return this.reservation
+    }
+    if (this.row) {
+      return this.row
+    }
+    return null
   }
 
   get totalRequiredVehicles(): number {

@@ -50,7 +50,7 @@ import { UserDetail } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { AxiosResponse } from 'axios'
-import { Location } from 'vue-router'
+import { RawLocation } from 'vue-router'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
 
@@ -140,7 +140,7 @@ export default class Users extends Vue {
       confirmModal: false,
       ariaLabel: 'View User Details',
       isDetail: true,
-      detailRoute: (row: UserDetail): Location => {
+      detailRoute: (row: UserDetail): RawLocation => {
         return {
           name: 'users.view',
           params: { id: row?.userId.toString() },

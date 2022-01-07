@@ -7,7 +7,9 @@ import { VehicleType } from '@/models/dto'
 const httpService: HttpService = new HttpService()
 
 export default {
-  vehicleTypeTableView(params: TableViewParameters): Promise<AxiosResponse<TableViewResult<VehicleType>>> {
+  vehicleTypeTableView(
+    params: TableViewParameters
+  ): Promise<AxiosResponse<TableViewResult<VehicleType>>> {
     const { pageSize = 10, page = 1, sorts = null, filters = null } = params
     let query = `page=${page}&pageSize=${pageSize}`
     if (sorts) {

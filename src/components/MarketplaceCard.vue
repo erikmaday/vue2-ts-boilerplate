@@ -81,7 +81,7 @@
 import { Component, Inject, Prop, Vue } from 'vue-property-decorator'
 
 import { ColoredMessage } from '@/models/ColoredMessage'
-import { RequiredVehicle, Stop, TableViewTrip, Trip } from '@/models/dto'
+import { RequiredVehicle, Stop, TableViewTrip, TableViewTripStop, Trip } from '@/models/dto'
 import Pagination from '@/components/Pagination.vue'
 
 import { currencyFilter, pluralize } from '@/utils/string'
@@ -117,14 +117,14 @@ export default class MarketplaceCard extends Vue {
     return this.pagination.currentPage - 1
   }
 
-  get activeTrip(): Trip {
+  get activeTrip(): Trip | TableViewTrip {
     if (this.trips) {
       return this.trips[this.activeTripIndex]
     }
     return this.trip
   }
 
-  get tripsList(): Trip[] {
+  get tripsList(): Trip[] | TableViewTrip[] {
     if (this.trips) {
       return this.trips
     }
@@ -154,11 +154,11 @@ export default class MarketplaceCard extends Vue {
     return this.isInBidDetail ? this.bidAmounts[this.activeTrip.tripId] : null
   }
 
-  get firstPickup(): Stop {
+  get firstPickup(): Stop | TableViewTripStop {
     return this.activeTrip.stops[0]
   }
 
-  get firstDropoff(): Stop {
+  get firstDropoff(): Stop | TableViewTripStop {
     return this.activeTrip.stops?.[1] || this.firstPickup
   }
 
@@ -196,7 +196,7 @@ export default class MarketplaceCard extends Vue {
         this.tripsList.length > 1
           ? this.activeTrip.quoteId
           : this.activeTrip.tripId
-      this.$router.push({ name, params: { id } })
+      this.$router.push({ name, params: { id: id.toString() } })
     }
   }
 }

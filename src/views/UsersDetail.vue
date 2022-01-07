@@ -360,20 +360,22 @@ export default class UsersDetail extends Vue {
   // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2
   async getCurrentUser(): Promise<void> {
     try {
-      const userId = this.isModeProfile ? auth.getUserId : this.$route.params.id
+      const userId = this.isModeProfile
+        ? auth.getUserId
+        : Number(this.$route.params.id)
       if (userId) {
-        const rolesResponse = await user.roles(Number(userId))
+        const rolesResponse = await user.roles(userId)
         const roles = rolesResponse.data.roles
         if (roles.find((role) => role.roleName === 'is_driver')) {
           this.treatAsDriver = true
-          const response = await driver.byId(Number(userId))
+          const response = await driver.byId(userId)
           const userResponseData = response.data.driver
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
           this.currentUser = userResponseData as UserDetail
           this.currentUserAsDriver = userResponseData
           this.populateDrugExpirationDateInputs()
         } else {
-          const response = await user.byId(Number(userId))
+          const response = await user.byId(userId)
           const userResponseData = response.data
           userResponseData.userRoleNames = roles.map((role) => role.roleName)
 

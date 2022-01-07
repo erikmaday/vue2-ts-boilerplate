@@ -27,7 +27,7 @@ import { toTitle } from '@/utils/string'
     ProfilePassword,
   },
 })
-export default class CompanyRates extends Vue {
+export default class Profile extends Vue {
   toTitle = toTitle
   links: SidebarLink[] = [
     {

@@ -3,8 +3,8 @@
     <v-col cols="12">
       <span v-if="error">Please correct errors and submit again</span>
       <v-form ref="changePasswordForm" v-model="valid" :lazy-validation="true">
-        <label>Old Password</label>
         <CUTextField
+          label="Old Password"
           id="my-profile-password-text-old-password"
           v-model="formFields.oldPassword"
           :rules="[(v) => !!v || 'Old password is required']"
@@ -12,8 +12,8 @@
           required
           outlined
         />
-        <label>New Password</label>
         <CUTextField
+          label="New Password"
           id="my-profile-password-text-new-password"
           v-model="formFields.newPassword"
           :rules="[
@@ -25,8 +25,8 @@
           required
           outlined
         />
-        <label>Confirm New Password</label>
         <CUTextField
+          label="Confirm New Password"
           id="my-profile-password-text-confirm-new-password"
           v-model="formFields.confirmNewPassword"
           :rules="[

@@ -160,5 +160,5 @@ export function getVehicleTypeKeyForLabel(
   if (vehicleType) {
     return vehicleType.key
   }
-  return vehicleType || null
+  return null
 }

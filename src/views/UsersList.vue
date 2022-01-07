@@ -1,15 +1,26 @@
 <template>
   <div>
-    <v-row justify="space-between" class="padding-b-6 padding-x-3">
-      <h1>Team</h1>
-      <v-btn
-        primary
-        small
-        color="primary"
-        @click="$router.push({ name: 'users.add' })"
-      >
-        Add New
-      </v-btn>
+    <v-row class="padding-b-6">
+      <v-col class="shrink">
+        <h1>Team</h1>
+      </v-col>
+      <v-spacer />
+      <v-col class="shrink">
+        <v-btn
+          primary
+          small
+          color="primary"
+          @click="$router.push({ name: 'users.add' })"
+        >
+          Add New
+        </v-btn>
+      </v-col>
+      <v-col class="shrink">
+        <v-btn color="primary" small @click="isFilterDialogOpen = true">
+          <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+          Filter
+        </v-btn>
+      </v-col>
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -17,6 +28,14 @@
       item-key="userId"
       collection="users"
       :fetch-method="usersTableView"
+      :filters="filters"
+      :sorts="sorts"
+    />
+    <CUDataTableFilters
+      v-model="isFilterDialogOpen"
+      :columns="columns"
+      :filters.sync="filters"
+      :sorts.sync="sorts"
     />
   </div>
 </template>
@@ -25,26 +44,65 @@
 import { Vue, Component } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
+import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import user from '@/services/user'
 import { UserDetail } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { AxiosResponse } from 'axios'
 import { Location } from 'vue-router'
+import { sort } from '@/utils/sort'
+import { filter } from '@/utils/filter'
 
 @Component({
-  components: { CUDataTable, CUCollectionTable },
+  components: { CUDataTable, CUCollectionTable, CUDataTableFilters },
 })
 export default class Users extends Vue {
+  isFilterDialogOpen = false
+  sorts: any = sort()
+  filters: any = filter()
+
   columns: DataTableColumn[] = [
     {
+      _t_id: '1067e952-2af3-42f6-8d1b-2357ce81faa3',
       text: 'Name',
       value: 'name',
-      computedText: (row: UserDetail): string => `${row.firstName} ${row.lastName}`,
+      computedText: (row: UserDetail): string =>
+        `${row.firstName} ${row.lastName}`,
+      filterable: true,
+      sortable: true,
+      method: 'or',
+      filterProp: ['firstName', 'lastName'],
+      filterType: 'contains',
+      sortProp: 'lastName',
     },
-    { text: 'Email', value: 'email', type: 'email' },
-    { text: 'Type', value: 'groupName' },
-    { text: 'Actions', value: 'actions', type: 'actions' },
+    {
+      _t_id: 'f26fbb7d-25f4-4da1-8492-42906d7d2181',
+      text: 'Email',
+      value: 'email',
+      type: 'email',
+      filterable: true,
+      sortable: true,
+      filterProp: 'email',
+      filterType: 'contains',
+      sortProp: 'email',
+    },
+    {
+      _t_id: '12722781-c0be-469b-aefd-82c6af43550a',
+      text: 'Type',
+      value: 'groupName',
+      filterable: true,
+      sortable: true,
+      filterProp: 'groupName',
+      filterType: 'contains',
+      sortProp: 'groupName',
+    },
+    {
+      _t_id: 'a46c5350-5c2e-4d34-867b-971ec2ec545e',
+      text: 'Actions',
+      value: 'actions',
+      type: 'actions',
+    },
   ]
 
   usersTableView = user.tableView

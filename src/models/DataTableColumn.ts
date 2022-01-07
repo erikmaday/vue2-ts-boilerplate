@@ -9,4 +9,10 @@ export interface DataTableColumn extends TextValue {
   component?: Component
   classes?: string
   editableRules?: Rule[]
+  filterable?: boolean
+  filterProp?: string | string[]
+  filterType?: string
+  method?: string
+  sortable?: boolean
+  sortProp?: string
 }

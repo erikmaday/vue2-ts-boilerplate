@@ -48,6 +48,17 @@ export default {
       }
     )
   },
+  changePassword(
+    userId: number,
+    new_password: string,
+    password: string
+  ): Promise<AxiosResponse<UserResult>> {
+    return httpService.post(`https://${apiBaseUrl()}/users/set-password/`, {
+      id: String(userId),
+      new_password,
+      password,
+    })
+  },
   setPasswordWithHash(
     hash: string,
     password: string

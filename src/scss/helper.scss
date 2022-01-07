@@ -397,8 +397,8 @@ $base-classes: 'padding', 'margin';
   }
 }
 
-// ABSOLUTE POSITIONING 
-// top-#, left-#, etc. 
+// ABSOLUTE POSITIONING
+// top-#, left-#, etc.
 $base-classes: 'top', 'left', 'bottom', 'right';
 @each $base-class in $base-classes {
   @include map-to-helpers(
@@ -420,7 +420,6 @@ $base-classes: 'top', 'left', 'bottom', 'right';
     );
   }
 }
-
 
 // WHITE SPACE
 $base-class: 'white-space';

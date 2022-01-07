@@ -1,5 +1,5 @@
-import { ApiResult, Vehicle } from '.'
+import { ApiResult, VehicleDetailEntity } from '.'
 
 export interface VehicleResult extends ApiResult {
-  vehicle: Vehicle
+  vehicle: VehicleDetailEntity
 }

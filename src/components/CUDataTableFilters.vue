@@ -116,7 +116,7 @@ export default class CUDataTableFilters extends Vue {
     return this.currentSort.id === column._t_id
   }
 
-  getColumnSortIcon(column: DataTableColumn): boolean {
+  getColumnSortIcon(column: DataTableColumn): string {
     if (this.isColumnSortActive(column)) {
       if (this.currentSort.direction === 'asc') {
         return 'arrow_up'

@@ -87,15 +87,6 @@ export default class CUCollectionTable extends Vue {
     })
   }
 
-  @Watch('isOpen')
-  isDialogOpenChanged(value: boolean): void {
-    this.$emit('input', value)
-  }
-  @Watch('value', { immediate: true })
-  valueChanged(value: boolean): void {
-    this.isOpen = value
-  }
-
   async load(): Promise<void> {
     this.loading = true
     await this.$nextTick(async () => {

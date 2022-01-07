@@ -49,14 +49,8 @@ export const toSentence = (string: string): string => {
   return interim.slice(0, 1).toUpperCase() + interim.slice(1)
 }
 
-export const titleCaseToSnakeCase = (str: string): string => {
-  return str.split(' ').map(s => s.toLowerCase()).join('_')
-}
-
-export const titleCaseToCamelCase = (str: string): string => {
-  const arr = str.split(' ')
-  arr[0] = arr[0].toLowerCase()
-  return arr.join('')
+export const toSnake = (string: string): string => {
+  return toKebab(string).replace('-', '_')
 }
 
 export const pluralize = (

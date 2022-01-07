@@ -33,8 +33,13 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import rate from '@/services/rate'
 import { filter } from '@/utils/filter'
-import { Rate, RateMapItem, RateTableRow, RateTableRowRate } from '@/models/dto/Rate'
-import { titleCaseToCamelCase } from '@/utils/string'
+import {
+  Rate,
+  RateMapItem,
+  RateTableRow,
+  RateTableRowRate,
+} from '@/models/dto/Rate'
+import { toCamel } from '@/utils/string'
 import { ActionColumn } from '@/models/ActionColumn'
 import typeService from '@/services/type'
 import { AxiosResponse } from 'axios'
@@ -50,6 +55,8 @@ import {
 import auth from '@/store/modules/auth'
 import company from '@/services/company'
 import { VehicleType } from '@/models/dto'
+import { DataTableColumn } from '@/models/DataTableColumn'
+import { isNotEmptyInput, isNotNegative } from '@/utils/validators'
 
 @Component({})
 export default class RatesList extends Vue {
@@ -83,44 +90,63 @@ export default class RatesList extends Vue {
       },
     },
   ]
-  columns = [
+  columns: DataTableColumn[] = [
     {
+      _t_id: '702155d5-cda5-401f-8df1-61293be9f63b',
       text: 'Vehicle Type',
       value: 'vehicleType',
       type: 'add-new-select',
+      editableRules: [isNotEmptyInput],
       classes: 'min-w-152 max-w-152',
     },
     {
+      _t_id: '600bdffc-c0ac-4234-8142-b6e9f29aa758',
       text: 'Transfer',
       value: 'transferRate/value',
       type: 'editable',
+      editableRules: [isNotEmptyInput, isNotNegative],
     },
     {
+      _t_id: '51c681b2-1602-4ff5-be11-1f2a3def90ce',
       text: 'Dead Mile',
       value: 'deadMileRate/value',
       type: 'editable',
+      editableRules: [isNotEmptyInput, isNotNegative],
     },
     {
+      _t_id: 'd38735c3-e381-4dcc-a532-ee4a5c267396',
       text: 'Live Mile',
       value: 'mileageRate/value',
       type: 'editable',
+      editableRules: [isNotEmptyInput, isNotNegative],
     },
     {
+      _t_id: '5ef3c45a-9e47-4445-9297-9a7277bddd9a',
       text: 'Hourly',
       value: 'hourlyRate/value',
       type: 'editable',
+      editableRules: [isNotEmptyInput, isNotNegative],
     },
     {
+      _t_id: '1c6ba038-ca8d-43fb-b496-644a4dbd2c8f',
       text: 'Hr. Min',
       value: 'hourlyMinimum/value',
       type: 'editable',
+      editableRules: [isNotEmptyInput, isNotNegative],
     },
     {
+      _t_id: 'e1ffdf6b-0d66-4599-a987-ed841989b9c3',
       text: 'Daily',
       value: 'dailyRate/value',
       type: 'editable',
+      editableRules: [isNotEmptyInput, isNotNegative],
     },
-    { text: 'Actions', value: 'actions', type: 'actions' },
+    {
+      _t_id: '8ad4c3c0-903c-4690-a23f-b33917d0c0eb',
+      text: 'Actions',
+      value: 'actions',
+      type: 'actions',
+    },
   ]
 
   mounted(): void {
@@ -136,33 +162,34 @@ export default class RatesList extends Vue {
     }
   }
 
-  // Each rate comes back individually, so group rates of 
-  // the same vehicleType, and return an array where each 
-  // item is an object that represent all rates for 
-  // a given vehicleType 
+  // Each rate comes back individually, so group rates of
+  // the same vehicleType, and return an array where each
+  // item is an object that represent all rates for
+  // a given vehicleType
   get ratesMap(): RateTableRow[] {
     const reduceFn = (newObj: Record<string, RateMapItem>, item: Rate) => {
-      let existingVehicleTypeRow = newObj[item.vehicleType] || {
+      let existingVehicleTypeRow =
+        newObj[item.vehicleType] ||
+        ({
           deadMileRate: {
-            value: 0
+            value: 0,
           },
           hourlyMinimum: {
-            value: 0
+            value: 0,
           },
           hourlyRate: {
-            value: 0
+            value: 0,
           },
           mileageRate: {
-            value: 0
+            value: 0,
           },
           transferRate: {
-            value: 0
-          }
-        } as RateMapItem
+            value: 0,
+          },
+        } as RateMapItem)
 
       newObj[item.vehicleType] = existingVehicleTypeRow
-      const marketRateType = titleCaseToCamelCase(item.marketRateType)
-
+      const marketRateType = toCamel(item.marketRateType)
       newObj[item.vehicleType][marketRateType] = {
         value: item.highRate, // Always equal to the lowRate
         marketRateId: item.marketRateId,
@@ -172,8 +199,8 @@ export default class RatesList extends Vue {
         marketRateType: item.marketRateType,
         vehicleTypeId: item.vehicleTypeId,
       } as RateTableRowRate
-      
-      // Hourly minimum is a property on the hourlyRate response, but 
+
+      // Hourly minimum is a property on the hourlyRate response, but
       // for the UI inputs we treat it as its own rate type
       if (marketRateType === 'hourlyRate') {
         newObj[item.vehicleType].hourlyMinimum = {
@@ -190,17 +217,19 @@ export default class RatesList extends Vue {
       return newObj
     }
     if (!this.companyRates) return []
-    const vehicleObjects: Record<string, RateMapItem> = this.companyRates.reduce(reduceFn, {})
-    return Object.entries(vehicleObjects)
-      .map(([key, val]: [string, RateMapItem]) => ({
+    const vehicleObjects: Record<string, RateMapItem> =
+      this.companyRates.reduce(reduceFn, {})
+    return Object.entries(vehicleObjects).map(
+      ([key, val]: [string, RateMapItem]) => ({
         vehicleType: key,
         isEditable: false,
         items: deepClone(this.vehicleTypes),
         ...val,
-      }))
+      })
+    )
   }
 
-  // Array of vehicleTypes which aren't associated with a 
+  // Array of vehicleTypes which aren't associated with a
   // saved market rate
   get availableVehicleTypes(): VehicleType[] {
     if (!this.vehicleTypes?.length) return []
@@ -208,12 +237,13 @@ export default class RatesList extends Vue {
 
     for (const rate of this.ratesMap) {
       const vehicleType = rate.vehicleType
-      availableVehicleTypes = availableVehicleTypes.filter((vt: VehicleType) => vt.label !== vehicleType && vt.key !== vehicleType)
+      availableVehicleTypes = availableVehicleTypes.filter(
+        (vt: VehicleType) => vt.label !== vehicleType && vt.key !== vehicleType
+      )
     }
 
     return availableVehicleTypes
   }
-
 
   // We need this auxilary function to prevent issues with
   // accessing `this` within the actions column (running into
@@ -223,8 +253,7 @@ export default class RatesList extends Vue {
     this.dataTableItems[rowIndex].isEditable = value
   }
 
-
-  // Add/Update/Cancel Rate Actions 
+  // Add/Update/Cancel Rate Actions
   cancelUpdate(rowIndex: number): void {
     this.dataTableItems[rowIndex].isEditable = false
   }
@@ -246,7 +275,10 @@ export default class RatesList extends Vue {
       return
     }
 
-    const vehicleTypeKey = getVehicleTypeKeyForLabel(row.vehicleType, this.vehicleTypes)
+    const vehicleTypeKey = getVehicleTypeKeyForLabel(
+      row.vehicleType,
+      this.vehicleTypes
+    )
     if (vehicleTypeKey) {
       row.vehicleType = vehicleTypeKey
     }
@@ -268,7 +300,10 @@ export default class RatesList extends Vue {
   async updateRate(row: RateTableRow): Promise<void> {
     this.closeNewRow()
     const form: any = this.$refs['rates-form']
-    const vehicleTypeKey = getVehicleTypeKeyForLabel(row.vehicleType, this.vehicleTypes)
+    const vehicleTypeKey = getVehicleTypeKeyForLabel(
+      row.vehicleType,
+      this.vehicleTypes
+    )
     if (!form.validate() || !vehicleTypeKey) {
       return
     }
@@ -311,7 +346,7 @@ export default class RatesList extends Vue {
   }
 
   // To display a new rate row, push an empty rate object to the
-  // beginning of the data table items 
+  // beginning of the data table items
   displayNewRateRow(): void {
     if (this.dataTableItems.find((row) => row.isNewRow)) {
       return

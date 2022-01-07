@@ -60,10 +60,11 @@
     >
       <CUSelect
         hide-details
+        :key="`editable-select-row-${rowIndex}-${column._t_id}`"
         :label="isMobile ? column.text : null"
         :items="row.items"
         class="w-full"
-        :rules="[(val) => isNotEmptyInput(val)]"
+        :rules="column.editableRules"
         :disabled="!row.isNewRow"
         :value="op(row, column.value)"
         validate-on-blur
@@ -89,6 +90,7 @@
       <CUTextField
         :value="op(row, column.value)"
         :disabled="!row.isEditable"
+        :key="`editable-text-field-row-${rowIndex}-${column._t_id}`"
         class="w-full"
         :label="isMobile ? column.text : null"
         hide-details
@@ -96,7 +98,7 @@
         validate-on-blur
         min="0"
         step="0.01"
-        :rules="[(val) => isNotEmptyInput(val), (val) => isNotNegative(val)]"
+        :rules="column.editableRules"
         @input="
           (e) =>
             $emit('update-editable-input', {

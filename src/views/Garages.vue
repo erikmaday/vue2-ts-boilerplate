@@ -27,4 +27,3 @@ export default class Garages extends Vue {
   }
 }
 </script>
-

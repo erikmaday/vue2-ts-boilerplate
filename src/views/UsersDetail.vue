@@ -295,7 +295,7 @@ import { AxiosResponse } from 'axios'
 
 import UsersChangePassword from '@/components/UsersChangePassword.vue'
 
-import { apiBaseUrl } from '@/utils/env'
+import { baseUrl } from '@/utils/env'
 
 import auth from '@/store/modules/auth'
 import user from '@/services/user'
@@ -474,16 +474,11 @@ export default class UsersDetail extends Vue {
       return this.avatarLink
     }
     if (this.currentUser?.userPhotoDTOs?.length) {
-      // TODO:
-      // It seems like we don't currently have a way of setting the primaryImage
-      // property on the back-end. Creating a ticket to fix this, but
-      // until then, this is the workaround we use in Coachrail
       const userPhotoSrc =
         this.currentUser.userPhotoDTOs[
           this.currentUser.userPhotoDTOs.length - 1
         ].imagePath
-
-      return `https://${apiBaseUrl(null)}${userPhotoSrc}`
+      return `https://${baseUrl()}${userPhotoSrc}`
     }
     return ''
   }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label v-if="$attrs.label">{{ $attrs.label }}</label>
+    <label class="font-14" v-if="$attrs.label">{{ $attrs.label }}</label>
     <v-text-field
       v-bind="$attrs"
       solo

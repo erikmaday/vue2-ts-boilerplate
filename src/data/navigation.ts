@@ -1,6 +1,7 @@
 import { NavigationLink } from '@/models/NavigationLink'
 import modules from '@/store/modules'
 
+
 export const navigation: NavigationLink[] = [
   {
     label: 'Today',
@@ -100,6 +101,13 @@ export const navigation: NavigationLink[] = [
   {
     label: 'Support',
     location: 'mobile',
+    params: {},
+    permission: [],
+  },
+  {
+    label: 'My Profile',
+    location: 'dropdown',
+    name: 'profile',
     params: {},
     permission: [],
   },

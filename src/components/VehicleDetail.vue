@@ -107,7 +107,7 @@ export default class VehicleDetail extends Vue {
   }
 
   validate(): boolean {
-    return this.$refs.form.validate()
+    return (this.$refs.form as any).validate()
   }
 }
 </script>

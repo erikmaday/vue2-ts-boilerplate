@@ -87,9 +87,10 @@ export default class VehicleDetailImageUpload extends Vue {
   }
 
   handleBrowse(event: Event): void {
-    this.addPhotos(event.target.files)
+    const target = event.target as HTMLInputElement
+    this.addPhotos(target.files)
   }
-  handleDrop(event: Event): void {
+  handleDrop(event: DragEvent): void {
     this.addPhotos(event.dataTransfer.files)
   }
 

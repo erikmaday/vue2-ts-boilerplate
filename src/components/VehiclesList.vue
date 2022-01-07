@@ -18,7 +18,7 @@ import vehicle from '@/services/vehicle'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vehicle } from '@/models/dto/Vehicle'
-import { RawLocation } from 'vue-router'
+import { Location, RawLocation } from 'vue-router'
 
 @Component({
   components: { CUCollectionTable },
@@ -96,7 +96,7 @@ export default class VehiclesList extends Vue {
       confirmModal: false,
       ariaLabel: 'View Vehicle Details',
       isDetail: true,
-      detailRoute: (row: Vehicle): RawLocation => {
+      detailRoute: (row: Vehicle): Location => {
         return {
           name: 'vehicles.view',
           params: { id: row.vehicleId.toString() },

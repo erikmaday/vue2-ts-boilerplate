@@ -1,13 +1,16 @@
 <template>
   <div class="align-center d-flex flex-grow-1">
     <template v-if="detailAction">
-      <a
+      <v-btn
         v-if="$vuetify.breakpoint.smAndUp"
+        text
+        x-small
+        color="primary"
         class="font-medium font-14"
         @click="pushDetailRoute"
       >
         Details
-      </a>
+      </v-btn>
       <v-btn
         v-else
         color="primary"

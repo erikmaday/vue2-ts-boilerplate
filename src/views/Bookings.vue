@@ -46,8 +46,9 @@ import {
   formatReservationPickupDestinationText,
 } from '@/utils/string'
 import { RawLocation } from 'vue-router'
-import VehicleAssignmentIcons from '@/components/VehicleAssignmentIcons.vue'
 import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
+import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
+import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Bookings extends Vue {
@@ -93,20 +94,22 @@ export default class Bookings extends Vue {
       value: 'customerTotal',
       computedText: (row: Reservation): string =>
         currencyFilter(row.customerTotal),
+      sortable: true,
+      sortProp: 'customerTotal',
     },
     {
       _t_id: '07a7b0c4-b4c0-40ab-bd75-c5cf2cce1c78',
       text: 'Vehicles',
       value: 'vehicleAssignments',
       type: 'slot',
-      component: VehicleAssignmentIcons,
+      component: BookingsListVehicleAssignments,
     },
     {
       _t_id: 'a3374d2d-d99d-4289-8204-4b603ead7206',
       text: 'Drivers',
       value: 'vehicleAssignments/driverAssignments',
       type: 'slot',
-      component: DriverAssignmentIcons,
+      component: BookingsListDriverAssignments,
     },
     {
       _t_id: 'f1cc4115-9fe5-4b23-ac4b-263cba83b973',

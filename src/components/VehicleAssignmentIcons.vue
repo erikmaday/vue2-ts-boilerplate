@@ -43,7 +43,6 @@ export default class VehicleAssignmentIcons extends Vue {
   @Prop({ required: false }) readonly trip: Trip
   @Prop({ required: false }) readonly reservation: Reservation
   @Prop({ required: false }) readonly showLabel: boolean
-  @Prop({ required: false }) readonly row: Reservation
 
   fetchedTrip: Trip | null = null
   fetchedVehicleAssignments: VehicleAssignment[] = []

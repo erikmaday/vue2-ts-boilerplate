@@ -14,6 +14,7 @@ export type SupportedVehicleType = {
 }
 
 export interface Vehicle {
+  imagePath: string | null
   tripVehicleId: number
   tripId: number
   vehicleTypeId: number

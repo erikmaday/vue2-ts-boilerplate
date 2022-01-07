@@ -76,9 +76,6 @@ export default class VehicleAssignmentIcons extends Vue {
     if (this.reservation) {
       return this.reservation
     }
-    if (this.row) {
-      return this.row
-    }
     return null
   }
 

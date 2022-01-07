@@ -16,7 +16,11 @@
         <CUTextField
           id="my-profile-password-text-new-password"
           v-model="formFields.newPassword"
-          :rules="[(v) => !!v || 'New password is required']"
+          :rules="[
+            (v) => !!v || 'New password is required',
+            (v) =>
+              v.length >= 8 || 'New password must be at least 8 characters',
+          ]"
           type="password"
           required
           outlined

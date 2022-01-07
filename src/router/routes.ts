@@ -63,7 +63,6 @@ export const routes: RouteConfig[] = [
                         /* webpackChunkName: "company-users" */ '@/views/Users.vue'
                       ),
                   },
-
                 ],
               },
               {
@@ -116,16 +115,16 @@ export const routes: RouteConfig[] = [
                       ),
                   },
                   {
-                    path: 'edit/:id', 
-                    name: 'garages.edit', 
+                    path: 'edit/:id',
+                    name: 'garages.edit',
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-detail-edit" */ '@/views/GaragesDetail.vue'
                       ),
                   },
                   {
-                    path: 'view/:id', 
-                    name: 'garages.view', 
+                    path: 'view/:id',
+                    name: 'garages.view',
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-detail-view" */ '@/views/GaragesDetail.vue'
@@ -138,7 +137,7 @@ export const routes: RouteConfig[] = [
                       import(
                         /* webpackChunkName: "company-garages-detail-add" */ '@/views/GaragesDetail.vue'
                       ),
-                  }
+                  },
                 ],
               },
               {
@@ -196,6 +195,25 @@ export const routes: RouteConfig[] = [
           {
             path: 'marketplace',
             name: 'marketplace',
+            component: () => import('@/views/Empty.vue'),
+            children: [
+              {
+                path: ':id',
+                name: 'bid-detail',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "bid-detail" */ '@/views/BidDetail.vue'
+                  ),
+              },
+              {
+                path: 'multi/:id',
+                name: 'multi-bid-detail',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "multi-bid-detail" */ '@/views/BidDetail.vue'
+                  ),
+              },
+            ],
           },
           {
             path: 'bookings',
@@ -213,8 +231,9 @@ export const routes: RouteConfig[] = [
             ],
           },
           {
-            path: 'trips',
-            name: 'trips',
+            path: 'metrics',
+            name: 'metrics',
+            component: () => import('@/views/Empty.vue'),
           },
         ],
       },

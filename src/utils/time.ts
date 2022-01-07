@@ -8,7 +8,7 @@ interface TimeObject {
   seconds: number
 }
 
-export const timeDifferenceToObject = (
+export const timeDifferenceAsObject = (
   time1: dayjs.Dayjs,
   time2: dayjs.Dayjs
 ): TimeObject => {

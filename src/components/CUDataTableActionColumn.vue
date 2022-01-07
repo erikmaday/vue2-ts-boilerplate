@@ -103,6 +103,7 @@ export default class CUDataTableActionColumn extends Vue {
     required: false,
     default: undefined,
   })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   row!: any
 
   @Prop({
@@ -125,6 +126,7 @@ export default class CUDataTableActionColumn extends Vue {
 
   dialogOpen = false
   dialogText: string | undefined = ''
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   dialogConfirmFn = () => ({})
   currentAction: ActionColumn | undefined = undefined
 

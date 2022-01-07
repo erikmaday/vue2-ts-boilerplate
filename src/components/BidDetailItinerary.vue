@@ -1,5 +1,5 @@
 <template>
-  <CUItinerary>
+  <CUItinerary v-if="stops">
     <CUItineraryItem
       v-for="(stop, stopIndex) in stops"
       :key="`stop-${stopIndex}-${stop.stopId}`"
@@ -8,7 +8,9 @@
       :last-stop="stopIndex === stops.length - 1"
     >
       <div class="padding-l-4 padding-b-4">
-        <p class="font-medium margin-t-0">{{ formatStopAddress(stop) }}</p>
+        <p class="font-medium margin-t-0">
+          {{ formatStopAddress(stop) }}
+        </p>
         <p v-if="stop.dropoffDatetime" class="text-gray-light margin-t-0">
           Estimated arrival:
           {{ formatDropoffTime(stop) }}
@@ -23,27 +25,25 @@
 </template>
 
 <script lang="ts">
-import { ReservationDetail, ReservationDetailStop } from '@/models/dto'
-import {
-  formatDropoffTime,
-  formatPickupTime,
-  formatStopAddress,
-} from '@/utils/string'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import CUItinerary from '@/components/CUItinerary.vue'
 import CUItineraryItem from '@/components/CUItineraryItem.vue'
-
-@Component({ components: { CUItinerary, CUItineraryItem } })
-export default class BookingDetailHeader extends Vue {
-  @Prop({ required: true }) readonly reservation!: ReservationDetail
-
-  get stops(): ReservationDetailStop[] {
-    return this.reservation.stops
-  }
-  formatStopAddress = formatStopAddress
+import { Stop } from '@/models/dto'
+import { formatDropoffTime, formatPickupTime } from '@/utils/string'
+import bidDetail from '@/store/modules/bidDetail'
+@Component({
+  components: { CUItinerary, CUItineraryItem },
+})
+export default class BidDetailItinerary extends Vue {
   formatDropoffTime = formatDropoffTime
   formatPickupTime = formatPickupTime
+
+  get stops(): Stop[] {
+    return bidDetail.getTrip?.stops
+  }
+
+  formatStopAddress(stop: Stop): string {
+    return `${stop.address.city}, ${stop.address.state}`
+  }
 }
 </script>
-
-<style lang="scss" scoped></style>

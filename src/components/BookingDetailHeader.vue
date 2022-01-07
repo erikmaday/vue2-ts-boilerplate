@@ -77,6 +77,7 @@ import {
   RequiredVehicleType,
   VehicleAssignment,
   Stop,
+  ReservationDetailStop,
 } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ReferralStatus } from '@/utils/enum'
@@ -137,11 +138,11 @@ export default class BookingDetailHeader extends Vue {
     return null
   }
 
-  get firstPickup(): Stop {
+  get firstPickup(): ReservationDetailStop {
     return this.reservation?.stops?.[0]
   }
 
-  get firstDropoff(): Stop {
+  get firstDropoff(): ReservationDetailStop {
     return this.reservation?.stops?.[1] || this.firstPickup
   }
 

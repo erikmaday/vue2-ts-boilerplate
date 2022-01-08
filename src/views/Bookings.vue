@@ -27,6 +27,7 @@
       :columns="columns"
       :filters.sync="filters"
       :sorts.sync="sorts"
+      :initial-filters="initialFilters"
     />
   </Main>
 </template>
@@ -46,9 +47,10 @@ import {
   formatReservationPickupDestinationText,
 } from '@/utils/string'
 import { RawLocation } from 'vue-router'
-import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
 import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
 import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
+import { TableViewFilter } from '@/models/TableView'
+import { ReservationType } from '@/utils/enum'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Bookings extends Vue {
@@ -122,6 +124,18 @@ export default class Bookings extends Vue {
       text: '',
       value: 'actions',
       type: 'actions',
+    },
+  ]
+
+  initialFilters: TableViewFilter[] = [
+    {
+      column: {
+        _t_id: '5e1dfd51-9620-4cd5-9b3f-ca91ce6aadf9',
+        value: 'reservationType',
+        filterType: 'eq',
+        text: '',
+      },
+      value: ReservationType.Referral,
     },
   ]
 

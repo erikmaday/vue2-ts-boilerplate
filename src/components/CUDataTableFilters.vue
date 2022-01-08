@@ -73,6 +73,7 @@ import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vue, Component, Prop, Model, Watch } from 'vue-property-decorator'
 import { v4 as uuidv4 } from 'uuid'
 import { EventBus } from '@/utils/eventBus'
+import { TableViewFilter } from '@/models/TableView'
 
 @Component
 export default class CUDataTableFilters extends Vue {
@@ -86,6 +87,8 @@ export default class CUDataTableFilters extends Vue {
 
   @Prop({ required: false, default: () => [] }) sorts!: any
   @Prop({ required: false, default: () => [] }) filters!: any
+  @Prop({ required: false, default: () => [] })
+  initialFilters!: TableViewFilter[]
 
   @Watch('isOpen')
   isDialogOpenChanged(value: boolean): void {
@@ -98,6 +101,10 @@ export default class CUDataTableFilters extends Vue {
   @Watch('currentSort', { deep: true })
   handleSortChanged(): void {
     this.refresh(true)
+  }
+  @Watch('initialFilters', { deep: true, immediate: true })
+  handleInitialFiltersChanged(): void {
+    this.setInitialFilters()
   }
 
   isOpen = false
@@ -131,10 +138,11 @@ export default class CUDataTableFilters extends Vue {
 
   async setInitialFilters(): Promise<void> {
     for (const initialFilter of this.initialFilters) {
-      await this.setFilter(initialFilter.column, initialFilter.hideOnFilterBar)
-      this.updateFilterCriteria(initialFilter.value)
+      const hide = initialFilter?.hideOnFilterBar || false
+      await this.setFilter(initialFilter.column, hide)
+      this.updateFilterCriteria(initialFilter.value, initialFilter.column)
     }
-    this.receiveFilters(this.filterUtil)
+    this.receiveFilters(this.filterList)
     this.handleFilterAdded()
   }
 
@@ -142,7 +150,7 @@ export default class CUDataTableFilters extends Vue {
     this.filterList = filterList
   }
 
-  setFilter(column: DataTableColumn, hideOnFilterBar: boolean): void {
+  setFilter(column: DataTableColumn, hideOnFilterBar = false): void {
     const doesFilterAlreadyExist = this.filters.find({ column })
     if (!doesFilterAlreadyExist) {
       const newFilter = { column }
@@ -198,13 +206,13 @@ export default class CUDataTableFilters extends Vue {
     this.$emit('update:filters', this.filters)
     this.$nextTick(() => {
       // LEAVE THIS FOR NOW, MAY NEED TO ADD BACK SIMILAR LOGIC WHEN ADDIING DEFAULT FILTERS SHORTLY
-      // this.filterList = this.filterList.filter(
-      //   (f) => f.column._t_id !== filter.column._t_id
-      // )
-      // const nextDefaultFilter = this.filterList.find((f) => !f.hideOnFilterBar)
-      // if (nextDefaultFilter && nextDefaultFilter.column) {
-      //   this.setFilter({}, nextDefaultFilter.column)
-      // }
+      this.filterList = this.filterList.filter(
+        (f) => f.column._t_id !== filter.column._t_id
+      )
+      const nextDefaultFilter = this.filterList.find((f) => !f.hideOnFilterBar)
+      if (nextDefaultFilter && nextDefaultFilter.column) {
+        this.setFilter(nextDefaultFilter.column)
+      }
       this.handleFilterRemoved()
     })
   }

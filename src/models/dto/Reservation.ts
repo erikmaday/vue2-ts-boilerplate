@@ -1,5 +1,6 @@
 import { VehicleAssignment } from '.'
-import { TableViewResult } from './TableView'
+import { TableViewResult } from '../TableView'
+
 export interface Reservation {
   active: boolean
   amount: number

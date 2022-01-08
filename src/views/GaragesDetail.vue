@@ -182,9 +182,10 @@ import { Garage } from '@/models/dto/Garage'
 import GaragesDetailForm from '@/components/GaragesDetailForm.vue'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
 import { isNotEmpty } from '@/utils/validators'
-import { ApiResult, TableViewParameters } from '@/models/dto'
+import { ApiResult } from '@/models/dto'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import app from '@/store/modules/app'
+import { TableViewParameters } from '@/models/TableView'
 
 @Component({
   components: {

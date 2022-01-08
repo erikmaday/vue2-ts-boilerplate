@@ -70,14 +70,13 @@
 
 <script lang="ts">
 import { DataTableColumn } from '@/models/DataTableColumn'
-import { Vue, Component, Prop, Model, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { v4 as uuidv4 } from 'uuid'
 import { EventBus } from '@/utils/eventBus'
 import { TableViewFilter } from '@/models/TableView'
 
 @Component
 export default class CUDataTableFilters extends Vue {
-  @Model('input') readonly value!: boolean
   @Prop({
     type: Array,
     required: false,
@@ -89,12 +88,18 @@ export default class CUDataTableFilters extends Vue {
   @Prop({ required: false, default: () => [] }) filters!: any
   @Prop({ required: false, default: () => [] })
   initialFilters!: TableViewFilter[]
+  @Prop({
+    type: Boolean,
+    required: false,
+    default: false,
+  })
+  open: boolean
 
   @Watch('isOpen')
   isDialogOpenChanged(value: boolean): void {
-    this.$emit('input', value)
+    this.$emit('update:open', value)
   }
-  @Watch('value', { immediate: true })
+  @Watch('open', { immediate: true })
   valueChanged(value: boolean): void {
     this.isOpen = value
   }
@@ -289,7 +294,7 @@ export default class CUDataTableFilters extends Vue {
   }
 
   close(): void {
-    this.$emit('input', false)
+    this.$emit('update:open', false)
   }
 }
 </script>

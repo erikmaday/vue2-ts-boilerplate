@@ -1,17 +1,28 @@
 <template>
-  <CUDataTable
-    :actions="actions"
-    :options="options"
-    :columns="columns"
-    :items="items"
-    :item-key="itemKey"
-    :loading="loading"
-    :server-items-length="serverItemsLength"
-    @update:options="load"
-    @pagination="options = $event"
-    @refresh="load"
-    v-on="$listeners"
-  />
+  <div>
+    <CUDataTable
+      :actions="actions"
+      :options="options"
+      :columns="columns"
+      :items="items"
+      :item-key="itemKey"
+      :loading="loading"
+      :server-items-length="serverItemsLength"
+      @update:options="load"
+      @pagination="options = $event"
+      @refresh="load"
+      v-on="$listeners"
+    />
+    <CUDataTableFilters
+      :columns="columns"
+      :filters="filters"
+      :sorts="sorts"
+      :open="isFilterDialogOpen"
+      @update:sorts="$emit('update:sorts', $event)"
+      @update:filters="$emit('update:filters', $event)"
+      @update:open="$emit('update:is-filter-dialog-open', $event)"
+    />
+  </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
@@ -20,9 +31,12 @@ import { TableViewParameters } from '@/models/TableView'
 import { AxiosResponse } from 'axios'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { EventBus } from '@/utils/eventBus'
+import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
+import { filter } from '@/utils/filter'
+import { sort } from '@/utils/sort'
 
 @Component({
-  components: { CUDataTable },
+  components: { CUDataTable, CUDataTableFilters },
 })
 export default class CUCollectionTable extends Vue {
   @Prop({
@@ -30,7 +44,7 @@ export default class CUCollectionTable extends Vue {
     required: false,
     default: () => [],
   })
-  columns!: Array<DataTableColumn>
+  columns!: DataTableColumn[]
 
   @Prop({
     type: String,
@@ -43,7 +57,7 @@ export default class CUCollectionTable extends Vue {
     required: false,
     default: () => [],
   })
-  actions!: Array<unknown>
+  actions!: unknown[]
 
   @Prop({
     type: String,
@@ -56,15 +70,22 @@ export default class CUCollectionTable extends Vue {
 
   @Prop({
     required: false,
-    default: () => null,
+    default: () => filter(),
   })
   filters: any
 
   @Prop({
     required: false,
-    default: () => null,
+    default: () => sort(),
   })
   sorts: any
+
+  @Prop({
+    type: Boolean,
+    required: false,
+    default: false,
+  })
+  isFilterDialogOpen: boolean
 
   items: unknown[] = []
   loading = false

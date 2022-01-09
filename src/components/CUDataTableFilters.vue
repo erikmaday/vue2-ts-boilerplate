@@ -206,7 +206,7 @@ export default class CUDataTableFilters extends Vue {
     this.$emit('initial-filters-set')
   }
 
-  receiveFilters(filters): void {
+  receiveFilters(): void {
     this.$emit('update:filters', this.filters)
   }
 
@@ -227,26 +227,6 @@ export default class CUDataTableFilters extends Vue {
       } else {
         this.filters.and(newFilter).add(newFilter)
         this.$emit('update:filters', this.filters)
-      }
-      if (column.recalculate) {
-        newFilter.recalculate = column.recalculate
-      }
-      if (column.predefined && Array.isArray(column.predefined)) {
-        const defaultPredefined = column.predefined.find(
-          (predefined) => predefined.defaultOnSelection
-        )
-        if (defaultPredefined) {
-          await this.selectPredefined(defaultPredefined)
-        }
-      }
-      if (column.defaultValue) {
-        const calculationFunction = this.calculatedValues[column.defaultValue]
-        if (typeof calculationFunction === 'function') {
-          newFilter.value = await calculationFunction()
-        } else {
-          newFilter.value = column.defaultValue
-        }
-        this.handleFilterAdded()
       }
     }
   }
@@ -360,21 +340,7 @@ export default class CUDataTableFilters extends Vue {
 
   convertCategories(): void {
     this.categoryFilters = this.categories.map((category) => {
-      const categoryFilter = {
-        _t_id: category._t_id,
-        value: category.value,
-        text: category.text,
-        method: 'and',
-        childMethod: category.method,
-        predefined: [],
-        categoryFilter: true,
-        group: category.group,
-      }
-      categoryFilter.predefined = {
-        id: uuidv4(),
-        text: category.text,
-      }
-      categoryFilter.predefined.controls = category.values.map(
+      const categoryFilterPredefinedControls = category.values.map(
         (valueObject) => {
           return {
             id: uuidv4(),
@@ -385,6 +351,21 @@ export default class CUDataTableFilters extends Vue {
           }
         }
       )
+      const categoryFilter = {
+        _t_id: category._t_id,
+        value: category.value,
+        text: category.text,
+        method: 'and',
+        childMethod: category.method,
+        predefined: {
+          id: uuidv4(),
+          text: category.text,
+          controls: categoryFilterPredefinedControls,
+        },
+        categoryFilter: true,
+        group: category.group,
+      }
+
       return categoryFilter
     })
   }
@@ -407,7 +388,6 @@ export default class CUDataTableFilters extends Vue {
     const hideOnFilterBar = true
     const categoryFilter = { column: category }
     const exists = this.filters.find(categoryFilter)
-    this.activeFilter = category._t_id
 
     if (!exists) {
       this.setFilter(category, hideOnFilterBar)

@@ -6,27 +6,34 @@
           readonly
           hide-details
           dense
-          placeholder="MM-DD-YYYY"
+          placeholder="MM/DD/YYYY"
           v-on="on"
           :value="value"
         />
       </template>
-      <v-date-picker @input="updateSelectedDate" />
+      <v-date-picker :value="computedISODate" @input="updateSelectedDate" />
     </v-menu>
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, ModelSync } from 'vue-property-decorator'
+import { Vue, Component, ModelSync, Prop } from 'vue-property-decorator'
+import dayjs from 'dayjs'
 
 @Component({})
 export default class CUDatePicker extends Vue {
-  selectedDate = '2022-01-06'
+  @Prop({
+    required: false, 
+    default: dayjs().format('YYYY-MM-DD'), 
+    type: String
+  })
+  value!: string
 
-  updateSelectedDate(e) {
-    this.$emit('input', e)
+  get computedISODate(): string {
+    return dayjs(this.value, 'MM/DD/YYYY').format('YYYY-MM-DD')
   }
 
-  @ModelSync('dateValue', 'input', { type: String })
-  value!: string
+  updateSelectedDate(e) {
+    this.$emit('input', dayjs(e).format('MM/DD/YYYY'))
+  }
 }
 </script>

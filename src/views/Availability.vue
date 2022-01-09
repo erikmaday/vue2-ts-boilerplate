@@ -1,23 +1,28 @@
 <template>
   <Main>
-    <v-row class="padding-t-4 padding-b-8">
-      <div style="width: 244px"></div>
-      <CUDatePicker v-model="showDate" />
-      <v-btn
-        class="margin-l-3"
-        outlined
-        color="primary"
-        small
-        @click="setCalendarDisplayToToday"
-      >
-        Today
+    <v-row style="padding-left: 215px;" justify="space-between" class="padding-t-4 padding-b-8">
+      <span class="d-flex">
+        <CUDatePicker :value="datePickerDate" @input="updateDatePickerDate" />
+        <v-btn
+          class="margin-l-3"
+          outlined
+          color="primary"
+          small
+          @click="setCalendarDisplayToToday"
+        >
+          Today
+        </v-btn>
+      </span>
+      <v-btn color="primary" small @click="isFilterDialogOpen = true">
+        <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+        Filter
       </v-btn>
     </v-row>
     <v-row align="start" class="position-relative">
       <AvailabilityGridLines
         :is-vehicle-display="isVehicleDisplay"
         :vehicle-rows="vehicleKeyRows"
-        :driverRows="driverKeyRows"
+        :driver-rows="driverKeyRows"
       />
       <AvailabilityVehicleList
         :vehicle-rows="vehicleKeyRows"
@@ -103,15 +108,23 @@ import { Driver } from '@/models/dto/Driver'
 export default class Availability extends Vue {
   loadedReservations: Record<number, AvailabilityBlock> = {}
   isVehicleDisplay = false
-  showDate = dayjs().format('YYYY-MM-DD')
   reservations: AvailabilityBlock[] = []
   calendarDisplayDate = dayjs()
   loadedDateIntervals = new IntervalTree()
   vehicles: Vehicle[] = []
   drivers: Driver[] = []
+  datePickerDate: string = dayjs().format('MM/DD/YYYY')
+
+  updateDatePickerDate(date) {
+    this.calendarDisplayDate = dayjs(date, 'MM/DD/YYYY')
+  }
 
   get calendarDisplayDateAsJS(): Date {
     return this.calendarDisplayDate.toDate()
+  }
+
+  get calendarDisplayDateAsLocalizedString(): string {
+    return this.calendarDisplayDate.format('MM/DD/YYYY')
   }
 
   get calendarDisplayDateMonth(): string {
@@ -324,7 +337,8 @@ export default class Availability extends Vue {
   }
 
   @Watch('calendarDisplayDate')
-  onCalendarDisplayDateChange() {
+  onCalendarDisplayDateChange(newDate: dayjs.Dayjs) {
+    this.datePickerDate = newDate.format('MM/DD/YYYY')
     const startDate = this.startOfWeek.valueOf()
     const endDate = this.endOfWeek.valueOf()
 
@@ -351,13 +365,8 @@ export default class Availability extends Vue {
     this.reservations = Object.values(newReservations)
   }
 
-  @Watch('showDate')
-  onShowDateChange(newDate: string) {
-    this.calendarDisplayDate = dayjs(newDate)
-  }
-
   setCalendarDisplayToToday(): void {
-    this.showDate = dayjs().format('YYYY-MM-DD')
+    this.calendarDisplayDate = dayjs()
   }
 
   async mounted(): Promise<void> {
@@ -407,5 +416,6 @@ export default class Availability extends Vue {
     const driversListRes = await driver.tableView({ pageSize: -1, page: 1 })
     this.drivers = driversListRes.data.resultList
   }
+
 }
 </script>

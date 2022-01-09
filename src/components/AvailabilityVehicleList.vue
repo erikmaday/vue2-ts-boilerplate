@@ -8,10 +8,12 @@
     <!-- Spacer -->
     <div class="h-36 position-relative">
       <v-select
-        class="position-absolute margin-t-n4"
+        class="position-absolute vehicles-list-select"
         hide-details
         dense
         height="30px"
+        solo
+        flat
         :value="isVehicleDisplay"
         @input="e => $emit('input:vehicle-display-select', e)"
         label="Vehicles"
@@ -120,3 +122,16 @@ export default class AvailabilityVehicleList extends Vue {
   isVehicleDisplay!: boolean
 }
 </script>
+<style lang="scss" scoped>
+  ::v-deep .vehicles-list-select {
+    height: 30px; 
+    max-height: 30px;
+
+    
+  }
+
+  ::v-deep .v-input__slot {
+      min-height: 30px !important;
+      max-height: 30px;
+    }
+</style>

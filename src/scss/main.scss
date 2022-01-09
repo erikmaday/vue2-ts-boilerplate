@@ -444,4 +444,15 @@
       }
     }
   }
+
+  .v-picker {
+    .v-picker__body {
+      border-radius: 5px;
+    }
+    
+    .v-picker__title {
+      display: none;
+    }
+  }
+
 }

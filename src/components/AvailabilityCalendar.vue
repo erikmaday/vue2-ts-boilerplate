@@ -1,5 +1,5 @@
 <template>
-  <CalendarView :show-date="showDate" display-period-uom="week" :items="items">
+  <CalendarView :style="cssVars" :show-date="showDate" display-period-uom="week" :items="items">
     <template #dayHeader="{ index, label }">
       <div
         class="cv-week-day-header"
@@ -17,7 +17,7 @@
       <AvailabilityCalendarItem
         :item="value.originalItem"
         :classes="value.classes"
-        :top="value.originalItem.startingHeight"
+        :top="value.originalItem.top"
       />
       <!-- <div
         :class="`cv-item ` + value.classes.join(' ')"
@@ -50,6 +50,13 @@ export default class AvailabilityCalendar extends Vue {
   })
   items!: any
 
+  @Prop({
+    required: false,
+    default: 600,
+    type: Number,
+  })
+  minHeight!: number
+
   getDayHeaderDate(index: number): number {
     return dayjs(this.showDate).startOf('week').add(index, 'day').date()
   }
@@ -58,6 +65,16 @@ export default class AvailabilityCalendar extends Vue {
     const headerDate = dayjs(this.showDate).startOf('week').add(index, 'day')
     return dayjs().isSame(headerDate, 'day')
   }
+
+  get cssVars(): Record<string, string | number> {
+    const minHeight = Math.max(this.minHeight, 600)
+    let cssVars = {
+      '--min-calendar-height': `${minHeight}px`,
+    }
+    return cssVars
+  }
+
+ 
 }
 </script>
 <style lang="scss" scoped>
@@ -65,6 +82,7 @@ export default class AvailabilityCalendar extends Vue {
   .cv-week-day-header {
     padding: 2px 8px;
     flex-basis: calc(100% / 7);
+    border-right: 1px solid $gray-border;
 
     p {
       margin: 0;
@@ -88,7 +106,8 @@ export default class AvailabilityCalendar extends Vue {
 }
 
 ::v-deep .cv-weeks {
-  min-height: 500px;
+  min-height: calc(var(--min-calendar-height) + 1px);
+  overflow-y: hidden;
 }
 
 ::v-deep .cv-item {

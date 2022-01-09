@@ -17,6 +17,7 @@ export interface AvailabilityBlock {
   firstStop: string
   lastStop: string
   isMultiStop: boolean
+  top?: number
 }
 
 export interface VehicleBlockItem {
@@ -28,6 +29,7 @@ export interface VehicleBlockItem {
 export interface VehicleKeyRow {
   rowHeight: number
   vehicle: Vehicle | UnassignedVehicle | undefined
+  distanceFromTop: number
 }
 
 export interface UnassignedVehicle {

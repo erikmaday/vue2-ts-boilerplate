@@ -1,31 +1,42 @@
 <template>
   <Main>
-    <h1>Availability</h1>
-    <p></p>
-    <v-row align="start">
-      <div class="grid-test"></div>
+    <v-row class="padding-t-4 padding-b-8">
+      <div style="width: 244px"></div>
+      <CUDatePicker />
+      <v-btn class="margin-l-3" outlined color="primary" small>Today</v-btn>
+    </v-row>
+    <v-row align="start" class="position-relative">
+      <AvailabilityGridLines :vehicle-rows="vehicleKeyRows" />
       <AvailabilityVehicleList :vehicle-rows="vehicleKeyRows" />
       <!-- Inline styling needed to override default icon btn Vuetify settings -->
       <v-btn
         class="border-radius-2 background-primary margin-x-1"
-        style="width: 28px"
+        style="width: 24px; height: 28px"
         x-small
         icon
         color="primary"
         @click="shiftCalendarDisplayDate(-1)"
       >
-        <CUIcon color="white" width="20px" height="20px">keyboard_arrow_left</CUIcon>
+        <CUIcon color="white" width="20px" height="20px">
+          keyboard_arrow_left
+        </CUIcon>
       </v-btn>
-      <AvailabilityCalendar :show-date="calendarDisplayDateAsJS" :items="VehicleSortCalendarItems" />
+      <AvailabilityCalendar
+        :show-date="calendarDisplayDateAsJS"
+        :items="calendarItemsSortedByVehicles"
+        :min-height="minHeight"
+      />
       <v-btn
         class="border-radius-2 background-primary margin-x-1"
-        style="width: 28px"
+        style="width: 24px; height: 28px"
         x-small
         icon
         color="primary"
         @click="shiftCalendarDisplayDate(1)"
       >
-        <CUIcon color="white" width="20px" height="20px">keyboard_arrow_right</CUIcon>
+        <CUIcon color="white" width="20px" height="20px">
+          keyboard_arrow_right
+        </CUIcon>
       </v-btn>
     </v-row>
   </Main>
@@ -36,18 +47,33 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import availability from '@/services/availability'
 import dayjs from 'dayjs'
-import { AvailabilityGetRequest, AvailabilityBlock, VehicleBlockItem, VehicleKeyRow, UnassignedVehicle } from '@/models/dto/Availability'
+import {
+  AvailabilityGetRequest,
+  AvailabilityBlock,
+  VehicleBlockItem,
+  VehicleKeyRow,
+  UnassignedVehicle,
+} from '@/models/dto/Availability'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar.vue'
 import { convertReservationToAvailabilityBlock } from '@/utils/reservation'
 import deepClone from '@/utils/deepClone'
 import IntervalTree from '@flatten-js/interval-tree'
-import { sortAvailabilityBlocksByVehicle, AVAILABILITY_ROW_HEIGHT } from '@/utils/availability'
+import {
+  sortAvailabilityBlocksByVehicle,
+  AVAILABILITY_ROW_HEIGHT,
+} from '@/utils/availability'
 import AvailabilityVehicleList from '@/components/AvailabilityVehicleList.vue'
 import { Vehicle } from '@/models/dto'
 import vehicle from '@/services/vehicle'
+import AvailabilityGridLines from '@/components/AvailabilityGridLines.vue'
 
 @Component({
-  components: { Main, AvailabilityCalendar, AvailabilityVehicleList },
+  components: {
+    Main,
+    AvailabilityCalendar,
+    AvailabilityVehicleList,
+    AvailabilityGridLines,
+  },
 })
 export default class Availability extends Vue {
   loadedReservations: Record<number, AvailabilityBlock> = {}
@@ -75,7 +101,7 @@ export default class Availability extends Vue {
   }
 
   // Given the whole array of loaded reservations, and the beginning/end of
-  // the current week view, return an array of all reservations 
+  // the current week view, return an array of all reservations
   get displayedReservations(): AvailabilityBlock[] {
     const displayedReservations = []
     const reservationsList = Object.values(this.loadedReservations)
@@ -83,17 +109,28 @@ export default class Availability extends Vue {
       const startDate = dayjs(reservation.startDate)
       const endDate = dayjs(reservation.endDate)
 
-      if (this.startOfWeek.isSameOrBefore(startDate, 'day') && this.endOfWeek.isSameOrAfter(startDate, 'day')) {
+      if (
+        this.startOfWeek.isSameOrBefore(startDate, 'day') &&
+        this.endOfWeek.isSameOrAfter(startDate, 'day')
+      ) {
         displayedReservations.push(reservation)
-      } else if (this.startOfWeek.isSameOrBefore(endDate, 'day') && this.endOfWeek.isSameOrAfter(endDate, 'day')) {
+      } else if (
+        this.startOfWeek.isSameOrBefore(endDate, 'day') &&
+        this.endOfWeek.isSameOrAfter(endDate, 'day')
+      ) {
         displayedReservations.push(reservation)
-      } else if (startDate.isBefore(this.startOfWeek) && endDate.isAfter(this.endOfWeek)) {
+      } else if (
+        startDate.isBefore(this.startOfWeek) &&
+        endDate.isAfter(this.endOfWeek)
+      ) {
         displayedReservations.push(reservation)
       }
     }
     return displayedReservations
   }
 
+  // Rows for the vehicle sidebar + grid lines
+  // Get an array of vehicle objects + how tall that row should be
   get vehicleKeyRows(): any {
     const vehicles: Vehicle[] = deepClone(this.vehicles)
     const sortedByVehicle = sortAvailabilityBlocksByVehicle(
@@ -101,16 +138,25 @@ export default class Availability extends Vue {
     )
 
     const vehicleKeyRows: VehicleKeyRow[] = []
+    let distanceFromTop = 0
 
     vehicles.forEach((vehicle) => {
       let newVehicleKeyRow: VehicleKeyRow = {
         rowHeight: AVAILABILITY_ROW_HEIGHT,
         vehicle: vehicle,
+        distanceFromTop,
       }
 
       if (sortedByVehicle[vehicle.vehicleId]) {
-        newVehicleKeyRow.rowHeight = sortedByVehicle[vehicle.vehicleId].blocks.length * AVAILABILITY_ROW_HEIGHT
+        const heightOfRow =
+          sortedByVehicle[vehicle.vehicleId].blocks.length *
+          AVAILABILITY_ROW_HEIGHT
+        newVehicleKeyRow.rowHeight = heightOfRow
+        distanceFromTop += heightOfRow
+      } else {
+        distanceFromTop += AVAILABILITY_ROW_HEIGHT
       }
+
       vehicleKeyRows.push(newVehicleKeyRow)
     })
 
@@ -120,10 +166,12 @@ export default class Availability extends Vue {
         vehicleId: -1,
       },
       rowHeight: AVAILABILITY_ROW_HEIGHT,
+      distanceFromTop,
     }
 
     if (sortedByVehicle[-1]) {
-      unassignedVehicle.rowHeight = sortedByVehicle[-1].blocks.length * AVAILABILITY_ROW_HEIGHT
+      unassignedVehicle.rowHeight =
+        sortedByVehicle[-1].blocks.length * AVAILABILITY_ROW_HEIGHT
     }
 
     vehicleKeyRows.push(unassignedVehicle)
@@ -131,42 +179,40 @@ export default class Availability extends Vue {
     return vehicleKeyRows
   }
 
-  
+  get calendarItemsSortedByVehicles(): AvailabilityBlock[] {
+    let calendarItems = []
 
-  get vehicleSortBlocks(): VehicleBlockItem[] {
-    const vehicleBlocks =  sortAvailabilityBlocksByVehicle(this.reservations)
+    const reduceFn = (newObj: Record<number, number>, row: VehicleKeyRow) => {
+      newObj[row.vehicle.vehicleId] = row.distanceFromTop
+      return newObj
+    }
+    const vehicleIdMap = this.vehicleKeyRows.reduce(reduceFn, {})
 
-    const sortedVehicleBlocks = Object.keys(vehicleBlocks).sort().reverse().reduce(
-      (obj, key) => {
-        obj[key] = vehicleBlocks[key]
-        return obj
-      }, {}
+    const sortedByVehicle = sortAvailabilityBlocksByVehicle(
+      this.displayedReservations
     )
 
-    let startingHeightForVehicle = 0
-    for (const vehicleId in sortedVehicleBlocks) {
-      const heightOfVehicle = sortedVehicleBlocks[vehicleId].blocks.length * AVAILABILITY_ROW_HEIGHT
-      sortedVehicleBlocks[vehicleId].startingHeight = startingHeightForVehicle
-      sortedVehicleBlocks[vehicleId].height = heightOfVehicle
-      sortedVehicleBlocks[vehicleId].blocks = sortedVehicleBlocks[
-        vehicleId
-      ].blocks.map((block, index) => {
-        block.startingHeight = index * AVAILABILITY_ROW_HEIGHT + startingHeightForVehicle
-        return block
-      })
+    Object.entries(sortedByVehicle).map(([key, val]) => {
+      let startingHeight = vehicleIdMap[key]
+      const newBlocks = val.blocks.map(
+        (block: AvailabilityBlock, index: number) => {
+          block.top = startingHeight + index * AVAILABILITY_ROW_HEIGHT
+          return block
+        }
+      )
 
-      startingHeightForVehicle += heightOfVehicle
-    }
+      calendarItems = calendarItems.concat(newBlocks)
+    })
 
-    return Object.values(sortedVehicleBlocks)
+    return calendarItems
   }
 
-  get VehicleSortCalendarItems(): AvailabilityBlock[] {
-    let items = []
-    for (const sortBlock of this.vehicleSortBlocks) {
-      items = items.concat(sortBlock.blocks)
-    }
-    return items 
+  // Get the starting height of the last row, and add the height of that row
+  // to get the min heihgt the calendar should show.
+  get minHeight(): number {
+    const lastRow = this.vehicleKeyRows[this.vehicleKeyRows.length - 1]
+    const { distanceFromTop, rowHeight } = lastRow
+    return distanceFromTop + rowHeight
   }
 
   @Watch('calendarDisplayDate')
@@ -174,11 +220,14 @@ export default class Availability extends Vue {
     const startDate = this.startOfWeek.valueOf()
     const endDate = this.endOfWeek.valueOf()
 
-    // Each interval will be in increments of weeks for now, 
+    // Each interval will be in increments of weeks for now,
     // so we can assume any intersection is a full intersection
     // This will change if we start supporting searching for dates
     // in non-weekly intervals
-    const dataIsLoadedForNewInterval = this.loadedDateIntervals.intersect_any([startDate, endDate])
+    const dataIsLoadedForNewInterval = this.loadedDateIntervals.intersect_any([
+      startDate,
+      endDate,
+    ])
     if (!dataIsLoadedForNewInterval) {
       this.getDispatchDataForDates(
         this.startOfWeek.format('YYYY-MM-DD'),
@@ -188,7 +237,9 @@ export default class Availability extends Vue {
   }
 
   @Watch('loadedReservations', { immediate: true, deep: true })
-  onLoadedReservationsChange(newReservations: Record<number, AvailabilityBlock>): void {
+  onLoadedReservationsChange(
+    newReservations: Record<number, AvailabilityBlock>
+  ): void {
     this.reservations = Object.values(newReservations)
   }
 
@@ -200,7 +251,10 @@ export default class Availability extends Vue {
     )
   }
 
-  async getDispatchDataForDates(startDatetime: string, endDatetime: string): Promise<void> {
+  async getDispatchDataForDates(
+    startDatetime: string,
+    endDatetime: string
+  ): Promise<void> {
     const dates: AvailabilityGetRequest = { startDatetime, endDatetime }
     const res = await availability.getData(dates)
 

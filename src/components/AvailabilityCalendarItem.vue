@@ -5,12 +5,12 @@
     :style="`border: none; top: ${top}px`"
   >
     <div
-      style="height: calc(100% - 16px)"
+      style="height: calc(100% - 8px); "
       class="
         d-flex
         flex-column
         justify-space-around
-        margin-a-2
+        margin-a-1
         padding-a-1
         background-accent
         font-14

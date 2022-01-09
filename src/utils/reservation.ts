@@ -68,7 +68,7 @@ export const convertReservationToAvailabilityBlock = (reservation: Reservation):
   const isMultiStop = reservation.trip.stops.length > 1
 
   const availabilityReservation: AvailabilityBlock = {
-    reservationId: reservation.reservationId,
+    reservationId: reservation.managedId,
     vehicleAssignments: reservation.vehicleAssignments || [],
     startDate,
     endDate,

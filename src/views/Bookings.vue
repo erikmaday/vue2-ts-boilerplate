@@ -1,36 +1,28 @@
 <template>
   <Main>
-    <v-row class="padding-b-6">
-      <v-col class="shrink">
-        <h1>Bookings</h1>
-      </v-col>
-      <v-spacer />
-      <v-col class="shrink">
-        <v-btn color="primary" small @click="isFilterDialogOpen = true">
-          <CUIcon color="white" class="margin-r-2">filter</CUIcon>
-          Filter
-        </v-btn>
-      </v-col>
-    </v-row>
-
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
-      item-key="reservationId"
-      collection="referrals"
+      item-key="vehicleId"
+      collection="vehicles"
       :fetch-method="tableView"
-      :filters="filters"
-      :sorts="sorts"
-    />
-    <CUDataTableFilters
-      v-model="isFilterDialogOpen"
-      :columns="columns"
-      :filters.sync="filters"
-      :sorts.sync="sorts"
       :initial-filters="initialFilters"
-    />
+      :is-filter-dialog-open.sync="isFilterDialogOpen"
+      :category-filters="categoryFilters"
+    >
+      <template slot="filter-row">
+        <v-spacer />
+        <v-col class="shrink">
+          <v-btn color="primary" small @click="isFilterDialogOpen = true">
+            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+            Filter
+          </v-btn>
+        </v-col>
+      </template>
+    </CUCollectionTable>
   </Main>
 </template>
+
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
@@ -38,6 +30,7 @@ import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
+import { DataTableCategoryFilter } from '@/models/DataTableCategoryFilter'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
 import reservation from '@/services/reservation'
@@ -50,7 +43,7 @@ import { RawLocation } from 'vue-router'
 import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
 import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
 import { TableViewFilter } from '@/models/TableView'
-import { ReservationType } from '@/utils/enum'
+import { ReservationStatus, ReservationType } from '@/utils/enum'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Bookings extends Vue {
@@ -136,6 +129,21 @@ export default class Bookings extends Vue {
         text: '',
       },
       value: ReservationType.Referral,
+    },
+  ]
+
+  categoryFilters: DataTableCategoryFilter[] = [
+    {
+      _t_id: 'a90d84a5-ca51-4010-b316-873b9f395095',
+      text: 'Reservation Status',
+      value: 'reservationStatus',
+      type: 'text',
+      method: 'or',
+      values: [
+        { text: 'Upcoming', value: ReservationStatus.Upcoming },
+        { text: 'In Progress', value: ReservationStatus.Started },
+        { text: 'Finished', value: ReservationStatus.Finished },
+      ],
     },
   ]
 

@@ -1,79 +1,115 @@
 <template>
-  <CUModal v-model="isOpen">
-    <template #title>Filter</template>
-    <template #text>
-      <template v-for="(column, columnIndex) in columns">
-        <v-row
-          v-if="column.filterable || column.sortable"
-          :key="`${column.text}-${columnIndex}`"
-          wrap
+  <div>
+    <v-row
+      v-for="(category, categoryIndex) in soloCategoryFilters"
+      :key="categoryIndex"
+      class="align-center margin-b-2"
+    >
+      <v-col cols="auto">
+        <span
+          v-for="(control, controlIndex) in category.predefined.controls"
+          :id="`data-table-button-category-${categoryIndex}-control-${controlIndex}`"
+          :key="`data-table-button-category-${categoryIndex}-control-${controlIndex}`"
+          class="
+            margin-x-3
+            padding-y-1
+            font-14 font-medium
+            text-gray-light
+            border-t-0 border-x-0 border-b-2 border-solid border-transparent
+            cursor-pointer
+          "
+          :class="{
+            'text-primary border-primary': categoryChipSelected(
+              category,
+              control
+            ),
+            'hover:border-gray-light': !categoryChipSelected(category, control),
+          }"
+          @click="() => setCategoryFilter(category, control)"
         >
-          <v-col class="shrink white-space-nowrap padding-r-0 margin-r-2">
-            <h3>{{ column.text }}</h3>
-          </v-col>
-          <v-col class="shrink padding-x-0 margin-r-1">
-            <CUIcon
-              v-if="column.filterable && !isColumnFilterActive(column)"
-              class="cursor-pointer text-gray-mid-light hover:text-gray-light"
-              :key="`${column.text}-${columnIndex}-filter-activate`"
-              @click="setFilter(column)"
-            >
-              search
-            </CUIcon>
-            <CUIcon
-              v-if="column.filterable && isColumnFilterActive(column)"
-              class="cursor-pointer text-gray-mid-light hover:text-gray-light"
-              :key="`${column.text}-${columnIndex}-filter-deactivate`"
-              @click="unsetFilter(column)"
-            >
-              close
-            </CUIcon>
-          </v-col>
-          <v-col class="shrink padding-x-0">
-            <CUIcon
-              v-if="column.sortable"
-              class="cursor-pointer transition-all transition-250"
-              :class="{
-                'text-gray-mid-light hover:text-gray-light':
-                  !isColumnSortActive(column),
-                'text-primary': isColumnSortActive(column),
-              }"
-              :key="`sort-icon-${getColumnSortIcon(column)}`"
-              @click="initSort(column)"
-            >
-              {{ getColumnSortIcon(column) }}
-            </CUIcon>
-          </v-col>
-          <v-expand-transition>
-            <v-col
-              v-if="column.filterable && isColumnFilterActive(column)"
-              cols="12"
-              class="padding-t-0"
-            >
-              <CUTextField
-                hide-details
-                clearable
-                @input="updateFilterCriteria($event, column)"
-              />
+          {{ control.text }}
+        </span>
+      </v-col>
+      <slot name="filter-row" />
+    </v-row>
+    <CUModal v-model="isOpen">
+      <template #title>Filter</template>
+      <template #text>
+        <template v-for="(column, columnIndex) in columns">
+          <v-row
+            v-if="column.filterable || column.sortable"
+            :key="`${column.text}-${columnIndex}`"
+            wrap
+          >
+            <v-col class="shrink white-space-nowrap padding-r-0 margin-r-2">
+              <h3>{{ column.text }}</h3>
             </v-col>
-          </v-expand-transition>
-        </v-row>
+            <v-col class="shrink padding-x-0 margin-r-1">
+              <CUIcon
+                v-if="column.filterable && !isColumnFilterActive(column)"
+                class="cursor-pointer text-gray-mid-light hover:text-gray-light"
+                :key="`${column.text}-${columnIndex}-filter-activate`"
+                @click="setFilter(column)"
+              >
+                search
+              </CUIcon>
+              <CUIcon
+                v-if="column.filterable && isColumnFilterActive(column)"
+                class="cursor-pointer text-gray-mid-light hover:text-gray-light"
+                :key="`${column.text}-${columnIndex}-filter-deactivate`"
+                @click="unsetFilter(column)"
+              >
+                close
+              </CUIcon>
+            </v-col>
+            <v-col class="shrink padding-x-0">
+              <CUIcon
+                v-if="column.sortable"
+                class="cursor-pointer transition-all transition-250"
+                :class="{
+                  'text-gray-mid-light hover:text-gray-light':
+                    !isColumnSortActive(column),
+                  'text-primary': isColumnSortActive(column),
+                }"
+                :key="`sort-icon-${getColumnSortIcon(column)}`"
+                @click="initSort(column)"
+              >
+                {{ getColumnSortIcon(column) }}
+              </CUIcon>
+            </v-col>
+            <v-expand-transition>
+              <v-col
+                v-if="column.filterable && isColumnFilterActive(column)"
+                cols="12"
+                class="padding-t-0"
+              >
+                <CUTextField
+                  hide-details
+                  clearable
+                  @input="updateFilterCriteria($event, column)"
+                />
+              </v-col>
+            </v-expand-transition>
+          </v-row>
+        </template>
       </template>
-    </template>
-    <template #actions>
-      <v-spacer />
-      <v-btn color="primary" small text @click="close">Cancel</v-btn>
-      <v-btn color="primary" small @click="close">Save</v-btn>
-    </template>
-  </CUModal>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="close">Cancel</v-btn>
+        <v-btn color="primary" small @click="close">Save</v-btn>
+      </template>
+    </CUModal>
+  </div>
 </template>
 
 <script lang="ts">
 import { DataTableColumn } from '@/models/DataTableColumn'
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch, PropSync } from 'vue-property-decorator'
 import { v4 as uuidv4 } from 'uuid'
+import op from 'simple-object-path'
 import { EventBus } from '@/utils/eventBus'
 import { TableViewFilter } from '@/models/TableView'
+import { ReservationStatus } from '@/utils/enum'
 
 @Component
 export default class CUDataTableFilters extends Vue {
@@ -88,12 +124,16 @@ export default class CUDataTableFilters extends Vue {
   @Prop({ required: false, default: () => [] }) filters!: any
   @Prop({ required: false, default: () => [] })
   initialFilters!: TableViewFilter[]
+  @Prop({ required: false, default: () => [] })
+  categories!: any[]
   @Prop({
     type: Boolean,
     required: false,
     default: false,
   })
   open: boolean
+  @PropSync('filterList', { type: Array, default: () => [] })
+  tableFilterList!: any[]
 
   @Watch('isOpen')
   isDialogOpenChanged(value: boolean): void {
@@ -111,14 +151,28 @@ export default class CUDataTableFilters extends Vue {
   handleInitialFiltersChanged(): void {
     this.setInitialFilters()
   }
+  @Watch('categories', { immediate: true })
+  handleCategoriesChange(): void {
+    this.convertCategories()
+  }
 
   isOpen = false
-  filterList: any[] = []
   currentSort: any = {
     prop: undefined,
     direction: undefined,
   }
   debounce: any = null
+  categoryFilters: any[] = []
+  selectedCategory: any[] = []
+  selectedFilter: string = undefined
+
+  mounted(): void {
+    this.convertCategories()
+  }
+
+  get soloCategoryFilters(): any {
+    return this.categoryFilters.filter((category) => !category.group)
+  }
 
   isColumnFilterActive(column: DataTableColumn): boolean {
     return !!this.findFilterByColumn(column)
@@ -138,7 +192,7 @@ export default class CUDataTableFilters extends Vue {
   }
 
   findFilterByColumn(column: DataTableColumn): any {
-    return this.filterList.find((f) => f.column._t_id === column._t_id)
+    return this.tableFilterList.find((f) => f.column._t_id === column._t_id)
   }
 
   async setInitialFilters(): Promise<void> {
@@ -147,19 +201,24 @@ export default class CUDataTableFilters extends Vue {
       await this.setFilter(initialFilter.column, hide)
       this.updateFilterCriteria(initialFilter.value, initialFilter.column)
     }
-    this.receiveFilters(this.filterList)
+    this.receiveFilters()
     this.handleFilterAdded()
+    this.$emit('initial-filters-set')
   }
 
-  receiveFilters(filterList: any[]): void {
-    this.filterList = filterList
+  receiveFilters(filters): void {
+    this.$emit('update:filters', this.filters)
   }
 
-  setFilter(column: DataTableColumn, hideOnFilterBar = false): void {
+  async setFilter(
+    column: DataTableColumn,
+    hideOnFilterBar = false
+  ): Promise<void> {
+    this.selectedFilter = column._t_id
     const doesFilterAlreadyExist = this.filters.find({ column })
     if (!doesFilterAlreadyExist) {
       const newFilter = { column }
-      this.filterList.push(newFilter)
+      this.tableFilterList.push(newFilter)
       if (newFilter.column.method) {
         const grandParent = this.filters.createParent('and')
         const parent = this.filters.createParent('or', grandParent)
@@ -169,32 +228,33 @@ export default class CUDataTableFilters extends Vue {
         this.filters.and(newFilter).add(newFilter)
         this.$emit('update:filters', this.filters)
       }
-      // LEAVE FOR NOW, WILL LIKELY UNCOMMENT WHEN WE ADD PREDEFINED FILTERS SHORTLY
-      // if (column.recalculate) {
-      //   newFilter.recalculate = column.recalculate
-      // }
-      // if (column.predefined && Array.isArray(column.predefined)) {
-      //   const defaultPredefined = column.predefined.find(
-      //     (predefined) => predefined.defaultOnSelection
-      //   )
-      //   if (defaultPredefined) {
-      //     await this.selectPredefined(defaultPredefined)
-      //   }
-      // }
-      // if (column.defaultValue) {
-      //   const calculationFunction = this.calculatedValues[column.defaultValue]
-      //   if (typeof calculationFunction === 'function') {
-      //     newFilter.value = await calculationFunction()
-      //   } else {
-      //     newFilter.value = column.defaultValue
-      //   }
-      //   this.addFilter()
-      // }
+      if (column.recalculate) {
+        newFilter.recalculate = column.recalculate
+      }
+      if (column.predefined && Array.isArray(column.predefined)) {
+        const defaultPredefined = column.predefined.find(
+          (predefined) => predefined.defaultOnSelection
+        )
+        if (defaultPredefined) {
+          await this.selectPredefined(defaultPredefined)
+        }
+      }
+      if (column.defaultValue) {
+        const calculationFunction = this.calculatedValues[column.defaultValue]
+        if (typeof calculationFunction === 'function') {
+          newFilter.value = await calculationFunction()
+        } else {
+          newFilter.value = column.defaultValue
+        }
+        this.handleFilterAdded()
+      }
     }
   }
 
   unsetFilter(column: DataTableColumn): void {
-    const filter = this.filterList.find((f) => f.column._t_id === column._t_id)
+    const filter = this.tableFilterList.find(
+      (f) => f.column._t_id === column._t_id
+    )
     if (!filter) {
       return
     }
@@ -210,11 +270,12 @@ export default class CUDataTableFilters extends Vue {
     this.filters.remove(filter)
     this.$emit('update:filters', this.filters)
     this.$nextTick(() => {
-      // LEAVE THIS FOR NOW, MAY NEED TO ADD BACK SIMILAR LOGIC WHEN ADDIING DEFAULT FILTERS SHORTLY
-      this.filterList = this.filterList.filter(
+      this.tableFilterList = this.tableFilterList.filter(
         (f) => f.column._t_id !== filter.column._t_id
       )
-      const nextDefaultFilter = this.filterList.find((f) => !f.hideOnFilterBar)
+      const nextDefaultFilter = this.tableFilterList.find(
+        (f) => !f.hideOnFilterBar
+      )
       if (nextDefaultFilter && nextDefaultFilter.column) {
         this.setFilter(nextDefaultFilter.column)
       }
@@ -295,6 +356,93 @@ export default class CUDataTableFilters extends Vue {
 
   close(): void {
     this.$emit('update:open', false)
+  }
+
+  convertCategories(): void {
+    this.categoryFilters = this.categories.map((category) => {
+      const categoryFilter = {
+        _t_id: category._t_id,
+        value: category.value,
+        text: category.text,
+        method: 'and',
+        childMethod: category.method,
+        predefined: [],
+        categoryFilter: true,
+        group: category.group,
+      }
+      categoryFilter.predefined = {
+        id: uuidv4(),
+        text: category.text,
+      }
+      categoryFilter.predefined.controls = category.values.map(
+        (valueObject) => {
+          return {
+            id: uuidv4(),
+            text: valueObject.text,
+            categoryValue: valueObject.value,
+            filterType: 'eq',
+            overrideProp: valueObject.overrideProp,
+          }
+        }
+      )
+      return categoryFilter
+    })
+  }
+  categoryChipSelected(category: any, control: any): boolean {
+    const categoryFilter = { column: category }
+    const filterMatch = this.filters.find(categoryFilter)
+    const selectedPredefinedControls =
+      op(filterMatch, 'selectedPredefined/controls') || []
+    const exists = this.selectedCategory.find(
+      (selected) =>
+        selected._t_id === category._t_id &&
+        selectedPredefinedControls.find(
+          (selectedPredefinedControl) =>
+            selectedPredefinedControl.value === control.categoryValue
+        )
+    )
+    return !!exists
+  }
+  setCategoryFilter(category: any, control: any): void {
+    const hideOnFilterBar = true
+    const categoryFilter = { column: category }
+    const exists = this.filters.find(categoryFilter)
+    this.activeFilter = category._t_id
+
+    if (!exists) {
+      this.setFilter(category, hideOnFilterBar)
+      const activeFilter = this.tableFilterList.find(
+        (f) => f.column._t_id === this.selectedFilter
+      )
+      category.predefined.id = uuidv4()
+      activeFilter.selectedPredefined = category.predefined
+    }
+    const filterObject = this.filters.find(categoryFilter)
+
+    const selectedPredefinedControls =
+      op(filterObject, 'selectedPredefined/controls') || []
+    const selectedControl = selectedPredefinedControls.find(
+      (selectedPredefinedControl) =>
+        selectedPredefinedControl.categoryValue === control.categoryValue
+    )
+    if (
+      typeof selectedControl.value === 'undefined' ||
+      selectedControl.value === null
+    ) {
+      selectedControl.value = control.categoryValue
+    } else {
+      selectedControl.value = undefined
+    }
+    if (
+      !this.selectedCategory.find(
+        (selected) => selected._t_id === category._t_id
+      )
+    ) {
+      this.selectedCategory.push(category)
+    }
+    this.handleFilterAdded()
+    this.$emit('update:filters', this.filters)
+    this.$forceUpdate()
   }
 }
 </script>

@@ -53,7 +53,12 @@
           >
             {{ action.icon }}
           </CUIcon>
-          <span class="ml-2">{{ action.displayText }}</span>
+          <span
+            class="ml-2"
+            :class="action.textClasses ? action.textClasses : ''"
+          >
+            {{ action.displayText }}
+          </span>
         </v-list-item>
       </v-list>
     </v-menu>

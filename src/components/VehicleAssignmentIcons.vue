@@ -128,7 +128,9 @@ export default class VehicleAssignmentIcons extends Vue {
   }
 
   get isFullyAssigned(): boolean {
-    return this.computedVehicleAssignments.length === this.totalRequiredVehicles
+    return (
+      this.computedVehicleAssignments?.length === this.totalRequiredVehicles
+    )
   }
 }
 </script>

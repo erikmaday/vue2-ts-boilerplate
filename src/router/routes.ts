@@ -262,7 +262,7 @@ export const routes: RouteConfig[] = [
                 name: 'bookings',
                 component: () =>
                   import(
-                    /* webpackChunkName: "bookings-list" */ '@/views/Bookings.vue'
+                    /* webpackChunkName: "bookings" */ '@/views/Bookings.vue'
                   ),
               },
               {

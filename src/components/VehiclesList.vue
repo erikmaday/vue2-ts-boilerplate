@@ -41,7 +41,7 @@ import vehicle from '@/services/vehicle'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vehicle } from '@/models/dto/Vehicle'
-import { Location, RawLocation } from 'vue-router'
+import { Location } from 'vue-router'
 import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
 

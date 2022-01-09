@@ -4,6 +4,7 @@ export interface ActionColumn {
   key: string
   icon: string
   color?: string
+  textClasses?: string
   ariaLabel?: string
   confirmModal?: boolean
   confirmModalText?: string

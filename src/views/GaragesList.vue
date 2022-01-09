@@ -28,14 +28,7 @@
       item-key="garageId"
       collection="garages"
       :fetch-method="tableView"
-      :filters="filters"
-      :sorts="sorts"
-    />
-    <CUDataTableFilters
-      v-model="isFilterDialogOpen"
-      :columns="columns"
-      :filters.sync="filters"
-      :sorts.sync="sorts"
+      :is-filter-dialog-open.sync="isFilterDialogOpen"
     />
   </div>
 </template>
@@ -49,8 +42,6 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Garage } from '@/models/dto/Garage'
 import { RawLocation } from 'vue-router'
-import { sort } from '@/utils/sort'
-import { filter } from '@/utils/filter'
 import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
 
@@ -59,8 +50,6 @@ import { ApiResult } from '@/models/dto'
 })
 export default class GaragesList extends Vue {
   isFilterDialogOpen = false
-  sorts: any = sort()
-  filters: any = filter()
 
   columns: DataTableColumn[] = [
     {

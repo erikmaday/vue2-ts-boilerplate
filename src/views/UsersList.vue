@@ -28,14 +28,7 @@
       item-key="userId"
       collection="users"
       :fetch-method="usersTableView"
-      :filters="filters"
-      :sorts="sorts"
-    />
-    <CUDataTableFilters
-      v-model="isFilterDialogOpen"
-      :columns="columns"
-      :filters.sync="filters"
-      :sorts.sync="sorts"
+      :is-filter-dialog-open.sync="isFilterDialogOpen"
     />
   </div>
 </template>
@@ -51,16 +44,12 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { AxiosResponse } from 'axios'
 import { RawLocation } from 'vue-router'
-import { sort } from '@/utils/sort'
-import { filter } from '@/utils/filter'
 
 @Component({
   components: { CUDataTable, CUCollectionTable, CUDataTableFilters },
 })
 export default class Users extends Vue {
   isFilterDialogOpen = false
-  sorts: any = sort()
-  filters: any = filter()
 
   columns: DataTableColumn[] = [
     {

@@ -2,12 +2,29 @@
   <Main>
     <v-row class="padding-t-4 padding-b-8">
       <div style="width: 244px"></div>
-      <CUDatePicker />
-      <v-btn class="margin-l-3" outlined color="primary" small>Today</v-btn>
+      <CUDatePicker v-model="showDate" />
+      <v-btn
+        class="margin-l-3"
+        outlined
+        color="primary"
+        small
+        @click="setCalendarDisplayToToday"
+      >
+        Today
+      </v-btn>
     </v-row>
     <v-row align="start" class="position-relative">
-      <AvailabilityGridLines :vehicle-rows="vehicleKeyRows" />
-      <AvailabilityVehicleList :vehicle-rows="vehicleKeyRows" />
+      <AvailabilityGridLines
+        :is-vehicle-display="isVehicleDisplay"
+        :vehicle-rows="vehicleKeyRows"
+        :driverRows="driverKeyRows"
+      />
+      <AvailabilityVehicleList
+        :vehicle-rows="vehicleKeyRows"
+        :driver-rows="driverKeyRows"
+        :is-vehicle-display="isVehicleDisplay"
+        @input:vehicle-display-select="e => isVehicleDisplay = e"
+      />
       <!-- Inline styling needed to override default icon btn Vuetify settings -->
       <v-btn
         class="border-radius-2 background-primary margin-x-1"
@@ -23,7 +40,11 @@
       </v-btn>
       <AvailabilityCalendar
         :show-date="calendarDisplayDateAsJS"
-        :items="calendarItemsSortedByVehicles"
+        :items="
+          isVehicleDisplay
+            ? calendarItemsSortedByVehicles
+            : calendarItemsSortedByDrivers
+        "
         :min-height="minHeight"
       />
       <v-btn
@@ -53,6 +74,7 @@ import {
   VehicleBlockItem,
   VehicleKeyRow,
   UnassignedVehicle,
+  DriverKeyRow,
 } from '@/models/dto/Availability'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar.vue'
 import { convertReservationToAvailabilityBlock } from '@/utils/reservation'
@@ -60,12 +82,15 @@ import deepClone from '@/utils/deepClone'
 import IntervalTree from '@flatten-js/interval-tree'
 import {
   sortAvailabilityBlocksByVehicle,
+  sortAvailabilityBlocksByDriver,
   AVAILABILITY_ROW_HEIGHT,
 } from '@/utils/availability'
 import AvailabilityVehicleList from '@/components/AvailabilityVehicleList.vue'
 import { Vehicle } from '@/models/dto'
 import vehicle from '@/services/vehicle'
+import driver from '@/services/driver'
 import AvailabilityGridLines from '@/components/AvailabilityGridLines.vue'
+import { Driver } from '@/models/dto/Driver'
 
 @Component({
   components: {
@@ -77,11 +102,13 @@ import AvailabilityGridLines from '@/components/AvailabilityGridLines.vue'
 })
 export default class Availability extends Vue {
   loadedReservations: Record<number, AvailabilityBlock> = {}
-
+  isVehicleDisplay = false
+  showDate = dayjs().format('YYYY-MM-DD')
   reservations: AvailabilityBlock[] = []
   calendarDisplayDate = dayjs()
   loadedDateIntervals = new IntervalTree()
   vehicles: Vehicle[] = []
+  drivers: Driver[] = []
 
   get calendarDisplayDateAsJS(): Date {
     return this.calendarDisplayDate.toDate()
@@ -179,6 +206,54 @@ export default class Availability extends Vue {
     return vehicleKeyRows
   }
 
+  get driverKeyRows(): any {
+    const drivers: Driver[] = deepClone(this.drivers)
+    const sortedByDriver = sortAvailabilityBlocksByDriver(
+      this.displayedReservations
+    )
+    const driverKeyRows: DriverKeyRow[] = []
+    let distanceFromTop = 0
+
+    drivers.forEach((driver) => {
+      let newVehicleKeyRow: DriverKeyRow = {
+        rowHeight: AVAILABILITY_ROW_HEIGHT,
+        driver: driver,
+        distanceFromTop,
+      }
+
+      if (sortedByDriver[driver.userId]) {
+        const heightOfRow =
+          sortedByDriver[driver.userId].blocks.length *
+          AVAILABILITY_ROW_HEIGHT
+        newVehicleKeyRow.rowHeight = heightOfRow
+        distanceFromTop += heightOfRow
+      } else {
+        distanceFromTop += AVAILABILITY_ROW_HEIGHT
+      }
+
+      driverKeyRows.push(newVehicleKeyRow)
+    })
+
+    const unassignedDriver: DriverKeyRow = {
+      driver: {
+        firstName: 'Unassigned',
+        lastName: '',
+        userId: -1,
+      },
+      rowHeight: AVAILABILITY_ROW_HEIGHT,
+      distanceFromTop,
+    }
+
+    if (sortedByDriver[-1]) {
+      unassignedDriver.rowHeight =
+        sortedByDriver[-1].blocks.length * AVAILABILITY_ROW_HEIGHT
+    }
+
+    driverKeyRows.push(unassignedDriver)
+
+    return driverKeyRows
+  }
+
   get calendarItemsSortedByVehicles(): AvailabilityBlock[] {
     let calendarItems = []
 
@@ -207,10 +282,43 @@ export default class Availability extends Vue {
     return calendarItems
   }
 
+  get calendarItemsSortedByDrivers(): AvailabilityBlock[] {
+    let calendarItems = []
+
+    const reduceFn = (newObj: Record<number, number>, row: DriverKeyRow) => {
+      newObj[row.driver.userId] = row.distanceFromTop
+      return newObj
+    }
+    const driverIdMap = this.driverKeyRows.reduce(reduceFn, {})
+
+    const sortedByDriver = sortAvailabilityBlocksByDriver(
+      this.displayedReservations
+    )
+
+    Object.entries(sortedByDriver).map(([key, val]) => {
+      let startingHeight = driverIdMap[key]
+      const newBlocks = val.blocks.map(
+        (block: AvailabilityBlock, index: number) => {
+          block.top = startingHeight + index * AVAILABILITY_ROW_HEIGHT
+          return block
+        }
+      )
+
+      calendarItems = calendarItems.concat(newBlocks)
+    })
+
+    return calendarItems
+  }
+
   // Get the starting height of the last row, and add the height of that row
   // to get the min heihgt the calendar should show.
   get minHeight(): number {
-    const lastRow = this.vehicleKeyRows[this.vehicleKeyRows.length - 1]
+    let lastRow 
+    if (this.isVehicleDisplay) {
+      lastRow = this.vehicleKeyRows[this.vehicleKeyRows.length - 1]
+    } else {
+      lastRow = this.driverKeyRows[this.driverKeyRows.length - 1]
+    }
     const { distanceFromTop, rowHeight } = lastRow
     return distanceFromTop + rowHeight
   }
@@ -243,7 +351,17 @@ export default class Availability extends Vue {
     this.reservations = Object.values(newReservations)
   }
 
+  @Watch('showDate')
+  onShowDateChange(newDate: string) {
+    this.calendarDisplayDate = dayjs(newDate)
+  }
+
+  setCalendarDisplayToToday(): void {
+    this.showDate = dayjs().format('YYYY-MM-DD')
+  }
+
   async mounted(): Promise<void> {
+    this.getDrivers()
     this.getVehicles()
     this.getDispatchDataForDates(
       dayjs().startOf('week').add(-1, 'week').format('YYYY-MM-DD'),
@@ -283,6 +401,11 @@ export default class Availability extends Vue {
   async getVehicles(): Promise<void> {
     const vehiclesListRes = await vehicle.tableView({ pageSize: -1, page: 1 })
     this.vehicles = vehiclesListRes.data.resultList
+  }
+
+  async getDrivers(): Promise<void> {
+    const driversListRes = await driver.tableView({ pageSize: -1, page: 1 })
+    this.drivers = driversListRes.data.resultList
   }
 }
 </script>

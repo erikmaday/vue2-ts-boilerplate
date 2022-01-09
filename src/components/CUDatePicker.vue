@@ -8,7 +8,7 @@
           dense
           placeholder="MM-DD-YYYY"
           v-on="on"
-          :value="selectedDate"
+          :value="value"
         />
       </template>
       <v-date-picker @input="updateSelectedDate" />
@@ -16,15 +16,17 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, ModelSync } from 'vue-property-decorator'
 
 @Component({})
 export default class CUDatePicker extends Vue {
   selectedDate = '2022-01-06'
 
   updateSelectedDate(e) {
-    console.log("> e:", e)
-    this.selectedDate = e
+    this.$emit('input', e)
   }
+
+  @ModelSync('dateValue', 'input', { type: String })
+  value!: string
 }
 </script>

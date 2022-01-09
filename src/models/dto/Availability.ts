@@ -1,5 +1,5 @@
-import { ApiResult, Reservation, Vehicle, VehicleAssignment } from ".";
-
+import { ApiResult, Reservation, Vehicle, VehicleAssignment,  } from ".";
+import { Driver } from './Driver'
 export interface AvailabilityGetRequest {
   startDatetime: string
   endDatetime: string
@@ -26,13 +26,31 @@ export interface VehicleBlockItem {
   startingHeight?: number
 }
 
+export interface DriverBlockItem {
+  blocks: AvailabilityBlock[]
+  driver: Driver | UnassignedDriver | string
+  startingHeight?: number
+}
+
 export interface VehicleKeyRow {
   rowHeight: number
   vehicle: Vehicle | UnassignedVehicle | undefined
   distanceFromTop: number
 }
 
+export interface DriverKeyRow {
+  rowHeight: number
+  driver: Driver | UnassignedDriver 
+  distanceFromTop: number
+}
+
 export interface UnassignedVehicle {
   vehicleName: string
   vehicleId: number
+}
+
+export interface UnassignedDriver {
+  firstName: string
+  lastName: string
+  userId: number
 }

@@ -1,34 +1,35 @@
 <template>
   <div>
-    <v-row
-      v-for="(category, categoryIndex) in soloCategoryFilters"
-      :key="categoryIndex"
-      class="align-center margin-b-2"
-    >
+    <v-row class="align-center margin-b-2">
       <v-col cols="auto">
-        <span
-          v-for="(control, controlIndex) in category.predefined.controls"
-          :id="`data-table-button-category-${categoryIndex}-control-${controlIndex}`"
-          :key="`data-table-button-category-${categoryIndex}-control-${controlIndex}`"
-          class="
-            margin-x-3
-            padding-y-1
-            font-14 font-medium
-            text-gray-light
-            border-t-0 border-x-0 border-b-2 border-solid border-transparent
-            cursor-pointer
-          "
-          :class="{
-            'text-primary border-primary': categoryChipSelected(
-              category,
-              control
-            ),
-            'hover:border-gray-light': !categoryChipSelected(category, control),
-          }"
-          @click="() => setCategoryFilter(category, control)"
-        >
-          {{ control.text }}
-        </span>
+        <template v-for="(category, categoryIndex) in soloCategoryFilters">
+          <span
+            v-for="(control, controlIndex) in category.predefined.controls"
+            :id="`data-table-button-category-${categoryIndex}-control-${controlIndex}`"
+            :key="`data-table-button-category-${categoryIndex}-control-${controlIndex}`"
+            class="
+              margin-x-3
+              padding-y-1
+              font-14 font-medium
+              text-gray-light
+              border-t-0 border-x-0 border-b-2 border-solid border-transparent
+              cursor-pointer
+            "
+            :class="{
+              'text-primary border-primary': categoryChipSelected(
+                category,
+                control
+              ),
+              'hover:border-gray-light': !categoryChipSelected(
+                category,
+                control
+              ),
+            }"
+            @click="() => setCategoryFilter(category, control)"
+          >
+            {{ control.text }}
+          </span>
+        </template>
       </v-col>
       <slot name="filter-row" />
     </v-row>

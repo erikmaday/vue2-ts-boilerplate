@@ -5,7 +5,7 @@
       :columns="columns"
       item-key="vehicleId"
       collection="vehicles"
-      :category-filters="categoryFilters"
+      :tab-filters="tabFilters"
       :fetch-method="tableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
     >
@@ -31,13 +31,14 @@ import MarketplaceListBidPrice from '@/components/MarketplaceListBidPrice.vue'
 import MarketplaceListExpiration from '@/components/MarketplaceListExpiration.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
-import { DataTableCategoryFilter } from '@/models/DataTableCategoryFilter'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
 import { Reservation, TableViewTrip } from '@/models/dto'
 import { pluralize } from '@/utils/string'
 import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
+import { ReservationStatus } from '@/utils/enum'
+import { TableViewFilter } from '@/models/TableView'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Marketplace extends Vue {
@@ -46,6 +47,11 @@ export default class Marketplace extends Vue {
   filters: any = filter()
 
   columns: DataTableColumn[] = [
+    {
+      _t_id: 'f06471a9-345b-4ab5-a7ec-3f3e905c858a',
+      text: 'Created On',
+      value: 'createdOn',
+    },
     {
       _t_id: 'c70e5684-0bab-4fd0-bcaa-9a61b459b552',
       text: 'Trip ID',
@@ -113,35 +119,31 @@ export default class Marketplace extends Vue {
     },
   ]
 
-  // initialFilters: TableViewFilter[] = [
-  //   {
-  //     column: {
-  //       _t_id: '03746c93-058d-4c13-a841-9f21fea37fe8',
-  //       value: 'reservationType',
-  //       filterType: 'eq',
-  //       text: '',
-  //     },
-  //     value: ReservationType.Referral,
-  //   },
-  // ]
-
-  categoryFilters: DataTableCategoryFilter[] = [
+  tabFilters: TableViewFilter[] = [
     {
-      _t_id: '9219fba8-b42a-415b-b8e6-03df6fc682c8',
-      text: 'Created On',
-      value: 'createdOn',
-      type: 'date',
-      method: 'or',
-      filterType: 'gte',
-      values: [
-        {
-          text: 'New',
-          value: `${(this as any)
-            .$dayjs()
-            .utc()
-            .format('YYYY-MM-DD')}T00:00:00.000+00:00`,
-        },
-      ],
+      column: {
+        _t_id: 'e6b676ab-b001-4cb1-a825-e905058a0616',
+        text: 'New',
+        value: 'createdOn',
+        type: 'date',
+        method: 'or',
+        filterType: 'gte',
+      },
+      value: `${(this as any)
+        .$dayjs()
+        .utc()
+        .format('YYYY-MM-DD')}T00:00:00.000+00:00`,
+      default: true,
+    },
+    {
+      column: {
+        _t_id: 'c2f34049-1f92-4dff-9597-a8221e441ae6',
+        value: '',
+        filterType: '',
+        text: 'All',
+      },
+      value: null,
+      isShowAll: true,
     },
   ]
 

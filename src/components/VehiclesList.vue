@@ -2,19 +2,9 @@
   <div>
     <v-row class="padding-b-6">
       <v-col class="shrink">
-        <h1>Team</h1>
+        <h1>Vehicles</h1>
       </v-col>
       <v-spacer />
-      <v-col class="shrink">
-        <v-btn
-          primary
-          small
-          color="primary"
-          @click="$router.push({ name: 'users.add' })"
-        >
-          Add New
-        </v-btn>
-      </v-col>
       <v-col class="shrink">
         <v-btn color="primary" small @click="isFilterDialogOpen = true">
           <CUIcon color="white" class="margin-r-2">filter</CUIcon>
@@ -22,12 +12,13 @@
         </v-btn>
       </v-col>
     </v-row>
+
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
-      item-key="userId"
-      collection="users"
-      :fetch-method="usersTableView"
+      item-key="vehicleId"
+      collection="vehicles"
+      :fetch-method="tableView"
       :filters="filters"
       :sorts="sorts"
     />
@@ -42,70 +33,81 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
-import user from '@/services/user'
-import { UserDetail } from '@/models/dto'
+import vehicle from '@/services/vehicle'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
-import { AxiosResponse } from 'axios'
-import { Location } from 'vue-router'
+import { Vehicle } from '@/models/dto/Vehicle'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
+import { Location } from 'vue-router'
 
 @Component({
-  components: { CUDataTable, CUCollectionTable, CUDataTableFilters },
+  components: { CUCollectionTable, CUDataTableFilters },
 })
-export default class Users extends Vue {
+export default class VehiclesList extends Vue {
   isFilterDialogOpen = false
   sorts: any = sort()
   filters: any = filter()
 
   columns: DataTableColumn[] = [
     {
-      _t_id: '1067e952-2af3-42f6-8d1b-2357ce81faa3',
+      _t_id: 'c9ba7e34-e446-4b83-9549-905f7771e42d',
       text: 'Name',
-      value: 'name',
-      computedText: (row: UserDetail): string =>
-        `${row.firstName} ${row.lastName}`,
+      value: 'vehicleName',
       filterable: true,
       sortable: true,
-      method: 'or',
-      filterProp: ['firstName', 'lastName'],
+      filterProp: 'vehicleName',
       filterType: 'contains',
-      sortProp: 'lastName',
+      sortProp: 'vehicleName',
     },
     {
-      _t_id: 'f26fbb7d-25f4-4da1-8492-42906d7d2181',
-      text: 'Email',
-      value: 'email',
-      type: 'email',
-      filterable: true,
-      sortable: true,
-      filterProp: 'email',
-      filterType: 'contains',
-      sortProp: 'email',
-    },
-    {
-      _t_id: '12722781-c0be-469b-aefd-82c6af43550a',
+      _t_id: '998657d7-a6e7-457b-b501-4edc2c82834b',
       text: 'Type',
-      value: 'groupName',
+      value: 'vehicleTypeName',
       filterable: true,
       sortable: true,
-      filterProp: 'groupName',
+      filterProp: 'vehicleTypeName',
       filterType: 'contains',
-      sortProp: 'groupName',
+      sortProp: 'vehicleTypeName',
     },
     {
-      _t_id: 'a46c5350-5c2e-4d34-867b-971ec2ec545e',
-      text: 'Actions',
+      _t_id: 'ec2d77eb-c12f-48f7-b930-ac94b4c41dbb',
+      text: 'License Plate',
+      value: 'licensePlate',
+      filterable: true,
+      sortable: true,
+      filterProp: 'licensePlate',
+      filterType: 'contains',
+      sortProp: 'licensePlate',
+    },
+    {
+      _t_id: '56218905-133e-49e3-b7c6-50ddcfe612df',
+      text: 'Garage',
+      value: 'garageName',
+      filterable: true,
+      sortable: true,
+      filterProp: 'garageName',
+      filterType: 'contains',
+      sortProp: 'garageName',
+    },
+    {
+      _t_id: '692cc85d-baf3-43d8-b9da-5f03b4f03545',
+      text: 'Make',
+      value: 'vehicleMake',
+      computedText: (row): string =>
+        `${row.vehicleYear} ${row.vehicleMake} ${row.vehicleModel} - ${row.passengerCapacity} pax`,
+    },
+    {
+      _t_id: 'eca61191-cb99-4419-95ea-2810f9d01147',
+      text: '',
       value: 'actions',
       type: 'actions',
     },
   ]
 
-  usersTableView = user.tableView
+  tableView = vehicle.tableView
 
   actions: ActionColumn[] = [
     {
@@ -113,23 +115,24 @@ export default class Users extends Vue {
       key: 'edit',
       icon: 'edit',
       color: 'primary',
-      ariaLabel: 'Edit User',
-      action: (row: UserDetail): void => {
+      ariaLabel: 'Edit Vehicle',
+      action: (row: Vehicle): void => {
         this.$router.push({
-          name: 'users.edit',
-          params: { id: String(row.userId) },
+          name: 'vehicles.edit',
+          params: { id: String(row.vehicleId) },
         })
       },
     },
     {
-      displayText: 'Delete User',
+      displayText: 'Delete Vehicle',
       key: 'delete',
       color: 'error',
       icon: 'trash',
       confirmModal: true,
-      confirmModalText: 'Are you sure you want to delete this user?',
-      action: function (row: UserDetail): Promise<AxiosResponse> {
-        return user.delete(row.userId)
+      ariaLabel: 'Delete Vehicle',
+      confirmModalText: 'Are you sure you want to delete this vehicle?',
+      action: async (row: Vehicle) => {
+        return vehicle.delete(row.vehicleId)
       },
     },
     {
@@ -138,12 +141,12 @@ export default class Users extends Vue {
       color: 'primary',
       icon: '',
       confirmModal: false,
-      ariaLabel: 'View User Details',
+      ariaLabel: 'View Vehicle Details',
       isDetail: true,
-      detailRoute: (row: UserDetail): Location => {
+      detailRoute: (row: Vehicle): Location => {
         return {
-          name: 'users.view',
-          params: { id: row?.userId.toString() },
+          name: 'vehicles.view',
+          params: { id: row.vehicleId.toString() },
         }
       },
     },

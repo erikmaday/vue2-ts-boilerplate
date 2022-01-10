@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="isDialogOpen"
+    v-model="isOpen"
     :fullscreen="$vuetify.breakpoint.xs"
     :width="width"
     :max-width="maxWidth"
@@ -37,15 +37,15 @@ export default class CUModal extends Vue {
     default: '500px',
   })
   maxWidth!: string
-  @Watch('isDialogOpen')
+  @Watch('isOpen')
   isDialogOpenChanged(value: boolean): void {
     this.$emit('input', value)
   }
-  @Watch('value')
+  @Watch('value', { immediate: true })
   valueChanged(value: boolean): void {
-    this.isDialogOpen = value
+    this.isOpen = value
   }
 
-  isDialogOpen = false
+  isOpen = false
 }
 </script>

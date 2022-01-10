@@ -163,3 +163,11 @@ export const formatReservationPickupDestinationText = (
   const dropOffCity = cityFromAddressName(reservation.firstDropoffAddressName)
   return `${pickupCity} > ${dropOffCity}`
 }
+
+export const getReservationPickupDestinationCities = (
+  reservation: Reservation
+): { pickup: string; dropoff: string } => {
+  const pickup = reservation.pickupLocation.split(',')[0]
+  const dropoff = cityFromAddressName(reservation.firstDropoffAddressName)
+  return { pickup, dropoff }
+}

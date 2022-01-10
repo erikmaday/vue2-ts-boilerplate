@@ -330,6 +330,14 @@ export const routes: RouteConfig[] = [
               hash: router.params.hash,
             }),
           },
+          {
+            path: 'forgot-password',
+            name: 'forgotPassword',
+            component: () =>
+              import(
+                /* webpackChunkName: "forgotPassword" */ '@/views/ForgotPassword.vue'
+              ),
+          },
         ],
       },
     ],

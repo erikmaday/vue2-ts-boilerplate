@@ -10,10 +10,5 @@ export interface ActionColumn {
   confirmModalText?: string
   action?: any
   isDetail?: boolean
-<<<<<<< HEAD
   detailRoute?: (row: any) => RawLocation
-=======
-  detailRoute?: (row: any) => Location
-  hide?: boolean
->>>>>>> master
 }

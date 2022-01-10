@@ -10,4 +10,5 @@ export interface ActionColumn {
   action?: any
   isDetail?: boolean
   detailRoute?: (row: any) => Location
+  hide?: boolean
 }

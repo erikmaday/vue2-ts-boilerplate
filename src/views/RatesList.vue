@@ -283,7 +283,7 @@ export default class RatesList extends Vue {
       row.vehicleType = vehicleTypeKey
     }
     const companyId = auth.getUser.companyId
-    const res = await company.getById(companyId)
+    const res = await company.byId(companyId)
     const marketId = res.data.company.address.nearestMarketId || 1
     const ratePayloads = buildAddRatePayload(row, companyId, marketId)
 
@@ -309,7 +309,7 @@ export default class RatesList extends Vue {
     }
 
     const companyId = auth.getUser.companyId
-    const res = await company.getById(companyId)
+    const res = await company.byId(companyId)
     const marketId = res.data.company.address.nearestMarketId || 1
     const payloads = buildUpdateRatePayload(
       row,
@@ -380,7 +380,7 @@ export default class RatesList extends Vue {
 
     const marketplaceFilter = {
       column: {
-        _t_id: 'f4dfd72a',
+        _t_id: '423fbf7f-e908-45d8-bc81-b050381f874b',
         prop: 'marketplace',
         filterType: 'eq',
       },

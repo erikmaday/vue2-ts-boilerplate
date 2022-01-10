@@ -6,7 +6,7 @@ import { CompanyResult } from '@/models/dto/Company'
 const httpService: HttpService = new HttpService()
 
 export default {
-  getById(companyId: number): Promise<AxiosResponse<CompanyResult>> {
+  byId(companyId: number): Promise<AxiosResponse<CompanyResult>> {
     const url = `https://${apiBaseUrl()}/companies/${companyId}`
     return httpService.get(url)
   },

@@ -4,8 +4,8 @@ import { CheckoutType } from './CheckoutType'
 import { Customer } from './Customer'
 import { GarageTimes } from './GarageTimes'
 import { Vehicle } from './Vehicle'
-import { TableViewResult } from './TableView'
 import { Address } from './Address'
+import { TableViewResult } from '../TableView'
 
 export interface Trip {
   tripStatusId: number

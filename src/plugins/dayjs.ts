@@ -7,6 +7,7 @@ import weekday from 'dayjs/plugin/weekday'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import advancedFormat from 'dayjs/plugin/advancedFormat'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -15,6 +16,7 @@ dayjs.extend(weekday)
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(customParseFormat)
+dayjs.extend(advancedFormat)
 
 export default Object.defineProperties(Vue.prototype, {
   $dayjs: {

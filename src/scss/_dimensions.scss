@@ -59,6 +59,7 @@ $i: 16;
 
 $padding-margin-dimensions: (
   '0': 0px,
+  'auto': auto,
 );
 $i: 1;
 @while $i <= 40 {

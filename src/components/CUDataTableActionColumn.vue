@@ -21,7 +21,11 @@
         Details
       </v-btn>
     </template>
-    <v-menu v-if="$vuetify.breakpoint.smAndUp" offset-x left>
+    <v-menu
+      v-if="$vuetify.breakpoint.smAndUp && !isActionsListEmpty"
+      offset-x
+      left
+    >
       <template v-slot:activator="{ on }">
         <CUIcon
           width="20px"
@@ -131,6 +135,10 @@ export default class CUDataTableActionColumn extends Vue {
 
   get detailAction(): ActionColumn | undefined {
     return this.actions.find((action) => action.isDetail)
+  }
+
+  get isActionsListEmpty(): boolean {
+    return this.actions.filter((action) => !action.isDetail).length < 1
   }
 
   pushDetailRoute(): void {

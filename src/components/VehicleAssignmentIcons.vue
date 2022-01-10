@@ -62,7 +62,7 @@ export default class VehicleAssignmentIcons extends Vue {
     }
   }
 
-  get computedTrip(): Trip {
+  get computedTrip(): Trip | null {
     return this.trip ? this.trip : this.fetchedTrip
   }
 

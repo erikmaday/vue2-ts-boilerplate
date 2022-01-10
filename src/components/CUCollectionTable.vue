@@ -42,6 +42,7 @@ import { EventBus } from '@/utils/eventBus'
 import { filter } from '@/utils/filter'
 import { sort } from '@/utils/sort'
 import { AxiosResponse } from 'axios'
+import { ActionColumn } from '@/models/ActionColumn'
 
 @Component({
   components: { CUDataTable, CUDataTableFilters },
@@ -50,7 +51,8 @@ export default class CUCollectionTable extends Vue {
   @Prop({ type: Array, required: false, default: () => [] })
   columns!: DataTableColumn[]
   @Prop({ type: String, required: true }) collection!: string
-  @Prop({ type: Array, required: false, default: () => [] }) actions!: unknown[]
+  @Prop({ type: Array, required: false, default: () => [] })
+  actions!: ActionColumn[]
   @Prop({ type: String, required: false }) itemKey!: string
   @Prop(Function) fetchMethod!: any
   @Prop({ required: false, default: () => filter() }) filters: any

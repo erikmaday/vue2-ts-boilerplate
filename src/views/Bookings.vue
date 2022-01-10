@@ -153,7 +153,7 @@ export default class Bookings extends Vue {
     const datetime = (this as any)
       .$dayjs(reservation.pickupDate)
       .tz(reservation.firstPickupTimeZone)
-    return datetime.format('MMM DD, YYYY h:mma z')
+    return datetime.format('MMM D, YYYY\nh:mma z')
   }
 
   actions: ActionColumn[] = [

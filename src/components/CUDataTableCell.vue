@@ -40,7 +40,7 @@
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
     </template>
     <template v-else>
-      {{ computedCellItemText }}
+      <span class="white-space-pre">{{ computedCellItemText }}</span>
     </template>
   </div>
 </template>
@@ -103,7 +103,6 @@ export default class CUDataTableCell extends Vue {
     }
     return this.cellItem
   }
-
 
   phoneFormatFilter = phoneFormatFilter
 }

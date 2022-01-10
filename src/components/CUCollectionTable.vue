@@ -20,7 +20,7 @@
     <CUDataTable
       :actions="actions"
       :options="options"
-      :columns="columns"
+      :columns="visibleColumns"
       :items="items"
       :item-key="itemKey"
       :loading="loading"
@@ -76,6 +76,10 @@ export default class CUCollectionTable extends Vue {
 
   get areInitialFiltersSet(): boolean {
     return this.initialFilters.length && !this.initialFiltersSet
+  }
+
+  get visibleColumns(): DataTableColumn[] {
+    return this.columns.filter((column) => !column.hidden)
   }
 
   mounted(): void {

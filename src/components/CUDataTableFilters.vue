@@ -169,6 +169,7 @@ export default class CUDataTableFilters extends Vue {
 
   mounted(): void {
     this.convertCategories()
+    this.initiateDefaultSort()
   }
 
   get soloCategoryFilters(): any {
@@ -290,6 +291,13 @@ export default class CUDataTableFilters extends Vue {
     this.handleFilterAdded()
   }
 
+  initiateDefaultSort(): void {
+    const defaultSortColumn = this.columns.find((column) => column.defaultSort)
+    if (defaultSortColumn) {
+      this.initSort(defaultSortColumn)
+    }
+  }
+
   initSort(column: DataTableColumn): void {
     const sortProp = column.sortProp || column.value
     this.currentSort.key = uuidv4()
@@ -347,7 +355,7 @@ export default class CUDataTableFilters extends Vue {
             id: uuidv4(),
             text: valueObject.text,
             categoryValue: valueObject.value,
-            filterType: 'eq',
+            filterType: category.filterType || 'eq',
             overrideProp: valueObject.overrideProp,
           }
         }

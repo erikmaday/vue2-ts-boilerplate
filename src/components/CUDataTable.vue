@@ -1,10 +1,19 @@
 <template>
-  <div :class="{ 'v-data-table__detail': isDetailTable }">
+  <div
+    v-if="items"
+    :class="{
+      'v-data-table__detail': isDetailTable,
+      'v-data-table__editable': isEditableTable,
+    }"
+  >
     <v-data-table
       :headers="columns"
       :items="items"
       :server-items-length="serverItemsLength"
       disable-sort
+      :mobile-breakpoint="
+        $vuetify.breakpoint.thresholds[mobileViewOnBreakpoint]
+      "
       disable-filtering
       :loader-height="2"
       v-bind="$attrs"
@@ -12,17 +21,22 @@
       @pagination="$emit('pagination', $event)"
       @update:options="$emit('update:options', $event)"
     >
-      <template v-if="$vuetify.breakpoint.smAndUp" #item="{ item, index }">
+      <template v-if="!isMobile" #item="{ item, index }">
         <tr>
           <td
             v-for="(col, colIndex) in columns"
             :key="`column-${col.value}-${colIndex}-${index}`"
-          >
+            :class="col.classes ? col.classes : ''"
+          > 
             <CUDataTableCell
               :column="col"
+              :key="`data-table-cell-${col.value}-${colIndex}-${index}`"
               :row="item"
+              :row-index="index"
               :actions="actions"
+              :is-mobile="false"
               :is-detail-table="isDetailTable"
+              :display-actions-on-mobile="displayActionsOnMobile"
               :detail-name="detailName"
               :item-key="itemKey"
               v-on="$listeners"
@@ -35,26 +49,36 @@
         <div
           class="
             d-flex
-            flex-column
             padding-y-3
             border-solid border-gray-mid-light border-x-0 border-t-0
           "
           :class="{
             'padding-x-3 border-b-1': isDetailTable,
             'border-b-2': !isDetailTable,
+            'flex-row flex-wrap': isEditableTable,
+            'flex-column': !isEditableTable,
           }"
         >
           <div
+            :class="{
+              'flex-basis-48-percent margin-x-1-percent':
+                isEditableTable && col.type !== 'actions',
+              'flex-basis-full': isEditableTable && col.type === 'actions',
+            }"
             v-for="(col, colIndex) in columns"
             :key="`column-${col.value}-${colIndex}-${index}`"
           >
             <CUDataTableCell
               :column="col"
               :row="item"
+              :row-index="index"
               :actions="actions"
               :is-detail-table="isDetailTable"
+              :is-mobile="true"
               :detail-name="detailName"
+              :display-actions-on-mobile="displayActionsOnMobile"
               :item-key="itemKey"
+              v-on="$listeners"
               @refresh="$emit('refresh')"
             />
           </div>
@@ -127,9 +151,41 @@ export default class CUDataTable extends Vue {
   detailName!: string
 
   @Prop({
+    type: Boolean,
+    required: false,
+  })
+  isEditableTable!: boolean
+
+  @Prop({
     type: String,
     required: false,
   })
   itemKey!: string
+
+  @Prop({
+    type: String,
+    required: false,
+    default: 'xs',
+  })
+  mobileViewOnBreakpoint!: string
+
+  @Prop({
+    type: Boolean,
+    required: false,
+  })
+  displayActionsOnMobile!: boolean
+
+  get isMobile(): boolean {
+    switch (this.mobileViewOnBreakpoint) {
+      case 'xs':
+        return this.$vuetify.breakpoint.xs
+      case 'sm':
+        return this.$vuetify.breakpoint.smAndDown
+      case 'md':
+        return this.$vuetify.breakpoint.mdAndDown
+      default:
+        return false
+    }
+  }
 }
 </script>

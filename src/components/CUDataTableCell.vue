@@ -2,15 +2,15 @@
   <!-- eslint-disable vue/valid-v-slot -->
   <div
     :class="
-      $vuetify.breakpoint.xs
-        ? 'd-flex justify-space-between align-center margin-y-1'
-        : ''
+      isMobile ? 'd-flex justify-space-between align-center margin-y-1' : ''
     "
   >
     <h4
       v-if="
-        $vuetify.breakpoint.xs &&
+        isMobile &&
         column.type !== 'actions' &&
+        column.type !== 'editable' &&
+        column.type !== 'add-new-select' &&
         column.type !== 'slot'
       "
     >
@@ -24,11 +24,58 @@
         v-on="$listeners"
       />
     </template>
-    <template v-else-if="column.type === 'actions'">
+    <template v-else-if="column.type === 'actions' && !row.isEditable">
       <CUDataTableActionColumn
         :actions="actions"
+        :key="`action-column-${rowIndex}`"
         :row="row"
+        :row-index="rowIndex"
+        :display-actions-on-mobile="displayActionsOnMobile"
+        :is-mobile="isMobile"
         @refresh="$emit('refresh')"
+      />
+    </template>
+    <template
+      v-else-if="column.type === 'actions' && row.isEditable && row.isNewRow"
+    >
+      <CUDataTableRowEditActions
+        :is-mobile="isMobile"
+        :row="row"
+        :row-index="rowIndex"
+        event-name="add"
+        v-on="$listeners"
+      />
+    </template>
+    <template v-else-if="column.type === 'actions' && row.isEditable">
+      <CUDataTableRowEditActions
+        :is-mobile="isMobile"
+        :row="row"
+        :row-index="rowIndex"
+        event-name="update"
+        v-on="$listeners"
+      />
+    </template>
+    <template
+      v-else-if="column.type === 'add-new-select' && (row.isNewRow || isMobile)"
+    >
+      <CUSelect
+        hide-details
+        :key="`editable-select-row-${rowIndex}-${column._t_id}`"
+        :label="isMobile ? column.text : null"
+        :items="row.items"
+        class="w-full"
+        :rules="column.editableRules"
+        :disabled="!row.isNewRow"
+        :value="op(row, column.value)"
+        validate-on-blur
+        @input="
+          (e) =>
+            $emit('update-editable-select', {
+              value: e,
+              rowIndex: rowIndex,
+              columnValue: column.value,
+            })
+        "
       />
     </template>
     <template v-else-if="column.type === 'phone'">
@@ -38,6 +85,29 @@
     </template>
     <template v-else-if="column.type === 'email'">
       <a :href="`mailto:${cellItem}`">{{ cellItem }}</a>
+    </template>
+    <template v-else-if="column.type === 'editable'">
+      <CUTextField
+        :value="op(row, column.value)"
+        :disabled="!row.isEditable"
+        :key="`editable-text-field-row-${rowIndex}-${column._t_id}`"
+        class="w-full"
+        :label="isMobile ? column.text : null"
+        hide-details
+        type="number"
+        validate-on-blur
+        min="0"
+        step="0.01"
+        :rules="column.editableRules"
+        @input="
+          (e) =>
+            $emit('update-editable-input', {
+              value: e,
+              rowIndex: rowIndex,
+              columnValue: column.value,
+            })
+        "
+      />
     </template>
     <template v-else>
       <span class="white-space-pre">{{ computedCellItemText }}</span>
@@ -50,10 +120,12 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { phoneFormatFilter } from '@/utils/string'
-import { RawLocation } from 'vue-router'
+import op from 'simple-object-path'
+import { isNotEmptyInput, isNotNegative } from '@/utils/validators'
+import CUDataTableRowEditActions from '@/components/CUDataTableRowEditActions.vue'
 
 @Component({
-  components: { CUDataTableActionColumn },
+  components: { CUDataTableActionColumn, CUDataTableRowEditActions },
 })
 export default class CUDataTableCell extends Vue {
   @Prop({
@@ -61,6 +133,12 @@ export default class CUDataTableCell extends Vue {
     required: true,
   })
   row!: any
+
+  @Prop({
+    type: Number,
+    required: true,
+  })
+  rowIndex!: number
 
   @Prop({
     type: Object,
@@ -75,7 +153,9 @@ export default class CUDataTableCell extends Vue {
   })
   actions!: ActionColumn[]
 
+  op = op
   @Prop({
+    type: Boolean,
     required: false,
     default: false,
   })
@@ -93,8 +173,20 @@ export default class CUDataTableCell extends Vue {
   })
   itemKey!: string
 
+  @Prop({
+    type: Boolean,
+    required: true,
+  })
+  isMobile!: boolean
+
+  @Prop({
+    type: Boolean,
+    required: false,
+  })
+  displayActionsOnMobile!: boolean
+
   get cellItem(): any {
-    return this.row[this.column.value]
+    return op(this.row, this.column.value)
   }
 
   get computedCellItemText(): unknown {
@@ -105,5 +197,7 @@ export default class CUDataTableCell extends Vue {
   }
 
   phoneFormatFilter = phoneFormatFilter
+  isNotEmptyInput = isNotEmptyInput
+  isNotNegative = isNotNegative
 }
 </script>

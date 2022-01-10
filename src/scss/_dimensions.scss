@@ -16,17 +16,19 @@ $dimensions: (
   'three-sixths': 50%,
   'four-sixths': 66.666667%,
   'five-sixths': 83.333333%,
-  'one-twelth': 8.333333%,
-  'two-twelths': 16.666667%,
-  'three-twelths': 25%,
-  'four-twelths': 33.333333%,
-  'five-twelths': 41.666667%,
-  'six-twelths': 50%,
-  'seven-twelths': 58.333333%,
-  'eight-twelths': 66.666667%,
-  'nine-twelths': 75%,
-  'ten-twelths': 83.333333%,
-  'eleven-twelths': 91.666667%,
+  'one-twelfth': 8.333333%,
+  'two-twelfths': 16.666667%,
+  'three-twelfths': 25%,
+  'four-twelfths': 33.333333%,
+  'five-twelfths': 41.666667%,
+  'six-twelfths': 50%,
+  'seven-twelfths': 58.333333%,
+  'eight-twelfths': 66.666667%,
+  'nine-twelfths': 75%,
+  'ten-twelfths': 83.333333%,
+  'eleven-twelfths': 91.666667%,
+  '1-percent': 1%,
+  '48-percent': 48%,
   'full': 100%,
   'screen': 100vw,
   'min': min-content,
@@ -59,6 +61,7 @@ $i: 16;
 
 $padding-margin-dimensions: (
   '0': 0px,
+  'auto': auto,
 );
 $i: 1;
 @while $i <= 40 {

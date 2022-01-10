@@ -11,7 +11,7 @@ const httpService: HttpService = new HttpService()
 
 export default {
   login(payload: UserAuthPayload): Promise<AxiosResponse<UserAuthResult>> {
-    const url = `https://${apiBaseUrl()}/auth/cupops`
+    const url = `https://${apiBaseUrl()}/auth/a3`
     return httpService.post<UserAuthResult, UserAuthPayload>(url, payload)
   },
   getUserProfile(): Promise<AxiosResponse<UserProfileResult>> {

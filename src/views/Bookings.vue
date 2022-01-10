@@ -8,7 +8,7 @@
       :fetch-method="tableView"
       :initial-filters="initialFilters"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
-      :category-filters="categoryFilters"
+      :tab-filters="tabFilters"
     >
       <template slot="filter-row">
         <v-spacer />
@@ -30,7 +30,6 @@ import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
-import { DataTableCategoryFilter } from '@/models/DataTableCategoryFilter'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
 import reservation from '@/services/reservation'
@@ -132,18 +131,47 @@ export default class Bookings extends Vue {
     },
   ]
 
-  categoryFilters: DataTableCategoryFilter[] = [
+  tabFilters: TableViewFilter[] = [
     {
-      _t_id: 'a90d84a5-ca51-4010-b316-873b9f395095',
-      text: 'Reservation Status',
-      value: 'reservationStatus',
-      type: 'text',
-      method: 'or',
-      values: [
-        { text: 'Upcoming', value: ReservationStatus.Upcoming },
-        { text: 'In Progress', value: ReservationStatus.Started },
-        { text: 'Finished', value: ReservationStatus.Finished },
-      ],
+      column: {
+        _t_id: 'e6b676ab-b001-4cb1-a825-e905058a0616',
+        value: 'reservationStatus',
+        filterType: 'eq',
+        text: 'Upcoming',
+        method: 'or',
+      },
+      value: ReservationStatus.Upcoming,
+      default: true,
+    },
+    {
+      column: {
+        _t_id: '14e762a8-ce24-4e49-b27f-625574a5b265',
+        value: 'reservationStatus',
+        filterType: 'eq',
+        text: 'In Progress',
+        method: 'or',
+      },
+      value: ReservationStatus.Started,
+    },
+    {
+      column: {
+        _t_id: '70785f50-5874-4290-8079-e137bd221eba',
+        value: 'reservationStatus',
+        filterType: 'eq',
+        text: 'Finished',
+        method: 'or',
+      },
+      value: ReservationStatus.Finished,
+    },
+    {
+      column: {
+        _t_id: '843d2763-619d-4866-9cb9-d77ff6e5177b',
+        value: '',
+        filterType: '',
+        text: 'All',
+      },
+      value: null,
+      isShowAll: true,
     },
   ]
 

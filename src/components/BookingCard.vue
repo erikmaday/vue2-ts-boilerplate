@@ -2,11 +2,9 @@
   <v-card @click="goToBooking" class="border-radius-2x">
     <v-card-text class="padding-a-4">
       <p class="font-medium margin-t-0">
-        <!-- {{ reservation.firstPickupAddress.city }} TODO: fix -->
-        Atlanta
+        {{ waypointCities.pickup }}
         <span class="text-gray-light">></span>
-        <!-- {{ reservation.firstDropoffAddress.city }} TODO: fix -->
-        Chicago
+        {{ waypointCities.dropoff }}
       </p>
       <p class="font-14 margin-t-0">{{ formattedStartDateTime }}</p>
       <div class="d-inline-flex margin-t-4 margin-b-2">
@@ -39,7 +37,10 @@ import VehicleAssignmentIcons from '@/components/VehicleAssignmentIcons.vue'
 import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
 import { Reservation } from '@/models/dto'
 import { ReferralStatus } from '@/utils/enum'
-import { roundedCurrencyFilter } from '@/utils/string'
+import {
+  getReservationPickupDestinationCities,
+  roundedCurrencyFilter,
+} from '@/utils/string'
 
 @Component({
   components: {
@@ -75,13 +76,15 @@ export default class BookingCard extends Vue {
     const datetime = (this as any)
       .$dayjs(this.reservation.pickupDate)
       .tz(this.reservation.firstPickupTimeZone)
-    return `${datetime.format('MM/DD/YYYY')} • ${datetime.format(
-      'MM/DD/YYYY h:mm a z'
-    )}`
+    return `${datetime.format('MM/DD/YYYY')} • ${datetime.format('h:mm a')}`
   }
 
   get price(): string {
     return roundedCurrencyFilter(this.reservation.customerTotal)
+  }
+
+  get waypointCities(): { pickup: string; dropoff: string } {
+    return getReservationPickupDestinationCities(this.reservation)
   }
 
   goToBooking(): void {

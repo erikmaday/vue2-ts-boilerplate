@@ -12,11 +12,11 @@ export interface Reservation {
   ccVerified: boolean
   charterUpQuote: boolean
   checkoutPageId: null
-  childId: null
+  childId: string | null
   confirmed: boolean
   contractId: number | null
   createdOn: string
-  customerAccountName: null
+  customerAccountName: string | null
   customerEmail: string
   customerName: string
   customerTotal: number

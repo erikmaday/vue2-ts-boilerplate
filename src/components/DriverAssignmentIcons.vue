@@ -65,7 +65,7 @@ export default class DriverAssignmentIcons extends Vue {
     }
   }
 
-  get computedTrip(): Trip {
+  get computedTrip(): Trip | null {
     return this.trip ? this.trip : this.fetchedTrip
   }
 

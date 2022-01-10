@@ -2,34 +2,28 @@
   <div>
     <v-row class="align-center margin-b-2">
       <v-col cols="auto">
-        <template v-for="(category, categoryIndex) in soloCategoryFilters">
-          <span
-            v-for="(control, controlIndex) in category.predefined.controls"
-            :id="`data-table-button-category-${categoryIndex}-control-${controlIndex}`"
-            :key="`data-table-button-category-${categoryIndex}-control-${controlIndex}`"
-            class="
-              margin-x-3
-              padding-y-1
-              font-14 font-medium
-              text-gray-light
-              border-t-0 border-x-0 border-b-2 border-solid border-transparent
-              cursor-pointer
-            "
-            :class="{
-              'text-primary border-primary': categoryChipSelected(
-                category,
-                control
-              ),
-              'hover:border-gray-light': !categoryChipSelected(
-                category,
-                control
-              ),
-            }"
-            @click="() => setCategoryFilter(category, control)"
-          >
-            {{ control.text }}
-          </span>
-        </template>
+        <span
+          v-for="(tabFilter, tabFilterIndex) in tabFilters"
+          :id="`data-table-table-filter-${tabFilter.column._t_id}-${tabFilter.column.text}-control-${tabFilterIndex}`"
+          :key="`data-table-table-filter-${tabFilter.column._t_id}-${tabFilter.column.text}-control-${tabFilterIndex}`"
+          class="
+            margin-x-3
+            padding-y-1
+            font-14 font-medium
+            text-gray-light
+            border-t-0 border-x-0 border-b-2 border-solid border-transparent
+            cursor-pointer
+          "
+          :class="{
+            'text-primary border-primary': isColumnFilterActive(
+              tabFilter.column
+            ),
+            'hover:border-gray-light': !isColumnFilterActive(tabFilter.column),
+          }"
+          @click="handleTabFilterClick(tabFilter)"
+        >
+          {{ tabFilter.column.text }}
+        </span>
       </v-col>
       <slot name="filter-row" />
     </v-row>
@@ -107,10 +101,8 @@
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vue, Component, Prop, Watch, PropSync } from 'vue-property-decorator'
 import { v4 as uuidv4 } from 'uuid'
-import op from 'simple-object-path'
 import { EventBus } from '@/utils/eventBus'
 import { TableViewFilter } from '@/models/TableView'
-import { ReservationStatus } from '@/utils/enum'
 
 @Component
 export default class CUDataTableFilters extends Vue {
@@ -125,8 +117,6 @@ export default class CUDataTableFilters extends Vue {
   @Prop({ required: false, default: () => [] }) filters!: any
   @Prop({ required: false, default: () => [] })
   initialFilters!: TableViewFilter[]
-  @Prop({ required: false, default: () => [] })
-  categories!: any[]
   @Prop({
     type: Boolean,
     required: false,
@@ -135,6 +125,8 @@ export default class CUDataTableFilters extends Vue {
   open: boolean
   @PropSync('filterList', { type: Array, default: () => [] })
   tableFilterList!: any[]
+  @Prop({ required: false, default: () => [] })
+  tabFilters!: TableViewFilter[]
 
   @Watch('isOpen')
   isDialogOpenChanged(value: boolean): void {
@@ -152,9 +144,9 @@ export default class CUDataTableFilters extends Vue {
   handleInitialFiltersChanged(): void {
     this.setInitialFilters()
   }
-  @Watch('categories', { immediate: true })
-  handleCategoriesChange(): void {
-    this.convertCategories()
+  @Watch('tabFilters', { immediate: true })
+  handleTabFiltersChanged(): void {
+    this.selectDefaultTabFilter()
   }
 
   isOpen = false
@@ -163,17 +155,7 @@ export default class CUDataTableFilters extends Vue {
     direction: undefined,
   }
   debounce: any = null
-  categoryFilters: any[] = []
-  selectedCategory: any[] = []
   selectedFilter: string = undefined
-
-  mounted(): void {
-    this.convertCategories()
-  }
-
-  get soloCategoryFilters(): any {
-    return this.categoryFilters.filter((category) => !category.group)
-  }
 
   isColumnFilterActive(column: DataTableColumn): boolean {
     return !!this.findFilterByColumn(column)
@@ -290,6 +272,35 @@ export default class CUDataTableFilters extends Vue {
     this.handleFilterAdded()
   }
 
+  selectDefaultTabFilter(): void {
+    const defaultFilter = this.tabFilters.find((filter) => filter.default)
+    if (defaultFilter) {
+      this.handleTabFilterClick(defaultFilter)
+    }
+  }
+
+  handleTabFilterClick(tabFilter: TableViewFilter): void {
+    if (this.isColumnFilterActive(tabFilter.column)) {
+      this.unsetFilter(tabFilter.column)
+    } else {
+      this.setTabFilter(tabFilter)
+    }
+  }
+
+  setTabFilter(tabFilter: TableViewFilter): void {
+    this.unsetAllTabFilters()
+    this.setFilter(tabFilter.column)
+    this.updateFilterCriteria(tabFilter.value, tabFilter.column)
+  }
+
+  unsetAllTabFilters(): void {
+    for (const filter of this.tabFilters) {
+      if (this.isColumnFilterActive(filter.column)) {
+        this.unsetFilter(filter.column)
+      }
+    }
+  }
+
   initSort(column: DataTableColumn): void {
     const sortProp = column.sortProp || column.value
     this.currentSort.key = uuidv4()
@@ -337,93 +348,6 @@ export default class CUDataTableFilters extends Vue {
 
   close(): void {
     this.$emit('update:open', false)
-  }
-
-  convertCategories(): void {
-    this.categoryFilters = this.categories.map((category) => {
-      const categoryFilterPredefinedControls = category.values.map(
-        (valueObject) => {
-          return {
-            id: uuidv4(),
-            text: valueObject.text,
-            categoryValue: valueObject.value,
-            filterType: 'eq',
-            overrideProp: valueObject.overrideProp,
-          }
-        }
-      )
-      const categoryFilter = {
-        _t_id: category._t_id,
-        value: category.value,
-        text: category.text,
-        method: 'and',
-        childMethod: category.method,
-        predefined: {
-          id: uuidv4(),
-          text: category.text,
-          controls: categoryFilterPredefinedControls,
-        },
-        categoryFilter: true,
-        group: category.group,
-      }
-
-      return categoryFilter
-    })
-  }
-  categoryChipSelected(category: any, control: any): boolean {
-    const categoryFilter = { column: category }
-    const filterMatch = this.filters.find(categoryFilter)
-    const selectedPredefinedControls =
-      op(filterMatch, 'selectedPredefined/controls') || []
-    const exists = this.selectedCategory.find(
-      (selected) =>
-        selected._t_id === category._t_id &&
-        selectedPredefinedControls.find(
-          (selectedPredefinedControl) =>
-            selectedPredefinedControl.value === control.categoryValue
-        )
-    )
-    return !!exists
-  }
-  setCategoryFilter(category: any, control: any): void {
-    const hideOnFilterBar = true
-    const categoryFilter = { column: category }
-    const exists = this.filters.find(categoryFilter)
-
-    if (!exists) {
-      this.setFilter(category, hideOnFilterBar)
-      const activeFilter = this.tableFilterList.find(
-        (f) => f.column._t_id === this.selectedFilter
-      )
-      category.predefined.id = uuidv4()
-      activeFilter.selectedPredefined = category.predefined
-    }
-    const filterObject = this.filters.find(categoryFilter)
-
-    const selectedPredefinedControls =
-      op(filterObject, 'selectedPredefined/controls') || []
-    const selectedControl = selectedPredefinedControls.find(
-      (selectedPredefinedControl) =>
-        selectedPredefinedControl.categoryValue === control.categoryValue
-    )
-    if (
-      typeof selectedControl.value === 'undefined' ||
-      selectedControl.value === null
-    ) {
-      selectedControl.value = control.categoryValue
-    } else {
-      selectedControl.value = undefined
-    }
-    if (
-      !this.selectedCategory.find(
-        (selected) => selected._t_id === category._t_id
-      )
-    ) {
-      this.selectedCategory.push(category)
-    }
-    this.handleFilterAdded()
-    this.$emit('update:filters', this.filters)
-    this.$forceUpdate()
   }
 }
 </script>

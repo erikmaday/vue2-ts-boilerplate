@@ -281,7 +281,10 @@ export default class CUDataTableFilters extends Vue {
 
   handleTabFilterClick(tabFilter: TableViewFilter): void {
     if (this.isColumnFilterActive(tabFilter.column)) {
-      this.unsetFilter(tabFilter.column)
+      const showAllTab = this.tabFilters.find((filter) => filter.isShowAll)
+      if (showAllTab && showAllTab.column._t_id !== tabFilter.column._t_id) {
+        this.setTabFilter(showAllTab)
+      }
     } else {
       this.setTabFilter(tabFilter)
     }

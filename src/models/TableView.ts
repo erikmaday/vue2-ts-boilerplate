@@ -18,6 +18,7 @@ export interface TableViewFilter {
   value: string | number
   hideOnFilterBar?: boolean
   default?: boolean
+  isShowAll?: boolean
 }
 
 export interface TableViewFilterChip {

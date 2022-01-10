@@ -171,6 +171,7 @@ export default class Bookings extends Vue {
         text: 'All',
       },
       value: null,
+      isShowAll: true,
     },
   ]
 

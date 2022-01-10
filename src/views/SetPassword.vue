@@ -60,14 +60,7 @@
         </v-col>
         <v-form
           ref="form"
-          class="
-            background-white
-            max-w-536
-            margin-x-auto margin-y-8
-            padding-x-15 padding-y-10
-            border-solid border-1 border-gray-border border-radius-5
-            shadow
-          "
+          class="background-white max-w-536 margin-x-auto margin-y-8 padding-x-15 padding-y-10 border-solid border-1 border-gray-border border-radius-5 shadow"
         >
           <v-row justify="center">
             <v-col sm="10" class="padding-a-0">

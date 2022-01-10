@@ -1,3 +1,4 @@
+import { ApiResult } from '.';
 import { Address } from './Address'
 
 export interface CompanyType {
@@ -70,4 +71,7 @@ export interface Company {
   paymentMethod?: any
   isTrackingOdometry: boolean
   preferred: boolean
+}
+export interface CompanyResult extends ApiResult {
+  company: Company
 }

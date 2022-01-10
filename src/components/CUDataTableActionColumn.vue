@@ -2,7 +2,7 @@
   <div class="align-center d-flex flex-grow-1">
     <template v-if="detailAction">
       <v-btn
-        v-if="$vuetify.breakpoint.smAndUp"
+        v-if="!isMobile"
         text
         x-small
         color="primary"
@@ -21,18 +21,14 @@
         Details
       </v-btn>
     </template>
-    <v-menu
-      v-if="$vuetify.breakpoint.smAndUp && !isActionsListEmpty"
-      offset-x
-      left
-    >
+    <v-menu v-if="!isMobile && !isActionsListEmpty" offset-x left>
       <template v-slot:activator="{ on }">
         <CUIcon
           width="20px"
           height="20px"
           color="primary"
           class="cursor-pointer"
-          ariaLabel="More Actions"
+          aria-label="More Actions"
           v-on="on"
         >
           more_vert
@@ -41,7 +37,7 @@
       <v-list>
         <v-list-item
           v-for="(action, actionIndex) in actions.filter(
-            (action) => !action.isDetail
+            (action) => !action.isDetail && !action.hide
           )"
           :key="`action-${action.key}-${actionIndex}`"
           @click="handleAction(action, row)"
@@ -53,7 +49,7 @@
             height="24px"
             :color="action.color || 'gray-mid-light'"
             decorative
-            @click.native="() => action.action(row)"
+            @click.native="() => action.action(row, rowIndex)"
           >
             {{ action.icon }}
           </CUIcon>
@@ -66,6 +62,26 @@
         </v-list-item>
       </v-list>
     </v-menu>
+    <v-col v-else-if="isMobile && displayActionsOnMobile">
+      <template
+        v-for="(action, actionIndex) in actions.filter(
+          (action) => !action.isDetail && !action.hide
+        )"
+      >
+        <v-btn
+          :key="`action-btn-${actionIndex}`"
+          :color="action.color"
+          small
+          class="w-full margin-t-4"
+          @click="handleAction(action, row)"
+        >
+          <CUIcon v-if="action.icon" width="24px" height="24px" decorative>
+            {{ action.icon }}
+          </CUIcon>
+          <span class="ml-2">{{ action.displayText }}</span>
+        </v-btn>
+      </template>
+    </v-col>
     <v-dialog v-model="dialogOpen" max-width="500px">
       <v-card>
         <p class="wb-break-word font-22 font-medium padding-x-6 padding-y-2">
@@ -102,6 +118,24 @@ export default class CUDataTableActionColumn extends Vue {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   row!: any
 
+  @Prop({
+    type: Number,
+    required: true,
+  })
+  rowIndex!: number
+
+  @Prop({
+    type: Boolean,
+    required: true,
+  })
+  isMobile!: boolean
+
+  @Prop({
+    type: Boolean,
+    required: false,
+  })
+  displayActionsOnMobile!: boolean
+
   dialogOpen = false
   dialogText: string | undefined = ''
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -112,11 +146,11 @@ export default class CUDataTableActionColumn extends Vue {
     const action = this.currentAction
     if (action) {
       const res: AxiosResponse = await action.action(this.row)
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         this.$emit('refresh')
       }
     }
-    this.dialogOpen = false
+    this.closeDialog()
   }
 
   closeDialog(): void {
@@ -129,7 +163,7 @@ export default class CUDataTableActionColumn extends Vue {
       this.dialogText = action.confirmModalText
       this.currentAction = action
     } else if (action.action) {
-      action.action(this.row)
+      action.action(this.row, this.rowIndex)
     }
   }
 

@@ -50,6 +50,10 @@ export const toSentence = (string: string): string => {
   return interim.slice(0, 1).toUpperCase() + interim.slice(1)
 }
 
+export const toSnake = (string: string): string => {
+  return toKebab(string).replace('-', '_')
+}
+
 export const pluralize = (
   count: number,
   noun: string,

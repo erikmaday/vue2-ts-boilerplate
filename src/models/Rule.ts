@@ -1,0 +1,1 @@
+export type Rule = (val: any) => boolean | string

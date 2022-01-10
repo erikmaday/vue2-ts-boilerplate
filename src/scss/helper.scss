@@ -256,13 +256,37 @@ $base-class: 'max-w';
   true
 );
 
-// MAX-WIDTH
+
+// MAX-HEIGHT
 // .max-h-0, .max-h-1,..., .max-h-16, .max-h-20, .max-h-24, ... , .max-h-200
 $base-class: 'max-h';
 @include map-to-helpers(
   $base-class,
   $dimensions,
   'max-height',
+  $pseudo-classes,
+  true
+);
+
+
+// MIN-WIDTH
+// .min-w-0, .min-w-1,..., .min-w-16, .min-w-20, .min-w-24, ... , .min-w-200
+$base-class: 'min-w';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  'min-width',
+  $pseudo-classes,
+  true
+);
+
+// MIN-HEIGHT
+// .min-h-0, .min-h-1,..., .min-h-16, .min-h-20, .min-h-24, ... , .min-h-200
+$base-class: 'min-h';
+@include map-to-helpers(
+  $base-class,
+  $dimensions,
+  'min-height',
   $pseudo-classes,
   true
 );
@@ -276,6 +300,10 @@ $base-class: 'h';
 .shrink {
   flex-shrink: 1 !important;
 }
+
+// FLEX-BASIS
+$base-class: 'flex-basis';
+@include map-to-helpers($base-class, $dimensions, 'flex-basis', $pseudo-classes);
 
 // TRANSITION
 $milliseconds: 50;

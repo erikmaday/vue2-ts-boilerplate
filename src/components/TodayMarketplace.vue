@@ -4,13 +4,28 @@
       <v-col cols="12">
         <v-row>
           <h3
-            class="col shrink white-space-nowrap font-book font-weight-400 text-white font-20"
+            class="
+              col
+              shrink
+              white-space-nowrap
+              font-book font-weight-400
+              text-white
+              font-20
+            "
           >
             Marketplace
           </h3>
           <v-spacer />
           <p
-            class="col shrink white-space-nowrap text-white font-14 font-medium text-decoration-underline cursor-pointer"
+            class="
+              col
+              shrink
+              white-space-nowrap
+              text-white
+              font-14 font-medium
+              text-decoration-underline
+              cursor-pointer
+            "
           >
             All Bids ({{ tripCount }})
           </p>
@@ -67,9 +82,10 @@ import { TableViewTrip } from '@/models/dto'
 import trip from '@/services/trip'
 import { filter } from '@/utils/filter'
 import { sort } from '@/utils/sort'
-import { TableViewFilterChip } from '@/models/dto'
+
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import { TableViewFilterChip } from '@/models/TableView'
 
 @Component({ components: { MarketplaceCard, Pagination } })
 export default class TodayMarketplace extends Vue {
@@ -81,16 +97,18 @@ export default class TodayMarketplace extends Vue {
         {
           column: {
             _t_id: '1fce4feb-760c-49ad-99f2-7ed35aa794e2',
-            prop: 'createdOn',
+            value: 'createdOn',
             filterType: 'gte',
+            text: '',
           },
           value: this.currentTimestamp.format('YYYY-MM-DDT00:00:00.000+00:00'),
         },
         {
           column: {
             _t_id: '91b87f9b-23f7-48aa-aa98-040ef5aa4bf4',
-            prop: 'createdOn',
+            value: 'createdOn',
             filterType: 'lte',
+            text: '',
           },
           value: this.currentTimestamp
             .add(1, 'day')
@@ -106,16 +124,18 @@ export default class TodayMarketplace extends Vue {
         {
           column: {
             _t_id: '8be3681f-dbfb-427d-8e23-13e72a8a100d',
-            prop: 'biddingEndDate',
+            value: 'biddingEndDate',
             filterType: 'gte',
+            text: '',
           },
           value: this.currentTimestamp.format('YYYY-MM-DDTHH:mm:ss.000+00:00'),
         },
         {
           column: {
             _t_id: 'e935bd46-1275-4805-ab5d-09b0b14f2550',
-            prop: 'biddingEndDate',
+            value: 'biddingEndDate',
             filterType: 'lte',
+            text: '',
           },
           value: this.currentTimestamp
             .add(1, 'day')

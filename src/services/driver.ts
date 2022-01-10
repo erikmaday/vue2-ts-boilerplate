@@ -12,11 +12,16 @@ export default {
   create(driver: UserDetailDriver): Promise<AxiosResponse<DriverResult>> {
     return httpService.post(`https://${apiBaseUrl()}/v3/drivers`, driver)
   },
-  makeDriver(userId: number): Promise<AxiosResponse> { // No response is sent back from this endpoint 
-    return httpService.get(`https://${apiBaseUrl()}/v3/drivers/makeDriver/${userId}`)
+  makeDriver(userId: number): Promise<AxiosResponse> {
+    // No response is sent back from this endpoint
+    return httpService.get(
+      `https://${apiBaseUrl()}/v3/drivers/makeDriver/${userId}`
+    )
   },
   deactivateDriver(userId: number): Promise<AxiosResponse> {
-    return httpService.get(`https://${apiBaseUrl()}/drivers/deactivate/${userId}`)
+    return httpService.get(
+      `https://${apiBaseUrl()}/drivers/deactivate/${userId}`
+    )
   },
   update(
     userId: number,

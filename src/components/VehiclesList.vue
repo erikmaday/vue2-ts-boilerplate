@@ -6,27 +6,29 @@
       </v-col>
       <v-spacer />
       <v-col class="shrink">
+        <v-btn
+          primary
+          small
+          color="primary"
+          @click="$router.push({ name: 'vehicles.add' })"
+        >
+          Add New
+        </v-btn>
+      </v-col>
+      <v-col class="shrink">
         <v-btn color="primary" small @click="isFilterDialogOpen = true">
           <CUIcon color="white" class="margin-r-2">filter</CUIcon>
           Filter
         </v-btn>
       </v-col>
     </v-row>
-
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
       item-key="vehicleId"
       collection="vehicles"
       :fetch-method="tableView"
-      :filters="filters"
-      :sorts="sorts"
-    />
-    <CUDataTableFilters
-      v-model="isFilterDialogOpen"
-      :columns="columns"
-      :filters.sync="filters"
-      :sorts.sync="sorts"
+      :is-filter-dialog-open.sync="isFilterDialogOpen"
     />
   </div>
 </template>
@@ -39,18 +41,16 @@ import vehicle from '@/services/vehicle'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vehicle } from '@/models/dto/Vehicle'
-import { sort } from '@/utils/sort'
-import { filter } from '@/utils/filter'
 import { Location } from 'vue-router'
+import { AxiosResponse } from 'axios'
+import { ApiResult } from '@/models/dto'
 
 @Component({
   components: { CUCollectionTable, CUDataTableFilters },
 })
 export default class VehiclesList extends Vue {
+  tableView = vehicle.tableView
   isFilterDialogOpen = false
-  sorts: any = sort()
-  filters: any = filter()
-
   columns: DataTableColumn[] = [
     {
       _t_id: 'c9ba7e34-e446-4b83-9549-905f7771e42d',
@@ -107,8 +107,6 @@ export default class VehiclesList extends Vue {
     },
   ]
 
-  tableView = vehicle.tableView
-
   actions: ActionColumn[] = [
     {
       displayText: 'Edit',
@@ -131,7 +129,7 @@ export default class VehiclesList extends Vue {
       confirmModal: true,
       ariaLabel: 'Delete Vehicle',
       confirmModalText: 'Are you sure you want to delete this vehicle?',
-      action: async (row: Vehicle) => {
+      action: async (row: Vehicle): Promise<AxiosResponse<ApiResult>> => {
         return vehicle.delete(row.vehicleId)
       },
     },

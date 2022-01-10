@@ -9,8 +9,10 @@
       align-center
     "
     :class="{
-      'border-1 border-solid border-error background-error-background':
-        !imageSource || moreRequiredCount,
+      'border-1 border-solid': !imageSource || moreRequiredCount,
+      'border-error background-error-background':
+        (!imageSource && !noImageAvailable) || moreRequiredCount,
+      'border-gray-light background-gray-header': noImageAvailable,
     }"
   >
     <img
@@ -18,7 +20,10 @@
       :src="imageSource"
       width="32"
       height="32"
-      class="border-radius-round border-white border-solid border-2"
+      class="
+        border-radius-round border-white border-solid border-2
+        object-fit-cover
+      "
     />
     <p
       v-else-if="moreRequiredCount"
@@ -26,7 +31,9 @@
     >
       +{{ moreRequiredCount }}
     </p>
-    <CUIcon v-else class="text-error">{{ iconName }}</CUIcon>
+    <CUIcon v-else :color="noImageAvailable ? 'gray-light' : 'error'">
+      {{ iconName }}
+    </CUIcon>
   </div>
 </template>
 <script lang="ts">
@@ -35,6 +42,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component
 export default class TripAssignmentIcon extends Vue {
   @Prop({ required: false }) readonly imageSource?: string
+  @Prop({ required: false }) readonly noImageAvailable?: boolean
   @Prop({ required: false }) readonly iconName?: string
   @Prop({ required: false }) readonly moreRequiredCount?: number
 }

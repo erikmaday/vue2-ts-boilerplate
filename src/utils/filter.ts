@@ -172,7 +172,7 @@ export function filter(): any {
           // eslint-disable-next-line
           _children.forEach((child, _c_idx) => {
             const addSingleFilter = (
-              item: { column: { prop: string } },
+              item: { column: { value: string } },
               value: string,
               replacementProp: string | undefined,
               overrideIdx: number | undefined,
@@ -181,7 +181,7 @@ export function filter(): any {
               const childIdx = overrideIdx || _c_idx // eslint-disable-line
               queryParams.push([
                 `${parentBase}fs${childIdx}fd`,
-                formatProp(replacementProp || item.column.prop),
+                formatProp(replacementProp || item.column.value),
               ])
               queryParams.push([
                 `${parentBase}fs${childIdx}op`,
@@ -219,22 +219,22 @@ export function filter(): any {
                       : control.value.split(' ')
                   queryParts.forEach(
                     (queryPart: any, queryPartIndex: string | number) => {
-                      if (Array.isArray(child.column.prop)) {
+                      if (Array.isArray(child.column.value)) {
                         if (control.splitByProp) {
-                          const prop = child.column.prop[queryPartIndex]
+                          const value = child.column.value[queryPartIndex]
                           addSingleFilter(
                             child,
                             queryPart,
-                            prop,
+                            value,
                             predefinedCount++,
                             control.filterType
                           )
                         } else {
-                          child.column.prop.forEach((prop: string) =>
+                          child.column.value.forEach((value: string) =>
                             addSingleFilter(
                               child,
                               queryPart,
-                              prop,
+                              value,
                               predefinedCount++,
                               control.filterType
                             )
@@ -246,7 +246,7 @@ export function filter(): any {
                           queryPart,
                           overrideProp ||
                             child.column.filterProp ||
-                            child.column.prop,
+                            child.column.value,
                           predefinedCount,
                           control.filterType
                         )
@@ -265,7 +265,7 @@ export function filter(): any {
                 child.column.filterAsIs === true
                   ? [child.value]
                   : child.value.split(' ')
-              if (queryParts.length > 1 || Array.isArray(child.column.prop)) {
+              if (queryParts.length > 1 || Array.isArray(child.column.value)) {
                 queryParams[queryParams.length - 1][1] = 'or'
               }
               let overrideIdx = 0
@@ -282,16 +282,16 @@ export function filter(): any {
                     undefined
                   )
                 } else if (
-                  Array.isArray(child.column.prop) ||
+                  Array.isArray(child.column.value) ||
                   Array.isArray(child.column.filterProp)
                 ) {
                   const propsArray =
-                    child.column.filterProp || child.column.prop
-                  propsArray.forEach((prop: string) =>
+                    child.column.filterProp || child.column.value
+                  propsArray.forEach((value: string) =>
                     addSingleFilter(
                       child,
                       queryPart,
-                      prop,
+                      value,
                       overrideIdx++,
                       undefined
                     )

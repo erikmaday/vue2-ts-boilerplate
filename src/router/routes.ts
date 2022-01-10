@@ -1,10 +1,19 @@
 import { RouteConfig } from 'vue-router'
+// import { store } from '@/state/store'
 
 export const routes: RouteConfig[] = [
   {
     path: '/',
     component: () => import('@/views/Empty.vue'),
     children: [
+      {
+        path: '/download-app',
+        name: 'download-app',
+        component: () => import('@/views/DownloadApp.vue'),
+        meta: {
+          publicRoute: true,
+        },
+      },
       {
         path: '',
         name: 'home',
@@ -301,3 +310,60 @@ export const routes: RouteConfig[] = [
     ],
   },
 ]
+// routes.beforeEach((routeTo, routeFrom, next) => {
+//   baseUrl()
+
+//   store.dispatch('app/closeDialog')
+
+//   function redirectToLogin() {
+//     next({
+//       name: 'login',
+//       query: {
+//         redirectFrom: routeTo.fullPath,
+//       },
+//     })
+//   }
+
+//   const authRequired = !routeTo.matched.some((route) => route.meta.publicRoute)
+
+//   if (!authRequired) {
+//     next()
+//     return
+//   }
+
+//   if (store.getters['auth/loggedIn']) {
+//     store.dispatch('auth/validate').then((validUser) => {
+//       if (validUser) {
+//         const currentUser = store.getters['auth/currentUser'] || {}
+//         if (!currentUser.company) {
+//           redirectToLogin()
+//           return
+//         }
+
+//         const currentUserProfile = store.getters['auth/currentUserProfile']
+//         if (currentUserProfile && currentUserProfile.roles.length) {
+//           const isDriver = currentUserProfile.roles.some(
+//             (role) => role.roleName === 'is_driver'
+//           )
+//           const isAdmin = currentUserProfile.roles.some((role) =>
+//             [
+//               'is_free_admin',
+//               'is_paid_admin',
+//               'is_broker_admin',
+//               'is_admin_admin',
+//             ].includes(role.roleName)
+//           )
+//           const isUser = currentUserProfile.roles.some((role) =>
+//             [
+//               'is_free_user',
+//               'is_paid_user',
+//               'is_broker_user',
+//               'is_report_admin',
+//             ].includes(role.roleName)
+//           )
+//           if (!isAdmin && !isUser && isDriver) {
+//             next({
+//               name: 'download-app',
+//             })
+//           }
+//         }

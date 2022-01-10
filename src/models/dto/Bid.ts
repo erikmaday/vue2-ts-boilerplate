@@ -1,4 +1,5 @@
-import { Address, TableViewResult, Type, VehicleType } from '.'
+import { Address, Type, VehicleType } from '.'
+import { TableViewResult } from '../TableView'
 export interface Bid {
   bidId: number
   tripId: number

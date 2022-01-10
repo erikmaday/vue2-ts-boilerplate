@@ -1,3 +1,5 @@
+import { DataTableColumn } from './DataTableColumn'
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface TableViewParameters {
   sorts?: any
@@ -12,12 +14,10 @@ export interface TableViewResult<T> {
 }
 
 export interface TableViewFilter {
-  column: {
-    _t_id: string
-    prop: string
-    filterType: string
-  }
+  column: DataTableColumn
   value: string | number
+  hideOnFilterBar?: boolean
+  default?: boolean
 }
 
 export interface TableViewFilterChip {

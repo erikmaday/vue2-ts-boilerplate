@@ -22,13 +22,15 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import VehicleAssignmentIcon from '@/components/VehicleAssignmentIcon.vue'
 import DriverAssignmentIcon from '@/components/DriverAssignmentIcon.vue'
-import { Reservation, VehicleAssignment, Trip } from '@/models/dto'
+import { VehicleAssignment, Trip, Reservation } from '@/models/dto'
 import { DriverAssignment } from '@/models/dto/DriverAssignment'
 import { pluralize } from '@/utils/string'
 import { ColoredMessage } from '@/models/ColoredMessage'
+import trip from '@/services/trip'
+import tripAssignment from '@/services/tripAssignment'
 
 const MAX_DISPLAY = 3
 
@@ -39,22 +41,54 @@ const MAX_DISPLAY = 3
   },
 })
 export default class DriverAssignmentIcons extends Vue {
-  @Prop({ required: false }) readonly reservation: Reservation
   @Prop({ required: false }) readonly vehicleAssignments: VehicleAssignment[]
   @Prop({ required: false }) readonly trip: Trip
+  @Prop({ required: false }) readonly reservation: Reservation
   @Prop({ required: false }) readonly showLabel: boolean
+  @Prop({ required: false }) readonly row: Reservation
 
-  get computedTrip(): Trip {
-    return this.trip ? this.trip : this.reservation.trip
+  fetchedTrip: Trip | null = null
+  fetchedVehicleAssignments: VehicleAssignment[] = []
+
+  @Watch('computedReservation', { immediate: true })
+  async reservationChanged(reservation: Reservation): Promise<void> {
+    if (!this.trip) {
+      const tripResponse = await trip.byId(reservation.tripId)
+      this.fetchedTrip = tripResponse.data.trip
+    }
+    if (!this.vehicleAssignments && reservation?.reservationId) {
+      const tripAssignmentResponse = await tripAssignment.byReservationIds([
+        reservation.reservationId,
+      ])
+      this.fetchedVehicleAssignments =
+        tripAssignmentResponse.data.vehicleAssignments
+    }
+  }
+
+  get computedTrip(): Trip | null {
+    return this.trip ? this.trip : this.fetchedTrip
   }
 
   get computedVehicleAssignments(): VehicleAssignment[] {
     return this.vehicleAssignments
       ? this.vehicleAssignments
-      : this.reservation.vehicleAssignments
+      : this.fetchedVehicleAssignments
+  }
+
+  get computedReservation(): Reservation | null {
+    if (this.reservation) {
+      return this.reservation
+    }
+    if (this.row) {
+      return this.row
+    }
+    return null
   }
 
   get totalRequiredDrivers(): number {
+    if (!this.computedTrip?.requiredDrivers) {
+      return 0
+    }
     return Math.max(
       this.totalRequiredVehicles,
       this.computedTrip.requiredDrivers
@@ -62,13 +96,13 @@ export default class DriverAssignmentIcons extends Vue {
   }
 
   get totalRequiredVehicles(): number {
-    if (this.trip) {
+    if (this.computedTrip) {
       return this.computedTrip.vehicles.reduce(
         (sum, vehicle) => sum + vehicle.quantity,
         0
       )
     }
-    return this.reservation?.requiredVehiclesCount
+    return 0
   }
 
   get driverAssignments(): DriverAssignment[] {

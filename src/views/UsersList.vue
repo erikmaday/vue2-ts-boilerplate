@@ -28,7 +28,7 @@
       item-key="userId"
       collection="users"
       :fetch-method="usersTableView"
-      :noDataText="'No Users Available'"
+      :noDataText="'No matching users found'"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
     />
   </div>

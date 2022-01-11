@@ -1,7 +1,7 @@
 <template>
   <Main>
     <v-row
-      style="padding-left: 215px"
+      style="padding-left: 179px"
       justify="space-between"
       class="padding-t-4 padding-b-8"
     >
@@ -69,7 +69,6 @@
         </CUIcon>
       </v-btn>
     </v-row>
-
     <CUModal v-model="isDialogOpen">
       <template #title>Filters</template>
       <template #text>
@@ -112,12 +111,8 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn small color="primary" text @click="resetFilters">
-          Reset
-        </v-btn>
-        <v-btn small color="primary" @click="applyFilters">
-          Filter
-        </v-btn>
+        <v-btn small color="primary" text @click="resetFilters">Reset</v-btn>
+        <v-btn small color="primary" @click="applyFilters">Filter</v-btn>
       </template>
     </CUModal>
   </Main>
@@ -403,7 +398,7 @@ export default class Availability extends Vue {
         )
 
         calendarItems = calendarItems.concat(newBlocks)
-    })
+      })
 
     return calendarItems
   }
@@ -484,7 +479,7 @@ export default class Availability extends Vue {
   }
 
   applyFilters(): void {
-    console.log("> this.vehicles:", deepClone(this.vehicles))
+    console.log('> this.vehicles:', deepClone(this.vehicles))
     let displayedVehicles = deepClone(this.vehicles)
     let displayedDrivers = deepClone(this.drivers)
 
@@ -514,9 +509,9 @@ export default class Availability extends Vue {
 
     // this.displayedDrivers.splice(0)
     // this.displayedDrivers.push(...displayedDrivers)
-    console.log("> displayedVehicles:", displayedVehicles)
+    console.log('> displayedVehicles:', displayedVehicles)
     this.displayedDrivers = [...displayedDrivers]
-    this.displayedVehicles = [ ...displayedVehicles]
+    this.displayedVehicles = [...displayedVehicles]
 
     this.isDialogOpen = false
   }

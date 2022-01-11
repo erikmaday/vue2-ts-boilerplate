@@ -3,12 +3,13 @@
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
-      item-key="vehicleId"
-      collection="vehicles"
+      item-key="reservationId"
+      collection="bookings"
       :fetch-method="tableView"
       :initial-filters="initialFilters"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :tab-filters="tabFilters"
+      :key="`bookings-list`"
     >
       <template slot="filter-row">
         <v-spacer />
@@ -41,7 +42,7 @@ import {
 import { RawLocation } from 'vue-router'
 import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
 import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
-import { TableViewFilter } from '@/models/TableView'
+import { TableViewFilter, TableViewTab } from '@/models/TableView'
 import { ReservationStatus, ReservationType } from '@/utils/enum'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
@@ -49,6 +50,7 @@ export default class Bookings extends Vue {
   isFilterDialogOpen = false
   sorts: any = sort()
   filters: any = filter()
+  tableView = reservation.tableView
 
   columns: DataTableColumn[] = [
     {
@@ -131,7 +133,7 @@ export default class Bookings extends Vue {
     },
   ]
 
-  tabFilters: TableViewFilter[] = [
+  tabFilters: TableViewTab[] = [
     {
       column: {
         _t_id: 'e6b676ab-b001-4cb1-a825-e905058a0616',
@@ -174,8 +176,6 @@ export default class Bookings extends Vue {
       isShowAll: true,
     },
   ]
-
-  tableView = reservation.tableView
 
   formatReservationStartDate(reservation: Reservation): string {
     const datetime = (this as any)

@@ -1,6 +1,7 @@
 <template>
   <div>
     <CUDataTableFilters
+      :key="`${collection}-list-filters`"
       :open="isFilterDialogOpen"
       :columns="columns"
       :filters="filters"
@@ -33,10 +34,14 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
-import { TableViewFilter, TableViewParameters } from '@/models/TableView'
+import {
+  TableViewFilter,
+  TableViewTab,
+  TableViewParameters,
+} from '@/models/TableView'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { EventBus } from '@/utils/eventBus'
 import { filter } from '@/utils/filter'
@@ -60,7 +65,7 @@ export default class CUCollectionTable extends Vue {
   @Prop({ required: false, default: () => [] })
   initialFilters!: TableViewFilter[]
   @Prop({ required: false, default: () => [] })
-  tabFilters!: TableViewFilter[]
+  tabFilters!: TableViewTab[]
   @Prop({ type: Boolean, required: false, default: false })
   isFilterDialogOpen: boolean
 

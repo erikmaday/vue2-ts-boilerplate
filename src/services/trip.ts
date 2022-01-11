@@ -21,9 +21,6 @@ export default {
     if (filters) {
       query = `${query}&${filters}`
     }
-    if (filterNotBidOn) {
-      query = `${query}&filterNotBidOn=true`
-    }
     if (quoteIdList) {
       query = `${query}&quoteId=${quoteIdList}`
     }

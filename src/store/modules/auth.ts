@@ -96,7 +96,6 @@ class AuthModule extends VuexModule {
     }
 
     const response = await user.byId(this.userId)
-    console.log(response)
 
     // Seems like we don't have a `successful` property to check on this response?
     if (response.status === 200) {

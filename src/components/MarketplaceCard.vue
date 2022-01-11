@@ -13,19 +13,13 @@
       <p class="font-14 margin-t-0 margin-b-3">
         {{ formattedStartDateTime }}
       </p>
-      <div class="d-flex align-start">
+      <div class="d-flex align-start font-14">
         <CUIcon class="text-gray-mid-light margin-r-2">directions_bus</CUIcon>
-        <span
-          v-for="(requiredVehicle, requiredVehicleIndex) in requiredVehicles"
-          :key="`required-vehicle-${requiredVehicle.vehicleType}-${requiredVehicleIndex}`"
-          class="font-14"
-        >
-          {{ formattedRequiredVehicle(requiredVehicle) }}
-        </span>
+        <span class="white-space-pre">{{ formattedRequiredVehicles }}</span>
       </div>
-      <div class="d-flex align-center">
+      <div class="d-flex align-center font-14">
         <CUIcon class="text-gray-mid-light margin-r-2">person</CUIcon>
-        <span class="font-14">{{ formattedRequiredDrivers }}</span>
+        {{ formattedRequiredDrivers }}
       </div>
       <div class="d-flex justify-end">
         <span
@@ -186,11 +180,15 @@ export default class MarketplaceCard extends Vue {
     )}`
   }
 
-  formattedRequiredVehicle(vehicle: RequiredVehicle): string {
-    return `${vehicle.requiredVehicles} ${pluralize(
-      vehicle.requiredVehicles,
-      vehicle.vehicleType
-    )}`
+  get formattedRequiredVehicles(): string {
+    let string = ''
+    for (const vehicle of this.requiredVehicles) {
+      string = `${string}${vehicle.requiredVehicles} ${pluralize(
+        vehicle.requiredVehicles,
+        vehicle.vehicleType
+      )}\n`
+    }
+    return string
   }
 
   goToBid(): void {

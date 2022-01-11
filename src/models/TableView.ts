@@ -17,8 +17,12 @@ export interface TableViewFilter {
   column: DataTableColumn
   value: string | number
   hideOnFilterBar?: boolean
+}
+
+export interface TableViewTab extends TableViewFilter {
   default?: boolean
   isShowAll?: boolean
+  isLocked?: boolean
 }
 
 export interface TableViewFilterChip {

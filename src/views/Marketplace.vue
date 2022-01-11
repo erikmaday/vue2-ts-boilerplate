@@ -5,9 +5,11 @@
       :columns="columns"
       item-key="vehicleId"
       collection="vehicles"
-      :tab-filters="tabFilters"
+      :initial-filters="initialFilters"
       :fetch-method="tableView"
+      :tab-filters="tabFilters"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
+      :key="`marketplace-list`"
     >
       <template slot="filter-row">
         <v-spacer />
@@ -37,21 +39,16 @@ import { Reservation, TableViewTrip } from '@/models/dto'
 import { pluralize } from '@/utils/string'
 import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
-import { ReservationStatus } from '@/utils/enum'
-import { TableViewFilter } from '@/models/TableView'
+import { TableViewFilter, TableViewTab } from '@/models/TableView'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Marketplace extends Vue {
+  tableView = trip.tableView
   isFilterDialogOpen = false
   sorts: any = sort()
   filters: any = filter()
 
   columns: DataTableColumn[] = [
-    {
-      _t_id: 'f06471a9-345b-4ab5-a7ec-3f3e905c858a',
-      text: 'Created On',
-      value: 'createdOn',
-    },
     {
       _t_id: 'c70e5684-0bab-4fd0-bcaa-9a61b459b552',
       text: 'Trip ID',
@@ -119,7 +116,7 @@ export default class Marketplace extends Vue {
     },
   ]
 
-  tabFilters: TableViewFilter[] = [
+  tabFilters: TableViewTab[] = [
     {
       column: {
         _t_id: 'e6b676ab-b001-4cb1-a825-e905058a0616',
@@ -131,13 +128,47 @@ export default class Marketplace extends Vue {
       },
       value: `${(this as any)
         .$dayjs()
-        .utc()
         .format('YYYY-MM-DD')}T00:00:00.000+00:00`,
       default: true,
     },
     {
       column: {
-        _t_id: 'c2f34049-1f92-4dff-9597-a8221e441ae6',
+        _t_id: '65cd0baa-88cd-4aa9-8205-ca2decdc3dcc',
+        text: 'Ending Soon',
+        value: 'biddingEndDate',
+        type: 'date',
+        method: 'or',
+        filterType: 'lte',
+      },
+      value: `${(this as any)
+        .$dayjs()
+        .add(1, 'day')
+        .format('YYYY-MM-DDTHH:mm:ss.000Z')}`,
+    },
+    {
+      column: {
+        _t_id: 'cf309108-6fa5-4205-8dd6-31f373443939',
+        text: 'Large Contracts',
+        value: '',
+        filterType: '',
+      },
+      value: null,
+      isLocked: true,
+    },
+    {
+      column: {
+        _t_id: '3bc3f254-7fce-43d3-b6d2-87ef778c41ef',
+        text: 'Picking Up Soonest',
+        type: 'date',
+        value: 'startDate',
+        sortProp: 'startDate',
+        sortDirection: 'asc',
+      },
+      value: null,
+    },
+    {
+      column: {
+        _t_id: '9564020d-13b2-40af-b6b9-c6615ca9d1d8',
         value: '',
         filterType: '',
         text: 'All',
@@ -147,7 +178,20 @@ export default class Marketplace extends Vue {
     },
   ]
 
-  tableView = trip.tableView
+  initialFilters: TableViewFilter[] = [
+    {
+      column: {
+        _t_id: 'af96c292-4bd0-46f7-8583-de4158bced4a',
+        value: 'startDate',
+        filterType: 'gte',
+        text: '',
+      },
+      value: `${(this as any)
+        .$dayjs()
+        .utc()
+        .format('YYYY-MM-DDTHH:mm:ss.000Z')}`,
+    },
+  ]
 
   formatReservationStartDate(trip: TableViewTrip): string {
     const firstStop = trip.stops?.[0]

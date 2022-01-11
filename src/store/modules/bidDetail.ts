@@ -7,6 +7,7 @@ import {
 } from '@/models/dto'
 import { BidStatusId } from '@/utils/enum'
 import tripService from '@/services/trip'
+import bid from '@/services/bid'
 import { getExistingBidsByTripId } from '@/utils/bid'
 import { TableViewBid } from '@/models/dto/TableViewBid'
 import { filter } from '@/utils/filter'
@@ -100,7 +101,6 @@ class BidDetailModule extends VuexModule {
     }
     const tripsResponse = await tripService.tableView(
       params,
-      false,
       quoteId.toString()
     )
     this.trips = tripsResponse.data.resultList.map(
@@ -109,33 +109,9 @@ class BidDetailModule extends VuexModule {
   }
 
   @Action
-  async fetchTripsListByTripId(tripId: number): Promise<void> {
-    const filters = filter()
-    const filterParentAnd = filters.createParent('and')
-    const filterTripId = {
-      column: {
-        _t_id: 'd971872d-fb98-4b7a-899d-1a47fc4551ae',
-        prop: 'tripId',
-        filterType: 'eq',
-      },
-      value: tripId,
-    }
-    filters.add(filterParentAnd, filterTripId)
-    const params = {
-      page: 1,
-      pageSize: -1,
-      sorts: undefined,
-      filters: filters.asQueryParams(),
-    }
-    const tripsResponse = await tripService.tableView(params, false)
-    this.trips = tripsResponse.data.resultList.map(
-      (trip) => processTrip(trip) as TableViewTrip
-    )
-  }
-
-  @Action
-  async fetchAllTripDetails(tripIds: number[] = []): Promise<void> {
-    if ((!tripIds.length || !tripIds) && this.trips) {
+  async fetchAllTripDetails(): Promise<void> {
+    let tripIds: number[] = []
+    if (this.trips) {
       tripIds = this.trips.map((trip) => trip.tripId)
     }
     if (tripIds.length) {
@@ -149,8 +125,9 @@ class BidDetailModule extends VuexModule {
   }
 
   @Action
-  async fetchExistingBids(tripIds: number[] = []): Promise<void> {
-    if ((!tripIds.length || !tripIds) && this.trips) {
+  async fetchExistingBids(): Promise<void> {
+    let tripIds: number[] = []
+    if (this.trips) {
       tripIds = this.trips.map((trip) => trip.tripId)
     }
     if (tripIds.length) {
@@ -417,9 +394,6 @@ const buildBidVehicles = (trip: Trip): BidPayloadVehicle[] => {
   })
 }
 
-// const submitBid = async (): Promise<void> => {}
-
 // register module
 import store from '@/store/index'
-import bid from '@/services/bid'
 export default new BidDetailModule({ store, name: 'bidDetail' })

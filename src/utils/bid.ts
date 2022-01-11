@@ -8,7 +8,7 @@ export const getExistingBidsByTripId = (tripId: number): any => {
   filterInstance.add(parentFilter, {
     column: {
       _t_id: '4481ca2b-b707-4b96-b720-712cd6efebf5',
-      prop: 'tripId',
+      value: 'tripId',
       filterType: 'eq',
     },
     value: tripId,
@@ -16,7 +16,7 @@ export const getExistingBidsByTripId = (tripId: number): any => {
   filterInstance.add(parentFilter, {
     column: {
       _t_id: '28c88035-db00-4c10-a674-a37aaa4fff12',
-      prop: 'companyId',
+      value: 'companyId',
       filterType: 'eq',
     },
     value: auth.user?.companyId,

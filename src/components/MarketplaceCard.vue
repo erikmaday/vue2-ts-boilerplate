@@ -195,11 +195,8 @@ export default class MarketplaceCard extends Vue {
     if (this.isInBidDetail) {
       bidDetail.selectTrip(this.activeTrip.tripId)
     } else {
-      const name = this.tripsList.length > 1 ? 'multi-bid-detail' : 'bid-detail'
-      const id =
-        this.tripsList.length > 1
-          ? this.activeTrip.quoteId
-          : this.activeTrip.tripId
+      const name = 'bid-detail'
+      const id = this.activeTrip.quoteId
       this.$router.push({ name, params: { id: id.toString() } })
     }
   }

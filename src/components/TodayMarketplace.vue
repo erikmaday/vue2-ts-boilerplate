@@ -215,16 +215,12 @@ export default class TodayMarketplace extends Vue {
 
   async getTrips(setCount = false): Promise<void> {
     this.params.filters = this.filters.asQueryParams()
-    const preliminaryTripResponse = await trip.tableView(this.params, true)
+    const preliminaryTripResponse = await trip.tableView(this.params)
     const quoteIdList: string = preliminaryTripResponse.data.resultList
       .map((trip) => trip.quoteId)
       .join(',')
     const secondaryParams = { ...this.params, pageSize: -1 }
-    const tripResponse = await trip.tableView(
-      secondaryParams,
-      false,
-      quoteIdList
-    )
+    const tripResponse = await trip.tableView(secondaryParams, quoteIdList)
     this.trips = tripResponse.data.resultList
     this.tripBundles = this.bundleTrips(this.trips)
     if (setCount) {

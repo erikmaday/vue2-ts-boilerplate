@@ -9,7 +9,6 @@ const httpService: HttpService = new HttpService()
 export default {
   tableView(
     params: TableViewParameters,
-    filterNotBidOn = false,
     quoteIdList: string | null = null
   ): Promise<AxiosResponse<TripTableViewResult>> {
     const { sorts = null, filters = null, pageSize = 10, page = 1 } = params

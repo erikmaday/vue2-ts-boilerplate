@@ -230,7 +230,7 @@ export default class Marketplace extends Vue {
       detailRoute: (row: Reservation): RawLocation => {
         return {
           name: 'bid-detail',
-          params: { id: String(row.tripId) },
+          params: { id: String(row.quoteId) },
         }
       },
     },

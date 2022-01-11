@@ -227,7 +227,7 @@ export default class Marketplace extends Vue {
       confirmModal: false,
       ariaLabel: 'View Booking Details',
       isDetail: true,
-      detailRoute: (row: Reservation): RawLocation => {
+      detailRoute: (row: TableViewTrip): RawLocation => {
         return {
           name: 'bid-detail',
           params: { id: String(row.quoteId) },

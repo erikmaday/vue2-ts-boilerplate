@@ -1,6 +1,10 @@
 <template>
   <Main>
-    <v-row style="padding-left: 215px;" justify="space-between" class="padding-t-4 padding-b-8">
+    <v-row
+      style="padding-left: 215px"
+      justify="space-between"
+      class="padding-t-4 padding-b-8"
+    >
       <span class="d-flex">
         <CUDatePicker :value="datePickerDate" @input="updateDatePickerDate" />
         <v-btn
@@ -14,9 +18,7 @@
         </v-btn>
       </span>
       <v-btn color="primary" small @click="isDialogOpen = true">
-        <CUIcon color="white" class="margin-r-2">
-          filter
-        </CUIcon>
+        <CUIcon color="white" class="margin-r-2">filter</CUIcon>
         Filter
       </v-btn>
     </v-row>
@@ -26,11 +28,11 @@
         :vehicle-rows="vehicleKeyRows"
         :driver-rows="driverKeyRows"
       />
-      <AvailabilityVehicleList
+      <AvailabilityKeyList
         :vehicle-rows="vehicleKeyRows"
         :driver-rows="driverKeyRows"
         :is-vehicle-display="isVehicleDisplay"
-        @input:vehicle-display-select="e => isVehicleDisplay = e"
+        @input:vehicle-display-select="(e) => (isVehicleDisplay = e)"
       />
       <!-- Inline styling needed to override default icon btn Vuetify settings -->
       <v-btn
@@ -67,49 +69,55 @@
         </CUIcon>
       </v-btn>
     </v-row>
-    
+
     <CUModal v-model="isDialogOpen">
       <template #title>Filters</template>
       <template #text>
         <CUSelect
           v-model="filters.vehicleTypes"
+          class="padding-y-1"
           multiple
+          display-select-all
           :aggregate-selection-index="4"
           label="Vehicle Type"
           :items="vehicleTypes"
           item-text="label"
           item-value="id"
-        >
-          
-        </CUSelect>
+          hide-details
+        ></CUSelect>
         <CUSelect
           v-model="filters.vehicles"
+          class="padding-y-1"
           multiple
+          display-select-all
           :aggregate-selection-index="1"
           label="Vehicles"
           :items="vehicles"
           item-text="vehicleName"
           item-value="vehicleId"
+          hide-details
         />
         <CUSelect
           v-model="filters.drivers"
+          class="padding-y-1"
           multiple
+          display-select-all
           :aggregate-selection-index="2"
           label="Drivers"
           :items="drivers"
           item-text="fullName"
           item-value="userId"
+          hide-details
         />
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" outlined @click="resetFilters">
-          Reset Filters
+        <v-btn small color="primary" text @click="resetFilters">
+          Reset
         </v-btn>
-        <v-btn color="primary" @click="filterDriverAndVehicleKeys">
+        <v-btn small color="primary" @click="applyFilters">
           Filter
         </v-btn>
-        <v-spacer />
       </template>
     </CUModal>
   </Main>
@@ -129,7 +137,7 @@ import {
   DriverKeyRow,
 } from '@/models/dto/Availability'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar.vue'
-import { convertReservationToAvailabilityBlock } from '@/utils/reservation'
+import { convertReservationToAvailabilityBlock } from '@/utils/availability'
 import deepClone from '@/utils/deepClone'
 import IntervalTree from '@flatten-js/interval-tree'
 import {
@@ -137,7 +145,7 @@ import {
   sortAvailabilityBlocksByDriver,
   AVAILABILITY_ROW_HEIGHT,
 } from '@/utils/availability'
-import AvailabilityVehicleList from '@/components/AvailabilityVehicleList.vue'
+import AvailabilityKeyList from '@/components/AvailabilityKeyList.vue'
 import { Vehicle, VehicleType } from '@/models/dto'
 import vehicle from '@/services/vehicle'
 import driver from '@/services/driver'
@@ -148,16 +156,15 @@ import vehicleType from '@/services/type'
   components: {
     Main,
     AvailabilityCalendar,
-    AvailabilityVehicleList,
+    AvailabilityKeyList,
     AvailabilityGridLines,
   },
 })
 export default class Availability extends Vue {
   isDialogOpen = false
-  isVehicleDisplay = false
+  isVehicleDisplay = true
 
   loadedReservations: Record<number, AvailabilityBlock> = {}
-  // reservations: AvailabilityBlock[] = []
   calendarDisplayDate = dayjs()
   loadedDateIntervals = new IntervalTree()
 
@@ -262,7 +269,7 @@ export default class Availability extends Vue {
 
     const unassignedVehicle: VehicleKeyRow = {
       vehicle: {
-        vehicleName: 'Unassigned',
+        vehicleName: 'Needs Assignment',
         vehicleId: -1,
       },
       rowHeight: AVAILABILITY_ROW_HEIGHT,
@@ -308,8 +315,8 @@ export default class Availability extends Vue {
 
     const unassignedDriver: DriverKeyRow = {
       driver: {
-        firstName: 'Unassigned',
-        lastName: '',
+        firstName: 'Needs',
+        lastName: 'Assignment',
         userId: -1,
       },
       rowHeight: AVAILABILITY_ROW_HEIGHT,
@@ -333,23 +340,35 @@ export default class Availability extends Vue {
       newObj[row.vehicle.vehicleId] = row.distanceFromTop
       return newObj
     }
-    const vehicleIdMap = this.vehicleKeyRows.reduce(reduceFn, {})
+    const vehicleIdToStartingHeight = this.vehicleKeyRows.reduce(reduceFn, {})
 
     const sortedByVehicle = sortAvailabilityBlocksByVehicle(
       this.displayedReservations
     )
 
-    Object.entries(sortedByVehicle).map(([key, val]) => {
-      let startingHeight = vehicleIdMap[key]
-      const newBlocks = val.blocks.map(
-        (block: AvailabilityBlock, index: number) => {
-          block.top = startingHeight + index * AVAILABILITY_ROW_HEIGHT
-          return block
+    Object.entries(sortedByVehicle)
+      .filter(([vehicleId, vehicleInfo]) => {
+        if (vehicleIdToStartingHeight[vehicleId] != null) {
+          return true
         }
-      )
+        return false
+      })
+      .map(([vehicleId, vehicleInfo]) => {
+        let startingHeight
+        if (vehicleIdToStartingHeight[vehicleId]) {
+          startingHeight = vehicleIdToStartingHeight[vehicleId]
+        } else {
+          startingHeight = vehicleIdToStartingHeight[-1]
+        }
+        const newBlocks = vehicleInfo.blocks.map(
+          (block: AvailabilityBlock, index: number) => {
+            block.top = startingHeight + index * AVAILABILITY_ROW_HEIGHT
+            return block
+          }
+        )
 
-      calendarItems = calendarItems.concat(newBlocks)
-    })
+        calendarItems = calendarItems.concat(newBlocks)
+      })
 
     return calendarItems
   }
@@ -367,16 +386,23 @@ export default class Availability extends Vue {
       this.displayedReservations
     )
 
-    Object.entries(sortedByDriver).map(([key, val]) => {
-      let startingHeight = driverIdMap[key]
-      const newBlocks = val.blocks.map(
-        (block: AvailabilityBlock, index: number) => {
-          block.top = startingHeight + index * AVAILABILITY_ROW_HEIGHT
-          return block
+    Object.entries(sortedByDriver)
+      .filter(([id]) => {
+        if (driverIdMap[id] != null) {
+          return true
         }
-      )
+        return false
+      })
+      .map(([key, val]) => {
+        let startingHeight = driverIdMap[key]
+        const newBlocks = val.blocks.map(
+          (block: AvailabilityBlock, index: number) => {
+            block.top = startingHeight + index * AVAILABILITY_ROW_HEIGHT
+            return block
+          }
+        )
 
-      calendarItems = calendarItems.concat(newBlocks)
+        calendarItems = calendarItems.concat(newBlocks)
     })
 
     return calendarItems
@@ -385,7 +411,7 @@ export default class Availability extends Vue {
   // Get the starting height of the last row, and add the height of that row
   // to get the min heihgt the calendar should show.
   get minHeight(): number {
-    let lastRow 
+    let lastRow
     if (this.isVehicleDisplay) {
       lastRow = this.vehicleKeyRows[this.vehicleKeyRows.length - 1]
     } else {
@@ -457,7 +483,8 @@ export default class Availability extends Vue {
     )
   }
 
-  filterDriverAndVehicleKeys(): void {
+  applyFilters(): void {
+    console.log("> this.vehicles:", deepClone(this.vehicles))
     let displayedVehicles = deepClone(this.vehicles)
     let displayedDrivers = deepClone(this.drivers)
 
@@ -479,14 +506,17 @@ export default class Availability extends Vue {
         return this.filters.drivers.includes(driver.userId)
       })
     }
-    // For some reason, these properties aren't reactive when updating the whole array with 
+    // For some reason, these properties aren't reactive when updating the whole array with
     // any iteration of this.displayedVehicles = displayedVehicles
     // Clear both arrays, then push all elements
-    this.displayedVehicles.splice(0)
-    this.displayedVehicles.push(...displayedVehicles)
+    // this.displayedVehicles.splice(0)
+    // this.displayedVehicles.push(...displayedVehicles)
 
-    this.displayedDrivers.splice(0)
-    this.displayedDrivers.push(...displayedDrivers)
+    // this.displayedDrivers.splice(0)
+    // this.displayedDrivers.push(...displayedDrivers)
+    console.log("> displayedVehicles:", displayedVehicles)
+    this.displayedDrivers = [...displayedDrivers]
+    this.displayedVehicles = [ ...displayedVehicles]
 
     this.isDialogOpen = false
   }
@@ -502,8 +532,8 @@ export default class Availability extends Vue {
   initializeFilters(): void {
     this.filters = {
       vehicleTypes: this.vehicleTypes.map(({ id }) => id),
-      vehicles: this.vehicles.map(({ vehicleId }) => vehicleId),
-      drivers: this.drivers.map(({ userId }) => userId),
+      vehicles: deepClone(this.vehicles).map(({ vehicleId }) => vehicleId),
+      drivers: deepClone(this.drivers).map(({ userId }) => userId),
     }
   }
 
@@ -520,14 +550,20 @@ export default class Availability extends Vue {
 
   async getDrivers(): Promise<void> {
     const driversListRes = await driver.tableView({ pageSize: -1, page: 1 })
-    const mappedDrivers = driversListRes.data.resultList.map(d => ({...d, fullName: `${d.firstName} ${d.lastName}`}))
+    const mappedDrivers = driversListRes.data.resultList.map((d) => ({
+      ...d,
+      fullName: `${d.firstName} ${d.lastName}`,
+    }))
     this.drivers = deepClone(mappedDrivers)
     this.displayedDrivers = deepClone(mappedDrivers)
     this.initializeFilters()
   }
 
   async getVehicleTypes(): Promise<void> {
-    const res = await vehicleType.vehicleTypeTableView({ pageSize: -1, page: 1 })
+    const res = await vehicleType.vehicleTypeTableView({
+      pageSize: -1,
+      page: 1,
+    })
     this.vehicleTypes = res.data.resultList
     this.initializeFilters()
   }

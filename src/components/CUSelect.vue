@@ -8,12 +8,32 @@
       outlined
       :item-text="itemText"
       :item-value="itemValue"
+      :items="items"
       solo
       flat
       :value="value"
       append-icon="mdi-chevron-down"
     >
-      <!-- TODO: Add option for `All` slot to select all/none -->
+      <template v-if="displaySelectAll" #prepend-item>
+        <div
+          class="v-list-item primary--text v-list-item--link theme--light v-list-item--highlighted"
+          :class="{
+            'v-list-item--active': isAllToggled,
+          }"
+          @click="toggleAllFilters"
+        >
+          <v-simple-checkbox
+            hide-details
+            style="flex-basis: 13.5%"
+            color="primary"
+            class="margin-y-0 padding-a-0 w-full"
+            :value="isAllToggled"
+            :ripple="false"
+            @click="toggleAllFilters"
+          />
+          <span class="text-black">All</span>
+        </div>
+      </template>
       <template
         v-if="this.aggregateSelectionIndex"
         #selection="{ item, index }"
@@ -41,10 +61,16 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 
 @Component
 export default class CUSelect extends Vue {
+  @Prop({
+    required: false,
+    type: Boolean,
+  })
+  displaySelectAll: boolean
+
   // For selects with the `multiple` prop.
   // When selecting more than this index, display just (+# others)
   @Prop({
@@ -69,10 +95,26 @@ export default class CUSelect extends Vue {
 
   @Prop({
     required: false,
+  })
+  items!: any
+
+  @Prop({
+    required: false,
     default: () => [],
     type: [String, Array],
   })
   value!: string | unknown[]
+
+  isAllToggled = true
+
+  @Watch('value', { immediate: true })
+  onValueChange(newVal: unknown[]) {
+    if (newVal.length === this.items.length) {
+      this.isAllToggled = true
+    } else {
+      this.isAllToggled = false
+    }
+  }
 
   get listeners(): Record<string, unknown> {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -85,6 +127,21 @@ export default class CUSelect extends Vue {
         vm.$emit('change', event)
       },
     })
+  }
+
+  toggleAllFilters(): void {
+    if (!this.isAllToggled) {
+      if (this.itemValue) {
+        this.$emit(
+          'input',
+          this.items.map((item) => item[this.itemValue])
+        )
+      } else {
+        this.$emit('input', this.items)
+      }
+    } else {
+      this.$emit('input', [])
+    }
   }
 }
 </script>

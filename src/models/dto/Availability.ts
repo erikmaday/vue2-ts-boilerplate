@@ -17,6 +17,8 @@ export interface AvailabilityBlock {
   firstStop: string
   lastStop: string
   isMultiStop: boolean
+  vehiclesAreFullyAssigned: boolean
+  driversAreFullyAssigned: boolean
   top?: number
 }
 

@@ -1,10 +1,11 @@
+import { Reservation } from '@/models/dto'
 import {
   AvailabilityBlock,
   DriverBlockItem,
   VehicleBlockItem,
 } from '@/models/dto/Availability'
-import dayjs from 'dayjs';
-import Quadtree from '@timohausmann/quadtree-js';
+import { getReservationFirstStopCity, getReservationLastStopCity, getReservationLocalEndDatetime, getReservationLocalStartDatetime } from './reservation'
+
 export const sortAvailabilityBlocksByVehicle = (
   reservations: AvailabilityBlock[]
 ): Record<number, VehicleBlockItem> => {
@@ -24,7 +25,8 @@ export const sortAvailabilityBlocksByVehicle = (
         }
         map[va.vehicleId].blocks.push(res)
       }
-    } else {
+    }
+    if (!res.vehicleAssignments?.length || !res.vehiclesAreFullyAssigned) {
       if (!map[-1]) {
         map[-1] = {
           blocks: [],
@@ -43,7 +45,6 @@ export const sortAvailabilityBlocksByVehicle = (
 export const sortAvailabilityBlocksByDriver = (
   reservations: AvailabilityBlock[]
 ): Record<number, DriverBlockItem> => {
-  
   const reduceFn = (
     map: Record<number, DriverBlockItem>,
     res: AvailabilityBlock
@@ -63,14 +64,15 @@ export const sortAvailabilityBlocksByDriver = (
           }
         }
       }
-    } else {
+    }
+    if (!res.vehicleAssignments?.length || !res.driversAreFullyAssigned) {
       if (!map[-1]) {
         map[-1] = {
           blocks: [],
           driver: {
-            firstName: 'Unassigned', 
-            lastName: '', 
-            userId: -1
+            firstName: 'Unassigned',
+            lastName: '',
+            userId: -1,
           },
         }
       }
@@ -111,5 +113,31 @@ const getCoordinatesForBlocks = (blocks, startOfWeek, endOfWeek) => {
 
   }
 }
+
+export const convertReservationToAvailabilityBlock = (
+  reservation: Reservation
+): AvailabilityBlock => {
+  const startDate = getReservationLocalStartDatetime(reservation)
+  const endDate = getReservationLocalEndDatetime(reservation)
+  const firstStop = getReservationFirstStopCity(reservation)
+  const lastStop = getReservationLastStopCity(reservation)
+  const isMultiStop = reservation.trip.stops.length > 1
+  const driversAreFullyAssigned = reservation.assignedDriverPercentage >= 100
+  const vehiclesAreFullyAssigned = reservation.assignedVehiclePercentage >= 100
+  const availabilityReservation: AvailabilityBlock = {
+    reservationId: reservation.managedId,
+    vehicleAssignments: reservation.vehicleAssignments || [],
+    startDate,
+    endDate,
+    firstStop,
+    lastStop,
+    isMultiStop,
+    driversAreFullyAssigned,
+    vehiclesAreFullyAssigned,
+  }
+
+  return availabilityReservation
+}
+
 
 export const AVAILABILITY_ROW_HEIGHT = 60

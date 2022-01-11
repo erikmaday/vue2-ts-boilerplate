@@ -11,7 +11,7 @@
       <div
         class="cv-week-day-header"
         :class="{
-          'border-width-1 border-style-1 border-color-gray-border':
+          'border-width-1 border-style-1 border-color-gray-header':
             isHeaderBold(index.charAt(3)),
           'cv-week-day-header--bold': isHeaderBold(index.charAt(3)),
         }"
@@ -42,6 +42,8 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 import { CalendarView } from 'vue-simple-calendar'
 import dayjs from 'dayjs'
 import AvailabilityCalendarItem from '@/components/AvailabilityCalendarItem.vue'
+import { AvailabilityBlock } from '@/models/dto/Availability'
+import { DAYS_IN_WEEK } from '@/utils/time'
 @Component({
   components: { CalendarView, AvailabilityCalendarItem },
 })
@@ -55,7 +57,7 @@ export default class AvailabilityCalendar extends Vue {
   @Prop({
     required: true,
   })
-  items!: any
+  items!: AvailabilityBlock[]
 
   @Prop({
     required: false,
@@ -64,29 +66,25 @@ export default class AvailabilityCalendar extends Vue {
   })
   minHeight!: number
 
-  getDateOfHeaderDate(index: number): dayjs.Dayjs {
+  getDateOfHeaderDate(index: number | string): dayjs.Dayjs {
+    index = Number(index)
     if (index >= this.startingDayOfWeek) {
       return dayjs(this.showDate).add(index - this.startingDayOfWeek, 'day')
     } else {
-      return dayjs(this.showDate).add(Number(7 - this.startingDayOfWeek + Number(index)), 'day')
+      return dayjs(this.showDate).add(
+        Number(DAYS_IN_WEEK - this.startingDayOfWeek + index),
+        'day'
+      )
     }
   }
 
   getDayHeaderDate(index: number): number {
     return this.getDateOfHeaderDate(index).date()
-    // const firstDayWeekday = this.startingDayOfWeek
-    // if (index >= this.startingDayOfWeek) {
-    //   return dayjs(this.showDate).add(index - this.startingDayOfWeek, 'day').date()
-    // } else {
-    //   return dayjs(this.showDate).add(Number(7 - this.startingDayOfWeek + Number(index)), 'day').date()
-    // }
   }
 
-  isHeaderBold(index: number) {
-    
+  isHeaderBold(index: number): boolean {
     const headerDate = this.getDateOfHeaderDate(index)
-    if (headerDate.isSame(dayjs(this.showDate), 'day')) return true 
-    return false
+    return headerDate.isSame(dayjs(this.showDate), 'day')
   }
 
   get cssVars(): Record<string, string | number> {
@@ -97,7 +95,7 @@ export default class AvailabilityCalendar extends Vue {
     return cssVars
   }
 
-  get startingDayOfWeek() {
+  get startingDayOfWeek(): number {
     return dayjs(this.showDate).day()
   }
 
@@ -127,7 +125,7 @@ export default class AvailabilityCalendar extends Vue {
       margin-left: -1px;
       flex-basis: calc((100% / 7) + 1px);
       font-weight: bolder;
-      background: $gray-border;
+      background: $gray-header;
     }
   }
 }
@@ -137,7 +135,7 @@ export default class AvailabilityCalendar extends Vue {
 }
 
 ::v-deep .cv-day.bolded {
-  background: $gray-border;
+  background: $gray-header;
 }
 
 ::v-deep .cv-weeks {

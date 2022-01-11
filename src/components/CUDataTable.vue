@@ -179,6 +179,7 @@ export default class CUDataTable extends Vue {
   @Prop({
     type: String,
     required: false,
+    default: 'No data found',
   })
   noDataText!: string
 

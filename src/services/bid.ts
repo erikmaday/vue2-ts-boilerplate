@@ -1,8 +1,8 @@
 import { apiBaseUrl } from '@/utils/env'
-import { TableViewParameters } from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
 import { BidPayload, BidTableViewResult } from '@/models/dto/Bid'
+import { TableViewParameters } from '@/models/TableView'
 
 const httpService: HttpService = new HttpService()
 

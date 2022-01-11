@@ -1,6 +1,5 @@
 import { apiBaseUrl } from '@/utils/env'
 import {
-  TableViewParameters,
   ReservationTableViewResult,
   Reservation,
   ReservationDetailCommentPayload,
@@ -9,6 +8,7 @@ import {
 } from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
+import { TableViewParameters } from '@/models/TableView'
 
 const httpService: HttpService = new HttpService()
 
@@ -27,7 +27,7 @@ export default {
     }
     query = encodeURI(query)
     const host = apiBaseUrl()
-    const url = `https://${host}/tables/referrals?${query}`
+    const url = `https://${host}/tables/reservations?${query}`
     return httpService.get(url)
   },
   byId(id: number): Promise<AxiosResponse<ReservationDetail>> {

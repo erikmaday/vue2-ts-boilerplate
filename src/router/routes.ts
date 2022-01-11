@@ -164,11 +164,37 @@ export const routes: RouteConfig[] = [
               },
               {
                 path: 'rates',
-                name: 'rates',
                 component: () =>
                   import(
                     /* webpackChunkName: "company-rates" */ '@/views/Empty.vue'
                   ),
+                children: [
+                  {
+                    path: '', 
+                    name: 'rates', 
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                      ),
+                  },
+                  // Commenting out until these components are used in v2
+                  // {
+                  //   path: 'adjustments', 
+                  //   name: 'rates.adjustments', 
+                  //   component: () =>
+                  //     import(
+                  //       /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                  //     ),
+                  // },
+                  // {
+                  //   path: 'calculator', 
+                  //   name: 'rates.calculator', 
+                  //   component: () =>
+                  //     import(
+                  //       /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                  //     ),
+                  // },
+                ]
               },
               {
                 path: 'availability',
@@ -258,11 +284,19 @@ export const routes: RouteConfig[] = [
             component: () => import('@/views/Empty.vue'),
             children: [
               {
+                path: '',
+                name: 'bookings',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "bookings" */ '@/views/Bookings.vue'
+                  ),
+              },
+              {
                 path: ':id',
                 name: 'booking-detail',
                 component: () =>
                   import(
-                    /* webpackChunkName: "quote-detail" */ '@/views/BookingDetail.vue'
+                    /* webpackChunkName: "booking-detail" */ '@/views/BookingDetail.vue'
                   ),
               },
             ],

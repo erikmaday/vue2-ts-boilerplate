@@ -62,7 +62,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import BookingCard from '@/components/BookingCard.vue'
 import Pagination from '@/components/Pagination.vue'
 
-import { Reservation, TableViewFilterChip } from '@/models/dto'
+import { Reservation } from '@/models/dto'
 import reservation from '@/services/reservation'
 
 import { filter } from '@/utils/filter'
@@ -71,6 +71,7 @@ import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import reservationFilters from '@/data/reservationFilters'
+import { TableViewFilterChip } from '@/models/TableView'
 
 @Component({
   components: {

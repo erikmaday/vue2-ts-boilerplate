@@ -168,7 +168,7 @@ export default class CUDataTableFilters extends Vue {
   }
 
   isTabActive(tab: TableViewTab): boolean {
-    if (tab?.column?.sortProp) {
+    if (tab.column.sortProp) {
       return this.isColumnSortActive(tab.column)
     } else {
       return this.isColumnFilterActive(tab.column)

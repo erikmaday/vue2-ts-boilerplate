@@ -14,10 +14,12 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 export default class MarketplaceListBidPrice extends Vue {
   @Prop({ required: true }) readonly row: TableViewTrip
 
-  get bid(): Bid {
-    return this.row.bids.filter(
-      (bid) => bid.active && bid.companyId === auth.getUser.companyId
-    )?.[0]
+  get bid(): Bid | null {
+    return (
+      this.row.bids.filter(
+        (bid) => bid.active && bid.companyId === auth.getUser.companyId
+      )?.[0] || null
+    )
   }
 
   get isSoldOut(): boolean {

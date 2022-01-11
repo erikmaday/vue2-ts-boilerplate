@@ -467,6 +467,24 @@ $white-space-map: (
   true
 );
 
+// POINTER EVENTS
+$base-class: 'pointer-events';
+$pointer-events-map: (
+  'auto': auto,
+  'none': none,
+  'inherit': inherit,
+  'initial': initial,
+  'revert': revert,
+  'unset': unset,
+);
+@include map-to-helpers(
+  $base-class,
+  $pointer-events-map,
+  'pointer-events',
+  $pseudo-classes,
+  true
+);
+
 // TEXT OVERFLOW
 $base-class: 'text-overflow';
 $text-overflow-map: (

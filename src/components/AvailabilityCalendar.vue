@@ -26,14 +26,6 @@
         :classes="value.classes"
         :top="value.originalItem.top"
       />
-      <!-- <div
-        :class="`cv-item ` + value.classes.join(' ')"
-        class="h-80 background-accent padding-a-0"
-        :style="`border: none; top: ${value.originalItem.startingHeight}px`"
-      >
-        <p>{{ value.originalItem.reservationId }}</p>
-        <p>{{ `${value.originalItem.firstStop} > ${value.originalItem.lastStop}` }} </p> 
-      </div> -->
     </template>
   </CalendarView>
 </template>
@@ -88,7 +80,7 @@ export default class AvailabilityCalendar extends Vue {
   }
 
   get cssVars(): Record<string, string | number> {
-    const minHeight = Math.max(this.minHeight, 100)
+    const minHeight = Math.max(this.minHeight, 60)
     let cssVars = {
       '--min-calendar-height': `${minHeight}px`,
     }
@@ -99,55 +91,19 @@ export default class AvailabilityCalendar extends Vue {
     return dayjs(this.showDate).day()
   }
 
-  get dateClasses(): Record<string, any> {
+  // Set the background of the current displayed calendar day to 
+  // gray
+  get dateClasses(): Record<string, string> {
     const showDateISO = dayjs(this.showDate).format('YYYY-MM-DD')
     return {
-      [showDateISO]: 'bolded'
+      [showDateISO]: 'bolded',
     }
   }
-
- 
 }
 </script>
 <style lang="scss" scoped>
-.cv-wrapper {
-  .cv-week-day-header {
-    padding: 2px 8px;
-    flex-basis: calc(100% / 7);
-    border-right: 1px solid $gray-border;
-
-    p {
-      margin: 0;
-      font-size: 14px;
-    }
-
-    &--bold {
-      margin-left: -1px;
-      flex-basis: calc((100% / 7) + 1px);
-      font-weight: bolder;
-      background: $gray-header;
-    }
-  }
-}
-
-::v-deep .cv-day-number {
-  display: none;
-}
-
-::v-deep .cv-day.bolded {
-  background: $gray-header;
-}
-
 ::v-deep .cv-weeks {
   min-height: calc(var(--min-calendar-height) + 1px);
   overflow-y: hidden;
-}
-
-::v-deep .cv-item {
-  background: transparent;
-}
-
-::v-deep .cv-day {
-  border-color: $gray-border;
 }
 </style>

@@ -67,7 +67,6 @@
           :key="`${index}-driver-block`"
         >
           <div class="d-flex align-center">
-            <!-- TODO: Fix once imagePath is fixed -->
             <img
               :src="
                 getImageSrc(
@@ -116,7 +115,7 @@ export default class AvailabilityKeyList extends Vue {
   })
   isVehicleDisplay!: boolean
 
-  getImageSrc(imagePath: string | undefined, defaultImage: string) {
+  getImageSrc(imagePath: string | undefined, defaultImage: string): string {
     if (imagePath) {
       return `https://${baseUrl()}${imagePath}`
     } else {

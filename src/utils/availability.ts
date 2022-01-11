@@ -4,12 +4,16 @@ import {
   DriverBlockItem,
   VehicleBlockItem,
 } from '@/models/dto/Availability'
-import { getReservationFirstStopCity, getReservationLastStopCity, getReservationLocalEndDatetime, getReservationLocalStartDatetime } from './reservation'
+import {
+  getReservationFirstStopCity,
+  getReservationLastStopCity,
+  getReservationLocalEndDatetime,
+  getReservationLocalStartDatetime,
+} from './reservation'
 
 export const sortAvailabilityBlocksByVehicle = (
   reservations: AvailabilityBlock[]
 ): Record<number, VehicleBlockItem> => {
-  
   const reduceFn = (
     map: Record<number, VehicleBlockItem>,
     res: AvailabilityBlock
@@ -85,35 +89,6 @@ export const sortAvailabilityBlocksByDriver = (
   return result
 }
 
-const getCoordinatesForBlocks = (blocks, startOfWeek, endOfWeek) => {
-  // const boundingArea = new Box(0, 0, 1000, 1000)
-  // const quadtree = new QuadTree(boundingArea)
-
-
-  for (const block of blocks) {
-    // let startDate = dayjs(block.startDate)
-    // let endDate = dayjs(block.endDate)
-    // if (startDate.isBefore(startOfWeek, 'day')) {
-    //   startDate = startOfWeek
-    // }
-    // if (endDate.isAfter(endOfWeek, 'day')) {
-    //   endDate = endOfWeek
-    // }
-
-
-    // let attemptedRow = 0
-    // const startDay: number = startDate.day()
-    // const endDay: number = endDate.day()
-    // let width = startDay - endDay + 1
-
-    // const attemptedBox = new Box(startDay, attemptedRow, width, 1)
-
-    
-
-
-  }
-}
-
 export const convertReservationToAvailabilityBlock = (
   reservation: Reservation
 ): AvailabilityBlock => {
@@ -138,6 +113,5 @@ export const convertReservationToAvailabilityBlock = (
 
   return availabilityReservation
 }
-
 
 export const AVAILABILITY_ROW_HEIGHT = 60

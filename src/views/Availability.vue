@@ -126,9 +126,7 @@ import dayjs from 'dayjs'
 import {
   AvailabilityGetRequest,
   AvailabilityBlock,
-  VehicleBlockItem,
   VehicleKeyRow,
-  UnassignedVehicle,
   DriverKeyRow,
 } from '@/models/dto/Availability'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar.vue'
@@ -176,7 +174,10 @@ export default class Availability extends Vue {
     drivers: [],
   }
 
-  updateDatePickerDate(date) {
+  // Accepts a date in the format of `MM/DD/YYYY`
+  // and sets the currently displayed date on the
+  // calendar to this date
+  updateDatePickerDate(date: string): void {
     this.calendarDisplayDate = dayjs(date, 'MM/DD/YYYY')
   }
 
@@ -192,9 +193,7 @@ export default class Availability extends Vue {
     return this.calendarDisplayDate.format()
   }
 
-  // Date of the first day of the week
   get startOfWeek(): dayjs.Dayjs {
-    // return this.calendarDisplayDate.startOf('week')
     return this.calendarDisplayDate
   }
 
@@ -233,7 +232,7 @@ export default class Availability extends Vue {
 
   // Rows for the vehicle sidebar + grid lines
   // Get an array of vehicle objects + how tall that row should be
-  get vehicleKeyRows(): any {
+  get vehicleKeyRows(): VehicleKeyRow[] {
     const vehicles: Vehicle[] = deepClone(this.displayedVehicles)
     const sortedByVehicle = sortAvailabilityBlocksByVehicle(
       this.displayedReservations
@@ -281,7 +280,10 @@ export default class Availability extends Vue {
     return vehicleKeyRows
   }
 
-  get driverKeyRows(): any {
+  // Computed for the driver sidebar
+  // Returns a list of driver objects + how tall that row 
+  // should be
+  get driverKeyRows(): DriverKeyRow[] {
     const drivers: Driver[] = deepClone(this.displayedDrivers)
     const sortedByDriver = sortAvailabilityBlocksByDriver(
       this.displayedReservations
@@ -328,6 +330,8 @@ export default class Availability extends Vue {
     return driverKeyRows
   }
 
+  // For each displayed calendar item, find its starting height
+  // on the calendar based on the vehicleKeyRows
   get calendarItemsSortedByVehicles(): AvailabilityBlock[] {
     let calendarItems = []
 
@@ -342,7 +346,7 @@ export default class Availability extends Vue {
     )
 
     Object.entries(sortedByVehicle)
-      .filter(([vehicleId, vehicleInfo]) => {
+      .filter(([vehicleId]) => {
         if (vehicleIdToStartingHeight[vehicleId] != null) {
           return true
         }
@@ -368,6 +372,8 @@ export default class Availability extends Vue {
     return calendarItems
   }
 
+  // For each displayed calendar item, find its starting height
+  // on the calendar based on the driverKeyRows
   get calendarItemsSortedByDrivers(): AvailabilityBlock[] {
     let calendarItems = []
 
@@ -402,9 +408,8 @@ export default class Availability extends Vue {
 
     return calendarItems
   }
-
-  // Get the starting height of the last row, and add the height of that row
-  // to get the min heihgt the calendar should show.
+  // Minimum height of the entire calendar
+  // Get the starting height of the last row, and add its height
   get minHeight(): number {
     let lastRow
     if (this.isVehicleDisplay) {
@@ -416,8 +421,11 @@ export default class Availability extends Vue {
     return distanceFromTop + rowHeight
   }
 
+  // When the displayed date changes, check if we need to
+  // load more reservations by checking the date intervals
+  // we've already loaded in our interval tree
   @Watch('calendarDisplayDate')
-  onCalendarDisplayDateChange(newDate: dayjs.Dayjs) {
+  onCalendarDisplayDateChange(newDate: dayjs.Dayjs): void {
     this.datePickerDate = newDate.format('MM/DD/YYYY')
     const startDate = this.startOfWeek.valueOf()
     const endDate = this.endOfWeek.valueOf()
@@ -442,6 +450,10 @@ export default class Availability extends Vue {
     this.calendarDisplayDate = dayjs()
   }
 
+  shiftCalendarDisplayDate(numWeeks: number): void {
+    this.calendarDisplayDate = this.calendarDisplayDate.add(numWeeks, 'week')
+  }
+
   async mounted(): Promise<void> {
     this.getDrivers()
     this.getVehicles()
@@ -453,6 +465,9 @@ export default class Availability extends Vue {
     )
   }
 
+  // Load reservations for dates, and add them to the object that stores 
+  // reservations by id (prevents duplicates).
+  // Add the loaded dates to the interval tree
   async getDispatchDataForDates(
     startDatetime: string,
     endDatetime: string
@@ -479,7 +494,6 @@ export default class Availability extends Vue {
   }
 
   applyFilters(): void {
-    console.log('> this.vehicles:', deepClone(this.vehicles))
     let displayedVehicles = deepClone(this.vehicles)
     let displayedDrivers = deepClone(this.drivers)
 
@@ -501,15 +515,6 @@ export default class Availability extends Vue {
         return this.filters.drivers.includes(driver.userId)
       })
     }
-    // For some reason, these properties aren't reactive when updating the whole array with
-    // any iteration of this.displayedVehicles = displayedVehicles
-    // Clear both arrays, then push all elements
-    // this.displayedVehicles.splice(0)
-    // this.displayedVehicles.push(...displayedVehicles)
-
-    // this.displayedDrivers.splice(0)
-    // this.displayedDrivers.push(...displayedDrivers)
-    console.log('> displayedVehicles:', displayedVehicles)
     this.displayedDrivers = [...displayedDrivers]
     this.displayedVehicles = [...displayedVehicles]
 
@@ -530,10 +535,6 @@ export default class Availability extends Vue {
       vehicles: deepClone(this.vehicles).map(({ vehicleId }) => vehicleId),
       drivers: deepClone(this.drivers).map(({ userId }) => userId),
     }
-  }
-
-  shiftCalendarDisplayDate(numWeeks: number): void {
-    this.calendarDisplayDate = this.calendarDisplayDate.add(numWeeks, 'week')
   }
 
   async getVehicles(): Promise<void> {

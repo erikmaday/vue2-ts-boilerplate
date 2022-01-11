@@ -1,5 +1,5 @@
 <template>
-  <div class="position-absolute h-full w-full z-4" style="pointer-events: none">
+  <div class="position-absolute h-full w-full z-4 pointer-events-none">
     <div
       style="height: 37px"
       class="top-bar border-b-1 border-x-0 border-t-0 border-gray-mid-light border-solid"

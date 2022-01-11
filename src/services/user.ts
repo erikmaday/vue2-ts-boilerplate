@@ -75,7 +75,7 @@ export default {
     const url = `https://${apiBaseUrl()}/user/validate`
     return httpService.post(url, { userHash: hash })
   },
-  create(user: UserDetail): Promise<AxiosResponse<number>> {
+  create(user: UserDetail): Promise<AxiosResponse<UserResult>> {
     return httpService.post(`https://${apiBaseUrl()}/user`, user)
   },
   checkIfEmailExists(

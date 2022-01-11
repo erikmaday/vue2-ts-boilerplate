@@ -593,7 +593,7 @@ export default class UsersDetail extends Vue {
       return newDriverResponse.data.driver.userId || 0
     } else {
       const newUserResponse = await user.create(this.currentUser as UserDetail)
-      return newUserResponse.data
+      return newUserResponse.data.user.userId
     }
   }
 

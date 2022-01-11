@@ -27,6 +27,11 @@ export default {
   byId(userId: number): Promise<AxiosResponse<UserDetail>> {
     return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
   },
+  byHash(userHash: string): Promise<AxiosResponse<UserResult>> {
+    return httpService.post(`https://${apiBaseUrl()}/user/getUserByHash`, {
+      userHash,
+    })
+  },
   delete(userId: number): Promise<AxiosResponse> {
     return httpService.delete(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
   },

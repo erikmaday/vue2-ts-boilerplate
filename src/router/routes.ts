@@ -344,27 +344,8 @@ export const routes: RouteConfig[] = [
     ],
   },
 ]
-// routes.beforeEach((routeTo, routeFrom, next) => {
-//   baseUrl()
 
-//   store.dispatch('app/closeDialog')
-
-//   function redirectToLogin() {
-//     next({
-//       name: 'login',
-//       query: {
-//         redirectFrom: routeTo.fullPath,
-//       },
-//     })
-//   }
-
-//   const authRequired = !routeTo.matched.some((route) => route.meta.publicRoute)
-
-//   if (!authRequired) {
-//     next()
-//     return
-//   }
-
+// routes.beforeEach((routeTo, routeFrom, next) => { 
 //   if (store.getters['auth/loggedIn']) {
 //     store.dispatch('auth/validate').then((validUser) => {
 //       if (validUser) {
@@ -401,3 +382,7 @@ export const routes: RouteConfig[] = [
 //             })
 //           }
 //         }
+//       }
+//     })
+//   }
+// })

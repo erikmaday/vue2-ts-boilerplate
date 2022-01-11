@@ -29,6 +29,11 @@ router.beforeEach(async (to, from, next) => {
   if (requiresAuth && !auth.getIsTokenSet) {
     next({ name: 'login' })
   }
+  if (auth.getIsTokenSet && auth.getIsDriverOnly) {
+    next({
+      name: 'download-app',
+    })
+  }
   next()
 })
 

@@ -28,7 +28,7 @@
       item-key="garageId"
       collection="garages"
       :fetch-method="tableView"
-      :noDataText="'No matching garages found'"
+      :no-data-text="'No matching garages found'"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
     />
   </div>

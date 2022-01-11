@@ -3,7 +3,7 @@
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
-      :noDataText="'No matching bookings found'"
+      :no-data-text="'No matching bookings found'"
       item-key="vehicleId"
       collection="vehicles"
       :fetch-method="tableView"

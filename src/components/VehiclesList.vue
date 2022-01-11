@@ -28,8 +28,8 @@
       item-key="vehicleId"
       collection="vehicles"
       :fetch-method="tableView"
-      :no-data-text="'No matching vehicles found'"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
+      :no-data-text="'No matching vehicles found'"
     />
   </div>
 </template>

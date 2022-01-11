@@ -28,8 +28,8 @@
       item-key="userId"
       collection="users"
       :fetch-method="usersTableView"
-      :no-data-text="'No matching users found'"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
+      :no-data-text="'No matching users found'"
     />
   </div>
 </template>

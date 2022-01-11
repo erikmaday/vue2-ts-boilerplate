@@ -3,13 +3,13 @@
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
-      :no-data-text="'No matching bookings found'"
       item-key="vehicleId"
       collection="vehicles"
       :fetch-method="tableView"
       :initial-filters="initialFilters"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :tab-filters="tabFilters"
+      :no-data-text="'No matching bookings found'"
     >
       <template slot="filter-row">
         <v-spacer />

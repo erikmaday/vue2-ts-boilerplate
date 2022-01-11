@@ -7,7 +7,7 @@
       :filters="filters"
       :sorts="sorts"
       :filter-list.sync="filterList"
-      :tab-filters="tabFilters"
+      :tabs="tabs"
       :initial-filters="initialFilters"
       @initial-filters-set="initialFiltersSet = true"
       @update:sorts="$emit('update:sorts', $event)"
@@ -65,7 +65,7 @@ export default class CUCollectionTable extends Vue {
   @Prop({ required: false, default: () => [] })
   initialFilters!: TableViewFilter[]
   @Prop({ required: false, default: () => [] })
-  tabFilters!: TableViewTab[]
+  tabs!: TableViewTab[]
   @Prop({ type: Boolean, required: false, default: false })
   isFilterDialogOpen: boolean
 

@@ -7,7 +7,7 @@
       collection="vehicles"
       :initial-filters="initialFilters"
       :fetch-method="tableView"
-      :tab-filters="tabFilters"
+      :tabs="tabs"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :key="`marketplace-list`"
     >
@@ -116,7 +116,7 @@ export default class Marketplace extends Vue {
     },
   ]
 
-  tabFilters: TableViewTab[] = [
+  tabs: TableViewTab[] = [
     {
       column: {
         _t_id: 'e6b676ab-b001-4cb1-a825-e905058a0616',

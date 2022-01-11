@@ -3,9 +3,9 @@
     <v-row class="align-center margin-b-2">
       <v-col cols="auto">
         <span
-          v-for="(tab, tabIndex) in tabFilters"
-          :id="`data-table-table-filter-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
-          :key="`data-table-table-filter-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
+          v-for="(tab, tabIndex) in tabs"
+          :id="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
+          :key="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
           class="
             margin-x-3
             padding-y-1
@@ -19,7 +19,7 @@
             'cursor-pointer': !tab.isLocked,
             'text-gray-mid-light cursor-default': tab.isLocked,
           }"
-          @click="handleTabFilterClick(tab)"
+          @click="handleTabClick(tab)"
         >
           {{ tab.column.text }}
           <CUIcon
@@ -133,7 +133,7 @@ export default class CUDataTableFilters extends Vue {
   @PropSync('filterList', { type: Array, default: () => [] })
   tableFilterList!: any[]
   @Prop({ required: false, default: () => [] })
-  tabFilters!: TableViewTab[]
+  tabs!: TableViewTab[]
 
   @Watch('isOpen')
   isDialogOpenChanged(value: boolean): void {
@@ -151,9 +151,9 @@ export default class CUDataTableFilters extends Vue {
   handleInitialFiltersChanged(): void {
     this.setInitialFilters()
   }
-  @Watch('tabFilters', { immediate: true })
-  handleTabFiltersChanged(): void {
-    this.selectDefaultTabFilter()
+  @Watch('tabs', { immediate: true })
+  handleTabsChanged(): void {
+    this.selectDefaultTab()
   }
 
   isOpen = false
@@ -162,7 +162,6 @@ export default class CUDataTableFilters extends Vue {
     direction: undefined,
   }
   debounce: any = null
-  selectedFilter: string = undefined
 
   mounted(): void {
     this.initiateDefaultSort()
@@ -216,7 +215,6 @@ export default class CUDataTableFilters extends Vue {
     column: DataTableColumn,
     hideOnFilterBar = false
   ): Promise<void> {
-    this.selectedFilter = column._t_id
     const doesFilterAlreadyExist = this.filters.find({ column })
     if (!doesFilterAlreadyExist) {
       const newFilter = { column }
@@ -298,58 +296,58 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
-  selectDefaultTabFilter(): void {
-    const defaultFilter = this.tabFilters.find((filter) => filter.default)
-    if (defaultFilter) {
-      this.handleTabFilterClick(defaultFilter)
+  selectDefaultTab(): void {
+    const defaultTab = this.tabs.find((tab) => tab.default)
+    if (defaultTab) {
+      this.handleTabClick(defaultTab)
     }
   }
 
-  handleTabFilterClick(tabFilter: TableViewTab): void {
-    if (tabFilter.isLocked) {
+  handleTabClick(tab: TableViewTab): void {
+    if (tab.isLocked) {
       return
     }
-    if (tabFilter.column.sortProp) {
-      if (this.isColumnSortActive(tabFilter.column)) {
-        const showAllTab = this.tabFilters.find((filter) => filter.isShowAll)
+    if (tab.column.sortProp) {
+      if (this.isColumnSortActive(tab.column)) {
+        const showAllTab = this.tabs.find((t) => t.isShowAll)
         if (showAllTab) {
           this.setTabFilter(showAllTab)
         }
         this.initiateDefaultSort()
       } else {
-        this.unsetAllTabFilters()
-        this.initSort(tabFilter.column)
+        this.unsetAllTabs()
+        this.initSort(tab.column)
       }
 
       return
     }
 
-    if (this.isColumnFilterActive(tabFilter.column)) {
-      const showAllTab = this.tabFilters.find((filter) => filter.isShowAll)
-      if (showAllTab && showAllTab.column._t_id !== tabFilter.column._t_id) {
+    if (this.isColumnFilterActive(tab.column)) {
+      const showAllTab = this.tabs.find((t) => t.isShowAll)
+      if (showAllTab && showAllTab.column._t_id !== tab.column._t_id) {
         this.setTabFilter(showAllTab)
       }
     } else {
-      this.setTabFilter(tabFilter)
+      this.setTabFilter(tab)
     }
   }
 
-  setTabFilter(tabFilter: TableViewTab): void {
-    this.unsetAllTabFilters()
-    this.setFilter(tabFilter.column)
-    this.updateFilterCriteria(tabFilter.value, tabFilter.column)
+  setTabFilter(tab: TableViewTab): void {
+    this.unsetAllTabs()
+    this.setFilter(tab.column)
+    this.updateFilterCriteria(tab.value, tab.column)
   }
 
-  unsetAllTabFilters(): void {
-    for (const filter of this.tabFilters) {
-      if (filter.column.sortProp) {
-        if (this.isColumnSortActive(filter.column)) {
+  unsetAllTabs(): void {
+    for (const tab of this.tabs) {
+      if (tab.column.sortProp) {
+        if (this.isColumnSortActive(tab.column)) {
           this.sorts.remove()
           this.currentSort = {}
           this.$emit('update:sorts', this.sorts)
         }
-      } else if (this.isColumnFilterActive(filter.column)) {
-        this.unsetFilter(filter.column)
+      } else if (this.isColumnFilterActive(tab.column)) {
+        this.unsetFilter(tab.column)
       }
     }
   }

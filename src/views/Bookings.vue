@@ -8,7 +8,7 @@
       :fetch-method="tableView"
       :initial-filters="initialFilters"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
-      :tab-filters="tabFilters"
+      :tabs="tabs"
       :key="`bookings-list`"
     >
       <template slot="filter-row">
@@ -133,7 +133,7 @@ export default class Bookings extends Vue {
     },
   ]
 
-  tabFilters: TableViewTab[] = [
+  tabs: TableViewTab[] = [
     {
       column: {
         _t_id: 'e6b676ab-b001-4cb1-a825-e905058a0616',

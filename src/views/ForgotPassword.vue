@@ -41,7 +41,7 @@
                     >
                       arrow_left
                     </CUIcon>
-                    <router-link to="/login" class="padding-l-2">
+                    <router-link :to="{ name: 'login' }" class="padding-l-2">
                       Back to Login
                     </router-link>
                   </v-row>

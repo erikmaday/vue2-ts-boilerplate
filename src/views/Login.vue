@@ -30,7 +30,7 @@
                 <label for="password">Password</label>
                 <v-spacer />
                 <router-link
-                  to="/forgotPassword"
+                  :to="{ name: 'forgot-password' }"
                   class="btn-forgot-password text-small font-14"
                   right
                   tabindex="3"

@@ -160,8 +160,8 @@ export default class SetPassword extends Vue {
 
   async created(): Promise<void> {
     try {
-      let res = await user.validateUser(this.hash)
-      this.email = res.data.email
+      let res = await user.byHash(this.hash)
+      this.email = res.data.user.email
     } catch (e) {
       console.log(e)
     }

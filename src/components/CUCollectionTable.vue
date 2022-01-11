@@ -64,7 +64,7 @@ export default class CUCollectionTable extends Vue {
   tabFilters!: TableViewFilter[]
   @Prop({ type: Boolean, required: false, default: false })
   isFilterDialogOpen: boolean
-  @Prop({ type: String, required: false, })
+  @Prop({ type: String, required: false, default: 'Nothing found here' })
   noDataText!: string
 
   items: unknown[] = []

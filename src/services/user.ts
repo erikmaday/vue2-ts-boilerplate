@@ -66,6 +66,11 @@ export default {
     const url = `https://${apiBaseUrl()}/password/reset`
     return httpService.post(url, { hash, password })
   },
+  forgotPassword(email: string): Promise<AxiosResponse> {
+    return httpService.post(`https://${apiBaseUrl()}/user/forgotPassword/a3`, {
+      email,
+    })
+  },
   validateUser(hash: string): Promise<AxiosResponse<UserDetail>> {
     const url = `https://${apiBaseUrl()}/user/validate`
     return httpService.post(url, { userHash: hash })

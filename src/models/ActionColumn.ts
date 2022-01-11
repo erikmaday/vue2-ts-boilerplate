@@ -1,14 +1,14 @@
-import { Location } from 'vue-router'
+import { RawLocation } from 'vue-router'
 export interface ActionColumn {
   displayText: string
   key: string
   icon: string
   color?: string
+  textClasses?: string
   ariaLabel?: string
   confirmModal?: boolean
   confirmModalText?: string
   action?: any
   isDetail?: boolean
-  detailRoute?: (row: any) => Location
-  hide?: boolean
+  detailRoute?: (row: any) => RawLocation
 }

@@ -81,7 +81,13 @@
 import { Component, Inject, Prop, Vue } from 'vue-property-decorator'
 
 import { ColoredMessage } from '@/models/ColoredMessage'
-import { RequiredVehicle, Stop, TableViewTrip, TableViewTripStop, Trip } from '@/models/dto'
+import {
+  RequiredVehicle,
+  Stop,
+  TableViewTrip,
+  TableViewTripStop,
+  Trip,
+} from '@/models/dto'
 import Pagination from '@/components/Pagination.vue'
 
 import { currencyFilter, pluralize } from '@/utils/string'
@@ -133,7 +139,7 @@ export default class MarketplaceCard extends Vue {
 
   get actionMessage(): ColoredMessage {
     const now = (this as any).$dayjs.utc()
-    const expiration = (this as any).$dayjs(this.trip.biddingEndDate)
+    const expiration = (this as any).$dayjs(this.activeTrip.biddingEndDate)
     const diff = timeDifferenceAsObject(now, expiration)
 
     return {

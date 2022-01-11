@@ -28,15 +28,8 @@
       item-key="userId"
       collection="users"
       :fetch-method="usersTableView"
-      :filters="filters"
-      :sorts="sorts"
       :noDataText="'No Users Available'"
-    />
-    <CUDataTableFilters
-      v-model="isFilterDialogOpen"
-      :columns="columns"
-      :filters.sync="filters"
-      :sorts.sync="sorts"
+      :is-filter-dialog-open.sync="isFilterDialogOpen"
     />
   </div>
 </template>
@@ -51,17 +44,13 @@ import { UserDetail } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { AxiosResponse } from 'axios'
-import { Location } from 'vue-router'
-import { sort } from '@/utils/sort'
-import { filter } from '@/utils/filter'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: { CUDataTable, CUCollectionTable, CUDataTableFilters },
 })
 export default class Users extends Vue {
   isFilterDialogOpen = false
-  sorts: any = sort()
-  filters: any = filter()
 
   columns: DataTableColumn[] = [
     {
@@ -141,7 +130,7 @@ export default class Users extends Vue {
       confirmModal: false,
       ariaLabel: 'View User Details',
       isDetail: true,
-      detailRoute: (row: UserDetail): Location => {
+      detailRoute: (row: UserDetail): RawLocation => {
         return {
           name: 'users.view',
           params: { id: row?.userId.toString() },

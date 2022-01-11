@@ -6,4 +6,5 @@ export interface Driver {
   name?: string
   phoneNumber: number
   userId: number
+  imagePath?: string
 }

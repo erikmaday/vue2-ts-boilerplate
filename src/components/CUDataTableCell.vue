@@ -24,7 +24,7 @@
         v-on="$listeners"
       />
     </template>
-    <template v-if="column.type === 'actions' && !row.isEditable">
+    <template v-else-if="column.type === 'actions' && !row.isEditable">
       <CUDataTableActionColumn
         :actions="actions"
         :key="`action-column-${rowIndex}`"
@@ -56,7 +56,7 @@
       />
     </template>
     <template
-      v-if="column.type === 'add-new-select' && (row.isNewRow || isMobile)"
+      v-else-if="column.type === 'add-new-select' && (row.isNewRow || isMobile)"
     >
       <CUSelect
         hide-details

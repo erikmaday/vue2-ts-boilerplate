@@ -28,15 +28,8 @@
       item-key="garageId"
       collection="garages"
       :fetch-method="tableView"
-      :filters="filters"
-      :sorts="sorts"
       :noDataText="'No Garages Available'"
-    />
-    <CUDataTableFilters
-      v-model="isFilterDialogOpen"
-      :columns="columns"
-      :filters.sync="filters"
-      :sorts.sync="sorts"
+      :is-filter-dialog-open.sync="isFilterDialogOpen"
     />
   </div>
 </template>
@@ -49,17 +42,15 @@ import garage from '@/services/garage'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Garage } from '@/models/dto/Garage'
-import { Location } from 'vue-router'
-import { sort } from '@/utils/sort'
-import { filter } from '@/utils/filter'
+import { RawLocation } from 'vue-router'
+import { AxiosResponse } from 'axios'
+import { ApiResult } from '@/models/dto'
 
 @Component({
   components: { CUCollectionTable, CUDataTableFilters },
 })
 export default class GaragesList extends Vue {
   isFilterDialogOpen = false
-  sorts: any = sort()
-  filters: any = filter()
 
   columns: DataTableColumn[] = [
     {
@@ -106,12 +97,6 @@ export default class GaragesList extends Vue {
       sortProp: 'noOfVehicles',
     },
     {
-      _t_id: 'ddd327a2-6e44-4464-af45-c377538786a2',
-      text: 'Details',
-      value: 'details',
-      type: 'details',
-    },
-    {
       _t_id: '86f7f500-a9b1-4df1-bff8-f43bff32fb2c',
       text: 'Actions',
       value: 'actions',
@@ -143,7 +128,7 @@ export default class GaragesList extends Vue {
       confirmModal: true,
       ariaLabel: 'Delete Garage',
       confirmModalText: 'Are you sure you want to delete this garage?',
-      action: async (row: Garage) => {
+      action: async (row: Garage): Promise<AxiosResponse<ApiResult>> => {
         return garage.delete(row.garageId)
       },
     },
@@ -155,7 +140,7 @@ export default class GaragesList extends Vue {
       confirmModal: false,
       ariaLabel: 'View User Details',
       isDetail: true,
-      detailRoute: (row: Garage): Location => {
+      detailRoute: (row: Garage): RawLocation => {
         return {
           name: 'garages.view',
           params: { id: String(row?.garageId) },

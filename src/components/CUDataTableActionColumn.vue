@@ -1,9 +1,16 @@
 <template>
   <div class="align-center d-flex flex-grow-1">
     <template v-if="detailAction">
-      <a v-if="!isMobile" class="font-medium font-14" @click="pushDetailRoute">
+      <v-btn
+        v-if="!isMobile"
+        text
+        x-small
+        color="primary"
+        class="font-medium font-14"
+        @click="pushDetailRoute"
+      >
         Details
-      </a>
+      </v-btn>
       <v-btn
         v-else
         color="primary"
@@ -14,7 +21,7 @@
         Details
       </v-btn>
     </template>
-    <v-menu v-if="!isMobile" offset-x left>
+    <v-menu v-if="!isMobile && !isActionsListEmpty" offset-x left>
       <template v-slot:activator="{ on }">
         <CUIcon
           width="20px"
@@ -46,7 +53,12 @@
           >
             {{ action.icon }}
           </CUIcon>
-          <span class="ml-2">{{ action.displayText }}</span>
+          <span
+            class="ml-2"
+            :class="action.textClasses ? action.textClasses : ''"
+          >
+            {{ action.displayText }}
+          </span>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -157,6 +169,10 @@ export default class CUDataTableActionColumn extends Vue {
 
   get detailAction(): ActionColumn | undefined {
     return this.actions.find((action) => action.isDetail)
+  }
+
+  get isActionsListEmpty(): boolean {
+    return this.actions.filter((action) => !action.isDetail).length < 1
   }
 
   pushDetailRoute(): void {

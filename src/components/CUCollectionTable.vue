@@ -7,6 +7,7 @@
     :item-key="itemKey"
     :loading="loading"
     :server-items-length="serverItemsLength"
+    :no-data-text="noDataText"
     @update:options="load"
     @pagination="options = $event"
     @refresh="load"
@@ -50,6 +51,12 @@ export default class CUCollectionTable extends Vue {
     required: false,
   })
   itemKey!: string
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  noDataText!: string
 
   @Prop(Function)
   fetchMethod!: any

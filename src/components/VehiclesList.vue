@@ -21,6 +21,7 @@
       :fetch-method="tableView"
       :filters="filters"
       :sorts="sorts"
+      :noDataText="'No Vehicles Available'"
     />
     <CUDataTableFilters
       v-model="isFilterDialogOpen"

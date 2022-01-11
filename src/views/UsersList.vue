@@ -30,6 +30,7 @@
       :fetch-method="usersTableView"
       :filters="filters"
       :sorts="sorts"
+      :noDataText="'No Users Available'"
     />
     <CUDataTableFilters
       v-model="isFilterDialogOpen"

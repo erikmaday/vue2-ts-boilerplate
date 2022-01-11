@@ -30,6 +30,7 @@
       :fetch-method="tableView"
       :filters="filters"
       :sorts="sorts"
+      :noDataText="'No Garages Available'"
     />
     <CUDataTableFilters
       v-model="isFilterDialogOpen"

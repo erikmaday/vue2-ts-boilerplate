@@ -29,15 +29,14 @@
               <v-row no-gutters>
                 <label for="password">Password</label>
                 <v-spacer />
-                <a
-                  id="login-forgot-password"
-                  :href="'forgotPassword'"
+                <router-link
+                  to="/forgotPassword"
                   class="btn-forgot-password text-small font-14"
                   right
                   tabindex="3"
                 >
                   Forgot?
-                </a>
+                </router-link>
               </v-row>
               <CUTextField
                 type="password"

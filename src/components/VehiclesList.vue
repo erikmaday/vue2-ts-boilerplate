@@ -29,6 +29,7 @@
       collection="vehicles"
       :fetch-method="tableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
+      no-data-text="No matching vehicles found"
     />
   </div>
 </template>

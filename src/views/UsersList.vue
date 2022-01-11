@@ -29,6 +29,7 @@
       collection="users"
       :fetch-method="usersTableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
+      no-data-text="No matching users found"
     />
   </div>
 </template>

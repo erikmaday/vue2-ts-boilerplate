@@ -18,6 +18,7 @@
       :loader-height="2"
       v-bind="$attrs"
       :options="options"
+      :no-data-text="noDataText"
       @pagination="$emit('pagination', $event)"
       @update:options="$emit('update:options', $event)"
     >
@@ -174,6 +175,13 @@ export default class CUDataTable extends Vue {
     required: false,
   })
   displayActionsOnMobile!: boolean
+
+  @Prop({
+    type: String,
+    required: false,
+    default: 'No data found',
+  })
+  noDataText!: string
 
   get isMobile(): boolean {
     switch (this.mobileViewOnBreakpoint) {

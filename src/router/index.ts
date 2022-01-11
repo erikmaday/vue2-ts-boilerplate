@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import VueMeta from 'vue-meta'
 import { routes } from './routes'
 import modules from '@/store/modules'
+import deepClone from '@/utils/deepClone'
 
 Vue.use(VueRouter)
 Vue.use(VueMeta)
@@ -26,15 +27,15 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   modules.app.saveLastRoute(from)
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
-  if (requiresAuth && !auth.getIsTokenSet) {
+  if (!requiresAuth) {
+    next()
+  } else if (!auth.getIsTokenSet) {
     next({ name: 'login' })
+  } else if (auth.getIsDriverOnly) {
+    next({ name: 'download-app' })
+  } else {
+    next()
   }
-  if (auth.getIsTokenSet && auth.getIsDriverOnly) {
-    next({
-      name: 'download-app',
-    })
-  }
-  next()
 })
 
 export default router

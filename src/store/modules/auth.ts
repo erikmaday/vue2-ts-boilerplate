@@ -15,7 +15,7 @@ class AuthModule extends VuexModule {
   user: UserDetail | null = load('user') || null
   token: string | null = load('token') || null
   isTokenSet = !!load('token')
-  roles: Role[] | null = load('roles') || null
+  roles: Role[] = load('roles') || []
   isDriverOnly = false
 
   // getters
@@ -90,29 +90,7 @@ class AuthModule extends VuexModule {
     if (response.data.successful) {
       save('roles', response.data.userProfile.roles)
       this.roles = response.data.userProfile.roles
-
-      if (this.roles && this.roles.length) {
-        const isDriver = this.roles.some(
-          (role) => role.roleName === 'is_driver'
-        )
-        const isAdmin = this.roles.some((role) =>
-          [
-            'is_free_admin',
-            'is_paid_admin',
-            'is_broker_admin',
-            'is_admin_admin',
-          ].includes(role.roleName)
-        )
-        const isUser = this.roles.some((role) =>
-          [
-            'is_free_user',
-            'is_paid_user',
-            'is_broker_user',
-            'is_report_admin',
-          ].includes(role.roleName)
-        )
-        this.isDriverOnly = !isAdmin && !isUser && isDriver
-      }
+      this.isDriverOnly = checkIsDriverOnly(response.data.userProfile.roles)
     }
   }
 
@@ -123,8 +101,6 @@ class AuthModule extends VuexModule {
     }
 
     const response = await user.byId(this.userId)
-    console.log(response)
-
     // Seems like we don't have a `successful` property to check on this response?
     if (response.status === 200) {
       this.user = response.data
@@ -134,9 +110,34 @@ class AuthModule extends VuexModule {
 }
 
 //private helpers
-function registerBearerToken(token: string): void {
+const registerBearerToken = (token: string): void => {
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 }
+
+const checkIsDriverOnly = (roles: Role[]): boolean => {
+  if (roles && roles.length) {
+    const isDriver = roles.some((role) => role.roleName === 'is_driver')
+    const isAdmin = roles.some((role) =>
+      [
+        'is_free_admin',
+        'is_paid_admin',
+        'is_broker_admin',
+        'is_admin_admin',
+      ].includes(role.roleName)
+    )
+    const isUser = roles.some((role) =>
+      [
+        'is_free_user',
+        'is_paid_user',
+        'is_broker_user',
+        'is_report_admin',
+      ].includes(role.roleName)
+    )
+    return !isAdmin && !isUser && isDriver
+  }
+  return false
+}
+
 // register module
 import store from '@/store/index'
 export default new AuthModule({ store, name: 'auth' })

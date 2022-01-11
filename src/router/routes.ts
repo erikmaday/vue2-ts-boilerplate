@@ -7,14 +7,6 @@ export const routes: RouteConfig[] = [
     component: () => import('@/views/Empty.vue'),
     children: [
       {
-        path: '/download-app',
-        name: 'download-app',
-        component: () => import('@/views/DownloadApp.vue'),
-        meta: {
-          publicRoute: true,
-        },
-      },
-      {
         path: '',
         name: 'home',
         redirect: 'today',
@@ -179,8 +171,8 @@ export const routes: RouteConfig[] = [
                   ),
                 children: [
                   {
-                    path: '', 
-                    name: 'rates', 
+                    path: '',
+                    name: 'rates',
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
@@ -188,22 +180,22 @@ export const routes: RouteConfig[] = [
                   },
                   // Commenting out until these components are used in v2
                   // {
-                  //   path: 'adjustments', 
-                  //   name: 'rates.adjustments', 
+                  //   path: 'adjustments',
+                  //   name: 'rates.adjustments',
                   //   component: () =>
                   //     import(
                   //       /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
                   //     ),
                   // },
                   // {
-                  //   path: 'calculator', 
-                  //   name: 'rates.calculator', 
+                  //   path: 'calculator',
+                  //   name: 'rates.calculator',
                   //   component: () =>
                   //     import(
                   //       /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
                   //     ),
                   // },
-                ]
+                ],
               },
               {
                 path: 'availability',
@@ -339,50 +331,13 @@ export const routes: RouteConfig[] = [
               hash: router.params.hash,
             }),
           },
+          {
+            path: '/downloadApp',
+            name: 'download-app',
+            component: () => import('@/views/DownloadApp.vue'),
+          },
         ],
       },
     ],
   },
 ]
-
-// routes.beforeEach((routeTo, routeFrom, next) => { 
-//   if (store.getters['auth/loggedIn']) {
-//     store.dispatch('auth/validate').then((validUser) => {
-//       if (validUser) {
-//         const currentUser = store.getters['auth/currentUser'] || {}
-//         if (!currentUser.company) {
-//           redirectToLogin()
-//           return
-//         }
-
-//         const currentUserProfile = store.getters['auth/currentUserProfile']
-//         if (currentUserProfile && currentUserProfile.roles.length) {
-//           const isDriver = currentUserProfile.roles.some(
-//             (role) => role.roleName === 'is_driver'
-//           )
-//           const isAdmin = currentUserProfile.roles.some((role) =>
-//             [
-//               'is_free_admin',
-//               'is_paid_admin',
-//               'is_broker_admin',
-//               'is_admin_admin',
-//             ].includes(role.roleName)
-//           )
-//           const isUser = currentUserProfile.roles.some((role) =>
-//             [
-//               'is_free_user',
-//               'is_paid_user',
-//               'is_broker_user',
-//               'is_report_admin',
-//             ].includes(role.roleName)
-//           )
-//           if (!isAdmin && !isUser && isDriver) {
-//             next({
-//               name: 'download-app',
-//             })
-//           }
-//         }
-//       }
-//     })
-//   }
-// })

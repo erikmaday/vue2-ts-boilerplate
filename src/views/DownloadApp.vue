@@ -2,12 +2,12 @@
   <Guest>
     <v-main>
       <v-container
-        class="max-w-760"
+        class="max-w-800"
         :class="{ 'padding-x-8': $vuetify.breakpoint.xsOnly }"
       >
         <v-row :class="{ 'margin-t-8': $vuetify.breakpoint.smAndUp }">
           <v-col cols="12" sm="6">
-            <v-row>
+            <v-row class="justify-center">
               <v-col cols="12">
                 <h2 class="font-weight-400 font-medium">
                   Please download the
@@ -24,13 +24,13 @@
                   you to see and complete your assigned trips
                 </p>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="5" sm="6">
                 <img
                   class="w-full max-w-full"
                   src="@/assets/images/app-store.png"
                 />
               </v-col>
-              <v-col cols="6">
+              <v-col cols="5" sm="6">
                 <img
                   class="w-full max-w-full"
                   src="@/assets/images/google-play.png"

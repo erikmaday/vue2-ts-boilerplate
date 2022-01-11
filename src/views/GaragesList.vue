@@ -29,7 +29,7 @@
       collection="garages"
       :fetch-method="tableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
-      :no-data-text="'No matching garages found'"
+      no-data-text="No matching garages found"
     />
   </div>
 </template>

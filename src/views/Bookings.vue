@@ -9,7 +9,7 @@
       :initial-filters="initialFilters"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :tab-filters="tabFilters"
-      :no-data-text="'No matching bookings found'"
+      no-data-text="No matching bookings found"
     >
       <template slot="filter-row">
         <v-spacer />

@@ -39,7 +39,7 @@
         </v-chip>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="reservationsToDisplay.length">
       <v-col
         v-for="(reservation, reservationIndex) in reservationsToDisplay"
         cols="12"
@@ -49,6 +49,20 @@
         :key="`reservation-${reservation.childReservationId}-${reservationIndex}`"
       >
         <BookingCard :reservation="reservation" />
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col cols="12">
+        <div
+          class="
+            h-180
+            background-gray-header
+            border-1 border-solid border-gray-border border-radius-regular
+            padding-a-3
+          "
+        >
+          No bookings found
+        </div>
       </v-col>
     </v-row>
     <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">

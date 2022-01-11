@@ -90,6 +90,7 @@
     </template>
     <v-spacer />
 
+    <!-- ADD BACK WHEN WE IMPLEMENT GLOBAL SEARCH AND NOTIFICATIONS
     <CUIcon class="text-gray-mid-light margin-r-4" large :key="`search-icon`">
       search
     </CUIcon>
@@ -102,7 +103,7 @@
       >
         notifications
       </CUIcon>
-    </v-badge>
+    </v-badge> -->
 
     <template v-if="$vuetify.breakpoint.mdAndUp">
       <v-btn small text color="primary" class="margin-r-2">Support</v-btn>

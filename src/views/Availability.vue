@@ -192,11 +192,12 @@ export default class Availability extends Vue {
 
   // Date of the first day of the week
   get startOfWeek(): dayjs.Dayjs {
-    return this.calendarDisplayDate.startOf('week')
+    // return this.calendarDisplayDate.startOf('week')
+    return this.calendarDisplayDate
   }
 
   get endOfWeek(): dayjs.Dayjs {
-    return this.calendarDisplayDate.endOf('week')
+    return this.calendarDisplayDate.add(7, 'day')
   }
 
   // Given the whole array of loaded reservations, and the beginning/end of

@@ -1,5 +1,10 @@
-import { AvailabilityBlock, DriverBlockItem, VehicleBlockItem } from '@/models/dto/Availability'
-
+import {
+  AvailabilityBlock,
+  DriverBlockItem,
+  VehicleBlockItem,
+} from '@/models/dto/Availability'
+import dayjs from 'dayjs';
+import Quadtree from '@timohausmann/quadtree-js';
 export const sortAvailabilityBlocksByVehicle = (
   reservations: AvailabilityBlock[]
 ): Record<number, VehicleBlockItem> => {
@@ -76,6 +81,35 @@ export const sortAvailabilityBlocksByDriver = (
 
   const result = reservations.reduce(reduceFn, {})
   return result
+}
+
+const getCoordinatesForBlocks = (blocks, startOfWeek, endOfWeek) => {
+  // const boundingArea = new Box(0, 0, 1000, 1000)
+  // const quadtree = new QuadTree(boundingArea)
+
+
+  for (const block of blocks) {
+    // let startDate = dayjs(block.startDate)
+    // let endDate = dayjs(block.endDate)
+    // if (startDate.isBefore(startOfWeek, 'day')) {
+    //   startDate = startOfWeek
+    // }
+    // if (endDate.isAfter(endOfWeek, 'day')) {
+    //   endDate = endOfWeek
+    // }
+
+
+    // let attemptedRow = 0
+    // const startDay: number = startDate.day()
+    // const endDay: number = endDate.day()
+    // let width = startDay - endDay + 1
+
+    // const attemptedBox = new Box(startDay, attemptedRow, width, 1)
+
+    
+
+
+  }
 }
 
 export const AVAILABILITY_ROW_HEIGHT = 60

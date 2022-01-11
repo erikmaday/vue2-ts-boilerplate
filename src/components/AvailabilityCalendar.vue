@@ -4,7 +4,7 @@
       <div
         class="cv-week-day-header"
         :class="{
-          'background-gray-border border-width-1 border-style-1 border-color-gray-border':
+          'border-width-1 border-style-1 border-color-gray-border':
             isHeaderToday(index.charAt(3)),
           'cv-week-day-header--today': isHeaderToday(index.charAt(3)),
         }"
@@ -67,7 +67,7 @@ export default class AvailabilityCalendar extends Vue {
   }
 
   get cssVars(): Record<string, string | number> {
-    const minHeight = Math.max(this.minHeight, 600)
+    const minHeight = Math.max(this.minHeight, 100)
     let cssVars = {
       '--min-calendar-height': `${minHeight}px`,
     }
@@ -101,9 +101,9 @@ export default class AvailabilityCalendar extends Vue {
   display: none;
 }
 
-::v-deep .cv-day.today {
-  background: $gray-border;
-}
+// ::v-deep .cv-day.today {
+//   background: $gray-border;
+// }
 
 ::v-deep .cv-weeks {
   min-height: calc(var(--min-calendar-height) + 1px);

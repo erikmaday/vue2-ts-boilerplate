@@ -18,7 +18,7 @@ export default class MarketplaceListBidPrice extends Vue {
     return (
       this.row.bids.filter(
         (bid) => bid.active && bid.companyId === auth.getUser.companyId
-      )?.[0] || null
+      )[0] || null
     )
   }
 

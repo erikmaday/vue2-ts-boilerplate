@@ -27,6 +27,11 @@ export default {
   byId(userId: number): Promise<AxiosResponse<UserDetail>> {
     return httpService.get(`https://${apiBaseUrl()}/v2/drivers/${userId}`)
   },
+  byHash(userHash: string): Promise<AxiosResponse<UserResult>> {
+    return httpService.post(`https://${apiBaseUrl()}/user/getUserByHash`, {
+      userHash,
+    })
+  },
   delete(userId: number): Promise<AxiosResponse> {
     return httpService.delete(`https://${apiBaseUrl()}/v3/drivers/${userId}`)
   },
@@ -66,7 +71,16 @@ export default {
     const url = `https://${apiBaseUrl()}/password/reset`
     return httpService.post(url, { hash, password })
   },
-  create(user: UserDetail): Promise<AxiosResponse<number>> {
+  forgotPassword(email: string): Promise<AxiosResponse> {
+    return httpService.post(`https://${apiBaseUrl()}/user/forgotPassword/a3`, {
+      email,
+    })
+  },
+  validateUser(hash: string): Promise<AxiosResponse<UserDetail>> {
+    const url = `https://${apiBaseUrl()}/user/validate`
+    return httpService.post(url, { userHash: hash })
+  },
+  create(user: UserDetail): Promise<AxiosResponse<UserResult>> {
     return httpService.post(`https://${apiBaseUrl()}/user`, user)
   },
   checkIfEmailExists(

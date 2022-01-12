@@ -14,13 +14,13 @@
         }"
         class="
           padding-a-6
-          background-gray-header
           border-y-0 border-l-0 border-r border-gray-border border-solid
         "
+        :class="`background-${sidebarColor}`"
       >
         <slot name="navigation" />
       </v-col>
-      <v-col class="padding-a-6">
+      <v-col class="padding-a-6" :class="`background-${mainColor}`">
         <v-row align="center">
           <v-col cols="auto">
             <h1><slot name="section-title" /></h1>
@@ -55,5 +55,11 @@ import { Prop, Vue, Component } from 'vue-property-decorator'
 export default class MainWithSidebar extends Vue {
   @Prop({ default: 278 })
   sidebarWidth!: number
+
+  @Prop({ default: 'gray-header' })
+  sidebarColor!: string
+
+  @Prop({ default: 'white' })
+  mainColor!: string
 }
 </script>

@@ -1,4 +1,4 @@
-import { Group } from "@/models/dto/User";
+import { Group } from '@/models/dto/User'
 
 export const userGroups: Group[] = [
   {

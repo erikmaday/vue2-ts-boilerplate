@@ -3,15 +3,19 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import localeData from 'dayjs/plugin/localeData'
+import weekday from 'dayjs/plugin/weekday'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import advancedFormat from 'dayjs/plugin/advancedFormat'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.extend(localeData)
+dayjs.extend(weekday)
+dayjs.extend(isSameOrBefore)
+dayjs.extend(isSameOrAfter)
+dayjs.extend(customParseFormat)
+dayjs.extend(advancedFormat)
 
-export default Object.defineProperties(Vue.prototype, {
-  $dayjs: {
-    get() {
-      return dayjs
-    },
-  },
-})
+Vue.prototype.$dayjs = dayjs

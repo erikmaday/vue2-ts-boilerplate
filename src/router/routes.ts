@@ -1,4 +1,5 @@
 import { RouteConfig } from 'vue-router'
+// import { store } from '@/state/store'
 
 export const routes: RouteConfig[] = [
   {
@@ -164,18 +165,44 @@ export const routes: RouteConfig[] = [
               },
               {
                 path: 'rates',
-                name: 'rates',
                 component: () =>
                   import(
                     /* webpackChunkName: "company-rates" */ '@/views/Empty.vue'
                   ),
+                children: [
+                  {
+                    path: '',
+                    name: 'rates',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                      ),
+                  },
+                  // Commenting out until these components are used in v2
+                  // {
+                  //   path: 'adjustments',
+                  //   name: 'rates.adjustments',
+                  //   component: () =>
+                  //     import(
+                  //       /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                  //     ),
+                  // },
+                  // {
+                  //   path: 'calculator',
+                  //   name: 'rates.calculator',
+                  //   component: () =>
+                  //     import(
+                  //       /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                  //     ),
+                  // },
+                ],
               },
               {
                 path: 'availability',
                 name: 'availability',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-availability" */ '@/views/Empty.vue'
+                    /* webpackChunkName: "company-availability" */ '@/views/Availability.vue'
                   ),
               },
               {
@@ -270,20 +297,28 @@ export const routes: RouteConfig[] = [
             component: () => import('@/views/Empty.vue'),
             children: [
               {
+                path: '',
+                name: 'bookings',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "bookings" */ '@/views/Bookings.vue'
+                  ),
+              },
+              {
                 path: ':id',
                 name: 'booking-detail',
                 component: () =>
                   import(
-                    /* webpackChunkName: "quote-detail" */ '@/views/BookingDetail.vue'
+                    /* webpackChunkName: "booking-detail" */ '@/views/BookingDetail.vue'
                   ),
               },
             ],
           },
-          {
-            path: 'metrics',
-            name: 'metrics',
-            component: () => import('@/views/Empty.vue'),
-          },
+          // {
+          //   path: 'metrics',
+          //   name: 'metrics',
+          //   component: () => import('@/views/Empty.vue'),
+          // },
         ],
       },
       {
@@ -299,7 +334,7 @@ export const routes: RouteConfig[] = [
           },
           {
             path: 'setPassword/:hash',
-            name: 'setPassword',
+            name: 'set-password',
             component: () =>
               import(
                 /* webpackChunkName: "setPassword" */ '@/views/SetPassword.vue'
@@ -307,6 +342,19 @@ export const routes: RouteConfig[] = [
             props: (router) => ({
               hash: router.params.hash,
             }),
+          },
+          {
+            path: '/downloadApp',
+            name: 'download-app',
+            component: () => import('@/views/DownloadApp.vue'),
+          },
+          {
+            path: 'forgotPassword',
+            name: 'forgot-password',
+            component: () =>
+              import(
+                /* webpackChunkName: "forgotPassword" */ '@/views/ForgotPassword.vue'
+              ),
           },
         ],
       },

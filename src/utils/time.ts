@@ -43,3 +43,5 @@ export const timeObjectToString = (timeObj: TimeObject): string => {
   }
   return timeString
 }
+
+export const DAYS_IN_WEEK = 7

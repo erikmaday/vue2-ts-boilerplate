@@ -1,74 +1,171 @@
 <template>
-  <v-container>
-    <v-form ref="form">
-      <v-row>
-        <v-col cols="12">
-          <h1 class="text-center">Set Password</h1>
-        </v-col>
-        <v-col sm="6" offset-sm="3">
-          <CUTextField
-            type="password"
-            :rules="[(val) => isNotEmpty(val) || 'This field is required']"
-            v-model="newPassword"
-            label="New Password"
-          />
-        </v-col>
-        <v-col sm="6" offset-sm="3">
-          <CUTextField
-            type="password"
-            v-model="confirmPassword"
-            label="Confirm New Password"
-            :rules="[
-              (val) => passwordsMatch(val) || 'Passwords must match',
-              (val) => isNotEmpty(val) || 'This field is required',
-            ]"
-            validate-on-blur
-          />
-        </v-col>
-        <v-col sm="6" offset-sm="3">
-          <v-row justify="center">
-            <v-btn
-              class="margin-b-3"
-              small
-              outlined
-              color="primary"
-              @click="$router.push({ name: 'login' })"
-            >
-              Cancel
-            </v-btn>
-            <v-btn
-              class="margin-b-3 margin-l-3"
-              small
-              color="primary"
-              :loading="loading"
-              @click="setPassword"
-            >
-              Set Password
-            </v-btn>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-form>
-  </v-container>
+  <Guest>
+    <MainWithSidebar
+      sidebar-width="404"
+      sidebar-color="white"
+      main-color="gray-header"
+    >
+      <template v-slot:navigation>
+        <v-container class="padding-x-2 padding-t-12">
+          <v-col class="padding-x-0" align="center">
+            <BusJoinUs class="w-220 margin-b-9" />
+            <h1 class="margin-b-5 font-28 text-left">
+              Grow and expand your business with CharterUP.
+            </h1>
+            <p class="margin-b-8 font-18 text-left">
+              CharterUP is the largest marketplace of charter buses in North
+              America.
+            </p>
+            <v-row class="align-center">
+              <v-col class="shrink">
+                <GetCash height="35px" width="35px" />
+              </v-col>
+              <v-col class="shrink white-space-nowrap padding-l-0 font-medium">
+                Automated lead pricing
+              </v-col>
+            </v-row>
+            <v-row class="align-center">
+              <v-col class="shrink">
+                <InProgressYellow height="35px" width="35px" />
+              </v-col>
+              <v-col class="shrink white-space-nowrap padding-l-0 font-medium">
+                Real-time availability control
+              </v-col>
+            </v-row>
+            <v-row class="align-center">
+              <v-col class="shrink">
+                <InProgress height="35px" width="35px" />
+              </v-col>
+              <v-col class="shrink white-space-nowrap padding-l-0 font-medium">
+                Driver and vehicle management
+              </v-col>
+            </v-row>
+            <v-row class="align-center">
+              <v-col class="shrink">
+                <LocationMarker height="35px" width="35px" />
+              </v-col>
+              <v-col class="shrink white-space-nowrap padding-l-0 font-medium">
+                ELD integration supported
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-container>
+      </template>
+      <template v-slot:default>
+        <v-container>
+          <v-col cols="12" align="center" class="margin-b-8">
+            <h1 class="font-30">CharterUP for Operators</h1>
+            <p class="font-18">
+              Create a password to continue setting up your account
+            </p>
+          </v-col>
+          <v-form
+            ref="form"
+            class="background-white max-w-536 margin-x-auto margin-y-8 padding-x-15 padding-y-10 border-solid border-1 border-gray-border border-radius-5 shadow"
+          >
+            <v-row justify="center">
+              <v-col sm="10" class="padding-a-0">
+                <CUTextField
+                  type="email"
+                  :disabled="true"
+                  v-model="email"
+                  label="Email address"
+                  class="font-14"
+                />
+              </v-col>
+              <v-col sm="10" class="padding-a-0">
+                <CUTextField
+                  type="password"
+                  :rules="[
+                    (val) => isNotEmpty(val) || 'This field is required',
+                  ]"
+                  v-model="newPassword"
+                  label="Create password"
+                  class="font-14"
+                />
+              </v-col>
+              <v-col sm="10" class="padding-a-0">
+                <CUTextField
+                  type="password"
+                  v-model="confirmPassword"
+                  label="Confirm password"
+                  class="font-14"
+                  :rules="[
+                    (val) => passwordsMatch(val) || 'Passwords must match',
+                    (val) => isNotEmpty(val) || 'This field is required',
+                  ]"
+                  validate-on-blur
+                />
+              </v-col>
+              <v-col sm="10" class="padding-a-0" align="center">
+                <v-btn
+                  small
+                  color="primary"
+                  width="100%"
+                  class="margin-b-11"
+                  :loading="loading"
+                  @click="setPassword"
+                >
+                  Continue
+                </v-btn>
+                <br />
+                <v-divider />
+                <p class="margin-t-6 font-14">
+                  Already have an account?
+                  <router-link :to="{ name: 'login' }">Login</router-link>
+                </p>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-container>
+      </template>
+    </MainWithSidebar>
+  </Guest>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { isNotEmpty } from '@/utils/validators'
 import user from '@/services/user'
-import modules from '@/store/modules'
+import MainWithSidebar from '@/layouts/MainWithSidebar.vue'
+import BusJoinUs from '@/assets/images/BusJoinUs.vue'
+import LocationMarker from '@/assets/images/LocationMarker.vue'
+import InProgress from '@/assets/images/InProgress.vue'
+import GetCash from '@/assets/images/GetCash.vue'
+import InProgressYellow from '@/assets/images/InProgressYellow.vue'
+import Guest from '@/layouts/Guest.vue'
 
-@Component
+@Component({
+  components: {
+    MainWithSidebar,
+    BusJoinUs,
+    LocationMarker,
+    InProgress,
+    GetCash,
+    InProgressYellow,
+    Guest,
+  },
+})
 export default class SetPassword extends Vue {
   @Prop({
     required: true,
   })
   hash!: string
 
+  email = ''
   newPassword = ''
   confirmPassword = ''
   loading = false
   isNotEmpty = isNotEmpty
+
+  async created(): Promise<void> {
+    try {
+      let res = await user.byHash(this.hash)
+      this.email = res.data.user.email
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   passwordsMatch(password: string): boolean {
     return password === this.newPassword

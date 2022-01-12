@@ -46,7 +46,7 @@
               'flex-row': $vuetify.breakpoint.smAndUp,
               'justify-center': $vuetify.breakpoint.sm,
               'flex-column': $vuetify.breakpoint.xs,
-              'justify-end': isModeProfile,
+              'justify-end': $vuetify.breakpoint.mdAndUp || isModeProfile,
             }"
           >
             <v-btn

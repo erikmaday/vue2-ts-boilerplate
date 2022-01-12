@@ -43,3 +43,11 @@ export const timeObjectToString = (timeObj: TimeObject): string => {
   }
   return timeString
 }
+
+export const timeDifferenceAsString = (
+  time1: dayjs.Dayjs,
+  time2: dayjs.Dayjs
+): string => {
+  return timeObjectToString(timeDifferenceAsObject(time1, time2))
+}
+export const DAYS_IN_WEEK = 7

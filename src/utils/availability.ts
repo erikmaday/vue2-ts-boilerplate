@@ -1,109 +1,117 @@
-import { RequiredVehicle, RequiredVehicleType, VehicleAssignment } from "@/models/dto"
-import deepClone from "./deepClone"
+import { Reservation } from '@/models/dto'
+import {
+  AvailabilityBlock,
+  DriverBlockItem,
+  VehicleBlockItem,
+} from '@/models/dto/Availability'
+import {
+  getReservationFirstStopCity,
+  getReservationLastStopCity,
+  getReservationLocalEndDatetime,
+  getReservationLocalStartDatetime,
+} from './reservation'
 
-export const emptyAssignmentObj: Record<string, unknown> = {
-  vehicleAssignmentId: null,
-  vehicle: {
-    vehicleId: null,
-    name: null,
-  },
-  driverAssignments: [
-    {
-      tripAssignmentId: null,
-      driver: {
-        userId: null,
-        name: null,
-      },
-    },
-  ],
-}
-
-export function buildModel(
-  vehicleAssignments: VehicleAssignment[],
-  requiredVehicles: RequiredVehicleType[],
-  driverCount = 0
-): any {
-  const UNASSIGNED_VEHICLE_TYPE_ID = 99
-
-  if (!requiredVehicles?.length) return []
-  const model = []
-
-  // Build the empty model, unpopulated with existing trip assignments
-  requiredVehicles.map((vehicleType) => {
-    for (let i = 0; i < vehicleType.quantity; i++) {
-      const newEmptyAssignment = deepClone(emptyAssignmentObj)
-      newEmptyAssignment.vehicleTypeId = vehicleType.vehicleType.id
-      newEmptyAssignment.vehicleTypeLabel = vehicleType.vehicleType.label
-      model.push(newEmptyAssignment)
-    }
-  })
-
-  // For each existing assignment, find an
-  // empty object in the model with the same vehicleType
-  // to populate
-  vehicleAssignments.map((assignment) => {
-    let createNewAssignment = false
-    let emptyAssignment
-
-    if (
-      assignment.vehicleTypeId === UNASSIGNED_VEHICLE_TYPE_ID ||
-      (assignment?.vehicle?.vehicleName &&
-        assignment?.vehicle?.vehicleName.toLowerCase() === 'vehicle unassigned')
-    ) {
-      emptyAssignment = model.find((obj) => !obj.vehicleAssignmentId)
-    } else {
-      emptyAssignment = model.find(
-        (obj) =>
-          Number(obj.vehicleTypeId) === Number(assignment.vehicleTypeId) &&
-          !obj.vehicleAssignmentId
-      )
-    }
-
-    if (!emptyAssignment) {
-      emptyAssignment = deepClone(emptyAssignmentObj)
-      emptyAssignment = {
-        ...emptyAssignment,
-        vehicleTypeId: assignment.vehicleTypeId,
-        vehicleTypeLabel: assignment.vehicleTypeLabel,
+export const sortAvailabilityBlocksByVehicle = (
+  reservations: AvailabilityBlock[]
+): Record<number, VehicleBlockItem> => {
+  const reduceFn = (
+    map: Record<number, VehicleBlockItem>,
+    res: AvailabilityBlock
+  ): Record<number, VehicleBlockItem> => {
+    if (res.vehicleAssignments?.length) {
+      for (const va of res.vehicleAssignments) {
+        if (!map[va.vehicleId]) {
+          const newVehicleItem: VehicleBlockItem = {
+            blocks: [],
+            vehicle: va.vehicle,
+          }
+          map[va.vehicleId] = newVehicleItem
+        }
+        map[va.vehicleId].blocks.push(res)
       }
-      createNewAssignment = true
     }
-
-    emptyAssignment.vehicleAssignmentId = assignment.tripAssignmentId
-    emptyAssignment.vehicle = assignment.vehicle
-    emptyAssignment.vehicle.name = `${assignment.vehicle.vehicleName} ${assignment.vehicle.vehicleModel}`
-
-    const driverAssignments = assignment.driverAssignments.map((driver) => {
-      driver.driver.name =
-        driver.driver.firstName + ' ' + driver.driver.lastName
-      return driver
-    })
-
-    if (driverAssignments.length) {
-      emptyAssignment.driverAssignments = driverAssignments
+    if (!res.vehicleAssignments?.length || !res.vehiclesAreFullyAssigned) {
+      if (!map[-1]) {
+        map[-1] = {
+          blocks: [],
+          vehicle: 'unassigned',
+        }
+      }
+      map[-1].blocks.push(res)
     }
-
-    if (createNewAssignment) {
-      model.push(emptyAssignment)
-    }
-  })
-
-  const currentDriverCount = model.reduce(
-    (prev, curr) => prev + curr.driverAssignments.length,
-    0
-  )
-  const driversToAdd = driverCount - currentDriverCount
-  if (driversToAdd > 0 && model.length) {
-    for (let i = 0; i < driversToAdd; i++) {
-      model[i % model.length].driverAssignments.push({
-        tripAssignmentId: null,
-        driver: {
-          userId: null,
-          name: null,
-        },
-      })
-    }
+    return map
   }
 
-  return model
+  const result = reservations.reduce(reduceFn, {})
+  return result
 }
+
+export const sortAvailabilityBlocksByDriver = (
+  reservations: AvailabilityBlock[]
+): Record<number, DriverBlockItem> => {
+  const reduceFn = (
+    map: Record<number, DriverBlockItem>,
+    res: AvailabilityBlock
+  ): Record<number, DriverBlockItem> => {
+    if (res.vehicleAssignments?.length) {
+      for (const va of res.vehicleAssignments) {
+        if (va.driverAssignments) {
+          for (const da of va.driverAssignments) {
+            if (!map[da.userId]) {
+              const newDriverItem: DriverBlockItem = {
+                blocks: [],
+                driver: da.driver,
+              }
+              map[da.userId] = newDriverItem
+            }
+            map[da.userId].blocks.push(res)
+          }
+        }
+      }
+    }
+    if (!res.vehicleAssignments?.length || !res.driversAreFullyAssigned) {
+      if (!map[-1]) {
+        map[-1] = {
+          blocks: [],
+          driver: {
+            firstName: 'Unassigned',
+            lastName: '',
+            userId: -1,
+          },
+        }
+      }
+      map[-1].blocks.push(res)
+    }
+    return map
+  }
+
+  const result = reservations.reduce(reduceFn, {})
+  return result
+}
+
+export const convertReservationToAvailabilityBlock = (
+  reservation: Reservation
+): AvailabilityBlock => {
+  const startDate = getReservationLocalStartDatetime(reservation)
+  const endDate = getReservationLocalEndDatetime(reservation)
+  const firstStop = getReservationFirstStopCity(reservation)
+  const lastStop = getReservationLastStopCity(reservation)
+  const isMultiStop = reservation.trip.stops.length > 1
+  const driversAreFullyAssigned = reservation.assignedDriverPercentage >= 100
+  const vehiclesAreFullyAssigned = reservation.assignedVehiclePercentage >= 100
+  const availabilityReservation: AvailabilityBlock = {
+    reservationId: reservation.managedId,
+    vehicleAssignments: reservation.vehicleAssignments || [],
+    startDate,
+    endDate,
+    firstStop,
+    lastStop,
+    isMultiStop,
+    driversAreFullyAssigned,
+    vehiclesAreFullyAssigned,
+  }
+
+  return availabilityReservation
+}
+
+export const AVAILABILITY_ROW_HEIGHT = 60

@@ -1,12 +1,13 @@
 <template>
   <div>
     <CUDataTableFilters
+      :key="`${collection}-list-filters`"
       :open="isFilterDialogOpen"
       :columns="columns"
       :filters="filters"
       :sorts="sorts"
       :filter-list.sync="filterList"
-      :tab-filters="tabFilters"
+      :tabs="tabs"
       :initial-filters="initialFilters"
       @initial-filters-set="initialFiltersSet = true"
       @update:sorts="$emit('update:sorts', $event)"
@@ -20,7 +21,7 @@
     <CUDataTable
       :actions="actions"
       :options="options"
-      :columns="columns"
+      :columns="visibleColumns"
       :items="items"
       :item-key="itemKey"
       :loading="loading"
@@ -34,10 +35,14 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
-import { TableViewFilter, TableViewParameters } from '@/models/TableView'
+import {
+  TableViewFilter,
+  TableViewTab,
+  TableViewParameters,
+} from '@/models/TableView'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { EventBus } from '@/utils/eventBus'
 import { filter } from '@/utils/filter'
@@ -61,7 +66,7 @@ export default class CUCollectionTable extends Vue {
   @Prop({ required: false, default: () => [] })
   initialFilters!: TableViewFilter[]
   @Prop({ required: false, default: () => [] })
-  tabFilters!: TableViewFilter[]
+  tabs!: TableViewTab[]
   @Prop({ type: Boolean, required: false, default: false })
   isFilterDialogOpen: boolean
   @Prop({ type: String, required: false })
@@ -81,6 +86,10 @@ export default class CUCollectionTable extends Vue {
 
   get areInitialFiltersSet(): boolean {
     return this.initialFilters.length && !this.initialFiltersSet
+  }
+
+  get visibleColumns(): DataTableColumn[] {
+    return this.columns.filter((column) => !column.hidden)
   }
 
   mounted(): void {

@@ -1,12 +1,12 @@
 <template>
-  <div class="h-full">
+  <div class="h-full background-black-true">
     <!--
       ADD THIS BACK LATER WHEN WE CALCULATE THESE METRICS
       <section class="background-gray-header">
         <TodayMetrics />
       </section>
     -->
-    <section>
+    <section class="background-white">
       <TodayBookings />
     </section>
     <section class="background-black-true">

@@ -1,21 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const sort = function (): any {
+export const sort = (): any => {
   let arrayOfSort: Array<Array<string>> = []
   const get = function () {
     return arrayOfSort
   }
 
-  const formatProp = function (p = '') {
+  const formatProp = (p = ''): string => {
     return p.replace(/\//g, '.')
   }
 
-  const add = function (sortItem: { prop: string; direction: string }) {
+  const add = (sortItem: { prop: string; direction: string }): void => {
     arrayOfSort = []
     arrayOfSort.push(['sort[0][field]', formatProp(sortItem.prop)])
     arrayOfSort.push(['sort[0][dir]', sortItem.direction])
   }
 
-  const asQueryParams = function () {
+  const remove = (): void => {
+    arrayOfSort = []
+  }
+
+  const asQueryParams = (): string => {
     return arrayOfSort
       .filter((f) => f[0] !== null)
       .map((f) => `${f[0]}=${f[1]}`)
@@ -25,6 +29,7 @@ export const sort = function (): any {
   return {
     get,
     add,
+    remove,
     asQueryParams,
   }
 }

@@ -17,13 +17,23 @@ export interface TableViewFilter {
   column: DataTableColumn
   value: string | number
   hideOnFilterBar?: boolean
+}
+
+export interface TableViewTab extends TableViewFilter {
   default?: boolean
   isShowAll?: boolean
+  isLocked?: boolean
 }
 
 export interface TableViewFilterChip {
   label: string
   count: number
-  filter: TableViewFilter[]
+  filters?: TableViewFilter[]
   active: boolean
+  buildFilters?: any
+}
+
+export interface ChipFilterState {
+  filters: any
+  filterParentOr: any
 }

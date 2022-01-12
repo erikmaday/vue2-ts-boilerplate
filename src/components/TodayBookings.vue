@@ -7,35 +7,26 @@
         Your Bookings
       </h3>
       <v-spacer />
-      <p
-        class="
-          col
-          shrink
-          white-space-nowrap
-          text-primary
-          font-14 font-medium
-          text-decoration-underline
-          cursor-pointer
-        "
+      <router-link
+        class="col shrink white-space-nowrap text-primary font-14 font-medium text-decoration-underline cursor-pointer"
+        :to="{ name: 'bookings' }"
       >
-        All Your Bookings ({{ reservationCount }})
-      </p>
+        All Your Bookings ({{ bookingsCount }})
+      </router-link>
     </v-row>
     <v-row>
       <v-col cols="12">
         <v-chip
-          v-for="(filter, filterIndex) in bookingFilterChips"
+          v-for="(filter, filterIndex) in Object.values(chips)"
           :color="filter.active ? 'primary' : 'gray-border'"
           :text-color="filter.active ? 'primary' : 'black'"
           outlined
           class="margin-r-2 cursor-pointer margin-b-2"
           :key="`booking-filter-${filterIndex}`"
-          @click="handleFilterClick(filter)"
+          @click="filter.active = !filter.active"
         >
           {{ filter.label }}
-          <!-- ADD BACK IN WHEN WE DETERMINE THE BEST WAY TO PULL THESE COUNTS
-            ({{ filter.count }})
-          -->
+          ({{ filter.count }})
         </v-chip>
       </v-col>
     </v-row>
@@ -54,12 +45,7 @@
     <v-row v-else>
       <v-col cols="12">
         <div
-          class="
-            h-180
-            background-gray-header
-            border-1 border-solid border-gray-border border-radius-regular
-            padding-a-3
-          "
+          class="h-180 background-gray-header border-1 border-solid border-gray-border border-radius-regular padding-a-3"
         >
           No bookings found
         </div>
@@ -80,13 +66,14 @@ import { Reservation } from '@/models/dto'
 import reservation from '@/services/reservation'
 
 import { filter } from '@/utils/filter'
-import deepClone from '@/utils/deepClone'
 import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import reservationFilters from '@/data/reservationFilters'
-import { TableViewFilterChip } from '@/models/TableView'
+import { TableViewFilterChip, ChipFilterState } from '@/models/TableView'
+import deepClone from '@/utils/deepClone'
 
+const MAX_RESULTS = 24
 @Component({
   components: {
     BookingCard,
@@ -94,12 +81,11 @@ import { TableViewFilterChip } from '@/models/TableView'
   },
 })
 export default class TodayBookings extends Vue {
-  // TODO: FIGURE OUT HOW WE CAN DISPLAY THE NUMBER NEXT TO EACH ONE WITHOUT CALLING THE ENDPOINT FOR THEM
   reservations: Reservation[] = []
-  reservationCount = 0
+  bookingsCount: number | null = null
 
   params = {
-    pageSize: -1,
+    pageSize: MAX_RESULTS,
     page: 1,
     filters: null,
     sorts: null,
@@ -126,53 +112,51 @@ export default class TodayBookings extends Vue {
     )
   }
 
-  bookingFilterChips: TableViewFilterChip[] = [
-    {
+  chips: Map<string, TableViewFilterChip> = {
+    startingSoon: {
       label: 'Starting Soon',
       count: 0,
-      filter: [
-        reservationFilters.isStartDateInFuture,
-        reservationFilters.isStartDateLessThanADayAway,
-        reservationFilters.isUpcoming,
-      ],
-      active: false,
+      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
+        this.buildStartingSoonFilters(filterState),
+      active: true,
     },
-    {
+    needsAcceptance: {
       label: 'Needs Acceptance',
       count: 0,
-      filter: [reservationFilters.isNotAccepted],
+      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
+        this.buildNeedsAcceptanceFilters(filterState),
       active: false,
     },
-    {
+    needsAssignment: {
       label: 'Needs Assignment',
       count: 0,
-      filter: [
-        reservationFilters.needsDriverAssignment,
-        reservationFilters.needsVehicleAssignment,
-        reservationFilters.isAccepted,
-      ],
+      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
+        this.buildNeedsAssignmentFilters(filterState),
       active: false,
     },
-    {
+    inProgress: {
       label: 'In Progress',
       count: 0,
-      filter: [reservationFilters.isInProgress],
+      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
+        this.buildIsInProgressFilters(filterState),
       active: false,
     },
-    {
+    finished: {
       label: 'Finished',
       count: 0,
-      filter: [reservationFilters.isFinished],
+      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
+        this.buildIsFinishedFilters(filterState),
       active: false,
     },
-  ]
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: any = null
 
-  @Watch('params', { deep: true })
-  onParamsChanged(): void {
-    this.getBookings()
+  @Watch('chips', { deep: true })
+  onChipsChanged(): void {
+    const { filters } = this.buildFilters()
+    this.getBookings(filters)
   }
 
   get currentTimestamp(): dayjs.Dayjs {
@@ -181,71 +165,232 @@ export default class TodayBookings extends Vue {
   }
 
   async mounted(): Promise<void> {
-    this.establishFilters()
-    this.getBookings(true)
+    this.getAllCounts()
+    const { filters } = this.buildFilters()
+    this.getBookings(filters)
   }
 
-  async getBookings(setCount = false): Promise<void> {
-    this.params.filters = this.filters.asQueryParams()
+  async getBookings(filters: any): Promise<void> {
+    this.params.filters = filters.asQueryParams()
     const reservationResponse = await reservation.tableView(this.params)
     this.reservations = reservationResponse.data.resultList
-    if (setCount) {
-      this.reservationCount = reservationResponse.data.count
+  }
+
+  getAllCounts(): void {
+    this.getAllBookingsCount()
+    for (const chip of Object.values(this.chips)) {
+      this.getFilterChipCount(chip)
     }
   }
 
-  establishFilters(): void {
+  async getFilterChipCount(chip: TableViewFilterChip): Promise<void> {
+    const result = chip.buildFilters()
+
+    const response = await reservation.tableView({
+      page: 1,
+      pageSize: 0,
+      sorts: null,
+      filters: result.filters.asQueryParams(),
+    })
+    chip.count = response.data.count
+  }
+
+  async getAllBookingsCount(): Promise<void> {
+    const { filters } = this.buildBaseFilters()
+    const response = await reservation.tableView({
+      page: 1,
+      pageSize: 0,
+      sorts: null,
+      filters: filters.asQueryParams(),
+    })
+    this.bookingsCount = response.data.count
+  }
+
+  buildBaseFilters(): ChipFilterState {
+    const filters = filter()
+    const parentFilter = filters.createParent('and')
+    const parentReferralFilter = filters.createParent('and', parentFilter)
     const filterIsReferral = reservationFilters.isReferral
     filterIsReferral.column._t_id = uuidv4()
+    filters.add(parentReferralFilter, filterIsReferral)
+    const filterParentOr = filters.createParent('or', parentFilter)
+
+    return { filters, filterParentOr }
+  }
+
+  buildNoChipsSelectedFilters(): ChipFilterState {
+    const filters = filter()
+    const parentFilter = filters.createParent('and')
+    // const parentReferralFilter = filters.createParent('and', parentFilter)
+
+    const filterIsReferral = deepClone(reservationFilters.isReferral)
+    const filterIsStartDateInFuture = deepClone(
+      reservationFilters.isStartDateInFuture
+    )
+    const filterIsStartDateLessThanAWeekAway = deepClone(
+      reservationFilters.isStartDateLessThanAWeekAway
+    )
+
+    filterIsReferral.column._t_id = uuidv4()
+    filterIsStartDateInFuture.column._t_id = uuidv4()
+    filterIsStartDateLessThanAWeekAway.column._t_id = uuidv4()
+
+    filters.add(parentFilter, filterIsStartDateInFuture)
+    filters.add(parentFilter, filterIsStartDateLessThanAWeekAway)
+    filters.add(parentFilter, filterIsReferral)
+
+    return { filters, filterParentOr: null }
+  }
+
+  buildStartingSoonFilters(filterState: ChipFilterState): ChipFilterState {
+    const { filters, filterParentOr } = filterState
 
     const filterIsStartDateInFuture = deepClone(
       reservationFilters.isStartDateInFuture
     )
+    const filterIsStartDateLessThanADayAway = deepClone(
+      reservationFilters.isStartDateLessThanADayAway
+    )
+
+    filterIsStartDateLessThanADayAway.column._t_id = uuidv4()
     filterIsStartDateInFuture.column._t_id = uuidv4()
 
-    const filterIsInProgress = deepClone(reservationFilters.isInProgress)
-    filterIsInProgress.column._t_id = uuidv4()
+    const filterParent = filters.createParent('and', filterParentOr)
+    filters.add(filterParent, filterIsStartDateInFuture)
+    filters.add(filterParent, filterIsStartDateLessThanADayAway)
 
-    const filterInstance = filter()
-    const filterParentAnd = filterInstance.createParent('and')
-    const filterParentReferral = filterInstance.createParent(
-      'and',
-      filterParentAnd
-    )
-    filterInstance.add(filterParentReferral, filterIsReferral)
-    const filterUpcomingOrInProgress = filterInstance.createParent(
-      'or',
-      filterParentAnd
-    )
-    filterInstance.add(filterUpcomingOrInProgress, filterIsStartDateInFuture)
-    filterInstance.add(filterUpcomingOrInProgress, filterIsInProgress)
-
-    this.filters = filterInstance
+    return { filters, filterParentOr }
   }
 
-  handleFilterClick(filterChip: TableViewFilterChip): void {
-    filterChip.active = !filterChip.active
-    this.establishFilters()
-    const filterInstance = this.filters
-    const filterParentAnd = filterInstance.createParent('and')
-    const filterParentOrAdditionalFilters = filterInstance.createParent(
-      'or',
-      filterParentAnd
+  buildNeedsAcceptanceFilters(filterState: ChipFilterState): ChipFilterState {
+    const { filters, filterParentOr } = filterState
+
+    const filterIsReferral = deepClone(reservationFilters.isReferral)
+    const filterIsOffered = deepClone(reservationFilters.isOffered)
+    const filterIsStartDateInFuture = deepClone(
+      reservationFilters.isStartDateInFuture
+    )
+    const filterIsStartDateLessThanAWeekAway = deepClone(
+      reservationFilters.isStartDateLessThanAWeekAway
+    )
+    const filterWasOfferedInLastDay = deepClone(
+      reservationFilters.wasOfferedInLastDay
     )
 
-    for (const filterItem of this.bookingFilterChips) {
-      if (filterItem.active) {
-        const filterParentFilterChipGroup = filterInstance.createParent(
-          'and',
-          filterParentOrAdditionalFilters
-        )
-        for (const filter of filterItem.filter) {
-          filterInstance.add(filterParentFilterChipGroup, filter)
+    filterIsOffered.column._t_id = uuidv4()
+    filterIsReferral.column._t_id = uuidv4()
+    filterIsStartDateInFuture.column._t_id = uuidv4()
+    filterIsStartDateLessThanAWeekAway.column._t_id = uuidv4()
+    filterWasOfferedInLastDay.column._t_id = uuidv4()
+
+    const filterParent = filters.createParent('and', filterParentOr)
+    filters.add(filterParent, filterIsReferral)
+    filters.add(filterParent, filterIsOffered)
+
+    const filterAcceptanceOr = filters.createParent('or', filterParent)
+    filters.add(filterAcceptanceOr, filterWasOfferedInLastDay)
+    const filterStartDateRange = filters.createParent('and', filterAcceptanceOr)
+    filters.add(filterStartDateRange, filterIsStartDateInFuture)
+    filters.add(filterStartDateRange, filterIsStartDateLessThanAWeekAway)
+
+    return { filters, filterParentOr }
+  }
+
+  buildNeedsAssignmentFilters(filterState: ChipFilterState): ChipFilterState {
+    const { filters, filterParentOr } = filterState
+
+    const filterIsReferral = deepClone(reservationFilters.isReferral)
+    const filterIsStartDateInFuture = deepClone(
+      reservationFilters.isStartDateInFuture
+    )
+    const filterIsStartDateLessThanAWeekAway = deepClone(
+      reservationFilters.isStartDateLessThanAWeekAway
+    )
+    const filterIsAccepted = deepClone(reservationFilters.isAccepted)
+    const filterNeedsDrivers = deepClone(
+      reservationFilters.needsDriverAssignment
+    )
+    const filterNeedsVehicles = deepClone(
+      reservationFilters.needsVehicleAssignment
+    )
+
+    filterIsReferral.column._t_id = uuidv4()
+    filterIsStartDateInFuture.column._t_id = uuidv4()
+    filterIsStartDateLessThanAWeekAway.column._t_id = uuidv4()
+    filterIsAccepted.column._t_id = uuidv4()
+    filterNeedsDrivers.column._t_id = uuidv4()
+    filterNeedsVehicles.column._t_id = uuidv4()
+
+    const filterParentAnd = filters.createParent('and', filterParentOr)
+    filters.add(filterParentAnd, filterIsReferral)
+    filters.add(filterParentAnd, filterIsAccepted)
+    filters.add(filterParentAnd, filterIsStartDateInFuture)
+    filters.add(filterParentAnd, filterIsStartDateLessThanAWeekAway)
+    const filterNeedsAssignments = filters.createParent('or', filterParentAnd)
+    filters.add(filterNeedsAssignments, filterNeedsDrivers)
+    filters.add(filterNeedsAssignments, filterNeedsVehicles)
+
+    return { filters, filterParentOr }
+  }
+
+  buildIsInProgressFilters(filterState: ChipFilterState): ChipFilterState {
+    const { filters, filterParentOr } = filterState
+
+    const filterIsReferral = deepClone(reservationFilters.isReferral)
+    const filterIsInProgress = deepClone(reservationFilters.isInProgress)
+
+    filterIsReferral.column._t_id = uuidv4()
+    filterIsInProgress.column._t_id = uuidv4()
+
+    const filterParent = filters.createParent('and', filterParentOr)
+    filters.add(filterParent, filterIsReferral)
+    filters.add(filterParent, filterIsInProgress)
+
+    return { filters, filterParentOr }
+  }
+
+  buildIsFinishedFilters(filterState: ChipFilterState): ChipFilterState {
+    const { filters, filterParentOr } = filterState
+
+    const filterIsReferral = deepClone(reservationFilters.isReferral)
+    const filterIsFinished = deepClone(reservationFilters.isFinished)
+    const filterIsStartDateLessThanAThreeDaysAgo = deepClone(
+      reservationFilters.isStartDateLessThanAThreeDaysAgo
+    )
+
+    filterIsReferral.column._t_id = uuidv4()
+    filterIsFinished.column._t_id = uuidv4()
+    filterIsStartDateLessThanAThreeDaysAgo.column._t_id = uuidv4()
+
+    const filterParent = filters.createParent('and', filterParentOr)
+    filters.add(filterParent, filterIsReferral)
+    filters.add(filterParent, filterIsFinished)
+    filters.add(filterParent, filterIsStartDateLessThanAThreeDaysAgo)
+
+    return { filters, filterParentOr }
+  }
+
+  buildFilters(): ChipFilterState {
+    let filters, filterParentOr
+    const activeChips = Object.values(this.chips).filter((chip) => chip.active)
+    if (activeChips.length) {
+      const result = this.buildBaseFilters()
+      filters = result.filters
+      filterParentOr = result.filterParentOr
+      for (const chip of activeChips) {
+        if (chip.active) {
+          const result = chip.buildFilters({ filters, filterParentOr })
+          filters = result.filters
+          filterParentOr = result.filterParentOr
         }
       }
+    } else {
+      const result = this.buildNoChipsSelectedFilters()
+      filters = result.filters
+      filterParentOr = result.filterParentOr
     }
-    this.filters = filterInstance
-    this.params.filters = this.filters.asQueryParams()
+
+    return { filters, filterParentOr }
   }
 }
 </script>

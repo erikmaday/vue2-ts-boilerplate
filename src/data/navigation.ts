@@ -35,7 +35,6 @@ export const navigation: NavigationLink[] = [
     params: {},
     permission: [],
   },
-  // Not needed for v1
   // {
   //   label: 'Metrics',
   //   href: 'metrics',

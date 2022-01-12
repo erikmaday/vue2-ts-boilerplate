@@ -230,21 +230,6 @@ export default class CompaniesDetail extends Vue {
     }
   }
 
-  // When hitting back button, prevent infinite loop when going from
-  // view -> edit -> view, etc.
-  pushLastRoute(): void {
-    if (
-      !app.getLastRoute?.name ||
-      app.getLastRoute?.name === 'companies.view'
-    ) {
-      this.$router.push({ name: 'companies' })
-    } else {
-      this.$router.push(app.getLastRoute)
-    }
-  }
-
-  // Get the user's roles. If we determine that the user is a driver,
-  // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2
   async getCurrentCompany(): Promise<void> {
     try {
       const companyId = auth.getUser.companyId

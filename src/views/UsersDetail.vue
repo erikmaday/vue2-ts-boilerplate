@@ -46,7 +46,7 @@
               'flex-row': $vuetify.breakpoint.smAndUp,
               'justify-center': $vuetify.breakpoint.sm,
               'flex-column': $vuetify.breakpoint.xs,
-              'justify-end': isModeProfile,
+              'justify-end': $vuetify.breakpoint.mdAndUp || isModeProfile,
             }"
           >
             <v-btn
@@ -572,11 +572,10 @@ export default class UsersDetail extends Vue {
     this.currentUser.treatAsDriver = this.treatAsDriver
     this.currentUser.locale = 'en_US'
 
-    this.currentUserAsDriver = Object.assign(
-      {},
-      this.currentUserAsDriver,
-      this.currentUser
-    )
+    if (this?.currentUserAsDriver?.phoneNumber) {
+      this.currentUserAsDriver.phoneNumber =
+        this.currentUserAsDriver.phoneNumber.replace(/[^0-9]/g, '')
+    }
   }
 
   // Return the user ID of the added user

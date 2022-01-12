@@ -120,7 +120,7 @@
             </v-row>
             <v-row>
               <v-col class="py-0">
-                <CUTextField
+                <AutocompleteAddress
                   label="Address"
                   :rules="[(val) => !!val || 'Address is Required']"
                   v-model="address"
@@ -151,10 +151,7 @@
                   v-mask="['(###) ###-####', '+## ## #### ####']"
                   :rules="[
                     (val) => !!val || 'Company Phone Number is Required',
-
-                    (val) =>
-                      verifyPhoneLength(val) ||
-                      'Phone Number is Incorrect Length',
+                    (val) => validatePhoneNumber(val),
                   ]"
                   v-model="currentCompany.phone"
                 />
@@ -167,10 +164,7 @@
                   v-mask="['(###) ###-####', '+## ## #### ####']"
                   :rules="[
                     (val) => !!val || 'Dispatch Phone Number is Required',
-
-                    (val) =>
-                      verifyPhoneLength(val) ||
-                      'Phone Number is Incorrect Length',
+                    (val) => validatePhoneNumber(val),
                   ]"
                   v-model="currentCompany.opsPhone"
                 />
@@ -188,18 +182,22 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 
 import { baseUrl } from '@/utils/env'
 
+import { Address } from '@/models/dto'
 import auth from '@/store/modules/auth'
 import company from '@/services/company'
 import { Company } from '@/models/dto/Company'
 import CompanyPhoto from '@/components/CompanyPhoto.vue'
+import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
+import { verifyPhoneLength } from '@/utils/validators'
 import app from '@/store/modules/app'
 
 @Component({
   components: {
     CompanyPhoto,
+    AutocompleteAddress,
   },
 })
-export default class CompaniesDetail extends Vue {
+export default class CompanyDetail extends Vue {
   validationErrors = {
     email: '',
   }
@@ -215,14 +213,6 @@ export default class CompaniesDetail extends Vue {
 
   currentCompany: Company | Record<string, never> = {}
   companyPhoto = ''
-
-  verifyPhoneLength(phoneNumber: string): boolean {
-    return (
-      phoneNumber != null &&
-      (phoneNumber.replace(/[^0-9]/g, '').length === 10 ||
-        phoneNumber.replace(/[^0-9]/g, '').length === 12)
-    )
-  }
 
   mounted(): void {
     if (this.isModeEdit || this.isModeView) {
@@ -277,12 +267,16 @@ export default class CompaniesDetail extends Vue {
     return this.mode === 'edit'
   }
 
-  get address(): string {
-    return this.currentCompany?.address?.street1
+  get address(): Address {
+    return this.currentCompany?.address
   }
 
-  set address(addr: string) {
-    this.currentCompany.address.street1 = addr
+  set address(addr: Address) {
+    this.currentCompany.address = addr
+  }
+
+  validatePhoneNumber(number: string): boolean | string {
+    return verifyPhoneLength(number) || 'Please enter a valid phone number'
   }
 
   // Not sure what type to cast the event as here
@@ -323,7 +317,7 @@ export default class CompaniesDetail extends Vue {
     companyId = await this.editExistingCompany()
 
     if (this.uploadedPhoto) {
-      company.uploadCompanyPhoto(companyId, this.uploadedPhoto)
+      await company.uploadCompanyPhoto(companyId, this.uploadedPhoto)
     }
 
     this.$router.push({

@@ -18,7 +18,7 @@ export default {
   },
   getCompanyPhoto(companyId: number): Promise<AxiosResponse> {
     return httpService.get(
-      `https://${apiBaseUrl()}/v2/companies/${companyId}/companyPhotos`,
+      `https://${apiBaseUrl()}/v2/companies/${companyId}/companyPhotos`
     )
   },
   uploadCompanyPhoto(

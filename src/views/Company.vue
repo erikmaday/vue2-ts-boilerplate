@@ -14,7 +14,7 @@
 import MainWithSidebar from '@/layouts/MainWithSidebar.vue'
 import { Vue, Component } from 'vue-property-decorator'
 import MainWithSidebarNavigation from '@/components/MainWithSidebarNavigation.vue'
-import CompaniesDetail from '@/views/CompaniesDetail.vue'
+import CompanyDetail from '@/views/CompanyDetail.vue'
 import { SidebarLink } from '@/models/SidebarLink'
 import { toTitle } from '@/utils/string'
 
@@ -22,17 +22,17 @@ import { toTitle } from '@/utils/string'
   components: {
     MainWithSidebarNavigation,
     MainWithSidebar,
-    CompaniesDetail,
+    CompanyDetail,
   },
 })
-export default class Profile extends Vue {
+export default class Company extends Vue {
   toTitle = toTitle
   links: SidebarLink[] = [
     {
       label: 'Information',
       href: '',
       name: 'settings',
-      component: CompaniesDetail,
+      component: CompanyDetail,
       icon: 'business',
     },
   ]
@@ -51,7 +51,7 @@ export default class Profile extends Vue {
     if (link) {
       return link.component
     }
-    return CompaniesDetail
+    return CompanyDetail
   }
 }
 </script>

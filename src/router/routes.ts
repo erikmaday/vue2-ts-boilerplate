@@ -216,12 +216,12 @@ export const routes: RouteConfig[] = [
                   {
                     path: '',
                     name: 'settings',
-                    component: () => import('@/views/CompanySettings.vue'),
+                    component: () => import('@/views/Company.vue'),
                   },
                   {
                     path: 'edit',
                     name: 'settings.edit',
-                    component: () => import('@/views/CompanySettings.vue'),
+                    component: () => import('@/views/Company.vue'),
                   },
                 ],
               },

@@ -1,13 +1,8 @@
 <template>
-  <v-row
-    align="stretch"
-    justify="center"
-    style="margin-bottom: 45px;"
-    no-gutters
-  >
-    <v-col cols="7" style="text-align: center;">
-      <v-img :src="img" style="margin-top: 24px; margin-bottom: 12px;" />
-      <div class="h0">
+  <v-row align="stretch" justify="center" class="margin-bottom-11" no-gutters>
+    <v-col cols="7" class="text-center">
+      <v-img :src="img" class="margin-top-6 margin-bottom-3" />
+      <div class="font-40">
         <slot name="header" />
         <span v-if="!$slots.header">Oops! We took a wrong turn.</span>
       </div>
@@ -17,20 +12,13 @@
           This page does not exist or some other error has occurred.
           <br />
           Please check your url or return to the
-          <a href="/">home page</a>
+          <router-link :to="{ href: '/' }">home page</router-link>
           .
         </span>
       </v-col>
     </v-col>
   </v-row>
 </template>
-
-<style scoped>
-.h0 {
-  font-size: 40px;
-  font-family: 'Airbnb Cereal App Medium';
-}
-</style>
 
 <script lang="ts">
 import { Vue, Component, Prop} from 'vue-property-decorator'

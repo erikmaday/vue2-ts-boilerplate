@@ -307,6 +307,14 @@ export const routes: RouteConfig[] = [
           //   name: 'metrics',
           //   component: () => import('@/views/Empty.vue'),
           // },
+          {
+            path: '/*',
+            name: 'not-found',
+            component: () =>
+              import(
+                /* webpackChunkName: "not-found" */ '@/views/NotFound.vue'
+              ),
+          },
         ],
       },
       {
@@ -342,14 +350,6 @@ export const routes: RouteConfig[] = [
             component: () =>
               import(
                 /* webpackChunkName: "forgotPassword" */ '@/views/ForgotPassword.vue'
-              ),
-          },
-          {
-            path: '/*',
-            name: 'not-found',
-            component: () =>
-              import(
-                /* webpackChunkName: "not-found" */ '@/views/NotFound.vue'
               ),
           },
         ],

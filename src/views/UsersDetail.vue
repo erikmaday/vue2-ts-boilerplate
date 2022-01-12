@@ -572,10 +572,11 @@ export default class UsersDetail extends Vue {
     this.currentUser.treatAsDriver = this.treatAsDriver
     this.currentUser.locale = 'en_US'
 
-    if (this?.currentUserAsDriver?.phoneNumber) {
-      this.currentUserAsDriver.phoneNumber =
-        this.currentUserAsDriver.phoneNumber.replace(/[^0-9]/g, '')
-    }
+    this.currentUserAsDriver = Object.assign(
+      {},
+      this.currentUserAsDriver,
+      this.currentUser
+    )
   }
 
   // Return the user ID of the added user

@@ -24,4 +24,5 @@ export interface VehicleAssignment {
   vehicleId: number
   vehicleType: VehicleType
   vehicleTypeId: number
+  vehicleTypeLabel?: string
 }

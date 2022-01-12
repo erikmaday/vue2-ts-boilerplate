@@ -4,16 +4,18 @@
       <v-col cols="12" sm="6">
         <CUTextField
           v-model="driverModel.phoneNumber"
-          :rules="[(val) => !!val || 'Phone Number is Required']"
+          v-mask="['(###) ###-####', '+## ## #### ####']"
+          :rules="[
+            (val) => !!val || 'Phone Number is Required',
+            (val) =>
+              verifyPhoneLength(val) || 'Phone Number is Incorrect Length',
+          ]"
           label="Phone Number"
         />
       </v-col>
     </v-row>
     <div
-      class="
-        border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1
-        margin-b-6
-      "
+      class="border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1 margin-b-6"
     ></div>
     <v-row>
       <v-col cols="12" sm="6">
@@ -37,10 +39,7 @@
       </v-col>
     </v-row>
     <div
-      class="
-        border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1
-        margin-b-6
-      "
+      class="border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1 margin-b-6"
     ></div>
     <v-row>
       <v-col cols="12" sm="6" class="padding-b-0">
@@ -79,10 +78,7 @@
       </v-col>
     </v-row>
     <div
-      class="
-        border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1
-        margin-b-6
-      "
+      class="border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1 margin-b-6"
     ></div>
     <v-row>
       <v-col>
@@ -220,6 +216,13 @@ export default class UsersDetailDriverInfo extends Vue {
         supported: value,
       })
     }
+  }
+
+  verifyPhoneLength(phoneNumber: string): boolean {
+    return (
+      phoneNumber.replace(/[^0-9]/g, '').length === 10 ||
+      phoneNumber.replace(/[^0-9]/g, '').length === 12
+    )
   }
 
   mounted(): void {

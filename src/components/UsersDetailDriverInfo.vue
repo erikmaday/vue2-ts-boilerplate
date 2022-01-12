@@ -7,8 +7,7 @@
           v-mask="['(###) ###-####', '+## ## #### ####']"
           :rules="[
             (val) => !!val || 'Phone Number is Required',
-            (val) =>
-              verifyPhoneLength(val) || 'Phone Number is Incorrect Length',
+            (val) => validatePhoneNumber(val),
           ]"
           label="Phone Number"
         />
@@ -114,6 +113,7 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 import { SupportedVehicleType, VehicleType } from '@/models/dto'
+import { verifyPhoneLength } from '@/utils/validators'
 import { states } from '@/utils/states'
 import dayjs from 'dayjs'
 
@@ -218,11 +218,8 @@ export default class UsersDetailDriverInfo extends Vue {
     }
   }
 
-  verifyPhoneLength(phoneNumber: string): boolean {
-    return (
-      phoneNumber.replace(/[^0-9]/g, '').length === 10 ||
-      phoneNumber.replace(/[^0-9]/g, '').length === 12
-    )
+  validatePhoneNumber(number: string): boolean | string {
+    return verifyPhoneLength(number) || 'Please enter a valid phone number'
   }
 
   mounted(): void {

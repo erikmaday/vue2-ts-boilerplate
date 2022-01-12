@@ -4,10 +4,14 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import NotFoundLayout from '@/layouts/NotFoundLayout.vue'
+import { Vue, Component } from 'vue-property-decorator'
 
-export default {
-  components: { NotFoundLayout },
-}
+@Component({
+  components: {
+    NotFoundLayout,
+  },
+})
+export default class NotFound extends Vue {}
 </script>

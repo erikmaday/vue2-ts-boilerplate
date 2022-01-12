@@ -43,9 +43,6 @@ import {
 import app from '@/store/modules/app'
 import bidDetail from '@/store/modules/bidDetail'
 
-const MULTI_BID_ROUTE_NAME = 'multi-bid-detail'
-const SINGLE_BID_ROUTE_NAME = 'bid-detail'
-
 @Component({
   components: {
     MapWithSidebar,
@@ -58,7 +55,6 @@ const SINGLE_BID_ROUTE_NAME = 'bid-detail'
 export default class BidDetail extends Vue {
   @Provide('isInBidDetail') private isInBidDetail = true
   quoteId: number | null = null
-  tripId: number | null = null
   notFound = false
   formatStopAddress = formatStopAddress
   formatDropoffTime = formatDropoffTime
@@ -67,11 +63,11 @@ export default class BidDetail extends Vue {
   loading = false
 
   get isModeMulti(): boolean {
-    return this.$route.name === MULTI_BID_ROUTE_NAME
+    return bidDetail.getTrips?.length > 1
   }
 
   get isModeSingle(): boolean {
-    return this.$route.name === SINGLE_BID_ROUTE_NAME
+    return bidDetail.getTrips?.length === 1
   }
 
   get mapTrips(): Trip[] {
@@ -85,11 +81,7 @@ export default class BidDetail extends Vue {
 
   created(): void {
     bidDetail.reset()
-    if (this.$route.name === MULTI_BID_ROUTE_NAME) {
-      this.quoteId = parseInt(this.$route.params.id)
-    } else {
-      this.tripId = parseInt(this.$route.params.id)
-    }
+    this.quoteId = parseInt(this.$route.params.id)
   }
   mounted(): void {
     this.refresh()
@@ -103,17 +95,13 @@ export default class BidDetail extends Vue {
 
   async getTrips(): Promise<void> {
     try {
-      let tripIds = this.isModeSingle ? [this.tripId] : []
-      if (this.isModeMulti) {
-        await bidDetail.fetchTripsListByQuoteId(this.quoteId)
-      } else {
-        await bidDetail.fetchTripsListByTripId(this.tripId)
-      }
-      if (tripIds.length || bidDetail.getTrips.length) {
-        await bidDetail.fetchAllTripDetails(tripIds)
-        await bidDetail.fetchExistingBids(tripIds)
-        if (this.isModeSingle) {
-          bidDetail.selectTrip(this.tripId)
+      await bidDetail.fetchTripsListByQuoteId(this.quoteId)
+      const tripsCount = bidDetail.getTrips.length
+      if (tripsCount) {
+        await bidDetail.fetchAllTripDetails()
+        await bidDetail.fetchExistingBids()
+        if (tripsCount === 1) {
+          bidDetail.selectTrip(bidDetail.getTrips[0].tripId)
         }
       } else {
         this.notFound = true

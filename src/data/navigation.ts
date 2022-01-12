@@ -35,14 +35,14 @@ export const navigation: NavigationLink[] = [
     params: {},
     permission: [],
   },
-  {
-    label: 'Metrics',
-    href: 'metrics',
-    name: 'metrics',
-    location: 'top',
-    params: {},
-    permission: [],
-  },
+  // {
+  //   label: 'Metrics',
+  //   href: 'metrics',
+  //   name: 'metrics',
+  //   location: 'top',
+  //   params: {},
+  //   permission: [],
+  // },
   {
     label: 'Menu',
     href: 'company',

@@ -9,7 +9,6 @@ const httpService: HttpService = new HttpService()
 export default {
   tableView(
     params: TableViewParameters,
-    filterNotBidOn = false,
     quoteIdList: string | null = null
   ): Promise<AxiosResponse<TripTableViewResult>> {
     const { sorts = null, filters = null, pageSize = 10, page = 1 } = params
@@ -20,9 +19,6 @@ export default {
     }
     if (filters) {
       query = `${query}&${filters}`
-    }
-    if (filterNotBidOn) {
-      query = `${query}&filterNotBidOn=true`
     }
     if (quoteIdList) {
       query = `${query}&quoteId=${quoteIdList}`

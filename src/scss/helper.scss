@@ -467,6 +467,41 @@ $white-space-map: (
   true
 );
 
+// POINTER EVENTS
+$base-class: 'pointer-events';
+$pointer-events-map: (
+  'auto': auto,
+  'none': none,
+  'inherit': inherit,
+  'initial': initial,
+  'revert': revert,
+  'unset': unset,
+);
+@include map-to-helpers(
+  $base-class,
+  $pointer-events-map,
+  'pointer-events',
+  $pseudo-classes,
+  true
+);
+
+// TEXT OVERFLOW
+$base-class: 'text-overflow';
+$text-overflow-map: (
+  'clip': clip,
+  'ellipsis': ellipsis,
+  'inherit': inherit,
+  'initial': initial,
+  'revert': revert,
+  'unset': unset,
+);
+@include map-to-helpers(
+  $base-class,
+  $text-overflow-map,
+  'text-overflow',
+  $pseudo-classes,
+);
+
 //TRANSFORM
 $base-class: 'transform';
 $scale: 10;

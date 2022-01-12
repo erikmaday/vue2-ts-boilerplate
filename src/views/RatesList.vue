@@ -381,7 +381,7 @@ export default class RatesList extends Vue {
     const marketplaceFilter = {
       column: {
         _t_id: '423fbf7f-e908-45d8-bc81-b050381f874b',
-        prop: 'marketplace',
+        value: 'marketplace',
         filterType: 'eq',
       },
       value: 1,

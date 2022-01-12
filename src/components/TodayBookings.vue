@@ -112,7 +112,7 @@ export default class TodayBookings extends Vue {
     )
   }
 
-  chips: Map<string, TableViewFilterChip> = {
+  chips: { [key: string]: TableViewFilterChip } = {
     startingSoon: {
       label: 'Starting Soon',
       count: 0,

@@ -129,13 +129,13 @@ export default class MarketplaceCard extends Vue {
   }
 
   get isExpired(): boolean {
-    const now = this.$dayjs.utc()
+    const now = (this as any).$dayjs.utc()
     const expiration = this.$dayjs(this.activeTrip.biddingEndDate)
     return expiration.diff(now) < 0
   }
 
   get actionMessage(): ColoredMessage {
-    const now = this.$dayjs.utc()
+    const now = (this as any).$dayjs.utc()
     const expiration = this.$dayjs(this.activeTrip.biddingEndDate)
     const diff = timeDifferenceAsObject(now, expiration)
     const color = diff.days <= 0 ? 'error' : 'gray-light'

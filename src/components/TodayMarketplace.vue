@@ -73,7 +73,7 @@ import { TableViewFilterChip } from '@/models/TableView'
 
 @Component({ components: { MarketplaceCard, Pagination } })
 export default class TodayMarketplace extends Vue {
-  chips: Map<string, TableViewFilterChip> = {
+  chips: { [key: string]: TableViewFilterChip } = {
     createdToday: {
       label: 'Created Today',
       count: 0,

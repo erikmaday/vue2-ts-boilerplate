@@ -302,11 +302,11 @@ export const routes: RouteConfig[] = [
               },
             ],
           },
-          {
-            path: 'metrics',
-            name: 'metrics',
-            component: () => import('@/views/Empty.vue'),
-          },
+          // {
+          //   path: 'metrics',
+          //   name: 'metrics',
+          //   component: () => import('@/views/Empty.vue'),
+          // },
         ],
       },
       {

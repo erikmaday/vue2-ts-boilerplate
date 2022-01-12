@@ -18,10 +18,4 @@ dayjs.extend(isSameOrAfter)
 dayjs.extend(customParseFormat)
 dayjs.extend(advancedFormat)
 
-export default Object.defineProperties(Vue.prototype, {
-  $dayjs: {
-    get() {
-      return dayjs
-    },
-  },
-})
+Vue.prototype.$dayjs = dayjs

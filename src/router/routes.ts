@@ -1,4 +1,5 @@
 import { RouteConfig } from 'vue-router'
+// import { store } from '@/state/store'
 
 export const routes: RouteConfig[] = [
   {
@@ -201,7 +202,7 @@ export const routes: RouteConfig[] = [
                 name: 'availability',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-availability" */ '@/views/Empty.vue'
+                    /* webpackChunkName: "company-availability" */ '@/views/Availability.vue'
                   ),
               },
               {
@@ -301,11 +302,11 @@ export const routes: RouteConfig[] = [
               },
             ],
           },
-          {
-            path: 'metrics',
-            name: 'metrics',
-            component: () => import('@/views/Empty.vue'),
-          },
+          // {
+          //   path: 'metrics',
+          //   name: 'metrics',
+          //   component: () => import('@/views/Empty.vue'),
+          // },
         ],
       },
       {
@@ -329,6 +330,11 @@ export const routes: RouteConfig[] = [
             props: (router) => ({
               hash: router.params.hash,
             }),
+          },
+          {
+            path: '/downloadApp',
+            name: 'download-app',
+            component: () => import('@/views/DownloadApp.vue'),
           },
           {
             path: 'forgotPassword',

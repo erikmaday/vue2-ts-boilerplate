@@ -450,6 +450,53 @@
       }
     }
   }
+
+  .v-picker {
+    .v-picker__body {
+      border-radius: 5px;
+    }
+    
+    .v-picker__title {
+      display: none;
+    }
+  }
+
+  .cv-wrapper {
+    .cv-week-day-header {
+      padding: 2px 8px;
+      flex-basis: calc(100% / 7);
+      border-right: 1px solid $gray-border;
+  
+      p {
+        margin: 0;
+        font-size: 14px;
+      }
+  
+      &--bold {
+        margin-left: -1px;
+        flex-basis: calc((100% / 7) + 1px);
+        font-weight: bolder;
+        background: $gray-header;
+      }
+    }
+
+    .cv-day-number {
+      display: none;
+    }
+
+    .cv-day.bolded {
+      background: $gray-header;
+    }
+
+    .cv-item {
+      background: transparent;
+    }
+
+    .cv-day {
+      border-color: $gray-border;
+    }
+  }
+
   // Wasn't sure whether it's worth adding percentages as helper classes/if 
   // that would mess with our standards--if so, I'll add them. 
   .margin-x-1-percent {

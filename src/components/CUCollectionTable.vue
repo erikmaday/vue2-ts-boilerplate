@@ -26,6 +26,7 @@
       :item-key="itemKey"
       :loading="loading"
       :server-items-length="serverItemsLength"
+      :no-data-text="noDataText"
       @update:options="load"
       @pagination="options = $event"
       @refresh="load"
@@ -68,6 +69,8 @@ export default class CUCollectionTable extends Vue {
   tabs!: TableViewTab[]
   @Prop({ type: Boolean, required: false, default: false })
   isFilterDialogOpen: boolean
+  @Prop({ type: String, required: false })
+  noDataText!: string
 
   items: unknown[] = []
   loading = false

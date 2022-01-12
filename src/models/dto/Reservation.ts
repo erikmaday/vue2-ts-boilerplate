@@ -1,4 +1,4 @@
-import { VehicleAssignment } from '.'
+import { Trip, VehicleAssignment } from '.'
 import { TableViewResult } from '../TableView'
 
 export interface Reservation {
@@ -57,6 +57,7 @@ export interface Reservation {
   sentDate: string
   tripId: number
   tripTypeLabel: string
+  trip?: Trip
   vehicleAssignments: VehicleAssignment[]
 }
 

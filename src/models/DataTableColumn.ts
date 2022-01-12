@@ -15,4 +15,7 @@ export interface DataTableColumn extends TextValue {
   method?: string
   sortable?: boolean
   sortProp?: string
+  sortDirection?: string
+  hidden?: boolean
+  defaultSort?: boolean
 }

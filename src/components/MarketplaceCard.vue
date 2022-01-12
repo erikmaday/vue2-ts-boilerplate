@@ -1,5 +1,11 @@
 <template>
-  <v-card class="border w-full cursor-pointer border-radius-2x">
+  <v-card
+    class="border w-full border-radius-2x"
+    :class="{
+      'cursor-pointer': !isExpired,
+      'cursor-default': isExpired,
+    }"
+  >
     <v-card-text
       class="padding-x-4 padding-t-4"
       :class="{ 'padding-b-4': !showPagination, 'padding-b-1': showPagination }"
@@ -13,19 +19,13 @@
       <p class="font-14 margin-t-0 margin-b-3">
         {{ formattedStartDateTime }}
       </p>
-      <div class="d-flex align-start">
+      <div class="d-flex align-start font-14">
         <CUIcon class="text-gray-mid-light margin-r-2">directions_bus</CUIcon>
-        <span
-          v-for="(requiredVehicle, requiredVehicleIndex) in requiredVehicles"
-          :key="`required-vehicle-${requiredVehicle.vehicleType}-${requiredVehicleIndex}`"
-          class="font-14"
-        >
-          {{ formattedRequiredVehicle(requiredVehicle) }}
-        </span>
+        <span class="white-space-pre">{{ formattedRequiredVehicles }}</span>
       </div>
-      <div class="d-flex align-center">
+      <div class="d-flex align-center font-14">
         <CUIcon class="text-gray-mid-light margin-r-2">person</CUIcon>
-        <span class="font-14">{{ formattedRequiredDrivers }}</span>
+        {{ formattedRequiredDrivers }}
       </div>
       <div class="d-flex justify-end">
         <span
@@ -36,16 +36,7 @@
         </span>
         <div
           v-else-if="promptBid"
-          class="
-            d-flex
-            white-space-nowrap
-            font-bold font-16
-            text-primary
-            align-middle
-            margin-a-0
-            padding-a-0
-            justify-end
-          "
+          class="d-flex white-space-nowrap font-bold font-16 text-primary align-middle margin-a-0 padding-a-0 justify-end"
         >
           Bid
           <CUIcon class="margin-l-1">arrow_right</CUIcon>
@@ -55,7 +46,7 @@
         </div>
         <span
           v-else-if="actionMessage"
-          class="white-space-nowrap font-bold font-12 text-error"
+          class="white-space-nowrap font-bold font-12"
           :class="`text-${actionMessage.color}`"
         >
           {{ actionMessage.text }}
@@ -137,15 +128,21 @@ export default class MarketplaceCard extends Vue {
     return [this.trip]
   }
 
+  get isExpired(): boolean {
+    const now = (this as any).$dayjs.utc()
+    const expiration = this.$dayjs(this.activeTrip.biddingEndDate)
+    return expiration.diff(now) < 0
+  }
+
   get actionMessage(): ColoredMessage {
     const now = (this as any).$dayjs.utc()
-    const expiration = (this as any).$dayjs(this.activeTrip.biddingEndDate)
+    const expiration = this.$dayjs(this.activeTrip.biddingEndDate)
     const diff = timeDifferenceAsObject(now, expiration)
-
-    return {
-      text: `Expires in ${timeObjectToString(diff)}`,
-      color: diff.days <= 0 ? 'error' : 'gray-light',
-    }
+    const color = diff.days <= 0 ? 'error' : 'gray-light'
+    const text = this.isExpired
+      ? 'Expired'
+      : `Expires in ${timeObjectToString(diff)}`
+    return { text, color }
   }
 
   get promptBid(): boolean {
@@ -186,22 +183,26 @@ export default class MarketplaceCard extends Vue {
     )}`
   }
 
-  formattedRequiredVehicle(vehicle: RequiredVehicle): string {
-    return `${vehicle.requiredVehicles} ${pluralize(
-      vehicle.requiredVehicles,
-      vehicle.vehicleType
-    )}`
+  get formattedRequiredVehicles(): string {
+    let string = ''
+    for (const vehicle of this.requiredVehicles) {
+      string = `${string}${vehicle.requiredVehicles} ${pluralize(
+        vehicle.requiredVehicles,
+        vehicle.vehicleType
+      )}\n`
+    }
+    return string
   }
 
   goToBid(): void {
+    if (this.isExpired) {
+      return
+    }
     if (this.isInBidDetail) {
       bidDetail.selectTrip(this.activeTrip.tripId)
     } else {
-      const name = this.tripsList.length > 1 ? 'multi-bid-detail' : 'bid-detail'
-      const id =
-        this.tripsList.length > 1
-          ? this.activeTrip.quoteId
-          : this.activeTrip.tripId
+      const name = 'bid-detail'
+      const id = this.activeTrip.quoteId
       this.$router.push({ name, params: { id: id.toString() } })
     }
   }

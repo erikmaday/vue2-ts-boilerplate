@@ -15,7 +15,7 @@
           This page does not exist or some other error has occurred.
           <br />
           Please check your url or return to the
-          <router-link :to="{ href: '/' }">home page</router-link>
+          <router-link :to="{ name: 'home' }">home page</router-link>
           .
         </slot>
       </v-col>

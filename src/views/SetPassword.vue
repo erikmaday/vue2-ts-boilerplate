@@ -163,7 +163,7 @@ export default class SetPassword extends Vue {
       let res = await user.byHash(this.hash)
       this.email = res.data.user.email
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
 
@@ -183,7 +183,7 @@ export default class SetPassword extends Vue {
       await user.setPasswordWithHash(this.hash, this.newPassword)
     } catch (e) {
       this.loading = false
-      console.log(e)
+      console.error(e)
       return
     }
     this.newPassword = ''

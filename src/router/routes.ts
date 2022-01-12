@@ -262,19 +262,19 @@ export const routes: RouteConfig[] = [
             component: () => import('@/views/Empty.vue'),
             children: [
               {
+                path: '',
+                name: 'marketplace',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "marketplace" */ '@/views/Marketplace.vue'
+                  ),
+              },
+              {
                 path: ':id',
                 name: 'bid-detail',
                 component: () =>
                   import(
                     /* webpackChunkName: "bid-detail" */ '@/views/BidDetail.vue'
-                  ),
-              },
-              {
-                path: 'multi/:id',
-                name: 'multi-bid-detail',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "multi-bid-detail" */ '@/views/BidDetail.vue'
                   ),
               },
             ],

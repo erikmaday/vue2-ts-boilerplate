@@ -110,7 +110,7 @@
       />
     </template>
     <template v-else>
-      {{ computedCellItemText }}
+      <span class="white-space-pre">{{ computedCellItemText }}</span>
     </template>
   </div>
 </template>

@@ -1,4 +1,5 @@
 import { RouteConfig } from 'vue-router'
+// import { store } from '@/state/store'
 
 export const routes: RouteConfig[] = [
   {
@@ -170,8 +171,8 @@ export const routes: RouteConfig[] = [
                   ),
                 children: [
                   {
-                    path: '', 
-                    name: 'rates', 
+                    path: '',
+                    name: 'rates',
                     component: () =>
                       import(
                         /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
@@ -179,22 +180,22 @@ export const routes: RouteConfig[] = [
                   },
                   // Commenting out until these components are used in v2
                   // {
-                  //   path: 'adjustments', 
-                  //   name: 'rates.adjustments', 
+                  //   path: 'adjustments',
+                  //   name: 'rates.adjustments',
                   //   component: () =>
                   //     import(
                   //       /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
                   //     ),
                   // },
                   // {
-                  //   path: 'calculator', 
-                  //   name: 'rates.calculator', 
+                  //   path: 'calculator',
+                  //   name: 'rates.calculator',
                   //   component: () =>
                   //     import(
                   //       /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
                   //     ),
                   // },
-                ]
+                ],
               },
               {
                 path: 'availability',
@@ -329,6 +330,11 @@ export const routes: RouteConfig[] = [
             props: (router) => ({
               hash: router.params.hash,
             }),
+          },
+          {
+            path: '/downloadApp',
+            name: 'download-app',
+            component: () => import('@/views/DownloadApp.vue'),
           },
           {
             path: 'forgotPassword',

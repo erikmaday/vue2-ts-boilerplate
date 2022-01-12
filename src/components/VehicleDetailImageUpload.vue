@@ -114,6 +114,7 @@ export default class VehicleDetailImageUpload extends Vue {
         imagePath: URL.createObjectURL(file),
         primaryImage: false,
         active: true,
+        label: '',
         file,
       }
       return newImage

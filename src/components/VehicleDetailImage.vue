@@ -71,6 +71,8 @@
       ></div>
       <template v-else>
         <CUTextField
+          @input="vehicleDetail.setPhotoLabel({ photo, label: $event })"
+          :value="photo.label"
           class="d-flex grow margin-r-4 margin-l-10"
           :disabled="vehicleDetail.getIsModeView"
           placeholder="Add a title"

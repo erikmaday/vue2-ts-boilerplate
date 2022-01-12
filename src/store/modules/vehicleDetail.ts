@@ -86,6 +86,15 @@ class VehicleDetailModule extends VuexModule {
   setVehiclePhotos(vehiclePhotos: VehiclePhotoDTO[]) {
     this.vehicle.vehiclePhotoDTOs = vehiclePhotos
   }
+  @Mutation
+  setPhotoDTOLabel(photo: VehiclePhotoDTO) {
+    let foundPhoto = this.vehicle.vehiclePhotoDTOs.find(
+      (p) => p.imagePath === photo.imagePath
+    )
+    if (foundPhoto) {
+      foundPhoto = photo
+    }
+  }
   // actions  @Action
   @Action
   initialize(): void {
@@ -173,6 +182,15 @@ class VehicleDetailModule extends VuexModule {
     }
   }
   @Action
+  async setPhotoLabel(obj: {
+    photo: VehiclePhotoDTO
+    label: string
+  }): Promise<void> {
+    const photo = obj.photo
+    photo.label = obj.label
+    this.setPhotoDTOLabel(photo)
+  }
+  @Action
   async uploadPhotos(): Promise<void> {
     if (this.vehicleId) {
       const newVehiclePhotos = buildNewPhotosPayload(
@@ -254,7 +272,8 @@ const buildNewPhotosPayload = (
   const form = new FormData()
   for (const photo of vehiclePhotoDTOs) {
     if (photo?.file) {
-      form.append('files', photo.file)
+      form.append('file', photo.file)
+      form.append('label', photo.label)
       count++
     }
   }

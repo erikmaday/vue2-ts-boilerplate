@@ -1,5 +1,11 @@
 <template>
-  <v-card class="border w-full cursor-pointer border-radius-2x">
+  <v-card
+    class="border w-full border-radius-2x"
+    :class="{
+      'cursor-pointer': !isExpired,
+      'cursor-default': isExpired,
+    }"
+  >
     <v-card-text
       class="padding-x-4 padding-t-4"
       :class="{ 'padding-b-4': !showPagination, 'padding-b-1': showPagination }"
@@ -30,16 +36,7 @@
         </span>
         <div
           v-else-if="promptBid"
-          class="
-            d-flex
-            white-space-nowrap
-            font-bold font-16
-            text-primary
-            align-middle
-            margin-a-0
-            padding-a-0
-            justify-end
-          "
+          class="d-flex white-space-nowrap font-bold font-16 text-primary align-middle margin-a-0 padding-a-0 justify-end"
         >
           Bid
           <CUIcon class="margin-l-1">arrow_right</CUIcon>
@@ -49,7 +46,7 @@
         </div>
         <span
           v-else-if="actionMessage"
-          class="white-space-nowrap font-bold font-12 text-error"
+          class="white-space-nowrap font-bold font-12"
           :class="`text-${actionMessage.color}`"
         >
           {{ actionMessage.text }}
@@ -131,15 +128,21 @@ export default class MarketplaceCard extends Vue {
     return [this.trip]
   }
 
+  get isExpired(): boolean {
+    const now = (this as any).$dayjs.utc()
+    const expiration = this.$dayjs(this.activeTrip.biddingEndDate)
+    return expiration.diff(now) < 0
+  }
+
   get actionMessage(): ColoredMessage {
     const now = (this as any).$dayjs.utc()
-    const expiration = (this as any).$dayjs(this.activeTrip.biddingEndDate)
+    const expiration = this.$dayjs(this.activeTrip.biddingEndDate)
     const diff = timeDifferenceAsObject(now, expiration)
-
-    return {
-      text: `Expires in ${timeObjectToString(diff)}`,
-      color: diff.days <= 0 ? 'error' : 'gray-light',
-    }
+    const color = diff.days <= 0 ? 'error' : 'gray-light'
+    const text = this.isExpired
+      ? 'Expired'
+      : `Expires in ${timeObjectToString(diff)}`
+    return { text, color }
   }
 
   get promptBid(): boolean {
@@ -192,6 +195,9 @@ export default class MarketplaceCard extends Vue {
   }
 
   goToBid(): void {
+    if (this.isExpired) {
+      return
+    }
     if (this.isInBidDetail) {
       bidDetail.selectTrip(this.activeTrip.tripId)
     } else {

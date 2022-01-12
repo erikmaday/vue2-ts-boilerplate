@@ -28,6 +28,12 @@ export interface TableViewTab extends TableViewFilter {
 export interface TableViewFilterChip {
   label: string
   count: number
-  filter: TableViewFilter[]
+  filters?: TableViewFilter[]
   active: boolean
+  buildFilters?: any
+}
+
+export interface ChipFilterState {
+  filters: any
+  filterParentOr: any
 }

@@ -344,6 +344,14 @@ export const routes: RouteConfig[] = [
                 /* webpackChunkName: "forgotPassword" */ '@/views/ForgotPassword.vue'
               ),
           },
+          {
+            path: '/*',
+            name: 'not-found',
+            component: () =>
+              import(
+                /* webpackChunkName: "not-found" */ '@/views/NotFound.vue'
+              ),
+          },
         ],
       },
     ],

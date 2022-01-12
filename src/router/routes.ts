@@ -307,6 +307,14 @@ export const routes: RouteConfig[] = [
           //   name: 'metrics',
           //   component: () => import('@/views/Empty.vue'),
           // },
+          {
+            path: '/*',
+            name: 'not-found',
+            component: () =>
+              import(
+                /* webpackChunkName: "not-found" */ '@/views/NotFound.vue'
+              ),
+          },
         ],
       },
       {

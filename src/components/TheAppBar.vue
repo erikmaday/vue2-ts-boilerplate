@@ -10,14 +10,20 @@
         <CharterUPLogo style="width: 108px" />
       </a>
     </v-toolbar-title>
-    <template v-if="auth.getIsTokenSet">
+    <template v-if="auth.getIsTokenSet && !auth.getIsDriverOnly">
       <template v-if="$vuetify.breakpoint.mdAndUp">
         <div
           v-for="(item, index) in topNavigationItems"
           :id="`app-bar-button-${item.label}`"
           :key="`item-link-${index}`"
           @click="handleNavigationClick(item)"
-          class="cursor-pointer padding-y-0 padding-x-4 first-of-type:padding-l-0 font-14 font-medium text-black text-no-wrap"
+          class="
+            cursor-pointer
+            padding-y-0 padding-x-4
+            first-of-type:padding-l-0
+            font-14 font-medium
+            text-black text-no-wrap
+          "
           :class="{
             'h-68': $vuetify.breakpoint.smAndUp,
             'h-60': $vuetify.breakpoint.xsOnly,
@@ -63,7 +69,14 @@
           <!-- Double spans allow for precise underlining -->
           <span
             v-else
-            class="h-full d-flex align-center border-b-2 border-t-0 border-x-0 border-transparent border-solid hover:border-black active:border-black"
+            class="
+              h-full
+              d-flex
+              align-center
+              border-b-2 border-t-0 border-x-0 border-transparent border-solid
+              hover:border-black
+              active:border-black
+            "
             :class="{ 'border-black': item.name === $route.name }"
           >
             <span>{{ item.label }}</span>
@@ -72,6 +85,7 @@
       </template>
       <v-spacer />
 
+      <!-- ADD BACK IN LATER WHEN WE SUPPORT GLOBAL SEARCH AND NOTIFICATIONS
       <CUIcon class="text-gray-mid-light margin-r-4" large :key="`search-icon`">
         search
       </CUIcon>
@@ -84,7 +98,7 @@
         >
           notifications
         </CUIcon>
-      </v-badge>
+      </v-badge> -->
 
       <template v-if="$vuetify.breakpoint.mdAndUp">
         <v-btn small text color="primary" class="margin-r-2">Support</v-btn>
@@ -122,6 +136,10 @@
           menu_three_lines
         </CUIcon>
       </template>
+    </template>
+    <template v-else-if="auth.getIsTokenSet && auth.getIsDriverOnly">
+      <v-spacer />
+      <v-btn text small color="primary" @click="auth.logout">Logout</v-btn>
     </template>
   </v-app-bar>
 </template>

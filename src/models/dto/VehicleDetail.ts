@@ -30,6 +30,7 @@ export interface VehiclePhotoDTO {
   primaryImage: boolean
   active: boolean
   file?: File
+  label: string
 }
 
 export interface DeleteVehiclePhotoPayload {

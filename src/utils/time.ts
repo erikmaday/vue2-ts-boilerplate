@@ -50,3 +50,4 @@ export const timeDifferenceAsString = (
 ): string => {
   return timeObjectToString(timeDifferenceAsObject(time1, time2))
 }
+export const DAYS_IN_WEEK = 7

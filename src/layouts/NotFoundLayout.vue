@@ -21,17 +21,6 @@
           .
         </span>
       </v-col>
-      <v-col v-if="$slots['button']">
-        <v-btn
-          dark
-          primary
-          small
-          class="primary"
-          @click="quoteExpiredIsOpen = false"
-        >
-          <slot name="button" />
-        </v-btn>
-      </v-col>
     </v-col>
   </v-row>
 </template>

@@ -272,7 +272,7 @@ const buildNewPhotosPayload = (
   const form = new FormData()
   for (const photo of vehiclePhotoDTOs) {
     if (photo?.file) {
-      form.append('files', photo.file)
+      form.append('file', photo.file)
       form.append('label', photo.label)
       count++
     }

@@ -378,10 +378,9 @@ export default class RatesList extends Vue {
     const filterUtil = filter()
     const parentFilter = filterUtil.createParent('and')
 
-
     const companyId = auth.getUser.companyId
     const companyRes = await company.byId(companyId)
-    const marketId = companyRes.data.company.address.nearestMarketId || 1
+    const marketId = companyRes.data.company?.address?.nearestMarketId || 1
 
     const marketplaceFilter = {
       column: {

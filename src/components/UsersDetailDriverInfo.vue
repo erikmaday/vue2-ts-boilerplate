@@ -10,6 +10,7 @@
             (val) =>
               verifyPhoneLength(val) || 'Phone Number is Incorrect Length',
           ]"
+          validate-on-blur
           label="Phone Number"
         />
       </v-col>
@@ -219,6 +220,7 @@ export default class UsersDetailDriverInfo extends Vue {
   }
 
   verifyPhoneLength(phoneNumber: string): boolean {
+    if (!phoneNumber) return false
     return (
       phoneNumber.replace(/[^0-9]/g, '').length === 10 ||
       phoneNumber.replace(/[^0-9]/g, '').length === 12

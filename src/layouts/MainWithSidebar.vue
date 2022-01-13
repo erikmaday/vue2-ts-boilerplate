@@ -12,37 +12,36 @@
           width: `${sidebarWidth}px`,
           'max-width': `${sidebarWidth}px`,
         }"
-        class="
-          padding-a-6
-          border-y-0 border-l-0 border-r border-gray-border border-solid
-        "
+        class="padding-a-6 border-y-0 border-l-0 border-r border-gray-border border-solid"
         :class="`background-${sidebarColor}`"
       >
         <slot name="navigation" />
       </v-col>
       <v-col class="padding-a-6" :class="`background-${mainColor}`">
-        <v-row align="center">
-          <v-col cols="auto">
-            <h1><slot name="section-title" /></h1>
-          </v-col>
-          <v-col cols="auto">
-            <slot name="top-bar-content" />
-          </v-col>
-          <template v-if="$vuetify.breakpoint.smAndDown">
-            <v-spacer />
-            <div class="shrink">
-              <v-menu offset-y>
-                <template #activator="{ on, attrs }">
-                  <CUIcon class="text-black" v-on="on" v-bind="attrs">
-                    more_vert
-                  </CUIcon>
-                </template>
-                <slot name="navigation" />
-              </v-menu>
-            </div>
-          </template>
-        </v-row>
-        <slot />
+        <v-container>
+          <v-row align="center">
+            <v-col cols="auto">
+              <h1><slot name="section-title" /></h1>
+            </v-col>
+            <v-col cols="auto">
+              <slot name="top-bar-content" />
+            </v-col>
+            <template v-if="$vuetify.breakpoint.smAndDown">
+              <v-spacer />
+              <div class="shrink">
+                <v-menu offset-y>
+                  <template #activator="{ on, attrs }">
+                    <CUIcon class="text-black" v-on="on" v-bind="attrs">
+                      more_vert
+                    </CUIcon>
+                  </template>
+                  <slot name="navigation" />
+                </v-menu>
+              </div>
+            </template>
+          </v-row>
+          <slot />
+        </v-container>
       </v-col>
     </v-row>
   </v-container>

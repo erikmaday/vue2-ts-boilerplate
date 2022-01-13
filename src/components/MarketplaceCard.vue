@@ -185,11 +185,27 @@ export default class MarketplaceCard extends Vue {
 
   get formattedRequiredVehicles(): string {
     let string = ''
-    for (const vehicle of this.requiredVehicles) {
-      string = `${string}${vehicle.requiredVehicles} ${pluralize(
-        vehicle.requiredVehicles,
-        vehicle.vehicleType
-      )}\n`
+    if (this.isInBidDetail) {
+      for (const vehicle of this.requiredVehicles) {
+        string = `${string}${vehicle.requiredVehicles} ${pluralize(
+          vehicle.requiredVehicles,
+          vehicle.vehicleType
+        )}\n`
+      }
+      return string
+    }
+
+    const vehicle = this.requiredVehicles[0]
+    string = `${vehicle.requiredVehicles} ${pluralize(
+      vehicle.requiredVehicles,
+      vehicle.vehicleType
+    )}`
+    let moreCount = 0
+    for (let i = 1; i < this.requiredVehicles.length; i++) {
+      moreCount += this.requiredVehicles[i].requiredVehicles
+    }
+    if (moreCount) {
+      string = `${string} (+${moreCount} others)`
     }
     return string
   }

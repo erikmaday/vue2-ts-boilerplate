@@ -240,6 +240,7 @@
                   item-text="label"
                   item-value="groupId"
                   label="Type"
+                  placeholder="User"
                 />
               </v-col>
             </v-row>

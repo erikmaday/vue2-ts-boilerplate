@@ -1,155 +1,120 @@
 <template>
-  <div>
-    <v-container class="position-relative">
-      <div
-        :class="{
-          'position-absolute top-4': $vuetify.breakpoint.mdAndUp,
-          'd-flex justify-center align-center': $vuetify.breakpoint.smAndDown,
-        }"
+  <Detail>
+    <template #back>
+      <v-btn
+        :icon="$vuetify.breakpoint.mdAndUp"
+        :x-small="$vuetify.breakpoint.mdAndUp"
+        :small="$vuetify.breakpoint.smAndDown"
+        plain
+        color="primary"
+        @click="pushLastRoute"
       >
-        <v-btn
-          plain
-          :icon="$vuetify.breakpoint.mdAndUp"
-          :x-small="$vuetify.breakpoint.mdAndUp"
-          :small="$vuetify.breakpoint.smAndDown"
-          @click="pushLastRoute"
+        <CUIcon>arrow_left</CUIcon>
+        <span v-if="$vuetify.breakpoint.xs" class="margin-l-1">Back</span>
+      </v-btn>
+    </template>
+    <template #title>{{ headerTitle }}</template>
+    <template #buttons>
+      <v-btn
+        v-show="isModeView"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        small
+        :text="$vuetify.breakpoint.mdAndUp"
+        :outlined="$vuetify.breakpoint.smAndDown"
+        color="error"
+        @click="deleteModalIsOpen = true"
+      >
+        Delete
+      </v-btn>
+      <v-btn
+        v-show="isModeEdit || isModeAdd"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        :text="$vuetify.breakpoint.mdAndUp"
+        :outlined="$vuetify.breakpoint.smAndDown"
+        small
+        color="primary"
+        @click="cancel"
+      >
+        Cancel
+      </v-btn>
+      <v-btn
+        v-show="isModeView"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        small
+        outlined
+        color="primary"
+        @click="
+          $router.push({
+            name: 'garages.edit',
+            params: { id: $route.params.id },
+          })
+        "
+      >
+        Edit Garage
+      </v-btn>
+      <v-btn
+        v-show="isModeEdit"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        small
+        color="primary"
+        @click="updateGarage"
+      >
+        Save
+      </v-btn>
+      <v-btn
+        v-show="isModeAdd"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        small
+        color="primary"
+        @click="addGarage"
+      >
+        Add
+      </v-btn>
+    </template>
+    <v-row justify="center">
+      <v-col cols="12">
+        <GaragesDetailForm
+          ref="form"
+          :mode="mode"
+          :current-garage.sync="currentGarage"
+          :garage-id="garageId"
+          @refresh="getCurrentGarage"
+        />
+        <template
+          v-if="!isModeAdd && currentGarage && currentGarage.vehicleDTOs"
         >
-          <CUIcon color="primary">arrow_left</CUIcon>
-          <span
-            v-if="$vuetify.breakpoint.smAndDown"
-            class="margin-l-1 text-primary"
-          >
-            Back
-          </span>
-        </v-btn>
-      </div>
-      <v-row justify="center">
-        <v-col cols="12" sm="8">
-          <v-row
-            class="padding-b-8"
-            align="center"
-            justify-md="space-between"
-            justify="center"
-          >
-            <v-col cols="12" md="auto">
-              <h1
-                class="margin-a-0"
-                :class="{
-                  'text-center': $vuetify.breakpoint.smAndDown,
-                }"
-              >
-                {{ headerTitle }}
-              </h1>
-            </v-col>
-            <div
-              :class="{
-                'w-full margin-x-3': $vuetify.breakpoint.xs,
-              }"
-            >
-              <v-btn
-                v-show="isModeView"
-                :class="{
-                  'w-full margin-y-2': $vuetify.breakpoint.xs,
-                  'margin-l-4': $vuetify.breakpoint.smAndUp,
-                }"
-                small
-                :text="$vuetify.breakpoint.smAndUp"
-                :outlined="$vuetify.breakpoint.xs"
-                color="error"
-                @click="deleteModalIsOpen = true"
-              >
-                Delete
-              </v-btn>
-              <v-btn
-                v-show="isModeEdit || isModeAdd"
-                :class="{
-                  'w-full margin-y-2': $vuetify.breakpoint.xs,
-                  'margin-l-4': $vuetify.breakpoint.smAndUp,
-                }"
-                :text="$vuetify.breakpoint.smAndUp"
-                :outlined="$vuetify.breakpoint.xs"
-                small
-                color="primary"
-                @click="cancelUpdate"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                v-show="isModeView"
-                :class="{
-                  'w-full margin-y-2': $vuetify.breakpoint.xs,
-                  'margin-l-4': $vuetify.breakpoint.smAndUp,
-                }"
-                small
-                outlined
-                color="primary"
-                @click="
-                  $router.push({
-                    name: 'garages.edit',
-                    params: { id: $route.params.id },
-                  })
-                "
-              >
-                Edit Garage
-              </v-btn>
-              <v-btn
-                v-show="isModeEdit"
-                :class="{
-                  'w-full margin-y-2': $vuetify.breakpoint.xs,
-                  'margin-l-4': $vuetify.breakpoint.smAndUp,
-                }"
-                small
-                color="primary"
-                @click="updateGarage"
-              >
-                Save
-              </v-btn>
-              <v-btn
-                v-show="isModeAdd"
-                :class="{
-                  'w-full margin-y-2': $vuetify.breakpoint.xs,
-                  'margin-l-4': $vuetify.breakpoint.smAndUp,
-                }"
-                small
-                color="primary"
-                @click="addGarage"
-              >
-                Add
-              </v-btn>
-            </div>
-          </v-row>
-        </v-col>
-      </v-row>
-      <v-row justify="center" no-gutters>
-        <v-col cols="12" sm="8">
-          <GaragesDetailForm
-            ref="form"
-            :mode="mode"
-            :current-garage.sync="currentGarage"
-            :garage-id="garageId"
-            @refresh="getCurrentGarage"
+          <div
+            class="border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1 margin-y-6"
+          ></div>
+          <h4 class="margin-b-3">Vehicles In Garage</h4>
+          <CUDataTable
+            :columns="columns"
+            :server-items-length="currentGarage.vehicleDTOs.length"
+            :items="currentGarage.vehicleDTOs"
+            item-key="vehicleId"
+            :options="{}"
+            is-detail-table
+            detail-name="vehicles.view"
+            no-data-text="No vehicles are in this garage"
           />
-          <template
-            v-if="!isModeAdd && currentGarage && currentGarage.vehicleDTOs"
-          >
-            <div
-              class="border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1 margin-y-6"
-            ></div>
-            <h4 class="margin-b-3">Vehicles In Garage</h4>
-            <CUDataTable
-              :columns="columns"
-              :server-items-length="currentGarage.vehicleDTOs.length"
-              :items="currentGarage.vehicleDTOs"
-              item-key="vehicleId"
-              :options="{}"
-              is-detail-table
-              detail-name="vehicles.view"
-              no-data-text="No vehicles are in this garage"
-            />
-          </template>
-        </v-col>
-      </v-row>
-    </v-container>
+        </template>
+      </v-col>
+    </v-row>
     <CUModal v-model="deleteModalIsOpen">
       <template #title>Delete Garage</template>
       <template #text>Are you sure you want to delete this garage?</template>
@@ -168,7 +133,7 @@
         <v-spacer />
       </template>
     </CUModal>
-  </div>
+  </Detail>
 </template>
 
 <script lang="ts">
@@ -176,6 +141,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import garage from '@/services/garage'
 import { AxiosResponse } from 'axios'
 import { Garage } from '@/models/dto/Garage'
+import Detail from '@/layouts/Detail.vue'
 import GaragesDetailForm from '@/components/GaragesDetailForm.vue'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
 import { isNotEmpty } from '@/utils/validators'
@@ -186,6 +152,7 @@ import { TableViewParameters } from '@/models/TableView'
 
 @Component({
   components: {
+    Detail,
     GaragesDetailForm,
     AutocompleteAddress,
   },
@@ -307,7 +274,7 @@ export default class GaragesDetail extends Vue {
     }
   }
 
-  cancelUpdate(): void {
+  cancel(): void {
     if (this.isModeAdd) {
       if (app.getLastRoute?.name) {
         this.$router.push(app.getLastRoute)

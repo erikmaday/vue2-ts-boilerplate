@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <Main>
     <v-row>
       <v-col cols="12">
         <BookingDetailStepTimeline
@@ -59,12 +59,13 @@
       </v-col>
       <v-col cols="12"><BookingDetailSupport /></v-col>
     </v-row>
-  </v-container>
+  </Main>
 </template>
 
 <script lang="ts">
 import { ReservationDetail, Trip, VehicleAssignment } from '@/models/dto'
 import { Component, Vue } from 'vue-property-decorator'
+import Main from '@/layouts/Main.vue'
 import BookingDetailStepTimeline from '@/components/BookingDetailStepTimeline.vue'
 import BookingDetailHeader from '@/components/BookingDetailHeader.vue'
 import BookingDetailTripNumbers from '@/components/BookingDetailTripNumbers.vue'
@@ -82,6 +83,7 @@ import { ReferralStatus } from '@/utils/enum'
 
 @Component({
   components: {
+    Main,
     BookingDetailStepTimeline,
     BookingDetailHeader,
     BookingDetailTripNumbers,

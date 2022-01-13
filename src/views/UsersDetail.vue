@@ -56,7 +56,7 @@
                 'w-full margin-y-2': $vuetify.breakpoint.xs,
                 'margin-l-4': $vuetify.breakpoint.smAndUp,
               }"
-              outlined
+              text
               small
               color="primary"
               @click="
@@ -94,6 +94,7 @@
               }"
               v-show="isModeView"
               primary
+              text
               small
               color="error"
               @click="isDeleteModalOpen = true"
@@ -109,6 +110,7 @@
               v-show="isModeView"
               primary
               small
+              outlined
               color="primary"
               @click="isChangePasswordOpen = !isChangePasswordOpen"
             >
@@ -122,6 +124,7 @@
                 'margin-l-4': $vuetify.breakpoint.smAndUp,
               }"
               small
+              outlined
               color="primary"
               @click="
                 $router.push({

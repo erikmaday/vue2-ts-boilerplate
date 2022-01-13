@@ -311,7 +311,6 @@ import UsersDetailUserPhoto from '@/components/UsersDetailUserPhoto.vue'
 import UsersDetailDriverInfo from '@/components/UsersDetailDriverInfo.vue'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 import app from '@/store/modules/app'
-import { isNotEmptyInput } from '@/utils/validators'
 
 @Component({
   components: {
@@ -323,7 +322,6 @@ import { isNotEmptyInput } from '@/utils/validators'
 export default class UsersDetail extends Vue {
   DRIVER_GROUP_ID = 4
   userGroups = userGroups
-  isNotEmptyInput = isNotEmptyInput
 
   validationErrors = {
     email: '',

@@ -53,6 +53,7 @@
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
                 small
+                text
                 color="error"
                 @click="deleteModalIsOpen = true"
               >
@@ -78,6 +79,7 @@
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
                 small
+                outlined
                 color="primary"
                 @click="
                   $router.push({

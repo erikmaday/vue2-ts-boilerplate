@@ -53,6 +53,8 @@
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
                 small
+                :text="$vuetify.breakpoint.smAndUp"
+                :outlined="$vuetify.breakpoint.xs"
                 color="error"
                 @click="deleteModalIsOpen = true"
               >
@@ -64,7 +66,8 @@
                   'w-full margin-y-2': $vuetify.breakpoint.xs,
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
-                outlined
+                :text="$vuetify.breakpoint.smAndUp"
+                :outlined="$vuetify.breakpoint.xs"
                 small
                 color="primary"
                 @click="cancelUpdate"
@@ -78,6 +81,7 @@
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
                 small
+                outlined
                 color="primary"
                 @click="
                   $router.push({
@@ -86,7 +90,7 @@
                   })
                 "
               >
-                Edit
+                Edit Garage
               </v-btn>
               <v-btn
                 v-show="isModeEdit"
@@ -121,7 +125,7 @@
           <GaragesDetailForm
             ref="form"
             :mode="mode"
-            :current-garage="currentGarage"
+            :current-garage.sync="currentGarage"
             :garage-id="garageId"
             @refresh="getCurrentGarage"
           />
@@ -129,14 +133,7 @@
             v-if="!isModeAdd && currentGarage && currentGarage.vehicleDTOs"
           >
             <div
-              class="
-                border-solid
-                border-gray-mid-light
-                border-x-0
-                border-t-0
-                border-b-1
-                margin-y-6
-              "
+              class="border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1 margin-y-6"
             ></div>
             <h4 class="margin-b-3">Vehicles In Garage</h4>
             <CUDataTable
@@ -235,9 +232,9 @@ export default class GaragesDetail extends Vue {
       case 'add':
         return 'Add Garage'
       case 'edit':
-        return 'Edit Garage'
+        return `Edit ${this.currentGarage.garageName}`
       default:
-        return 'View Garage'
+        return this.currentGarage.garageName
     }
   }
 

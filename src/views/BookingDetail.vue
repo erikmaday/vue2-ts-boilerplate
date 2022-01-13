@@ -31,7 +31,7 @@
       <v-col cols="12">
         <BookingDetailItinerary v-if="reservation" :reservation="reservation" />
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" v-if="reservation && reservation.customerNotes">
         <BookingDetailCustomerNotes :reservation="reservation" />
       </v-col>
       <template v-if="isAccepted">

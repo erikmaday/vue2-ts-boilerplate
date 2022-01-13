@@ -9,6 +9,7 @@
             (val) => !!val || 'Phone Number is Required',
             (val) => validatePhoneNumber(val),
           ]"
+          validate-on-blur
           label="Phone Number"
         />
       </v-col>

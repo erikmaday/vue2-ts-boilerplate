@@ -53,7 +53,8 @@
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
                 small
-                text
+                :text="$vuetify.breakpoint.smAndUp"
+                :outlined="$vuetify.breakpoint.xs"
                 color="error"
                 @click="deleteModalIsOpen = true"
               >
@@ -65,7 +66,8 @@
                   'w-full margin-y-2': $vuetify.breakpoint.xs,
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
-                text
+                :text="$vuetify.breakpoint.smAndUp"
+                :outlined="$vuetify.breakpoint.xs"
                 small
                 color="primary"
                 @click="cancelUpdate"

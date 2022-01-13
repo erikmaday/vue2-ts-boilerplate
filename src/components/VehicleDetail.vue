@@ -1,17 +1,34 @@
 <template>
   <div>
     <v-row>
-      <v-col class="grow">
+      <v-col
+        :class="{
+          grow: $vuetify.breakpoint.smAndUp,
+          'col-12 text-center': $vuetify.breakpoint.xs,
+        }"
+      >
         <h1>{{ headerText }}</h1>
       </v-col>
       <v-spacer />
-      <div class="d-flex shrink padding-a-3">
+      <div
+        class="d-flex shrink padding-a-3"
+        :class="{
+          'flex-row': $vuetify.breakpoint.smAndUp,
+          'justify-center': $vuetify.breakpoint.sm,
+          'flex-column col-12': $vuetify.breakpoint.xs,
+          'justify-end': $vuetify.breakpoint.mdAndUp,
+        }"
+      >
         <v-btn
           v-if="vehicleDetail.getIsModeAdd || vehicleDetail.getIsModeEdit"
           color="primary"
           small
-          text
-          class="margin-r-3"
+          :text="$vuetify.breakpoint.smAndUp"
+          :outlined="$vuetify.breakpoint.xs"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
           :key="`cancel-button-${vehicleDetail.getSaving}`"
           :loading="vehicleDetail.getSaving"
           @click="vehicleDetail.goBack"
@@ -22,8 +39,12 @@
           v-if="vehicleDetail.getIsModeView"
           color="error"
           small
-          text
-          class="margin-r-3"
+          :text="$vuetify.breakpoint.smAndUp"
+          :outlined="$vuetify.breakpoint.xs"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
           :key="`delete-button-${vehicleDetail.getSaving}`"
           :loading="vehicleDetail.getSaving"
           @click="deleteModalIsOpen = true"
@@ -31,14 +52,33 @@
           Delete
         </v-btn>
         <v-btn
+          v-if="vehicleDetail.getIsModeView"
           color="primary"
           small
-          :outlined="vehicleDetail.getIsModeView"
+          outlined
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
           :loading="vehicleDetail.getSaving"
-          :key="`main-action-button-${vehicleDetail.getSaving}`"
+          :key="`edit-action-button-${vehicleDetail.getSaving}`"
           @click="handleActionClick"
         >
-          {{ actionButtonText }}
+          Edit Vehicle
+        </v-btn>
+        <v-btn
+          v-if="!vehicleDetail.getIsModeView"
+          color="primary"
+          small
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
+          :loading="vehicleDetail.getSaving"
+          :key="`save-action-button-${vehicleDetail.getSaving}`"
+          @click="handleActionClick"
+        >
+          Save
         </v-btn>
       </div>
     </v-row>

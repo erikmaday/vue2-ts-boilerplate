@@ -69,7 +69,12 @@
       >
         <template v-if="!loading">Update Assignments</template>
         <span class="padding-x-15" v-else>
-          <v-progress-circular indeterminate color="white" :size="20" />
+          <v-progress-circular
+            indeterminate
+            color="white"
+            :width="2"
+            :size="20"
+          />
         </span>
       </v-btn>
     </template>

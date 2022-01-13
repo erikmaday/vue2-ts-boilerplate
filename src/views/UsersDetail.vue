@@ -235,7 +235,7 @@
                   :disabled="isModeProfile"
                   :items="userGroups"
                   :rules="[
-                    (val) => (val && !!val.length) || 'Type is required',
+                    (val) => isNotEmptyArray(val) || 'Type is required',
                   ]"
                   item-text="label"
                   item-value="groupId"
@@ -311,6 +311,7 @@ import UsersDetailUserPhoto from '@/components/UsersDetailUserPhoto.vue'
 import UsersDetailDriverInfo from '@/components/UsersDetailDriverInfo.vue'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 import app from '@/store/modules/app'
+import { isNotEmptyArray } from '@/utils/validators'
 
 @Component({
   components: {
@@ -322,6 +323,7 @@ import app from '@/store/modules/app'
 export default class UsersDetail extends Vue {
   DRIVER_GROUP_ID = 4
   userGroups = userGroups
+  isNotEmptyArray = isNotEmptyArray
 
   validationErrors = {
     email: '',

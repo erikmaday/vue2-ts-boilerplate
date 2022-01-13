@@ -182,35 +182,20 @@ import { Address } from '@/models/dto'
 import auth from '@/store/modules/auth'
 import company from '@/services/company'
 import { Company } from '@/models/dto/Company'
-import CompanyPhoto from '@/components/CompanyPhoto.vue'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
 import ProfileIcon from '@/components/ProfileIcon.vue'
 import { verifyPhoneLength } from '@/utils/validators'
-import app from '@/store/modules/app'
 
 @Component({
   components: {
-    CompanyPhoto,
     AutocompleteAddress,
     ProfileIcon,
   },
 })
 export default class CompanyDetail extends Vue {
-  validationErrors = {
-    email: '',
-  }
-
-  app = app
-
   notFound = false
-  treatAsDriver = false
-  isChangePasswordOpen = false
-  avatarLink = ''
-  uploadedPhoto: FormData | undefined = undefined
-  isDeleteModalOpen = false
 
   currentCompany: Company | Record<string, never> = {}
-  companyPhoto = ''
 
   mounted(): void {
     if (this.isModeEdit || this.isModeView) {
@@ -277,46 +262,20 @@ export default class CompanyDetail extends Vue {
     return verifyPhoneLength(number) || 'Please enter a valid phone number'
   }
 
-  // Not sure what type to cast the event as here
-  uploadCompanyPhoto(e: any): void {
-    e.preventDefault()
-    if (!e.target.files || !e.target?.files[0]) return
-
-    const file = e.target.files[0]
-    this.avatarLink = URL.createObjectURL(file)
-    const formData = new FormData()
-    formData.append('file', file)
-    this.uploadedPhoto = formData
-    this.companyPhoto = this.avatarLink
-  }
-
   async editExistingCompany(): Promise<number> {
     let companyId = Number(auth.getUser.companyId)
     await company.update(companyId, this.currentCompany as Company)
     return companyId
   }
 
-  resetFormValidation(): void {
-    this.validationErrors = {
-      email: '',
-    }
-  }
-
   async submit(): Promise<void> {
-    this.resetFormValidation()
-
     // Casting a ref to `any` prevents a TS error when calling .validate()
     const form: any = this.$refs.form
     if (!form.validate()) {
       return
     }
 
-    let companyId: number
-    companyId = await this.editExistingCompany()
-
-    if (this.uploadedPhoto) {
-      await company.uploadCompanyPhoto(companyId, this.uploadedPhoto)
-    }
+    await this.editExistingCompany()
 
     this.$router.push({
       name: 'settings',

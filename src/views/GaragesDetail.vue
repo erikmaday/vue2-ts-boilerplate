@@ -121,7 +121,7 @@
           <GaragesDetailForm
             ref="form"
             :mode="mode"
-            :current-garage="currentGarage"
+            :current-garage.sync="currentGarage"
             :garage-id="garageId"
             @refresh="getCurrentGarage"
           />
@@ -129,14 +129,7 @@
             v-if="!isModeAdd && currentGarage && currentGarage.vehicleDTOs"
           >
             <div
-              class="
-                border-solid
-                border-gray-mid-light
-                border-x-0
-                border-t-0
-                border-b-1
-                margin-y-6
-              "
+              class="border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1 margin-y-6"
             ></div>
             <h4 class="margin-b-3">Vehicles In Garage</h4>
             <CUDataTable
@@ -235,9 +228,9 @@ export default class GaragesDetail extends Vue {
       case 'add':
         return 'Add Garage'
       case 'edit':
-        return 'Edit Garage'
+        return `Edit ${this.currentGarage.garageName}`
       default:
-        return 'View Garage'
+        return this.currentGarage.garageName
     }
   }
 

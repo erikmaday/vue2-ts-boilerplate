@@ -40,7 +40,7 @@ export default class MarketplaceListBidPrice extends Vue {
   goToBidDetail(): void {
     this.$router.push({
       name: 'bid-detail',
-      params: { id: this.row.tripId.toString() },
+      params: { id: this.row.quoteId.toString() },
     })
   }
 }

@@ -4,6 +4,7 @@
       v-model="model.garageName"
       :rules="[(val) => isNotEmpty(val) || 'Name is Required']"
       label="Name"
+      @input="$emit('update:currentGarage', model)"
     />
     <AutocompleteAddress
       v-model="model.addressDTO"

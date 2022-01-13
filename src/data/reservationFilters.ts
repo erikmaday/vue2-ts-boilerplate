@@ -26,7 +26,7 @@ const reservationFilters: { [key: string]: TableViewFilter } = {
   isInProgress: {
     column: {
       _t_id: '5b583f16-1d99-43c2-9e74-4f3df497c25f',
-      value: 'reservationStatus',
+      value: 'parentReservation.reservationStatus',
       filterType: 'eq',
       text: '',
       type: 'text',
@@ -76,7 +76,7 @@ const reservationFilters: { [key: string]: TableViewFilter } = {
   isFinished: {
     column: {
       _t_id: 'f9668131-3d1a-45ff-bbef-33c9b7cf832a',
-      value: 'reservationStatus',
+      value: 'parentReservation.reservationStatus',
       filterType: 'eq',
       text: '',
       type: 'text',
@@ -86,7 +86,7 @@ const reservationFilters: { [key: string]: TableViewFilter } = {
   isUpcoming: {
     column: {
       _t_id: 'f9668131-3d1a-45ff-bbef-33c9b7cf832a',
-      value: 'reservationStatus',
+      value: 'parentReservation.reservationStatus',
       filterType: 'eq',
       text: '',
       type: 'text',

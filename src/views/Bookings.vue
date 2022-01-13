@@ -67,12 +67,12 @@ export default class Bookings extends Vue {
     {
       _t_id: 'c6a51018-3361-4f70-90b0-43caebe3d1f8',
       text: 'Pickup/Destination',
-      value: 'firstPickupAddress/city',
+      value: 'firstPickupAddressName',
       filterable: true,
       sortable: true,
-      filterProp: ['firstPickupAddress/city', 'firstDropoffAddress/city'],
+      filterProp: ['firstPickupAddressName', 'firstDropoffAddressName'],
       filterType: 'contains',
-      sortProp: 'firstPickupAddress/city',
+      sortProp: 'firstPickupAddressName',
       computedText: (row: Reservation): string =>
         formatReservationPickupDestinationText(row),
     },
@@ -92,7 +92,7 @@ export default class Bookings extends Vue {
       computedText: (row: Reservation): string =>
         currencyFilter(row.customerTotal),
       sortable: true,
-      sortProp: 'customerTotal',
+      sortProp: 'amount',
     },
     {
       _t_id: '07a7b0c4-b4c0-40ab-bd75-c5cf2cce1c78',

@@ -450,9 +450,13 @@ export default class UsersDetail extends Vue {
       case 'add':
         return 'Add User'
       case 'edit':
-        return 'Edit User'
+        return `Edit ${this.currentUser.firstName || ''} ${
+          this.currentUser.lastName || ''
+        }`
       default:
-        return 'View User'
+        return `${this.currentUser.firstName || ''} ${
+          this.currentUser.lastName || ''
+        }`
     }
   }
 

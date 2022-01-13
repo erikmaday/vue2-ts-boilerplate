@@ -307,20 +307,12 @@ export const routes: RouteConfig[] = [
           //   name: 'metrics',
           //   component: () => import('@/views/Empty.vue'),
           // },
-          {
-            path: '/*',
-            name: 'not-found',
-            component: () =>
-              import(
-                /* webpackChunkName: "not-found" */ '@/views/NotFound.vue'
-              ),
-          },
         ],
       },
       {
         path: '',
         name: 'preauth',
-        component: () => import('@/views/PreAuth.vue'),
+        component: () => import('@/views/Home.vue'),
         children: [
           {
             path: 'login',
@@ -350,6 +342,14 @@ export const routes: RouteConfig[] = [
             component: () =>
               import(
                 /* webpackChunkName: "forgotPassword" */ '@/views/ForgotPassword.vue'
+              ),
+          },
+          {
+            path: '/*',
+            name: 'not-found',
+            component: () =>
+              import(
+                /* webpackChunkName: "not-found" */ '@/views/NotFound.vue'
               ),
           },
         ],

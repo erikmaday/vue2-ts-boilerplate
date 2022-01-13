@@ -50,7 +50,6 @@
           Cancel
         </v-btn>
         <v-btn color="primary" small @click="submitComment">Save</v-btn>
-        <v-spacer />
       </template>
     </CUModal>
   </v-row>

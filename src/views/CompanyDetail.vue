@@ -254,8 +254,8 @@ export default class CompanyDetail extends Vue {
     this.currentCompany.address = addr
   }
 
-  validatePhoneNumber(number: string): boolean | string {
-    return verifyPhoneLength(number) || 'Please enter a valid phone number'
+  validatePhoneNumber(val: string): boolean | string {
+    return verifyPhoneLength(val) || 'Please enter a valid phone number'
   }
 
   async editExistingCompany(): Promise<number> {

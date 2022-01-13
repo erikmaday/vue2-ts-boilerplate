@@ -219,8 +219,8 @@ export default class UsersDetailDriverInfo extends Vue {
     }
   }
 
-  validatePhoneNumber(number: string): boolean | string {
-    return verifyPhoneLength(number) || 'Please enter a valid phone number'
+  validatePhoneNumber(val: string): boolean | string {
+    return verifyPhoneLength(val) || 'Please enter a valid phone number'
   }
 
   mounted(): void {

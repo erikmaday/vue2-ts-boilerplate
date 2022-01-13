@@ -49,7 +49,7 @@
               item-value="vehicleId"
               dense
               :value="assignment.vehicle.vehicleId"
-              @input="updateVehicleId(vi, $event)"
+              @input="(e) => updateVehicleId(vi, e)"
             />
           </v-col>
         </v-row>
@@ -98,12 +98,20 @@ import reservation from '@/services/reservation'
 
 @Component({})
 export default class TripAssignmentsModal extends Vue {
-  @Prop({ required: true }) readonly requiredVehicles!: RequiredVehicleType[]
-  @Prop({ required: true }) readonly requiredDrivers!: number
+  // @Prop({ required: true }) readonly requiredVehicles!: RequiredVehicleType[]
+  // @Prop({ required: true }) readonly requiredDrivers!: number
   @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
   @Prop({ required: true }) readonly reservationId!: number
   @Prop({ required: true }) readonly value!: boolean
   @Prop({ required: true }) readonly trip!: Trip
+
+  get requiredDrivers(): number {
+    return this.trip.requiredDrivers
+  }
+
+  get requiredVehicles(): RequiredVehicleType[] {
+    return this.trip.vehicles
+  }
 
   model: any = []
   vehicles: Vehicle[] = []

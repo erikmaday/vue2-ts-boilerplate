@@ -9,22 +9,22 @@
     <v-col cols="6" md="auto" class="order-3 order-md-2">
       <div class="row align-center margin-a-0 justify-center">
         <VehicleAssignmentIcons
-          v-if="trip"
+          v-if="trip && reservation"
+          :reservation="reservation"
           :trip="trip"
           :vehicle-assignments="tripAssignments"
           show-label="true"
-          @click.native="handleClick"
         />
       </div>
     </v-col>
     <v-col cols="6" md="auto" class="order-4 order-md-3">
       <div class="row align-center margin-a-0 justify-center">
         <DriverAssignmentIcons
-          v-if="trip"
+          v-if="trip && reservation"
+          :reservation="reservation"
           :trip="trip"
           :vehicle-assignments="tripAssignments"
           show-label="true"
-          @click.native="handleClick"
         />
       </div>
     </v-col>
@@ -34,23 +34,12 @@
         {{ passengerCount }} Passengers
       </div>
     </v-col>
-    <template v-if="trip">
-      <TripAssignmentsModal
-        v-model="isModalOpen"
-        :requiredDrivers="trip.requiredDrivers"
-        :requiredVehicles="trip.vehicles"
-        :reservationId="reservation.reservationId"
-        :tripAssignments="tripAssignments"
-        :trip="trip"
-        @refresh="$emit('refresh')"
-      />
-    </template>
   </v-row>
 </template>
 
 <script lang="ts">
 import { ReservationDetail, Trip, VehicleAssignment } from '@/models/dto'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Provide, Vue } from 'vue-property-decorator'
 import VehicleAssignmentIcons from '@/components/VehicleAssignmentIcons.vue'
 import DriverAssignmentIcons from '@/components/DriverAssignmentIcons.vue'
 import TripAssignmentsModal from '@/components/TripAssignmentsModal.vue'
@@ -65,9 +54,7 @@ import TripAssignmentsModal from '@/components/TripAssignmentsModal.vue'
 export default class BookingDetailTripNumbers extends Vue {
   @Prop({ required: true }) readonly reservation?: ReservationDetail
   @Prop({ required: true }) readonly trip?: Trip
-  @Prop({ required: true }) readonly tripAssignments?: VehicleAssignment[]
-
-  isModalOpen = false
+@Prop({ required: true }) readonly tripAssignments?: VehicleAssignment[]
 
   get tripType(): string {
     return this.reservation?.tripType
@@ -75,10 +62,6 @@ export default class BookingDetailTripNumbers extends Vue {
 
   get passengerCount(): number {
     return this.reservation?.referralPassengerCount
-  }
-
-  handleClick(): void {
-    this.isModalOpen = true
   }
 }
 </script>

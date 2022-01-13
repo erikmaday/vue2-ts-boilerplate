@@ -25,6 +25,9 @@ export function buildModel(
   requiredVehicles: RequiredVehicleType[],
   driverCount = 0
 ): any {
+
+  vehicleAssignments = deepClone(vehicleAssignments)
+  requiredVehicles = deepClone(requiredVehicles)
   const UNASSIGNED_VEHICLE_TYPE_ID = 99
 
   if (!requiredVehicles?.length) return []

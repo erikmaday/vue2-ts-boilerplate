@@ -11,11 +11,25 @@
       <v-row>
         <v-col cols="auto">
           <img
+            v-if="customerImage"
             :src="customerImage"
             class="border-radius-round max-h-88 max-w-88"
             width="auto"
             height="auto"
           />
+          <div
+            v-else
+            class="w-88 h-88 border-radius-round border-solid border-2 border-gray-border d-flex align-center justify-center background-gray-header"
+          >
+            <CUIcon
+              color="gray-mid-light"
+              width="64px"
+              height="64px"
+              class="margin-t-n1"
+            >
+              person
+            </CUIcon>
+          </div>
         </v-col>
         <v-col cols="auto">
           <p class="font-16 font-medium">
@@ -54,7 +68,7 @@ export default class BookingDetailCustomerInformation extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
 
   get customerImage(): string {
-    const customerImage = 'https://picsum.photos/100/100'
+    const customerImage = ''
     return customerImage
   }
 

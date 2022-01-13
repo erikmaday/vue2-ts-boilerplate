@@ -65,7 +65,7 @@
                   'w-full margin-y-2': $vuetify.breakpoint.xs,
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
-                outlined
+                text
                 small
                 color="primary"
                 @click="cancelUpdate"
@@ -88,7 +88,7 @@
                   })
                 "
               >
-                Edit
+                Edit Garage
               </v-btn>
               <v-btn
                 v-show="isModeEdit"

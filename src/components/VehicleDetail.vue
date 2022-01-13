@@ -19,6 +19,18 @@
           Cancel
         </v-btn>
         <v-btn
+          v-if="vehicleDetail.getIsModeView"
+          color="error"
+          small
+          text
+          class="margin-r-3"
+          :key="`delete-button-${vehicleDetail.getSaving}`"
+          :loading="vehicleDetail.getSaving"
+          @click="deleteModalIsOpen = true"
+        >
+          Delete
+        </v-btn>
+        <v-btn
           color="primary"
           small
           :outlined="vehicleDetail.getIsModeView"
@@ -46,6 +58,17 @@
         <VehicleDetailAmenities />
       </v-col>
     </v-row>
+    <CUModal v-model="deleteModalIsOpen">
+      <template #title>Delete Vehicle</template>
+      <template #text>Are you sure you want to delete this vehicle?</template>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="deleteModalIsOpen = false">
+          Cancel
+        </v-btn>
+        <v-btn color="error" small @click="deleteVehicle">Delete</v-btn>
+      </template>
+    </CUModal>
   </div>
 </template>
 
@@ -55,6 +78,9 @@ import VehicleDetailAmenities from '@/components/VehicleDetailAmenities.vue'
 import VehicleDetailInformation from '@/components/VehicleDetailInformation.vue'
 import VehicleDetailImages from '@/components/VehicleDetailImages.vue'
 import vehicleDetail from '@/store/modules/vehicleDetail'
+import vehicle from '@/services/vehicle'
+import { AxiosResponse } from 'axios'
+import { ApiResult } from '@/models/dto'
 
 @Component({
   components: {
@@ -66,6 +92,7 @@ import vehicleDetail from '@/store/modules/vehicleDetail'
 export default class VehicleDetail extends Vue {
   vehicleDetail = vehicleDetail
   isFormValid = true
+  deleteModalIsOpen = false
 
   @Watch('$route.name', { immediate: true })
   routeNameChanged(value: string): void {
@@ -104,6 +131,18 @@ export default class VehicleDetail extends Vue {
       }
     }
     vehicleDetail.setSaving(false)
+  }
+
+  async deleteVehicle(): Promise<void> {
+    if (!vehicleDetail.getVehicleId) {
+      return
+    }
+
+    const res: AxiosResponse = await vehicle.delete(vehicleDetail.getVehicleId)
+    if (res.status === 200) {
+      this.deleteModalIsOpen = false
+      this.$router.push({ name: 'vehicles' })
+    }
   }
 
   validate(): boolean {

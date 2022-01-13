@@ -378,6 +378,11 @@ export default class RatesList extends Vue {
     const filterUtil = filter()
     const parentFilter = filterUtil.createParent('and')
 
+
+    const companyId = auth.getUser.companyId
+    const companyRes = await company.byId(companyId)
+    const marketId = companyRes.data.company.address.nearestMarketId || 1
+
     const marketplaceFilter = {
       column: {
         _t_id: '423fbf7f-e908-45d8-bc81-b050381f874b',
@@ -387,7 +392,17 @@ export default class RatesList extends Vue {
       value: 1,
     }
 
+    const marketIdFilter = {
+      column: {
+        _t_id: '62ed9372-5330-465c-a854-a49d35ec9e4d',
+        value: 'marketId',
+        filterType: 'eq',
+      }, 
+      value: marketId
+    }
+
     filterUtil.add(parentFilter, marketplaceFilter)
+    filterUtil.add(parentFilter, marketIdFilter)
 
     const res = await rate.tableView({
       pageSize: -1,

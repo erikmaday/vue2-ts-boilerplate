@@ -41,9 +41,5 @@ import { Vue, Component } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 
 @Component({ components: { Main } })
-export default class Detail extends Vue {
-  mounted(): void {
-    console.log(!!this.$slots.back)
-  }
-}
+export default class Detail extends Vue {}
 </script>

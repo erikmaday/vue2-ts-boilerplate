@@ -118,6 +118,7 @@
               <v-col class="py-0">
                 <AutocompleteAddress
                   label="Address"
+                  :error-messages="formErrors.address"
                   :rules="[(val) => !!val || 'Address is Required']"
                   v-model="address"
                 />
@@ -176,8 +177,6 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
 
-import { baseUrl } from '@/utils/env'
-
 import { Address } from '@/models/dto'
 import auth from '@/store/modules/auth'
 import company from '@/services/company'
@@ -194,7 +193,7 @@ import { verifyPhoneLength } from '@/utils/validators'
 })
 export default class CompanyDetail extends Vue {
   notFound = false
-
+  formErrors: Record<string, string[]> = {}
   currentCompany: Company | Record<string, never> = {}
 
   mounted(): void {
@@ -265,9 +264,18 @@ export default class CompanyDetail extends Vue {
   }
 
   async submit(): Promise<void> {
+    this.formErrors = {}
+
     // Casting a ref to `any` prevents a TS error when calling .validate()
     const form: any = this.$refs.form
     if (!form.validate()) {
+      return
+    }
+
+    if (this.address == null) {
+      this.formErrors.address = [
+        'An address must be selected from the dropdown',
+      ]
       return
     }
 

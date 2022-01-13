@@ -1,5 +1,5 @@
 import { RouteConfig } from 'vue-router'
-// import { store } from '@/state/store'
+import auth from '@/store/modules/auth'
 
 export const routes: RouteConfig[] = [
   {
@@ -319,6 +319,13 @@ export const routes: RouteConfig[] = [
             name: 'login',
             component: () =>
               import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
+            beforeEnter: (to, from, next): void => {
+              if (auth.getIsTokenSet) {
+                next({ name: 'home' })
+              } else {
+                next()
+              }
+            },
           },
           {
             path: 'setPassword/:hash',
@@ -330,6 +337,13 @@ export const routes: RouteConfig[] = [
             props: (router) => ({
               hash: router.params.hash,
             }),
+            beforeEnter: (to, from, next): void => {
+              if (auth.getIsTokenSet) {
+                next({ name: 'home' })
+              } else {
+                next()
+              }
+            },
           },
           {
             path: '/downloadApp',

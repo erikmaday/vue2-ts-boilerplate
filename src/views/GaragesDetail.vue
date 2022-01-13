@@ -53,6 +53,8 @@
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
                 small
+                :text="$vuetify.breakpoint.smAndUp"
+                :outlined="$vuetify.breakpoint.xs"
                 color="error"
                 @click="deleteModalIsOpen = true"
               >
@@ -64,7 +66,8 @@
                   'w-full margin-y-2': $vuetify.breakpoint.xs,
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
-                outlined
+                :text="$vuetify.breakpoint.smAndUp"
+                :outlined="$vuetify.breakpoint.xs"
                 small
                 color="primary"
                 @click="cancelUpdate"
@@ -78,6 +81,7 @@
                   'margin-l-4': $vuetify.breakpoint.smAndUp,
                 }"
                 small
+                outlined
                 color="primary"
                 @click="
                   $router.push({
@@ -86,7 +90,7 @@
                   })
                 "
               >
-                Edit
+                Edit Garage
               </v-btn>
               <v-btn
                 v-show="isModeEdit"

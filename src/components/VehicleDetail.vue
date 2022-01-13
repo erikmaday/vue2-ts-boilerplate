@@ -1,17 +1,34 @@
 <template>
   <div>
     <v-row>
-      <v-col class="grow">
+      <v-col
+        :class="{
+          grow: $vuetify.breakpoint.smAndUp,
+          'col-12 text-center': $vuetify.breakpoint.xs,
+        }"
+      >
         <h1>{{ headerText }}</h1>
       </v-col>
       <v-spacer />
-      <div class="d-flex shrink padding-a-3">
+      <div
+        class="d-flex shrink padding-a-3"
+        :class="{
+          'flex-row': $vuetify.breakpoint.smAndUp,
+          'justify-center': $vuetify.breakpoint.sm,
+          'flex-column col-12': $vuetify.breakpoint.xs,
+          'justify-end': $vuetify.breakpoint.mdAndUp,
+        }"
+      >
         <v-btn
           v-if="vehicleDetail.getIsModeAdd || vehicleDetail.getIsModeEdit"
           color="primary"
           small
-          text
-          class="margin-r-3"
+          :text="$vuetify.breakpoint.smAndUp"
+          :outlined="$vuetify.breakpoint.xs"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
           :key="`cancel-button-${vehicleDetail.getSaving}`"
           :loading="vehicleDetail.getSaving"
           @click="vehicleDetail.goBack"
@@ -19,14 +36,49 @@
           Cancel
         </v-btn>
         <v-btn
+          v-if="vehicleDetail.getIsModeView"
+          color="error"
+          small
+          :text="$vuetify.breakpoint.smAndUp"
+          :outlined="$vuetify.breakpoint.xs"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
+          :key="`delete-button-${vehicleDetail.getSaving}`"
+          :loading="vehicleDetail.getSaving"
+          @click="deleteModalIsOpen = true"
+        >
+          Delete
+        </v-btn>
+        <v-btn
+          v-if="vehicleDetail.getIsModeView"
           color="primary"
           small
-          :outlined="vehicleDetail.getIsModeView"
+          outlined
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
           :loading="vehicleDetail.getSaving"
-          :key="`main-action-button-${vehicleDetail.getSaving}`"
+          :key="`edit-action-button-${vehicleDetail.getSaving}`"
           @click="handleActionClick"
         >
-          {{ actionButtonText }}
+          Edit Vehicle
+        </v-btn>
+        <v-btn
+          v-if="!vehicleDetail.getIsModeView"
+          color="primary"
+          small
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
+          :loading="vehicleDetail.getSaving"
+          :key="`save-action-button-${vehicleDetail.getSaving}`"
+          @click="handleActionClick"
+        >
+          Save
         </v-btn>
       </div>
     </v-row>
@@ -46,6 +98,17 @@
         <VehicleDetailAmenities />
       </v-col>
     </v-row>
+    <CUModal v-model="deleteModalIsOpen">
+      <template #title>Delete Vehicle</template>
+      <template #text>Are you sure you want to delete this vehicle?</template>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="deleteModalIsOpen = false">
+          Cancel
+        </v-btn>
+        <v-btn color="error" small @click="deleteVehicle">Delete</v-btn>
+      </template>
+    </CUModal>
   </div>
 </template>
 
@@ -55,6 +118,9 @@ import VehicleDetailAmenities from '@/components/VehicleDetailAmenities.vue'
 import VehicleDetailInformation from '@/components/VehicleDetailInformation.vue'
 import VehicleDetailImages from '@/components/VehicleDetailImages.vue'
 import vehicleDetail from '@/store/modules/vehicleDetail'
+import vehicle from '@/services/vehicle'
+import { AxiosResponse } from 'axios'
+import { ApiResult } from '@/models/dto'
 
 @Component({
   components: {
@@ -66,6 +132,7 @@ import vehicleDetail from '@/store/modules/vehicleDetail'
 export default class VehicleDetail extends Vue {
   vehicleDetail = vehicleDetail
   isFormValid = true
+  deleteModalIsOpen = false
 
   @Watch('$route.name', { immediate: true })
   routeNameChanged(value: string): void {
@@ -104,6 +171,18 @@ export default class VehicleDetail extends Vue {
       }
     }
     vehicleDetail.setSaving(false)
+  }
+
+  async deleteVehicle(): Promise<void> {
+    if (!vehicleDetail.getVehicleId) {
+      return
+    }
+
+    const res: AxiosResponse = await vehicle.delete(vehicleDetail.getVehicleId)
+    if (res.status === 200) {
+      this.deleteModalIsOpen = false
+      this.$router.push({ name: 'vehicles' })
+    }
   }
 
   validate(): boolean {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container>
-      <v-row justify="space-between">
+      <v-row justify="space-between align-center">
         <v-col cols="12" md="7">
           <div
             class="d-flex align-center"
@@ -29,7 +29,6 @@
               </span>
             </v-btn>
             <h1
-              v-if="!isModeProfile"
               class="margin-a-0"
               :class="{
                 'text-center': $vuetify.breakpoint.xs,
@@ -50,39 +49,16 @@
             }"
           >
             <v-btn
-              v-if="!isModeProfile"
               v-show="isModeEdit"
               :class="{
                 'w-full margin-y-2': $vuetify.breakpoint.xs,
                 'margin-l-4': $vuetify.breakpoint.smAndUp,
               }"
-              outlined
+              :text="$vuetify.breakpoint.smAndUp"
+              :outlined="$vuetify.breakpoint.xs"
               small
               color="primary"
-              @click="
-                $router.push({
-                  name: 'users.view',
-                  params: { id: $route.params.id },
-                })
-              "
-            >
-              Cancel
-            </v-btn>
-            <v-btn
-              v-else-if="isModeProfile"
-              v-show="isModeEdit"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              outlined
-              small
-              color="primary"
-              @click="
-                $router.push({
-                  name: 'profile',
-                })
-              "
+              @click="handleCancel"
             >
               Cancel
             </v-btn>
@@ -94,6 +70,8 @@
               }"
               v-show="isModeView"
               primary
+              :text="$vuetify.breakpoint.smAndUp"
+              :outlined="$vuetify.breakpoint.xs"
               small
               color="error"
               @click="isDeleteModalOpen = true"
@@ -109,6 +87,7 @@
               v-show="isModeView"
               primary
               small
+              outlined
               color="primary"
               @click="isChangePasswordOpen = !isChangePasswordOpen"
             >
@@ -122,6 +101,7 @@
                 'margin-l-4': $vuetify.breakpoint.smAndUp,
               }"
               small
+              outlined
               color="primary"
               @click="
                 $router.push({
@@ -452,6 +432,9 @@ export default class UsersDetail extends Vue {
   }
 
   get headerTitle(): string {
+    if (this.isModeProfile) {
+      return 'My Profile'
+    }
     switch (this.mode) {
       case 'add':
         return 'Add User'
@@ -629,6 +612,19 @@ export default class UsersDetail extends Vue {
     }
 
     return userId
+  }
+
+  handleCancel(): void {
+    if (!this.isModeProfile) {
+      this.$router.push({
+        name: 'users.view',
+        params: { id: this.$route.params.id },
+      })
+    } else {
+      this.$router.push({
+        name: 'profile',
+      })
+    }
   }
 
   resetFormValidation(): void {

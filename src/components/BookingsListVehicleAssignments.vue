@@ -2,9 +2,6 @@
   <p v-if="needsAcceptance" class="font-medium text-red margin-t-0">
     Needs Acceptance
   </p>
-  <p v-else-if="needsAssignment" class="font-medium text-red margin-t-0">
-    Needs Assignment
-  </p>
   <VehicleAssignmentIcons v-else :reservation="row" />
 </template>
 <script lang="ts">

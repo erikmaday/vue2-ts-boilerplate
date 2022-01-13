@@ -95,11 +95,7 @@
               'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
             }"
           >
-            <CompanyPhoto
-              :photoSrc="companyPhoto"
-              :mode="mode"
-              @upload="uploadCompanyPhoto"
-            />
+            <ProfileIcon entityType="company" :editMode="mode === 'edit'" />
           </v-col>
           <v-col cols="12" md="8">
             <v-row>
@@ -188,6 +184,7 @@ import company from '@/services/company'
 import { Company } from '@/models/dto/Company'
 import CompanyPhoto from '@/components/CompanyPhoto.vue'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
+import ProfileIcon from '@/components/ProfileIcon.vue'
 import { verifyPhoneLength } from '@/utils/validators'
 import app from '@/store/modules/app'
 
@@ -195,6 +192,7 @@ import app from '@/store/modules/app'
   components: {
     CompanyPhoto,
     AutocompleteAddress,
+    ProfileIcon,
   },
 })
 export default class CompanyDetail extends Vue {

@@ -106,7 +106,7 @@ export default class TheSideBar extends Vue {
     } else if (item.action) {
       item.action()
     } else if (item.href) {
-      document.location = item.href
+      document.location.href = item.href
     }
   }
 }

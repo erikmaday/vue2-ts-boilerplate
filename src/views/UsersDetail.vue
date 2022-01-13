@@ -231,9 +231,12 @@
               </v-col>
               <v-col cols="12" sm="6" class="py-0">
                 <CUSelect
-                  :disabled="isModeProfile"
                   v-model="currentUser.groupId"
+                  :disabled="isModeProfile"
                   :items="userGroups"
+                  :rules="[
+                    (val) => (val && !!val.length) || 'Type is required',
+                  ]"
                   item-text="label"
                   item-value="groupId"
                   label="Type"
@@ -307,6 +310,7 @@ import UsersDetailUserPhoto from '@/components/UsersDetailUserPhoto.vue'
 import UsersDetailDriverInfo from '@/components/UsersDetailDriverInfo.vue'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 import app from '@/store/modules/app'
+import { isNotEmptyInput } from '@/utils/validators'
 
 @Component({
   components: {
@@ -318,6 +322,7 @@ import app from '@/store/modules/app'
 export default class UsersDetail extends Vue {
   DRIVER_GROUP_ID = 4
   userGroups = userGroups
+  isNotEmptyInput = isNotEmptyInput
 
   validationErrors = {
     email: '',
@@ -580,6 +585,12 @@ export default class UsersDetail extends Vue {
       this.currentUserAsDriver.phoneNumber =
         this.currentUserAsDriver.phoneNumber.replace(/[^0-9]/g, '')
     }
+
+    this.currentUserAsDriver = Object.assign(
+      {},
+      this.currentUserAsDriver,
+      this.currentUser
+    )
   }
 
   // Return the user ID of the added user

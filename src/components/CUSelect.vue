@@ -9,6 +9,7 @@
       :item-text="itemText"
       :item-value="itemValue"
       :items="items"
+      :rules="rules"
       solo
       flat
       :value="value"
@@ -103,6 +104,11 @@ export default class CUSelect extends Vue {
     default: () => [],
   })
   value!: string | unknown[]
+
+  @Prop({
+    required: false,
+  })
+  rules!: unknown[]
 
   isAllToggled = true
 

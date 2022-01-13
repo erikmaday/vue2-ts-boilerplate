@@ -210,10 +210,6 @@ export default class CompanyDetail extends Vue {
         const response = await company.byId(companyId)
         const companyResponseData = response.data.company
         this.currentCompany = companyResponseData as Company
-        let companyPhotoSrc = await company
-          .getCompanyPhoto(this.currentCompany.companyId)
-          .then((data) => data.data.imagePath)
-        this.companyPhoto = `https://${baseUrl()}${companyPhotoSrc}`
       } else {
         this.notFound = true
         return

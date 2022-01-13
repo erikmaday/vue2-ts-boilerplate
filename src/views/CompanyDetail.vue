@@ -95,7 +95,7 @@
               'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
             }"
           >
-            <ProfileIcon entityType="company" :editMode="mode === 'edit'" />
+            <!-- <ProfileIcon entityType="company" :editMode="mode === 'edit'" /> -->
           </v-col>
           <v-col cols="12" md="8">
             <v-row>

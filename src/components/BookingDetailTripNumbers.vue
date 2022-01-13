@@ -34,13 +34,17 @@
         {{ passengerCount }} Passengers
       </div>
     </v-col>
-    <TripAssignmentsModal
-      v-model="isModalOpen"
-      :requiredDrivers="trip.requiredDrivers"
-      :requiredVehicles="trip.vehicles"
-      :reservationId="reservation.reservationId"
-      :tripAssignments="tripAssignments"
-    />
+    <template v-if="trip">
+      <TripAssignmentsModal
+        v-model="isModalOpen"
+        :requiredDrivers="trip.requiredDrivers"
+        :requiredVehicles="trip.vehicles"
+        :reservationId="reservation.reservationId"
+        :tripAssignments="tripAssignments"
+        :trip="trip"
+        @refresh="$emit('refresh')"
+      />
+    </template>
   </v-row>
 </template>
 

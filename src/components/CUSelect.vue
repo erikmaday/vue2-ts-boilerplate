@@ -108,7 +108,7 @@ export default class CUSelect extends Vue {
 
   @Watch('value', { immediate: true })
   onValueChange(newVal: unknown[]): void {
-    if (newVal.length === this.items.length) {
+    if (newVal?.length === this.items?.length) {
       this.isAllToggled = true
     } else {
       this.isAllToggled = false

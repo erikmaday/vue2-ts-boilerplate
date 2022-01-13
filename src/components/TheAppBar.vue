@@ -88,7 +88,15 @@
       </v-badge> -->
 
       <template v-if="$vuetify.breakpoint.mdAndUp">
-        <v-btn small text color="primary" class="margin-r-2">Support</v-btn>
+        <v-btn
+          href="mailto:support@charterup.com"
+          small
+          text
+          color="primary"
+          class="margin-r-2"
+        >
+          Support
+        </v-btn>
         <v-menu class="border-0">
           <template #activator="{ on }">
             <div

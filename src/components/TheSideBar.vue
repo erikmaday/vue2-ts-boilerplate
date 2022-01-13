@@ -105,6 +105,8 @@ export default class TheSideBar extends Vue {
       this.$router.push({ name: item.name })
     } else if (item.action) {
       item.action()
+    } else if (item.href) {
+      document.location.href = item.href
     }
   }
 }

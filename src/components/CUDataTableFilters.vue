@@ -356,8 +356,16 @@ export default class CUDataTableFilters extends Vue {
     const sortProp = column.sortProp || column.value
     this.currentSort.key = uuidv4()
     if (this.currentSort && this.currentSort.prop === sortProp) {
-      this.currentSort.direction =
-        this.currentSort.direction === 'desc' ? 'asc' : 'desc'
+      if (this.currentSort.direction === 'desc') {
+        this.currentSort.direction = 'asc'
+      } else if (this.currentSort.direction === 'asc') {
+          this.sorts.remove()
+          this.currentSort = {}
+          this.initiateDefaultSort()
+          this.$emit('update:sorts', this.sorts)
+      } else {
+        this.currentSort.direction = 'desc'
+      }
       this.sorts.add(this.currentSort)
       this.$emit('update:sorts', this.sorts)
       return

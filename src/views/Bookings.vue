@@ -1,6 +1,7 @@
 <template>
   <Main>
     <CUCollectionTable
+      ref="collection-table"
       :actions="actions"
       :columns="columns"
       item-key="reservationId"
@@ -73,6 +74,7 @@ import {
   ReservationType,
   ReferralStatus,
 } from '@/utils/enum'
+import { EventBus } from '@/utils/eventBus'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Bookings extends Vue {
@@ -82,6 +84,19 @@ export default class Bookings extends Vue {
   tableView = reservation.tableView
   isDialogOpen = false
   rejectNote = ''
+  currentReservationId = -1
+
+  mounted(): void {
+    EventBus.$on('reject-booking', (e) => {
+      this.currentReservationId = e
+      this.isDialogOpen = true
+    })
+
+    EventBus.$on('accept-booking', async (e) => {
+      this.currentReservationId = e
+      this.accept(e)
+    })
+  }
 
   columns: DataTableColumn[] = [
     {
@@ -239,6 +254,10 @@ export default class Bookings extends Vue {
       confirmModal: false,
       ariaLabel: 'Accept Booking',
       hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
+      action: (row) => {
+        EventBus.$emit("accept-booking", row.reservationId)
+        this.isDialogOpen = true
+      }
     },
     {
       displayText: 'Reject Booking',
@@ -248,8 +267,8 @@ export default class Bookings extends Vue {
       confirmModal: false,
       ariaLabel: 'Reject Booking',
       hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
-      action: () => {
-        console.log("> rejecting")
+      action: (row) => {
+        EventBus.$emit("reject-booking", row.reservationId)
         this.isDialogOpen = true
       }
     },
@@ -260,16 +279,29 @@ export default class Bookings extends Vue {
     this.isDialogOpen = false
   }
 
-  async accept(): Promise<void> {
-    // await reservation.accept(this.reservation.reservationId)
-    this.$emit('refresh')
+  async accept(reservationId: number): Promise<void> {
+    await reservation.accept(reservationId)
+    this.$nextTick(() => {
+      const table: any = this.$refs['collection-table']
+      table.load()
+    })
   }
 
   async reject(): Promise<void> {
-    // const form: any = this.$refs['rejection-form']
-    // if (!form.validate()) return
-    // await reservation.reject(this.reservation.reservationId, this.rejectNote)
-    this.$emit('refresh')
+    // Row event wasn't passed up properly error
+    if (this.currentReservationId === -1) {
+      return
+    }
+
+    const form: any = this.$refs['rejection-form']
+    if (!form.validate()) return
+    await reservation.reject(this.currentReservationId, this.rejectNote)
+    this.$nextTick(() => {
+      const table: any = this.$refs['collection-table']
+      table.load()
+    })
+
+    this.isDialogOpen = false
   }
 }
 </script>

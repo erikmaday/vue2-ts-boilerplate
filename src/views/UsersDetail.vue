@@ -214,9 +214,7 @@
                   v-model="currentUser.groupId"
                   :disabled="isModeProfile"
                   :items="userGroups"
-                  :rules="[
-                    (val) => isNotEmptyArray(val) || 'Type is required',
-                  ]"
+                  :rules="[(val) => isNotEmptyArray(val) || 'Type is required']"
                   item-text="label"
                   item-value="groupId"
                   label="Type"
@@ -335,7 +333,11 @@ export default class UsersDetail extends Vue {
   // When hitting back button, prevent infinite loop when going from
   // view -> edit -> view, etc.
   pushLastRoute(): void {
-    if (!app.getLastRoute?.name || app.getLastRoute?.name === 'users.view') {
+    if (
+      !app.getLastRoute?.name ||
+      app.getLastRoute?.name === 'users.view' ||
+      app.getLastRoute?.name === 'users.add'
+    ) {
       this.$router.push({ name: 'users' })
     } else {
       this.$router.push(app.getLastRoute)

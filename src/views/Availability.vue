@@ -238,8 +238,6 @@ export default class Availability extends Vue {
       this.displayedReservations
     )
 
-    console.log("> sorted:", sortedByVehicle)
-
     const vehicleKeyRows: VehicleKeyRow[] = []
     let distanceFromTop = 0
 

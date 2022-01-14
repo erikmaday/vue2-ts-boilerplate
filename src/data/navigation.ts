@@ -102,6 +102,7 @@ export const navigation: NavigationLink[] = [
     location: 'mobile',
     params: {},
     permission: [],
+    href: 'mailto:support@charterup.com',
   },
   {
     label: 'My Profile',

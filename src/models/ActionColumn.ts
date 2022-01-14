@@ -13,4 +13,5 @@ export interface ActionColumn {
   detailRoute?: (row: any) => RawLocation
   confirmModalPrimaryActionText?: string
   confirmModalSecondaryActionText?: string
+  hideOn?: (row: any) => boolean
 }

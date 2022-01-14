@@ -1,6 +1,7 @@
 <template>
   <Main>
     <CUCollectionTable
+      ref="collection-table"
       :actions="actions"
       :columns="columns"
       item-key="reservationId"
@@ -22,6 +23,30 @@
         </v-col>
       </template>
     </CUCollectionTable>
+    <CUModal v-model="isDialogOpen">
+      <template #title>Reject Booking</template>
+      <template #text>
+        <v-form ref="rejection-form">
+          <CUTextArea
+            v-model="rejectNote"
+            label="Why are you rejecting the booking?"
+            placeholder="Add reasons for rejection here."
+            :rules="[(val) => !!val || 'This field is required.']"
+            validate-on-blur
+          />
+        </v-form>
+      </template>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="cancelRejectNote">
+          Cancel
+        </v-btn>
+        <v-btn color="red" class="white--text" small @click="reject">
+          Reject
+        </v-btn>
+        <v-spacer />
+      </template>
+    </CUModal>
   </Main>
 </template>
 
@@ -44,7 +69,12 @@ import { RawLocation } from 'vue-router'
 import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
 import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
-import { ReservationStatus, ReservationType } from '@/utils/enum'
+import {
+  ReservationStatus,
+  ReservationType,
+  ReferralStatus,
+} from '@/utils/enum'
+import { EventBus } from '@/utils/eventBus'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Bookings extends Vue {
@@ -52,6 +82,21 @@ export default class Bookings extends Vue {
   sorts: any = sort()
   filters: any = filter()
   tableView = reservation.tableView
+  isDialogOpen = false
+  rejectNote = ''
+  currentReservationId = -1
+
+  mounted(): void {
+    EventBus.$on('reject-booking', (e) => {
+      this.currentReservationId = e
+      this.isDialogOpen = true
+    })
+
+    EventBus.$on('accept-booking', async (e) => {
+      this.currentReservationId = e
+      this.accept(e)
+    })
+  }
 
   columns: DataTableColumn[] = [
     {
@@ -201,6 +246,62 @@ export default class Bookings extends Vue {
         }
       },
     },
+    {
+      displayText: 'Accept Booking',
+      key: 'accept-booking',
+      color: 'primary',
+      icon: 'done',
+      confirmModal: false,
+      ariaLabel: 'Accept Booking',
+      hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
+      action: (row) => {
+        EventBus.$emit("accept-booking", row.reservationId)
+        this.isDialogOpen = true
+      }
+    },
+    {
+      displayText: 'Reject Booking',
+      key: 'reject-booking',
+      color: 'error',
+      icon: 'close',
+      confirmModal: false,
+      ariaLabel: 'Reject Booking',
+      hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
+      action: (row) => {
+        EventBus.$emit("reject-booking", row.reservationId)
+        this.isDialogOpen = true
+      }
+    },
   ]
+
+  cancelRejectNote(): void {
+    this.rejectNote = ''
+    this.isDialogOpen = false
+  }
+
+  async accept(reservationId: number): Promise<void> {
+    await reservation.accept(reservationId)
+    this.$nextTick(() => {
+      const table: any = this.$refs['collection-table']
+      table.load()
+    })
+  }
+
+  async reject(): Promise<void> {
+    // Row event wasn't passed up properly error
+    if (this.currentReservationId === -1) {
+      return
+    }
+
+    const form: any = this.$refs['rejection-form']
+    if (!form.validate()) return
+    await reservation.reject(this.currentReservationId, this.rejectNote)
+    this.$nextTick(() => {
+      const table: any = this.$refs['collection-table']
+      table.load()
+    })
+
+    this.isDialogOpen = false
+  }
 }
 </script>

@@ -51,6 +51,7 @@ export default class BidDetailMultiSidebar extends Vue {
         }
       }
     }
+    console.log("full bid " + isComplete)
     return isComplete
   }
 
@@ -59,12 +60,13 @@ export default class BidDetailMultiSidebar extends Vue {
     if (bidDetail.getBidPriceUpdated) {
       areUpdated = true
       for (const trip of bidDetail.getTrips) {
-        if (!bidDetail.getBidPriceUpdated) {
-          areUpdated = false
+        if (bidDetail.getBidPriceUpdated) {
+          areUpdated = true
           break
         }
       }
     }
+    console.log("updated prices " + areUpdated)
     return areUpdated
   }
 

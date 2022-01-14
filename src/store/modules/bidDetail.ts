@@ -174,7 +174,6 @@ class BidDetailModule extends VuexModule {
     if (tripBid.tripId === this.trip?.tripId) {
       this.bidAmount = tripBid.bidAmount
     }
-    this.priceIsUpdated = true
   }
 
   @Action
@@ -205,7 +204,6 @@ class BidDetailModule extends VuexModule {
   async submitMultiTripBids(): Promise<void> {
     this.submitting = true
     for (const trip of this.getTripDetails) {
-      this.priceIsUpdated = false
       const payload = await this.buildMultiTripPayload(trip)
       if (!payload) {
         return
@@ -223,6 +221,7 @@ class BidDetailModule extends VuexModule {
   @Action
   setIsEnteringBid(value: boolean): void {
     this.isEnteringBid = value
+    this.priceIsUpdated = false
   }
 
   @Action
@@ -230,6 +229,11 @@ class BidDetailModule extends VuexModule {
     let payload = null
     const bidAmount = this.bidAmounts[trip.tripId]
     const originalBid = this.bids?.[trip.tripId]
+    if (bidAmount === originalBid.bidAmount) {
+      this.priceIsUpdated = false
+    } else {
+      this.priceIsUpdated = true
+    }
     if (bidAmount) {
       payload = buildPayload(trip, bidAmount, originalBid, true)
     }

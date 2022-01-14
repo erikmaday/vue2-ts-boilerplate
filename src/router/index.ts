@@ -31,8 +31,6 @@ router.beforeEach(async (to, from, next) => {
     next()
   } else if (!auth.getIsTokenSet) {
     next({ name: 'login' })
-  } else if (auth.getIsDriverOnly) {
-    next({ name: 'download-app' })
   } else {
     next()
   }

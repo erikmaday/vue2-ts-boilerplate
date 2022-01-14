@@ -316,7 +316,9 @@ export default class CompanyDetail extends Vue {
   }
 
   async uploadBrandingPhoto(type: string, file: File): Promise<void> {
-    await company.uploadBranding(auth.user.companyId, type, file)
+    const formData = new FormData()
+    formData.append('file', file)
+    await company.uploadBranding(auth.user.companyId, type, formData)
   }
 
   async submit(): Promise<void> {

@@ -36,6 +36,6 @@ export default {
     photo: FormData
   ): Promise<AxiosResponse<boolean>> {
     const url = `https://${apiBaseUrl()}/v2/photos/companies/${companyId}/companyBrandings/${type}`
-    return httpService.post(url, photo)
+    return httpService.put(url, photo)
   },
 }

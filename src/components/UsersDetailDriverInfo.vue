@@ -65,7 +65,7 @@
           item-value="num"
           :items="months"
           v-model="driverModel.licenseExpirationMonth"
-          :rules="[(val) => !!val || 'Exp. Month is Required']"
+          :rules="[(val) => isNotEmptyInput(val) || 'Exp. Month is Required']"
         />
       </v-col>
       <v-col cols="6" sm="3" class="padding-t-0">
@@ -73,7 +73,7 @@
           :items="years"
           label="Exp. Year"
           v-model="driverModel.licenseExpirationYear"
-          :rules="[(val) => !!val || 'Exp. Year is Required']"
+          :rules="[(val) => isNotEmptyInput(val) || 'Exp. Year is Required']"
         />
       </v-col>
     </v-row>
@@ -114,7 +114,7 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 import { SupportedVehicleType, VehicleType } from '@/models/dto'
-import { verifyPhoneLength } from '@/utils/validators'
+import { verifyPhoneLength, isNotEmptyInput } from '@/utils/validators'
 import { states } from '@/utils/states'
 import dayjs from 'dayjs'
 
@@ -125,6 +125,7 @@ export default class UsersDetailDriverInfo extends Vue {
     .monthsShort()
     .map((month, index) => ({ name: month, num: index + 1 }))
   years: number[] = []
+  isNotEmptyInput = isNotEmptyInput
 
   driverModel: Partial<UserDetailDriver> = {
     drugTestNumber: '',

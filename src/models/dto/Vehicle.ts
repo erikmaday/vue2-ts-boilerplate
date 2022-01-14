@@ -20,6 +20,9 @@ export interface Vehicle {
   vehicleTypeId: number
   vehicleId: number
   quantity: number
+  vehicleName?: string
+  vehicleModel?: string
+  vehicleMake?: string
   vehicleType: VehicleType
   vehicleTypeKey: string
 }

@@ -95,8 +95,8 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" small text @click="closeDialog">Cancel</v-btn>
-        <v-btn color="primary" small @click="confirmAction">OK</v-btn>
+        <v-btn color="primary" small text @click="closeDialog">{{ dialogSecondaryActionText }}</v-btn>
+        <v-btn color="primary" small @click="confirmAction">{{ dialogPrimaryActionText }}</v-btn>
       </template>
     </CUModal>
   </div>
@@ -151,6 +151,9 @@ export default class CUDataTableActionColumn extends Vue {
 
   dialogOpen = false
   dialogText: string | undefined = ''
+  dialogPrimaryActionText = ''
+  dialogSecondaryActionText = ''
+
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   dialogConfirmFn = () => ({})
   currentAction: ActionColumn | undefined = undefined
@@ -174,6 +177,8 @@ export default class CUDataTableActionColumn extends Vue {
     if (action.confirmModal) {
       this.dialogOpen = true
       this.dialogText = action.confirmModalText
+      this.dialogPrimaryActionText = action.confirmModalPrimaryActionText || 'OK'
+      this.dialogSecondaryActionText = action.confirmModalSecondaryActionText || 'Cancel'
       this.currentAction = action
     } else if (action.action) {
       action.action(this.row, this.rowIndex)

@@ -131,6 +131,7 @@ export default class VehiclesList extends Vue {
       confirmModal: true,
       ariaLabel: 'Delete Vehicle',
       confirmModalText: 'Are you sure you want to delete this vehicle?',
+      confirmModalPrimaryActionText: 'Delete Vehicle',
       action: async (row: Vehicle): Promise<AxiosResponse<ApiResult>> => {
         return vehicle.delete(row.vehicleId)
       },

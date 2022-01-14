@@ -115,7 +115,7 @@ export default class CUSelect extends Vue {
 
   @Watch('value', { immediate: true })
   onValueChange(newVal: unknown[]): void {
-    if (!this.multiple || !newVal || !this.items) {
+    if (!this.multiple) {
       return
     }
 

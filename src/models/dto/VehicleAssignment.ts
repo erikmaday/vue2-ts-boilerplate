@@ -24,4 +24,24 @@ export interface VehicleAssignment {
   vehicleId: number
   vehicleType: VehicleType
   vehicleTypeId: number
+  vehicleTypeLabel?: string
+}
+
+export interface AssignmentStops {
+  reservationId?: number
+  firstStop?: Stop
+  firstStopId?: number
+  lastStop?: Stop
+  lastStopId?: number
+  firstAddress?: Address
+  firstAddressId?: number
+  lastAddress?: Address
+  lastAddressId?: number
+}
+
+export interface CreateAssignmentPayload extends AssignmentStops{
+  vehicleId: number
+  vehicleTypeId: number
+  hardConflictOverride: boolean
+  driverAssignments: DriverAssignment[]
 }

@@ -1,6 +1,6 @@
 <template>
   <DriverAssignmentIcons
-    v-if="!needsAcceptance && !needsAssignment"
+    v-if="!needsAcceptance"
     :reservation="row"
   />
 </template>

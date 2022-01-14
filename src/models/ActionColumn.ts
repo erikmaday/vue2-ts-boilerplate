@@ -11,4 +11,6 @@ export interface ActionColumn {
   action?: any
   isDetail?: boolean
   detailRoute?: (row: any) => RawLocation
+  confirmModalPrimaryActionText?: string
+  confirmModalSecondaryActionText?: string
 }

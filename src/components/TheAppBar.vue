@@ -10,7 +10,7 @@
         <CharterUPLogo style="width: 108px" />
       </a>
     </v-toolbar-title>
-    <template v-if="auth.getIsTokenSet && !auth.getIsDriverOnly">
+    <template v-if="showAppBarNavigation">
       <template v-if="$vuetify.breakpoint.mdAndUp">
         <div
           v-for="(item, index) in topNavigationItems"
@@ -132,7 +132,7 @@
         </CUIcon>
       </template>
     </template>
-    <template v-else-if="auth.getIsTokenSet && auth.getIsDriverOnly">
+    <template v-else-if="auth.getIsDriverOnly">
       <v-spacer />
       <v-btn text small color="primary" @click="auth.logout">Logout</v-btn>
     </template>
@@ -165,6 +165,14 @@ export default class TheAppBar extends Vue {
 
   get userName(): string {
     return auth.getFullName
+  }
+
+  get isRoutePreauth(): boolean {
+    return ['login', 'set-password'].includes(this.$route.name)
+  }
+
+  get showAppBarNavigation(): boolean {
+    return !this.isRoutePreauth && auth.getIsTokenSet && !auth.getIsDriverOnly
   }
 
   openSidebar(): void {

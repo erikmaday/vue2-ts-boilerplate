@@ -88,8 +88,8 @@ export const navigation: NavigationLink[] = [
       },
       {
         label: 'Company',
-        href: 'company',
-        name: 'company',
+        href: 'settings',
+        name: 'settings',
         location: 'top',
         params: {},
         permission: [],

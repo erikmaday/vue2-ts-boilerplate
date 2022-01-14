@@ -93,7 +93,7 @@ export const routes: RouteConfig[] = [
                 name: 'vehicles',
                 component: () =>
                   import(
-                    /* webpackChunkName: "vehicles-list" */ '@/views/Vehicles.vue'
+                    /* webpackChunkName: "vehicles-list" */ '@/views/VehiclesList.vue'
                   ),
               },
               {

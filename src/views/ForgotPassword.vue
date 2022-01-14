@@ -31,7 +31,7 @@
               </p>
             </v-col>
             <v-col
-              v-if="!success && email.length > 0 && isSubmitted"
+              v-if="!success && email && isSubmitted"
               sm="10"
               class="padding-a-0"
             >
@@ -100,7 +100,7 @@ export default class ForgotPassword extends Vue {
   isSubmitted = false
   isNotEmpty = isNotEmpty
 
-  @Watch('email', { deep: true })
+  @Watch('email')
   emailChanged(): void {
     this.isSubmitted = false
   }

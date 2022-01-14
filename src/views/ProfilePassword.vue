@@ -1,5 +1,5 @@
 <template>
-  <v-row no-gutters>
+  <v-row class="max-w-500" no-gutters>
     <v-col cols="12">
       <v-form ref="changePasswordForm">
         <CUTextField

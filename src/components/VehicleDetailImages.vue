@@ -25,7 +25,7 @@
       cols="12"
       class="padding-t-0"
     >
-      <VehicleDetailImage no-images-found />
+      <VehicleDetailImage :photo="undefined" no-images-found />
     </v-col>
   </v-row>
 </template>

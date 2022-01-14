@@ -159,7 +159,7 @@ export default class TheAppBar extends Vue {
     return auth.getFullName
   }
 
-  get isRoutePreauth(): string {
+  get isRoutePreauth(): boolean {
     return ['login', 'set-password'].includes(this.$route.name)
   }
 

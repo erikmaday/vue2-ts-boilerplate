@@ -8,11 +8,13 @@
       </p>
       <p class="font-14 margin-t-0">{{ formattedStartDateTime }}</p>
       <div class="d-inline-flex margin-t-4 margin-b-2">
-        <VehicleAssignmentIcons
-          v-if="reservation"
-          :reservation="reservation"
-          class="margin-r-4 h-32"
-        />
+        <div class="margin-r-4">
+          <VehicleAssignmentIcons
+            v-if="reservation"
+            :reservation="reservation"
+            class="margin-r-4 h-32"
+          />
+        </div>
         <DriverAssignmentIcons :reservation="reservation" />
       </div>
       <v-row class="align-end">

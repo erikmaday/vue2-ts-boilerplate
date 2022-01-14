@@ -81,6 +81,7 @@ export default class RatesList extends Vue {
       icon: 'trash',
       confirmModal: true,
       confirmModalText: 'Are you sure you want to delete this rate?',
+      confirmModalPrimaryActionText: 'Delete Rate',
       action: async function (row: RateTableRow): Promise<void> {
         const ids = getMarketRateIdsForRow(row)
         for (const id of ids) {

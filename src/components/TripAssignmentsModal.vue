@@ -12,6 +12,7 @@
               <div class="d-flex flex-row justify-space-between">
                 <label>Drivers</label>
                 <a
+                  v-show="!!driverAssignment.driver.userId"
                   :key="`driver-assignment-clear-link-${vi}-${di}`"
                   class="font-12"
                   @click="clearDriver(vi, di)"
@@ -38,6 +39,7 @@
               <a class="font-12" @click="clearVehicle(vi)">Clear Vehicle</a>
             </div>
             <CUSelect
+              v-show="!!assignment.vehicle.vehicleId"
               :error-messages="assignment.vehicle.errors"
               placeholder="Select Vehicles"
               :items="

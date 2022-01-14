@@ -4,6 +4,7 @@ import {
   DriverBlockItem,
   VehicleBlockItem,
 } from '@/models/dto/Availability'
+import deepClone from './deepClone'
 import {
   getReservationFirstStopCity,
   getReservationLastStopCity,
@@ -27,7 +28,7 @@ export const sortAvailabilityBlocksByVehicle = (
           }
           map[va.vehicleId] = newVehicleItem
         }
-        map[va.vehicleId].blocks.push(res)
+        map[va.vehicleId].blocks.push(deepClone(res))
       }
     }
     if (!res.vehicleAssignments?.length || !res.vehiclesAreFullyAssigned) {
@@ -37,7 +38,7 @@ export const sortAvailabilityBlocksByVehicle = (
           vehicle: 'unassigned',
         }
       }
-      map[-1].blocks.push(res)
+      map[-1].blocks.push(deepClone(res))
     }
     return map
   }
@@ -64,7 +65,7 @@ export const sortAvailabilityBlocksByDriver = (
               }
               map[da.userId] = newDriverItem
             }
-            map[da.userId].blocks.push(res)
+            map[da.userId].blocks.push(deepClone(res))
           }
         }
       }
@@ -80,7 +81,7 @@ export const sortAvailabilityBlocksByDriver = (
           },
         }
       }
-      map[-1].blocks.push(res)
+      map[-1].blocks.push(deepClone(res))
     }
     return map
   }

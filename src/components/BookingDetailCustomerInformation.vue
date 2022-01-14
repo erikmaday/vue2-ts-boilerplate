@@ -37,6 +37,7 @@
           </p>
           <button
             class="font-16 text-primary font-medium padding-x-0 margin-t-2"
+            @click="emailCustomer"
           >
             Send Message
           </button>
@@ -85,6 +86,9 @@ export default class BookingDetailCustomerInformation extends Vue {
       return phoneFormatFilter(this.reservation?.customerPhoneNumber)
     }
     return null
+  }
+  emailCustomer(): void {
+    document.location.href = `mailto:${this.email}`
   }
 }
 </script>

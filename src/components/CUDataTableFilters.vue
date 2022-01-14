@@ -380,6 +380,17 @@ export default class CUDataTableFilters extends Vue {
     this.initiateDefaultSort()
   }
 
+  clearAddedFilters(): void {
+    let initialFilterList = []
+    for (const filter of this.tableFilterList) {
+      const isInitialFilter = this.initialFilters.find(initialFilter => initialFilter.column._t_id === filter.column._t_id)
+      if (isInitialFilter) {
+        initialFilterList.push(filter)
+      }
+    }
+    this.tableFilterList = initialFilterList
+  }
+
   handleFilterAdded(): void {
     this.resetPage()
     this.refresh(false)
@@ -407,6 +418,10 @@ export default class CUDataTableFilters extends Vue {
 
   clear(): void {
     this.clearSorts()
+    this.clearAddedFilters()
+    this.selectDefaultTab()
+
+    this.close()
   }
 
   close(): void {

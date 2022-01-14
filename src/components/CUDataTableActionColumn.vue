@@ -1,25 +1,32 @@
 <template>
   <div class="align-center d-flex flex-grow-1">
     <template v-if="detailAction">
-      <v-btn
-        v-if="!isMobile"
-        text
-        x-small
-        color="primary"
-        class="font-medium font-14"
-        @click="pushDetailRoute"
-      >
-        Details
-      </v-btn>
-      <v-btn
-        v-else
-        color="primary"
-        small
-        class="w-full margin-t-4"
-        @click="pushDetailRoute"
-      >
-        Details
-      </v-btn>
+      <template v-if="!isDetailTable">
+        <v-btn
+          v-if="!isMobile"
+          text
+          x-small
+          color="primary"
+          class="font-medium font-14"
+          @click="pushDetailRoute"
+        >
+          Details
+        </v-btn>
+        <v-btn
+          v-else
+          color="primary"
+          small
+          class="w-full margin-t-4"
+          @click="pushDetailRoute"
+        >
+          Details
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-btn small icon @click="pushDetailRoute">
+          <CUIcon color="primary">view</CUIcon>
+        </v-btn>
+      </template>
     </template>
     <v-menu v-if="!isMobile && !isActionsListEmpty" offset-x left>
       <template v-slot:activator="{ on }">
@@ -82,17 +89,16 @@
         </v-btn>
       </template>
     </v-col>
-    <v-dialog v-model="dialogOpen" max-width="500px">
-      <v-card>
-        <p class="wb-break-word font-22 font-medium padding-x-6 padding-y-2">
-          {{ dialogText }}
-        </p>
-        <v-card-actions class="d-flex justify-center">
-          <v-btn color="primary" text @click="closeDialog">Cancel</v-btn>
-          <v-btn color="primary" @click="confirmAction">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <CUModal v-model="dialogOpen">
+      <template #title>
+        <span class="wb-break-word">{{ dialogText }}</span>
+      </template>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="closeDialog">Cancel</v-btn>
+        <v-btn color="primary" small @click="confirmAction">OK</v-btn>
+      </template>
+    </CUModal>
   </div>
 </template>
 <script lang="ts">
@@ -135,6 +141,13 @@ export default class CUDataTableActionColumn extends Vue {
     required: false,
   })
   displayActionsOnMobile!: boolean
+
+  @Prop({
+    type: Boolean,
+    required: false,
+    default: false,
+  })
+  isDetailTable!: boolean
 
   dialogOpen = false
   dialogText: string | undefined = ''

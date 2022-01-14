@@ -9,6 +9,7 @@
       :item-text="itemText"
       :item-value="itemValue"
       :items="items"
+      :multiple="multiple"
       solo
       flat
       :value="value"
@@ -104,10 +105,20 @@ export default class CUSelect extends Vue {
   })
   value!: string | unknown[]
 
+  @Prop({
+    required: false,
+    default: false,
+  })
+  multiple!: boolean
+
   isAllToggled = true
 
   @Watch('value', { immediate: true })
   onValueChange(newVal: unknown[]): void {
+    if (!this.multiple || !newVal || !this.items) {
+      return
+    }
+
     if (newVal?.length === this.items?.length) {
       this.isAllToggled = true
     } else {

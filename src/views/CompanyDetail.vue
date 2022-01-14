@@ -248,16 +248,12 @@ export default class CompanyDetail extends Vue {
         const response = await company.byId(companyId)
         const companyResponseData = response.data.company
         this.company = companyResponseData as Company
-        if (this.company.lightLogoUrl) {
-          this.lightLogoSource = `https://${baseUrl()}${
-            this.company.lightLogoUrl
-          }`
-        }
-        if (this.company.darkLogoUrl) {
-          this.darkLogoSource = `https://${baseUrl()}${
-            this.company.darkLogoUrl
-          }`
-        }
+        this.lightLogoSource = this.company.lightLogoUrl
+          ? `https://${baseUrl()}${this.company.lightLogoUrl}`
+          : ''
+        this.darkLogoSource = this.company.darkLogoUrl
+          ? `https://${baseUrl()}${this.company.darkLogoUrl}`
+          : ''
       } else {
         this.notFound = true
         return

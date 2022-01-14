@@ -27,11 +27,6 @@
             type="file"
             accept="image/*"
             class="opacity-0 w-full h-full position-absolute top-0 left-0 cursor-pointer"
-            :cursor="{
-              'cursor-default': disabled,
-              'cursor-pointer': !disabled,
-            }"
-            :disabled="disabled"
             @change="handleBrowse"
           />
           <v-row v-if="!src">
@@ -58,7 +53,7 @@
       </div>
       <div
         v-if="src && !disabled"
-        class="w-56 h-56 border-radius-round background-primary position-relative position-absolute"
+        class="w-56 h-56 border-radius-round background-primary position-relative position-absolute cursor-pointer"
         style="left: 50%; transform: translateX(-50%); bottom: -23px"
       >
         <CUIcon color="white" width="24px" height="24px" class="margin-t-4">
@@ -68,10 +63,6 @@
           type="file"
           accept="image/*"
           class="opacity-0 border-radius-round w-full h-full position-absolute top-0 left-0 cursor-pointer"
-          :cursor="{
-            'cursor-default': disabled,
-            'cursor-pointer': !disabled,
-          }"
           :disabled="disabled"
           @change="handleBrowse"
         />
@@ -129,7 +120,9 @@ export default class CompanyLogoUpload extends Vue {
     this.addPhotos((event.target as HTMLInputElement).files)
   }
   handleDrop(event: DragEvent): void {
-    this.addPhotos(event.dataTransfer.files)
+    if (!this.disabled) {
+      this.addPhotos(event.dataTransfer.files)
+    }
   }
 
   addPhotos(files: FileList): void {

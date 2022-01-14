@@ -22,10 +22,13 @@ class BidDetailModule extends VuexModule {
   tripDetails: Trip[] = []
   bids: { [tripId: number]: TableViewBid } | null = null
   isEnteringBid = false
+  isPriceUpdated = false
+  areBidsComplete = true
   bidAmounts: { [tripId: number]: number | null } = {}
   bidAmount: number | null = null
   areAllSoldOut = false
   submitting = false
+  isSubmitted = false
 
   // getters
   get getTrip() {
@@ -42,6 +45,14 @@ class BidDetailModule extends VuexModule {
 
   get getBids() {
     return this.bids
+  }
+
+  get getBidPriceUpdated() {
+    return this.isPriceUpdated
+  }
+
+  get getIsSubmitEnabled() {
+    return this.isPriceUpdated && this.areBidsComplete && !this.isSubmitted
   }
 
   get getBid() {
@@ -137,6 +148,9 @@ class BidDetailModule extends VuexModule {
         const bid = await fetchExistingBidByTripId(tripId)
         bids[tripId] = bid
         bidAmounts[tripId] = bid?.bidAmount || null
+        if (!bidAmounts[tripId]) {
+          this.areBidsComplete = false
+        }
       }
       this.bidAmounts = bidAmounts
       this.bids = bids
@@ -169,6 +183,11 @@ class BidDetailModule extends VuexModule {
     if (tripBid.tripId === this.trip?.tripId) {
       this.bidAmount = tripBid.bidAmount
     }
+    this.isSubmitted = false
+    this.isPriceUpdated = true
+    this.areBidsComplete =
+      Object.values(this.bidAmounts).filter((bid) => !!bid).length ===
+      this.trips.length
   }
 
   @Action
@@ -211,6 +230,7 @@ class BidDetailModule extends VuexModule {
     }
     this.fetchExistingBids()
     this.submitting = false
+    this.isSubmitted = true
   }
 
   @Action

@@ -11,7 +11,7 @@
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :tabs="tabs"
       :key="`bookings-list`"
-      no-data-text="No matching bookings found"
+      no-data-text="No bookings found"
     >
       <template slot="filter-row">
         <v-spacer />

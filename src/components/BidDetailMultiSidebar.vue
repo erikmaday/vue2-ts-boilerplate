@@ -9,7 +9,7 @@
     <v-btn
       small
       color="primary"
-      :disabled="!areBidAmountsUpdated && !areAllBidsComplete"
+      :disabled="!bidDetail.getValidSubmission"
       class="margin-t-4 w-full"
       :loading="bidDetail.getSubmitting"
       @click="submit"
@@ -39,36 +39,6 @@ import bid from '@/services/bid'
 @Component({ components: { MarketplaceCard } })
 export default class BidDetailMultiSidebar extends Vue {
   bidDetail = bidDetail
-
-  get areAllBidsComplete(): boolean {
-    let isComplete = false
-    if (bidDetail.getTrips) {
-      isComplete = true
-      for (const trip of bidDetail.getTrips) {
-        if (!bidDetail.getBidAmounts?.[trip.tripId]) {
-          isComplete = false
-          break
-        }
-      }
-    }
-    console.log("full bid " + isComplete)
-    return isComplete
-  }
-
-  get areBidAmountsUpdated(): boolean {
-    let areUpdated = false
-    if (bidDetail.getBidPriceUpdated) {
-      areUpdated = true
-      for (const trip of bidDetail.getTrips) {
-        if (bidDetail.getBidPriceUpdated) {
-          areUpdated = true
-          break
-        }
-      }
-    }
-    console.log("updated prices " + areUpdated)
-    return areUpdated
-  }
 
   async submit(): Promise<void> {
     await bidDetail.submitMultiTripBids()

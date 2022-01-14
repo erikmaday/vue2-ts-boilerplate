@@ -23,6 +23,7 @@
             value: false,
           },
         ]"
+        append-icon="mdi-chevron-down"
       />
     </div>
     <template v-if="isVehicleDisplay">

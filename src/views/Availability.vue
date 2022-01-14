@@ -75,7 +75,7 @@
         <CUSelect
           v-model="filters.vehicleTypes"
           class="padding-y-1"
-          multiple
+          :multiple="true"
           display-select-all
           :aggregate-selection-index="4"
           label="Vehicle Type"
@@ -87,7 +87,7 @@
         <CUSelect
           v-model="filters.vehicles"
           class="padding-y-1"
-          multiple
+          :multiple="true"
           display-select-all
           :aggregate-selection-index="1"
           label="Vehicles"
@@ -99,7 +99,7 @@
         <CUSelect
           v-model="filters.drivers"
           class="padding-y-1"
-          multiple
+          :multiple="true"
           display-select-all
           :aggregate-selection-index="2"
           label="Drivers"

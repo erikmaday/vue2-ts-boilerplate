@@ -1,5 +1,8 @@
 <template>
-  <div class="d-inline-flex margin-l-3 cursor-pointer align-center">
+  <div
+    class="d-inline-flex margin-l-3 cursor-pointer align-center"
+    @click="isDialogOpen = true"
+  >
     <span v-if="showLabel" class="margin-r-5" :class="`text-${label.color}`">
       {{ label.text }}
     </span>
@@ -19,6 +22,19 @@
       :more-required-count="moreRequiredCount"
       class="margin-l-n3"
     />
+    <template
+      v-if="
+        !!computedTrip && !!computedReservation && !!computedVehicleAssignments
+      "
+    >
+      <TripAssignmentsModal
+        v-model="isDialogOpen"
+        :reservationId="computedReservation.reservationId"
+        :tripAssignments="computedVehicleAssignments"
+        :trip="computedTrip"
+        @refresh="EventBus.$emit('refresh-assignments')"
+      />
+    </template>
   </div>
 </template>
 <script lang="ts">
@@ -31,6 +47,8 @@ import { pluralize } from '@/utils/string'
 import { ColoredMessage } from '@/models/ColoredMessage'
 import trip from '@/services/trip'
 import tripAssignment from '@/services/tripAssignment'
+import TripAssignmentsModal from '@/components/TripAssignmentsModal.vue'
+import { EventBus } from '@/utils/eventBus'
 
 const MAX_DISPLAY = 3
 
@@ -38,6 +56,7 @@ const MAX_DISPLAY = 3
   components: {
     VehicleAssignmentIcon,
     DriverAssignmentIcon,
+    TripAssignmentsModal,
   },
 })
 export default class DriverAssignmentIcons extends Vue {
@@ -49,6 +68,8 @@ export default class DriverAssignmentIcons extends Vue {
 
   fetchedTrip: Trip | null = null
   fetchedVehicleAssignments: VehicleAssignment[] = []
+  isDialogOpen = false
+  EventBus = EventBus
 
   @Watch('computedReservation', { immediate: true })
   async reservationChanged(reservation: Reservation): Promise<void> {
@@ -63,6 +84,18 @@ export default class DriverAssignmentIcons extends Vue {
       this.fetchedVehicleAssignments =
         tripAssignmentResponse.data.vehicleAssignments
     }
+  }
+
+  mounted(): void {
+    EventBus.$on('refresh-assignments', () => this.refreshAssignments())
+  }
+
+  async refreshAssignments(): Promise<void> {
+    const tripAssignmentResponse = await tripAssignment.byReservationIds([
+      this.reservation.reservationId,
+    ])
+    this.fetchedVehicleAssignments =
+      tripAssignmentResponse.data.vehicleAssignments
   }
 
   get computedTrip(): Trip | null {

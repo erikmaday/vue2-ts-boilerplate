@@ -16,7 +16,7 @@ class AuthModule extends VuexModule {
   token: string | null = load('token') || null
   isTokenSet = !!load('token')
   roles: Role[] = load('roles') || []
-  isDriverOnly = false
+  isDriverOnly = load('isDriverOnly') || false
 
   // getters
   get getUser() {
@@ -74,11 +74,13 @@ class AuthModule extends VuexModule {
     window.localStorage.removeItem('user')
     window.localStorage.removeItem('userId')
     window.localStorage.removeItem('roles')
+    window.localStorage.removeItem('isDriverOnly')
     this.userId = null
     this.user = null
     this.token = null
     this.roles = null
     this.isTokenSet = false
+    this.isDriverOnly = false
     router.push({
       name: 'login',
     })
@@ -90,7 +92,9 @@ class AuthModule extends VuexModule {
     if (response.data.successful) {
       save('roles', response.data.userProfile.roles)
       this.roles = response.data.userProfile.roles
-      this.isDriverOnly = checkIsDriverOnly(response.data.userProfile.roles)
+      const isDriverOnly = checkIsDriverOnly(response.data.userProfile.roles)
+      this.isDriverOnly = isDriverOnly
+      save('isDriverOnly', isDriverOnly)
     }
   }
 

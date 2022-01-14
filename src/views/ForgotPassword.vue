@@ -25,9 +25,18 @@
                 class="font-14"
               />
             </v-col>
-            <v-col v-if="success" sm="10" class="padding-a-0">
+            <v-col v-if="success && isSubmitted" sm="10" class="padding-a-0">
               <p class="text-success">
-                If your account exists, your password reset email is on the way!
+                Your password reset email is on the way!
+              </p>
+            </v-col>
+            <v-col
+              v-if="!success && email && isSubmitted"
+              sm="10"
+              class="padding-a-0"
+            >
+              <p class="text-error">
+                This email is not associated with a valid account.
               </p>
             </v-col>
             <v-col sm="10" class="padding-a-0">
@@ -78,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import user from '@/services/user'
 import { isNotEmpty } from '@/utils/validators'
 import Guest from '@/layouts/Guest.vue'
@@ -88,10 +97,17 @@ export default class ForgotPassword extends Vue {
   email = ''
   success = false
   isSubmitting = false
+  isSubmitted = false
   isNotEmpty = isNotEmpty
+
+  @Watch('email')
+  emailChanged(): void {
+    this.isSubmitted = false
+  }
 
   async submit(): Promise<void> {
     this.isSubmitting = true
+    this.isSubmitted = true
     try {
       let res = await user.forgotPassword(this.email)
       this.isSubmitting = false
@@ -99,8 +115,8 @@ export default class ForgotPassword extends Vue {
         this.success = true
       }
     } catch (error) {
+      this.success = false
       this.isSubmitting = false
-      console.log(error)
     }
   }
 }

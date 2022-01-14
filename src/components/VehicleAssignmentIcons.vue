@@ -1,5 +1,8 @@
 <template>
-  <div class="d-inline-flex margin-l-3 cursor-pointer align-center">
+  <div
+    class="d-inline-flex margin-l-3 cursor-pointer align-center"
+    @click="isDialogOpen = true"
+  >
     <span v-if="showLabel" class="margin-r-5" :class="`text-${label.color}`">
       {{ label.text }}
     </span>
@@ -19,23 +22,37 @@
       :more-required-count="moreRequiredCount"
       class="margin-l-n3"
     />
+    <template
+      v-if="computedTrip && computedReservation && computedVehicleAssignments"
+    >
+      <TripAssignmentsModal
+        v-model="isDialogOpen"
+        :reservationId="computedReservation.reservationId"
+        :tripAssignments="computedVehicleAssignments"
+        :trip="computedTrip"
+        @refresh="EventBus.$emit('refresh-assignments')"
+      />
+    </template>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import VehicleAssignmentIcon from '@/components/VehicleAssignmentIcon.vue'
+import TripAssignmentsModal from '@/components/TripAssignmentsModal.vue'
 import { Reservation, Trip } from '@/models/dto'
 import { VehicleAssignment } from '@/models/dto'
 import { pluralize } from '@/utils/string'
 import { ColoredMessage } from '@/models/ColoredMessage'
 import trip from '@/services/trip'
 import tripAssignment from '@/services/tripAssignment'
+import { EventBus } from '@/utils/eventBus'
 
 const MAX_DISPLAY = 3
 
 @Component({
   components: {
     VehicleAssignmentIcon,
+    TripAssignmentsModal,
   },
 })
 export default class VehicleAssignmentIcons extends Vue {
@@ -46,6 +63,12 @@ export default class VehicleAssignmentIcons extends Vue {
 
   fetchedTrip: Trip | null = null
   fetchedVehicleAssignments: VehicleAssignment[] = []
+  isDialogOpen = false
+  EventBus = EventBus
+
+  mounted(): void {
+    EventBus.$on('refresh-assignments', () => this.refreshAssignments())
+  }
 
   @Watch('computedReservation', { immediate: true })
   async reservationChanged(reservation: Reservation): Promise<void> {
@@ -60,6 +83,14 @@ export default class VehicleAssignmentIcons extends Vue {
       this.fetchedVehicleAssignments =
         tripAssignmentResponse.data.vehicleAssignments
     }
+  }
+
+  async refreshAssignments(): Promise<void> {
+    const tripAssignmentResponse = await tripAssignment.byReservationIds([
+      this.reservation.reservationId,
+    ])
+    this.fetchedVehicleAssignments =
+      tripAssignmentResponse.data.vehicleAssignments
   }
 
   get computedTrip(): Trip | null {

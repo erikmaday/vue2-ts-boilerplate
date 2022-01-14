@@ -28,7 +28,7 @@
         </v-btn>
       </template>
     </template>
-    <v-menu v-if="!isMobile && !isActionsListEmpty" offset-x left>
+    <v-menu v-if="!isMobile && visibleActionsList.length" offset-x left>
       <template v-slot:activator="{ on }">
         <CUIcon
           width="20px"
@@ -43,9 +43,7 @@
       </template>
       <v-list>
         <v-list-item
-          v-for="(action, actionIndex) in actions.filter(
-            (action) => !action.isDetail && !action.hide
-          )"
+          v-for="(action, actionIndex) in visibleActionsList"
           :key="`action-${action.key}-${actionIndex}`"
           @click="handleAction(action, row)"
         >
@@ -95,8 +93,8 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" small text @click="closeDialog">Cancel</v-btn>
-        <v-btn color="primary" small @click="confirmAction">OK</v-btn>
+        <v-btn color="primary" small text @click="closeDialog">{{ dialogSecondaryActionText }}</v-btn>
+        <v-btn color="primary" small @click="confirmAction">{{ dialogPrimaryActionText }}</v-btn>
       </template>
     </CUModal>
   </div>
@@ -151,6 +149,9 @@ export default class CUDataTableActionColumn extends Vue {
 
   dialogOpen = false
   dialogText: string | undefined = ''
+  dialogPrimaryActionText = ''
+  dialogSecondaryActionText = ''
+
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   dialogConfirmFn = () => ({})
   currentAction: ActionColumn | undefined = undefined
@@ -174,6 +175,8 @@ export default class CUDataTableActionColumn extends Vue {
     if (action.confirmModal) {
       this.dialogOpen = true
       this.dialogText = action.confirmModalText
+      this.dialogPrimaryActionText = action.confirmModalPrimaryActionText || 'OK'
+      this.dialogSecondaryActionText = action.confirmModalSecondaryActionText || 'Cancel'
       this.currentAction = action
     } else if (action.action) {
       action.action(this.row, this.rowIndex)
@@ -185,7 +188,21 @@ export default class CUDataTableActionColumn extends Vue {
   }
 
   get isActionsListEmpty(): boolean {
-    return this.actions.filter((action) => !action.isDetail).length < 1
+    return (
+      this.actions.filter((action) => !action.isDetail).length <
+      1
+    )
+  }
+
+  get visibleActionsList() {
+    let visibleActions = this.actions.filter(action => !action.isDetail)
+    visibleActions = visibleActions.filter(action => {
+      if (!action.hideOn) {
+        return true
+      }
+      return !action.hideOn(this.row)
+    })
+    return visibleActions
   }
 
   pushDetailRoute(): void {

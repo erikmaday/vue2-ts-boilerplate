@@ -18,7 +18,9 @@
         <slot name="navigation" />
       </v-col>
       <v-col class="padding-a-6" :class="`background-${mainColor}`">
-        <v-container>
+        <v-container
+          :style="{ 'max-width': `${$vuetify.breakpoint.thresholds.md}px` }"
+        >
           <v-row align="center">
             <v-col cols="auto">
               <h1><slot name="section-title" /></h1>

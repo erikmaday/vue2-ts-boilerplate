@@ -30,4 +30,12 @@ export default {
       photo
     )
   },
+  uploadBranding(
+    companyId: number,
+    type: string,
+    photo: FormData
+  ): Promise<AxiosResponse<boolean>> {
+    const url = `https://${apiBaseUrl()}/v2/photos/companies/${companyId}/companyBrandings/${type}`
+    return httpService.put(url, photo)
+  },
 }

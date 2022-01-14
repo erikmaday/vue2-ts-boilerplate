@@ -1,273 +1,237 @@
 <template>
-  <div>
-    <v-container>
-      <v-row justify="space-between" align="center">
-        <v-col cols="12" md="7">
-          <div
-            class="d-flex align-center"
-            :class="{
-              'flex-column': $vuetify.breakpoint.smAndDown,
-              'flex-row': $vuetify.breakpoint.mdAndUp,
-            }"
-          >
-            <v-btn
-              v-if="!isModeProfile"
-              :icon="$vuetify.breakpoint.mdAndUp"
-              :x-small="$vuetify.breakpoint.mdAndUp"
-              :small="$vuetify.breakpoint.smAndDown"
-              plain
-              @click="pushLastRoute"
-            >
-              <CUIcon width="20px" height="20px" color="primary">
-                arrow_left
-              </CUIcon>
-              <span
-                v-if="$vuetify.breakpoint.smAndDown"
-                class="margin-l-1 text-primary"
-              >
-                Back
-              </span>
-            </v-btn>
-            <h1
-              class="margin-a-0"
-              :class="{
-                'text-center': $vuetify.breakpoint.xs,
-              }"
-            >
-              {{ headerTitle }}
-            </h1>
-          </div>
+  <Detail>
+    <template #back>
+      <v-btn
+        :icon="$vuetify.breakpoint.mdAndUp"
+        :x-small="$vuetify.breakpoint.mdAndUp"
+        :small="$vuetify.breakpoint.smAndDown"
+        plain
+        color="primary"
+        @click="pushLastRoute"
+      >
+        <CUIcon>arrow_left</CUIcon>
+        <span v-if="$vuetify.breakpoint.xs" class="margin-l-1">Back</span>
+      </v-btn>
+    </template>
+    <template #title>{{ headerTitle }}</template>
+    <template #buttons>
+      <v-btn
+        v-show="isModeEdit"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        :text="$vuetify.breakpoint.mdAndUp"
+        :outlined="$vuetify.breakpoint.smAndDown"
+        small
+        color="primary"
+        @click="handleCancel"
+      >
+        Cancel
+      </v-btn>
+      <v-btn
+        v-if="!isModeProfile"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        v-show="isModeView"
+        primary
+        :text="$vuetify.breakpoint.mdAndUp"
+        :outlined="$vuetify.breakpoint.smAndDown"
+        small
+        color="error"
+        @click="isDeleteModalOpen = true"
+      >
+        Delete
+      </v-btn>
+      <v-btn
+        v-if="!isModeProfile"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        v-show="isModeView"
+        primary
+        small
+        outlined
+        color="primary"
+        @click="isChangePasswordOpen = !isChangePasswordOpen"
+      >
+        Change Password
+      </v-btn>
+      <v-btn
+        v-if="!isModeProfile"
+        v-show="isModeView"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        small
+        outlined
+        color="primary"
+        @click="
+          $router.push({
+            name: 'users.edit',
+            params: { id: $route.params.id },
+          })
+        "
+      >
+        Edit User
+      </v-btn>
+      <v-btn
+        v-else-if="isModeProfile"
+        v-show="isModeView"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        small
+        color="primary"
+        @click="
+          $router.push({
+            name: 'profile.edit',
+          })
+        "
+      >
+        Edit
+      </v-btn>
+      <v-btn
+        v-if="!isModeProfile"
+        v-show="isModeEdit || isModeAdd"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        small
+        color="primary"
+        @click="submit"
+      >
+        {{ isModeAdd ? 'Add User' : 'Save' }}
+      </v-btn>
+      <v-btn
+        v-else-if="isModeProfile"
+        v-show="isModeEdit"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+        small
+        color="primary"
+        @click="submit"
+      >
+        Save
+      </v-btn>
+    </template>
+    <v-row
+      class="padding-b-8"
+      align="center"
+      justify-sm="space-between"
+      justify="center"
+    ></v-row>
+    <v-form :disabled="isModeView" ref="form" lazy-validation>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+          :class="{
+            'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
+          }"
+        >
+          <UsersDetailUserPhoto
+            :photoSrc="userPhoto"
+            :mode="mode"
+            @upload="uploadUserPhoto"
+          />
         </v-col>
-        <v-col cols="12" md="5">
-          <div
-            class="d-flex"
-            :class="{
-              'flex-row': $vuetify.breakpoint.smAndUp,
-              'justify-center': $vuetify.breakpoint.sm,
-              'flex-column': $vuetify.breakpoint.xs,
-              'justify-end': $vuetify.breakpoint.mdAndUp || isModeProfile,
-            }"
-          >
-            <v-btn
-              v-show="isModeEdit"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              :text="$vuetify.breakpoint.smAndUp"
-              :outlined="$vuetify.breakpoint.xs"
-              small
-              color="primary"
-              @click="handleCancel"
-            >
-              Cancel
-            </v-btn>
-            <v-btn
-              v-if="!isModeProfile"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              v-show="isModeView"
-              primary
-              :text="$vuetify.breakpoint.smAndUp"
-              :outlined="$vuetify.breakpoint.xs"
-              small
-              color="error"
-              @click="isDeleteModalOpen = true"
-            >
-              Delete
-            </v-btn>
-            <v-btn
-              v-if="!isModeProfile"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              v-show="isModeView"
-              primary
-              small
-              outlined
-              color="primary"
-              @click="isChangePasswordOpen = !isChangePasswordOpen"
-            >
-              Change Password
-            </v-btn>
-            <v-btn
-              v-if="!isModeProfile"
-              v-show="isModeView"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              small
-              outlined
-              color="primary"
-              @click="
-                $router.push({
-                  name: 'users.edit',
-                  params: { id: $route.params.id },
-                })
-              "
-            >
-              Edit
-            </v-btn>
-            <v-btn
-              v-else-if="isModeProfile"
-              v-show="isModeView"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              small
-              color="primary"
-              @click="
-                $router.push({
-                  name: 'profile.edit',
-                })
-              "
-            >
-              Edit
-            </v-btn>
-            <v-btn
-              v-if="!isModeProfile"
-              v-show="isModeEdit || isModeAdd"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              small
-              color="primary"
-              @click="submit"
-            >
-              {{ isModeAdd ? 'Add User' : 'Save' }}
-            </v-btn>
-            <v-btn
-              v-else-if="isModeProfile"
-              v-show="isModeEdit"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              small
-              color="primary"
-              @click="submit"
-            >
-              Save
-            </v-btn>
-          </div>
+        <v-col cols="12" md="8">
+          <v-row>
+            <v-col cols="12" sm="6" class="py-0">
+              <CUTextField
+                label="First Name"
+                placeholder="Andrea"
+                :rules="[(val) => !!val || 'First Name is Required']"
+                v-model="currentUser.firstName"
+              />
+            </v-col>
+            <v-col cols="12" sm="6" class="py-0">
+              <CUTextField
+                label="Last Name"
+                placeholder="Jones"
+                :rules="[(val) => !!val || 'Last Name is Required']"
+                v-model="currentUser.lastName"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" sm="6" class="py-0">
+              <CUTextField
+                label="Email"
+                placeholder="ajones@gmail.com"
+                :rules="[(val) => !!val || 'Email is Required']"
+                :disabled="isModeEdit"
+                v-model="currentUser.email"
+                :error-messages="validationErrors.email"
+              />
+            </v-col>
+            <v-col cols="12" sm="6" class="py-0">
+              <CUSelect
+                v-model="currentUser.groupId"
+                :disabled="isModeProfile"
+                :items="userGroups"
+                :rules="[(val) => isNotEmptyArray(val) || 'Type is required']"
+                item-text="label"
+                item-value="groupId"
+                label="Type"
+                placeholder="User"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-checkbox
+                v-if="!isModeProfile"
+                v-model="treatAsDriver"
+                label="This user is also a driver"
+                :disabled="currentUser.groupId === DRIVER_GROUP_ID"
+              />
+            </v-col>
+          </v-row>
+          <v-expand-transition>
+            <UsersDetailDriverInfo
+              v-if="treatAsDriver && !isModeProfile"
+              ref="driverInfoForm"
+              :parent-driver-model="currentUserAsDriver"
+              :vehicle-types="vehicleTypes"
+              @update-driver-model="updateModels"
+            />
+          </v-expand-transition>
         </v-col>
       </v-row>
-      <v-row
-        class="padding-b-8"
-        align="center"
-        justify-sm="space-between"
-        justify="center"
-      ></v-row>
-      <v-form :disabled="isModeView" ref="form" lazy-validation>
-        <v-row>
-          <v-col
-            cols="12"
-            md="4"
-            :class="{
-              'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
-            }"
-          >
-            <UsersDetailUserPhoto
-              :photoSrc="userPhoto"
-              :mode="mode"
-              @upload="uploadUserPhoto"
-            />
-          </v-col>
-          <v-col cols="12" md="8">
-            <v-row>
-              <v-col cols="12" sm="6" class="py-0">
-                <CUTextField
-                  label="First Name"
-                  placeholder="Andrea"
-                  :rules="[(val) => !!val || 'First Name is Required']"
-                  v-model="currentUser.firstName"
-                />
-              </v-col>
-              <v-col cols="12" sm="6" class="py-0">
-                <CUTextField
-                  label="Last Name"
-                  placeholder="Jones"
-                  :rules="[(val) => !!val || 'Last Name is Required']"
-                  v-model="currentUser.lastName"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" sm="6" class="py-0">
-                <CUTextField
-                  label="Email"
-                  placeholder="ajones@gmail.com"
-                  :rules="[(val) => !!val || 'Email is Required']"
-                  :disabled="isModeEdit"
-                  v-model="currentUser.email"
-                  :error-messages="validationErrors.email"
-                />
-              </v-col>
-              <v-col cols="12" sm="6" class="py-0">
-                <CUSelect
-                  v-model="currentUser.groupId"
-                  :disabled="isModeProfile"
-                  :items="userGroups"
-                  :rules="[(val) => typeValidator(val)]"
-                  item-text="label"
-                  item-value="groupId"
-                  label="Type"
-                  placeholder="User"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-checkbox
-                  v-if="!isModeProfile"
-                  v-model="treatAsDriver"
-                  label="This user is also a driver"
-                  :disabled="currentUser.groupId === DRIVER_GROUP_ID"
-                />
-              </v-col>
-            </v-row>
-            <v-expand-transition>
-              <UsersDetailDriverInfo
-                v-if="treatAsDriver && !isModeProfile"
-                ref="driverInfoForm"
-                :parent-driver-model="currentUserAsDriver"
-                :vehicle-types="vehicleTypes"
-                @update-driver-model="updateModels"
-              />
-            </v-expand-transition>
-          </v-col>
-        </v-row>
-      </v-form>
-      <UsersChangePassword
-        v-model="isChangePasswordOpen"
-        :userId="currentUserAsDriver.userId || Number($route.params.id)"
-      />
-      <CUModal v-model="isDeleteModalOpen">
-        <template #title>Delete User</template>
-        <template #text>Are you sure you want to delete this user?</template>
-        <template #actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            outlined
-            small
-            text
-            @click="isDeleteModalOpen = false"
-          >
-            Cancel
-          </v-btn>
-          <v-btn color="error" small @click="deleteUser">Delete</v-btn>
-          <v-spacer />
-        </template>
-      </CUModal>
-    </v-container>
-  </div>
+    </v-form>
+    <UsersChangePassword
+      v-model="isChangePasswordOpen"
+      :userId="currentUserAsDriver.userId || Number($route.params.id)"
+    />
+    <CUModal v-model="isDeleteModalOpen">
+      <template #title>Delete User</template>
+      <template #text>Are you sure you want to delete this user?</template>
+      <template #actions>
+        <v-spacer />
+        <v-btn
+          color="primary"
+          outlined
+          small
+          text
+          @click="isDeleteModalOpen = false"
+        >
+          Cancel
+        </v-btn>
+        <v-btn color="error" small @click="deleteUser">Delete</v-btn>
+        <v-spacer />
+      </template>
+    </CUModal>
+  </Detail>
 </template>
 
 <script lang="ts">
@@ -285,6 +249,7 @@ import driver from '@/services/driver'
 import type from '@/services/type'
 import { userGroups } from '@/data/userGroups'
 import { ApiResult, UserDetail, VehicleType } from '@/models/dto'
+import Detail from '@/layouts/Detail.vue'
 import UsersDetailUserPhoto from '@/components/UsersDetailUserPhoto.vue'
 import UsersDetailDriverInfo from '@/components/UsersDetailDriverInfo.vue'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
@@ -292,6 +257,7 @@ import app from '@/store/modules/app'
 
 @Component({
   components: {
+    Detail,
     UsersChangePassword,
     UsersDetailUserPhoto,
     UsersDetailDriverInfo,

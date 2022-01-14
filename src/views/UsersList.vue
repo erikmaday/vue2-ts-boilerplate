@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
         <h1>Team</h1>
@@ -31,11 +31,12 @@
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No matching users found"
     />
-  </div>
+  </Main>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import Main from '@/layouts/Main.vue'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
@@ -47,7 +48,7 @@ import { AxiosResponse } from 'axios'
 import { RawLocation } from 'vue-router'
 
 @Component({
-  components: { CUDataTable, CUCollectionTable, CUDataTableFilters },
+  components: { Main, CUDataTable, CUCollectionTable, CUDataTableFilters },
 })
 export default class Users extends Vue {
   isFilterDialogOpen = false

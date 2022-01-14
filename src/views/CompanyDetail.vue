@@ -254,7 +254,7 @@ export default class CompanyDetail extends Vue {
           }`
         }
         if (this.company.darkLogoUrl) {
-          this.lightLogoSource = `https://${baseUrl()}${
+          this.darkLogoSource = `https://${baseUrl()}${
             this.company.darkLogoUrl
           }`
         }
@@ -301,21 +301,22 @@ export default class CompanyDetail extends Vue {
 
   async editExistingCompany(): Promise<number> {
     let companyId = Number(auth.getUser.companyId)
+    await this.uploadPhotos()
     await company.update(companyId, this.company as Company)
     return companyId
   }
 
-  async uploadPhoto(type: string): Promise<void> {
-    await this.$store.dispatch('companies/uploadBrandingPhoto', {
-      payload: this[`${type}File`],
-      id: this.id,
-      type,
-    })
+  uploadPhotos(): void {
+    if (this.lightLogoFile) {
+      this.uploadBrandingPhoto('light', this.lightLogoFile)
+    }
+    if (this.darkLogoFile) {
+      this.uploadBrandingPhoto('dark', this.darkLogoFile)
+    }
+  }
 
-  uploadBrandingPhoto(store, payload) {
-    const host = baseUrl()
-    const url = `https://${host}/v2/photos/companies/${payload.id}/companyBrandings/${payload.type}`
-    return axios.put(url, payload.payload)
+  async uploadBrandingPhoto(type: string, file: File): Promise<void> {
+    await company.uploadBranding(auth.user.companyId, type, file)
   }
 
   async submit(): Promise<void> {

@@ -1,56 +1,83 @@
 <template>
   <div>
-    <label v-if="label" class="font-14">{{ label }}</label>
-    <img
-      v-if="src"
-      class="w-full h-200 object-fit-contain border-radius-regular"
-      :src="src"
-    />
-    <div
-      v-else
-      class="w-full d-flex h-200 align-center justify-center border-radius-regular border-2 border-dashed position-relative"
-      :class="{
-        'background-blue-10 border-primary': !errorMessage && !disabled,
-        'background-red-10 border-error': errorMessage,
-        'background-gray-lighter border-gray-border cursor-default': disabled,
-        'cursor-pointer': !disabled,
-      }"
-      @dragover.prevent
-      @drop.prevent="handleDrop"
-    >
-      <input
-        type="file"
-        accept="image/*"
-        class="opacity-0 w-full h-full position-absolute top-0 left-0 cursor-pointer"
-        :cursor="{
-          'cursor-default': disabled,
+    <label v-if="label" class="font-14 text-left">{{ label }}</label>
+    <div class="text-center position-relative">
+      <div
+        class="w-full d-flex h-200 align-center justify-center border-radius-regular position-relative text-center"
+        :class="{
+          'background-blue-10 border-primary':
+            !src && !errorMessage && !disabled,
+          'background-red-10 border-error': !src && errorMessage,
+          'background-gray-lighter border-gray-border cursor-default':
+            !src && disabled,
           'cursor-pointer': !disabled,
+          'border-2 border-dashed': !src,
         }"
-        :disabled="disabled"
-        @change="handleBrowse"
-      />
-      <v-row>
-        <v-col cols="12" class="text-center margin-b-0 padding-b-0">
-          <CUIcon
-            :color="iconColor"
-            width="48px"
-            height="48px"
-            class="margin-x-auto"
-          >
-            upload_circle
-          </CUIcon>
-        </v-col>
-        <v-col cols="12" class="text-center margin-t-0 padding-t-0">
-          <h4
-            class="font-bold font-weight-400"
-            :class="`text-${message.color}`"
-          >
-            {{ message.text }}
-          </h4>
-        </v-col>
-      </v-row>
+        @dragover.prevent
+        @drop.prevent="handleDrop"
+      >
+        <template v-if="src">
+          <img
+            class="w-full h-full object-fit-contain border-radius-regular"
+            :src="src"
+          />
+        </template>
+        <template v-show="!src">
+          <input
+            type="file"
+            accept="image/*"
+            class="opacity-0 w-full h-full position-absolute top-0 left-0 cursor-pointer"
+            :cursor="{
+              'cursor-default': disabled,
+              'cursor-pointer': !disabled,
+            }"
+            :disabled="disabled"
+            @change="handleBrowse"
+          />
+          <v-row v-if="!src">
+            <v-col cols="12" class="text-center margin-b-0 padding-b-0">
+              <CUIcon
+                :color="iconColor"
+                width="48px"
+                height="48px"
+                class="margin-x-auto"
+              >
+                upload_circle
+              </CUIcon>
+            </v-col>
+            <v-col cols="12" class="text-center margin-t-0 padding-t-0">
+              <h4
+                class="font-bold font-weight-400"
+                :class="`text-${message.color}`"
+              >
+                {{ message.text }}
+              </h4>
+            </v-col>
+          </v-row>
+        </template>
+      </div>
+      <div
+        v-if="src && !disabled"
+        class="w-56 h-56 border-radius-round background-primary position-relative position-absolute"
+        style="left: 50%; transform: translateX(-50%); bottom: -23px"
+      >
+        <CUIcon color="white" width="24px" height="24px" class="margin-t-4">
+          edit
+        </CUIcon>
+        <input
+          type="file"
+          accept="image/*"
+          class="opacity-0 border-radius-round w-full h-full position-absolute top-0 left-0 cursor-pointer"
+          :cursor="{
+            'cursor-default': disabled,
+            'cursor-pointer': !disabled,
+          }"
+          :disabled="disabled"
+          @change="handleBrowse"
+        />
+      </div>
     </div>
-    <p v-if="caption" class="font-14 text-gray-light margin-t-1">
+    <p v-if="caption" class="font-14 text-gray-light margin-t-6">
       {{ caption }}
     </p>
   </div>
@@ -113,42 +140,10 @@ export default class CompanyLogoUpload extends Vue {
     }
     const file = files[0]
     this.$emit('input', file)
-
-    // const image = URL.createObjectURL(file)
-    // console.log(image)
-    // const formData = new FormData()
-    // formData.append('file', file)
-
-    //       this[`${type}File`] = formData
-    // this[`disabled${type}`] = false
   }
 
-  // addPhotos(files: FileList): void {
-  //   this.errorMessage = null
-  //   const filesArray = Array.from(files)
-  //   if (filesArray.length > this.morePhotosAllowedCount) {
-  //     this.errorMessage = `Only ${this.morePhotosAllowedCount} more ${pluralize(
-  //       this.morePhotosAllowedCount,
-  //       'file'
-  //     )} ${
-  //       this.morePhotosAllowedCount !== 1 ? 'are' : 'is'
-  //     } allowed to upload. Please try again.`
-  //     return
-  //   }
-
-  //   const images = Array.from(files).map((file) => {
-  //     const newImage = {
-  //       vehiclePhotoId: null,
-  //       vehicleId: null,
-  //       imagePath: URL.createObjectURL(file),
-  //       primaryImage: false,
-  //       active: true,
-  //       label: '',
-  //       file,
-  //     }
-  //     return newImage
-  //   })
-  //   vehicleDetail.addPhotos(images)
-  // }
+  openFileBrowser(): void {
+    console.log(this.$refs.imageInput)
+  }
 }
 </script>

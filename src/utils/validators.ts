@@ -22,3 +22,11 @@ export const isNotNegative = (val: any): boolean => {
   }
   return Number(val) >= 0
 }
+
+export const verifyPhoneLength = (phoneNumber: string): boolean => {
+  return (
+    phoneNumber != null &&
+    (phoneNumber.replace(/[^0-9]/g, '').length === 10 ||
+      phoneNumber.replace(/[^0-9]/g, '').length === 12)
+  )
+}

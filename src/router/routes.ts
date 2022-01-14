@@ -212,6 +212,18 @@ export const routes: RouteConfig[] = [
                   import(
                     /* webpackChunkName: "company-settings" */ '@/views/Empty.vue'
                   ),
+                children: [
+                  {
+                    path: '',
+                    name: 'settings',
+                    component: () => import('@/views/Company.vue'),
+                  },
+                  {
+                    path: 'edit',
+                    name: 'settings.edit',
+                    component: () => import('@/views/Company.vue'),
+                  },
+                ],
               },
             ],
           },

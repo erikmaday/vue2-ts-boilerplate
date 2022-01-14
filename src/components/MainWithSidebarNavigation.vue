@@ -8,7 +8,7 @@
         d-flex
         border-radius-regular
         align-center
-        padding-y-3 padding-l-3
+        padding-a-3
         transition-duration-50 transition-ease-in transition-all
         margin-y-1
         cursor-pointer

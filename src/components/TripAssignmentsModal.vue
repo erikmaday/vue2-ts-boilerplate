@@ -1,5 +1,5 @@
 <template>
-  <CUModal v-model="value" v-on="$listeners">
+  <CUModal :value="value" @input="$emit('input', $event)" v-on="$listeners">
     <template #title>Assign Drivers and Vehicles</template>
     <template #text>
       <div v-for="(assignment, vi) in model" :key="`assignment-group-${vi}`">

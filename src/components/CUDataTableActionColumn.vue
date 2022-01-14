@@ -82,17 +82,16 @@
         </v-btn>
       </template>
     </v-col>
-    <v-dialog v-model="dialogOpen" max-width="500px">
-      <v-card>
-        <p class="wb-break-word font-22 font-medium padding-x-6 padding-y-2">
-          {{ dialogText }}
-        </p>
-        <v-card-actions class="d-flex justify-center">
-          <v-btn color="primary" text @click="closeDialog">Cancel</v-btn>
-          <v-btn color="primary" @click="confirmAction">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <CUModal v-model="dialogOpen">
+      <template #title>
+        <span class="wb-break-word">{{ dialogText }}</span>
+      </template>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="closeDialog">Cancel</v-btn>
+        <v-btn color="primary" small @click="confirmAction">OK</v-btn>
+      </template>
+    </CUModal>
   </div>
 </template>
 <script lang="ts">

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container>
-      <v-row justify="space-between align-center">
+      <v-row justify="space-between" align="center">
         <v-col cols="12" md="7">
           <div
             class="d-flex align-center"

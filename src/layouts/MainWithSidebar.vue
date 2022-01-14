@@ -40,7 +40,11 @@
               </div>
             </template>
           </v-row>
-          <slot />
+          <v-container>
+            <v-row justify="center">
+              <slot />
+            </v-row>
+          </v-container>
         </v-container>
       </v-col>
     </v-row>

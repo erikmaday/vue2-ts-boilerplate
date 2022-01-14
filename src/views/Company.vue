@@ -48,7 +48,7 @@ export default class Company extends Vue {
     const link: SidebarLink | undefined = this.links.find(
       (link) => link.name && link.name.includes(this.mode)
     )
-    return link.title || link.lable
+    return link.label
   }
 
   get companyComponent(): any {

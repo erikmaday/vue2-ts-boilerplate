@@ -132,7 +132,7 @@ export default class CompanyLogoUpload extends Vue {
     this.addPhotos(event.dataTransfer.files)
   }
 
-  addPhotos(files: FileList, type: string): void {
+  addPhotos(files: FileList): void {
     const filesArray = Array.from(files)
     if (filesArray.length > 1) {
       this.errorMessage = 'Please select only one file.'

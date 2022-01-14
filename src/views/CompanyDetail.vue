@@ -195,6 +195,7 @@ export default class CompanyDetail extends Vue {
   notFound = false
   formErrors: Record<string, string[]> = {}
   currentCompany: Company | Record<string, never> = {}
+  companyPhoto = ''
 
   mounted(): void {
     if (this.isModeEdit || this.isModeView) {

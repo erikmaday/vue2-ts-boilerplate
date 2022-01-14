@@ -22,6 +22,30 @@
         </v-col>
       </template>
     </CUCollectionTable>
+    <CUModal v-model="isDialogOpen">
+      <template #title>Reject Booking</template>
+      <template #text>
+        <v-form ref="rejection-form">
+          <CUTextArea
+            v-model="rejectNote"
+            label="Why are you rejecting the booking?"
+            placeholder="Add reasons for rejection here."
+            :rules="[(val) => !!val || 'This field is required.']"
+            validate-on-blur
+          />
+        </v-form>
+      </template>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="cancelRejectNote">
+          Cancel
+        </v-btn>
+        <v-btn color="red" class="white--text" small @click="reject">
+          Reject
+        </v-btn>
+        <v-spacer />
+      </template>
+    </CUModal>
   </Main>
 </template>
 
@@ -44,7 +68,11 @@ import { RawLocation } from 'vue-router'
 import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
 import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
-import { ReservationStatus, ReservationType } from '@/utils/enum'
+import {
+  ReservationStatus,
+  ReservationType,
+  ReferralStatus,
+} from '@/utils/enum'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Bookings extends Vue {
@@ -52,6 +80,8 @@ export default class Bookings extends Vue {
   sorts: any = sort()
   filters: any = filter()
   tableView = reservation.tableView
+  isDialogOpen = false
+  rejectNote = ''
 
   columns: DataTableColumn[] = [
     {
@@ -201,6 +231,45 @@ export default class Bookings extends Vue {
         }
       },
     },
+    {
+      displayText: 'Accept Booking',
+      key: 'accept-booking',
+      color: 'primary',
+      icon: 'done',
+      confirmModal: false,
+      ariaLabel: 'Accept Booking',
+      hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
+    },
+    {
+      displayText: 'Reject Booking',
+      key: 'reject-booking',
+      color: 'error',
+      icon: 'close',
+      confirmModal: false,
+      ariaLabel: 'Reject Booking',
+      hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
+      action: () => {
+        console.log("> rejecting")
+        this.isDialogOpen = true
+      }
+    },
   ]
+
+  cancelRejectNote(): void {
+    this.rejectNote = ''
+    this.isDialogOpen = false
+  }
+
+  async accept(): Promise<void> {
+    // await reservation.accept(this.reservation.reservationId)
+    this.$emit('refresh')
+  }
+
+  async reject(): Promise<void> {
+    // const form: any = this.$refs['rejection-form']
+    // if (!form.validate()) return
+    // await reservation.reject(this.reservation.reservationId, this.rejectNote)
+    this.$emit('refresh')
+  }
 }
 </script>

@@ -9,7 +9,7 @@
     <v-btn
       small
       color="primary"
-      :disabled="!bidDetail.getValidSubmission"
+      :disabled="!bidDetail.getIsSubmitEnabled"
       class="margin-t-4 w-full"
       :loading="bidDetail.getSubmitting"
       @click="submit"

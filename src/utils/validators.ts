@@ -3,7 +3,7 @@ export const isNotEmpty = (val: any): boolean => {
 }
 
 export const isNotEmptyInput = (val: any): boolean => {
-  return !(val === '' || val == null)
+  return !(val === '' || val == null || val?.length === 0)
 }
 
 export const isNotEmptyArray = (val: any): boolean => {

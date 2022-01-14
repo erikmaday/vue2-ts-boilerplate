@@ -3,15 +3,16 @@
     <label v-if="label" class="font-14 text-left">{{ label }}</label>
     <div class="text-center position-relative">
       <div
-        class="w-full d-flex h-200 align-center justify-center border-radius-regular position-relative text-center"
+        class="w-full d-flex h-200 align-center justify-center border-radius-regular position-relative text-center padding-a-3 border-2 border-transparent border-solid"
         :class="{
           'background-blue-10 border-primary':
             !src && !errorMessage && !disabled,
           'background-red-10 border-error': !src && errorMessage,
+          'border-gray-border': src && !disabled,
           'background-gray-lighter border-gray-border cursor-default':
             !src && disabled,
           'cursor-pointer': !disabled,
-          'border-2 border-dashed': !src,
+          'border-dashed': !src,
         }"
         @dragover.prevent
         @drop.prevent="handleDrop"
@@ -27,6 +28,7 @@
             type="file"
             accept="image/*"
             class="opacity-0 w-full h-full position-absolute top-0 left-0 cursor-pointer"
+            :disabled="disabled"
             @change="handleBrowse"
           />
           <v-row v-if="!src">
@@ -56,7 +58,12 @@
         class="w-56 h-56 border-radius-round background-primary position-relative position-absolute cursor-pointer"
         style="left: 50%; transform: translateX(-50%); bottom: -23px"
       >
-        <CUIcon color="white" width="24px" height="24px" class="margin-t-4">
+        <CUIcon
+          color="white"
+          width="24px"
+          height="24px"
+          class="margin-t-4 cursor-pointer"
+        >
           edit
         </CUIcon>
         <input

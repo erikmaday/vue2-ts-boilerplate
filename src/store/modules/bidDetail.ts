@@ -29,7 +29,6 @@ class BidDetailModule extends VuexModule {
   areAllSoldOut = false
   submitting = false
   submitted = false
-  validSubmission = false
 
   // getters
   get getTrip() {

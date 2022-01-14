@@ -20,7 +20,7 @@
           class="margin-l-n3"
         />
         <VehicleAssignmentIcon
-          v-for="(vehicle, vehicleIndex) in unassignedToDisplay"
+          v-for="vehicleIndex in unassignedToDisplay"
           :key="`unassigned-vehicle-${vehicleIndex}`"
           class="margin-l-n3"
         />
@@ -143,10 +143,11 @@ export default class VehicleAssignmentIcons extends Vue {
   get unassignedToDisplay(): number {
     const displayedAssignedVehicles =
       this.vehicleAssignmentsToDisplay?.length || 0
-    return Math.min(
+    const min = Math.min(
       this.totalRequiredVehicles - displayedAssignedVehicles,
       MAX_DISPLAY
     )
+    return Math.max(min, 0)
   }
 
   get moreRequiredCount(): number {

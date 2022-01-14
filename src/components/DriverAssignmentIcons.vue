@@ -20,7 +20,7 @@
           class="margin-l-n3"
         />
         <DriverAssignmentIcon
-          v-for="(driver, driverIndex) in unassignedToDisplay"
+          v-for="driverIndex in unassignedToDisplay"
           :key="`unassigned-driver-${driverIndex}`"
           class="margin-l-n3"
         />
@@ -162,10 +162,11 @@ export default class DriverAssignmentIcons extends Vue {
   }
 
   get unassignedToDisplay(): number {
-    return Math.min(
+    const min = Math.min(
       this.totalRequiredDrivers - this.driverAssignmentsToDisplay.length,
       MAX_DISPLAY
     )
+    return Math.max(min, 0)
   }
 
   get moreRequiredCount(): number {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full">
     <v-row justify="space-between" class="margin-b-2">
       <v-col cols="12" md="7">
         <div
@@ -38,6 +38,7 @@
             outlined
             small
             color="primary"
+            :loading="saving"
             @click="
               $router.push({
                 name: 'settings',
@@ -73,6 +74,7 @@
             }"
             small
             color="primary"
+            :loading="saving"
             @click="submit"
           >
             Save
@@ -82,35 +84,13 @@
     </v-row>
     <v-form :disabled="isModeView" ref="form" lazy-validation>
       <v-row>
-        <v-col
-          cols="12"
-          md="5"
-          :class="{
-            'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
-          }"
-        >
-          <v-row>
-            <v-col cols="12">
-              <CompanyLogoUpload
-                class="padding-r-4"
-                label="Light Logo"
-                caption="Light logos use light text so they show up well on dark backgrounds."
-                :src="lightLogoSource"
-                :disabled="isModeView"
-                @input="lightLogoFile = $event"
-              />
-            </v-col>
-            <v-col cols="12">
-              <CompanyLogoUpload
-                class="padding-r-4"
-                label="Dark Logo"
-                caption="Dark logos use dark text so they show up well on light backgrounds."
-                :src="darkLogoSource"
-                :disabled="isModeView"
-                @input="darkLogoFile = $event"
-              />
-            </v-col>
-          </v-row>
+        <v-col cols="12" md="5">
+          <CompanyLogoUpload
+            label="Logo"
+            :src="darkLogoSource"
+            :disabled="isModeView"
+            @input="darkLogoFile = $event"
+          />
         </v-col>
         <v-col cols="12" md="7">
           <v-row>
@@ -208,18 +188,11 @@ export default class CompanyDetail extends Vue {
   formErrors: Record<string, string[]> = {}
   company: Company | Record<string, never> = {}
   companyPhoto = ''
-  lightLogoFile: File | null = null
   darkLogoFile: File | null = null
 
-  lightLogoSource = ''
   darkLogoSource = ''
 
-  @Watch('lightLogoFile', { deep: true })
-  lightLogoFileChanged(value: File | null): void {
-    if (value) {
-      this.lightLogoSource = URL.createObjectURL(value)
-    }
-  }
+  saving = false
 
   @Watch('darkLogoFile', { deep: true })
   darkLogoFileChanged(value: File | null): void {
@@ -248,16 +221,9 @@ export default class CompanyDetail extends Vue {
         const response = await company.byId(companyId)
         const companyResponseData = response.data.company
         this.company = companyResponseData as Company
-        if (this.company.lightLogoUrl) {
-          this.lightLogoSource = `https://${baseUrl()}${
-            this.company.lightLogoUrl
-          }`
-        }
-        if (this.company.darkLogoUrl) {
-          this.darkLogoSource = `https://${baseUrl()}${
-            this.company.darkLogoUrl
-          }`
-        }
+        this.darkLogoSource = this.company.darkLogoUrl
+          ? `https://${baseUrl()}${this.company.darkLogoUrl}`
+          : ''
       } else {
         this.notFound = true
         return
@@ -307,9 +273,6 @@ export default class CompanyDetail extends Vue {
   }
 
   uploadPhotos(): void {
-    if (this.lightLogoFile) {
-      this.uploadBrandingPhoto('light', this.lightLogoFile)
-    }
     if (this.darkLogoFile) {
       this.uploadBrandingPhoto('dark', this.darkLogoFile)
     }
@@ -336,8 +299,13 @@ export default class CompanyDetail extends Vue {
       ]
       return
     }
-
-    await this.editExistingCompany()
+    this.saving = true
+    try {
+      await this.editExistingCompany()
+    } catch (e) {
+      console.error(e)
+    }
+    this.saving = false
 
     this.$router.push({
       name: 'settings',

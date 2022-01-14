@@ -10,6 +10,7 @@
       :tabs="tabs"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :key="`marketplace-list`"
+      no-data-text="No bids found"
     >
       <template slot="filter-row">
         <v-spacer />

@@ -179,7 +179,7 @@
                 v-model="currentUser.groupId"
                 :disabled="isModeProfile"
                 :items="userGroups"
-                :rules="[(val) => isNotEmptyArray(val) || 'Type is required']"
+                :rules="[(val) => typeValidator(val)]"
                 item-text="label"
                 item-value="groupId"
                 label="Type"

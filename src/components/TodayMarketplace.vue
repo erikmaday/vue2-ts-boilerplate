@@ -32,7 +32,7 @@
             </v-chip>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="tripBundlesToDisplay.length">
           <v-col
             v-for="(tripBundle, tripBundleIndex) in tripBundlesToDisplay"
             cols="12"
@@ -44,6 +44,7 @@
             <MarketplaceCard show-pagination :trips="tripBundle" />
           </v-col>
         </v-row>
+        <TodayNotFound v-else message="No bids found" icon="work_off" />
         <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
           <Pagination
             v-model="pagination"
@@ -60,6 +61,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
+import TodayNotFound from '@/components/TodayNotFound.vue'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
 import Pagination from '@/components/Pagination.vue'
 import { TableViewTrip } from '@/models/dto'
@@ -71,7 +73,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { TableViewFilterChip } from '@/models/TableView'
 
-@Component({ components: { MarketplaceCard, Pagination } })
+@Component({ components: { MarketplaceCard, TodayNotFound, Pagination } })
 export default class TodayMarketplace extends Vue {
   chips: { [key: string]: TableViewFilterChip } = {
     createdToday: {

@@ -43,11 +43,6 @@ export const routes: RouteConfig[] = [
             ],
           },
           {
-            path: 'detail',
-            name: 'detail',
-            component: () => import('@/layouts/Detail.vue'),
-          },
-          {
             path: 'company',
             name: 'company',
             redirect: 'company/users',

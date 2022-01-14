@@ -70,7 +70,6 @@
           type="file"
           accept="image/*"
           class="opacity-0 border-radius-round w-full h-full position-absolute top-0 left-0 cursor-pointer"
-          :disabled="disabled"
           @change="handleBrowse"
         />
       </div>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
         <h1>Vehicles</h1>
@@ -31,11 +31,12 @@
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No matching vehicles found"
     />
-  </div>
+  </Main>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import Main from '@/layouts/Main.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import vehicle from '@/services/vehicle'
@@ -47,7 +48,7 @@ import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
 
 @Component({
-  components: { CUCollectionTable, CUDataTableFilters },
+  components: { Main, CUCollectionTable, CUDataTableFilters },
 })
 export default class VehiclesList extends Vue {
   tableView = vehicle.tableView

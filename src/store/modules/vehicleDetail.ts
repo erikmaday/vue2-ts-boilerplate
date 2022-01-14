@@ -170,7 +170,11 @@ class VehicleDetailModule extends VuexModule {
   }
   @Action
   goBack(): void {
-    router.push(app.getLastRoute as RawLocation)
+    if (!app.getLastRoute?.name || app.getLastRoute?.name === 'vehicles.view') {
+      router.push({ name: 'vehicles' })
+    } else {
+      router.push(app.getLastRoute)
+    }
   }
   @Action
   beginEdit(): void {

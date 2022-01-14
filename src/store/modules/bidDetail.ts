@@ -183,6 +183,7 @@ class BidDetailModule extends VuexModule {
     if (tripBid.tripId === this.trip?.tripId) {
       this.bidAmount = tripBid.bidAmount
     }
+    this.isSubmitted = false
   }
 
   @Action
@@ -232,7 +233,6 @@ class BidDetailModule extends VuexModule {
   setIsEnteringBid(value: boolean): void {
     this.isEnteringBid = value
     this.isPriceUpdated = true
-    this.isSubmitted = false
   }
 
   @Action

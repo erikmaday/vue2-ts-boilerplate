@@ -6,4 +6,5 @@ export interface NavigationLink extends Link {
   permission: string[]
   children?: NavigationLink[]
   icon?: string
+  href?: string
 }

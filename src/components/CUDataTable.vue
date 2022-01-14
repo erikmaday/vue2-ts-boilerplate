@@ -28,7 +28,7 @@
             v-for="(col, colIndex) in columns"
             :key="`column-${col.value}-${colIndex}-${index}`"
             :class="col.classes ? col.classes : ''"
-          > 
+          >
             <CUDataTableCell
               :column="col"
               :key="`data-table-cell-${col.value}-${colIndex}-${index}`"
@@ -48,14 +48,10 @@
       </template>
       <template v-else #item="{ item, index }">
         <div
-          class="
-            d-flex
-            padding-y-3
-            border-solid border-gray-mid-light border-x-0 border-t-0
-          "
+          class="d-flex border-solid border-gray-mid-light padding-a-3 border-radius-8"
           :class="{
             'padding-x-3 border-b-1': isDetailTable,
-            'border-b-2': !isDetailTable,
+            'border-x-1 border-y-1 margin-y-3': !isDetailTable,
             'flex-row flex-wrap': isEditableTable,
             'flex-column': !isEditableTable,
           }"

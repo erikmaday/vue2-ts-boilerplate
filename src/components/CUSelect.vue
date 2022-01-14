@@ -115,7 +115,7 @@ export default class CUSelect extends Vue {
 
   @Watch('value', { immediate: true })
   onValueChange(newVal: unknown[]): void {
-    if (!this.multiple || !newVal || !this.items) {
+    if (!this.multiple) {
       return
     }
 
@@ -140,6 +140,7 @@ export default class CUSelect extends Vue {
   }
 
   toggleAllFilters(): void {
+    console.log("> items:", this.items)
     if (!this.isAllToggled) {
       if (this.itemValue) {
         this.$emit(

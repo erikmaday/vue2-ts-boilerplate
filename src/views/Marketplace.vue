@@ -146,16 +146,17 @@ export default class Marketplace extends Vue {
         .add(1, 'day')
         .format('YYYY-MM-DDTHH:mm:ss.000Z')}`,
     },
-    {
-      column: {
-        _t_id: 'cf309108-6fa5-4205-8dd6-31f373443939',
-        text: 'Large Contracts',
-        value: '',
-        filterType: '',
-      },
-      value: null,
-      isLocked: true,
-    },
+    // Hide for now
+    // {
+    //   column: {
+    //     _t_id: 'cf309108-6fa5-4205-8dd6-31f373443939',
+    //     text: 'Large Contracts',
+    //     value: '',
+    //     filterType: '',
+    //   },
+    //   value: null,
+    //   isLocked: true,
+    // },
     {
       column: {
         _t_id: '3bc3f254-7fce-43d3-b6d2-87ef778c41ef',

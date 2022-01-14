@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip top>
+  <v-tooltip top :disabled="$vuetify.breakpoint.xs">
     <template #activator="{ on }">
       <div
         class="d-inline-flex margin-l-3 cursor-pointer align-center"

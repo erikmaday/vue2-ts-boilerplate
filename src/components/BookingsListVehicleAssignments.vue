@@ -1,11 +1,10 @@
 <template>
-  <p v-if="needsAcceptance" class="font-medium text-red margin-t-0">
-    Needs Acceptance
-  </p>
-  <p v-else-if="needsAssignment" class="font-medium text-red margin-t-0">
-    Needs Assignment
-  </p>
-  <VehicleAssignmentIcons v-else :reservation="row" />
+  <div>
+    <p v-if="needsAcceptance" class="font-medium text-red margin-t-0">
+      Needs Acceptance
+    </p>
+    <VehicleAssignmentIcons v-else :reservation="row" />
+  </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
@@ -17,16 +16,10 @@ import { ReferralStatus } from '@/utils/enum'
 export default class BookingsListVehicleAssignments extends Vue {
   @Prop({ required: false }) readonly row: Reservation
 
+  isDialogOpen = false
+
   get needsAcceptance(): boolean {
     return this.row.referralStatus !== ReferralStatus.Accepted
-  }
-
-  get needsAssignment(): boolean {
-    return (
-      !this.needsAcceptance &&
-      (this.row.assignedDriverPercentage < 100 ||
-        this.row.assignedVehiclePercentage < 100)
-    )
   }
 }
 </script>

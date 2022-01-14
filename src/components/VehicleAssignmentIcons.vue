@@ -1,39 +1,51 @@
 <template>
-  <div
-    class="d-inline-flex margin-l-3 cursor-pointer align-center"
-    @click="isDialogOpen = true"
-  >
-    <span v-if="showLabel" class="margin-r-5" :class="`text-${label.color}`">
-      {{ label.text }}
-    </span>
-    <VehicleAssignmentIcon
-      v-for="(vehicle, vehicleIndex) in vehicleAssignmentsToDisplay"
-      :vehicle-assignment="vehicle"
-      :key="`assigned-vehicle-${vehicleIndex}`"
-      class="margin-l-n3"
-    />
-    <VehicleAssignmentIcon
-      v-for="vehicleIndex in unassignedToDisplay"
-      :key="`unassigned-vehicle-${vehicleIndex}`"
-      class="margin-l-n3"
-    />
-    <VehicleAssignmentIcon
-      v-if="moreRequiredCount"
-      :more-required-count="moreRequiredCount"
-      class="margin-l-n3"
-    />
-    <template
-      v-if="computedTrip && computedReservation && computedVehicleAssignments"
-    >
-      <TripAssignmentsModal
-        v-model="isDialogOpen"
-        :reservationId="computedReservation.reservationId"
-        :tripAssignments="computedVehicleAssignments"
-        :trip="computedTrip"
-        @refresh="EventBus.$emit('refresh-assignments')"
-      />
+  <v-tooltip top>
+    <template #activator="{ on }">
+      <div
+        class="d-inline-flex margin-l-3 cursor-pointer align-center"
+        v-on="on"
+        @click="isDialogOpen = true"
+      >
+        <span
+          v-if="showLabel"
+          class="margin-r-5"
+          :class="`text-${label.color}`"
+        >
+          {{ label.text }}
+        </span>
+        <VehicleAssignmentIcon
+          v-for="(vehicle, vehicleIndex) in vehicleAssignmentsToDisplay"
+          :vehicle-assignment="vehicle"
+          :key="`assigned-vehicle-${vehicleIndex}`"
+          class="margin-l-n3"
+        />
+        <VehicleAssignmentIcon
+          v-for="vehicleIndex in unassignedToDisplay"
+          :key="`unassigned-vehicle-${vehicleIndex}`"
+          class="margin-l-n3"
+        />
+        <VehicleAssignmentIcon
+          v-if="moreRequiredCount"
+          :more-required-count="moreRequiredCount"
+          class="margin-l-n3"
+        />
+        <template
+          v-if="
+            computedTrip && computedReservation && computedVehicleAssignments
+          "
+        >
+          <TripAssignmentsModal
+            v-model="isDialogOpen"
+            :reservationId="computedReservation.reservationId"
+            :tripAssignments="computedVehicleAssignments"
+            :trip="computedTrip"
+            @refresh="EventBus.$emit('refresh-assignments')"
+          />
+        </template>
+      </div>
     </template>
-  </div>
+    <span class="text-white" v-html="tooltipBody"></span>
+  </v-tooltip>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
@@ -163,6 +175,22 @@ export default class VehicleAssignmentIcons extends Vue {
     return (
       this.computedVehicleAssignments?.length === this.totalRequiredVehicles
     )
+  }
+
+  get tooltipBody(): string {
+    const start = `<p class="text-white margin-a-0">`
+    const end = `</p>`
+    const line = (str: string): string => `${start}${str}${end}`
+
+    if (this.computedVehicleAssignments?.length) {
+      let html = ''
+      for (const vehicleAssignment of this.computedVehicleAssignments) {
+        html += line(vehicleAssignment.vehicle.vehicleName)
+      }
+      return html
+    } else {
+      return line('No Vehicles Assigned')
+    }
   }
 }
 </script>

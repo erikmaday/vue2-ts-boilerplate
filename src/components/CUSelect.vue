@@ -140,7 +140,6 @@ export default class CUSelect extends Vue {
   }
 
   toggleAllFilters(): void {
-    console.log("> items:", this.items)
     if (!this.isAllToggled) {
       if (this.itemValue) {
         this.$emit(

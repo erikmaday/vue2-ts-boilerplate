@@ -50,7 +50,6 @@ class AuthModule extends VuexModule {
     if (response.data.successful) {
       save('userId', response.data.user.userId)
       save('token', response.data.token)
-      save('isDriverOnly', response.data.token)
       this.token = response.data.token
       this.user = response.data.user
       this.userId = response.data.user.userId
@@ -93,7 +92,9 @@ class AuthModule extends VuexModule {
     if (response.data.successful) {
       save('roles', response.data.userProfile.roles)
       this.roles = response.data.userProfile.roles
-      this.isDriverOnly = checkIsDriverOnly(response.data.userProfile.roles)
+      const isDriverOnly = checkIsDriverOnly(response.data.userProfile.roles)
+      this.isDriverOnly = isDriverOnly
+      save('isDriverOnly', isDriverOnly)
     }
   }
 

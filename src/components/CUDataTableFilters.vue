@@ -91,8 +91,8 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" small text @click="close">Cancel</v-btn>
-        <v-btn color="primary" small @click="close">Save</v-btn>
+        <v-btn color="primary" small text @click="clear">Clear</v-btn>
+        <v-btn color="primary" small @click="close">Close</v-btn>
       </template>
     </CUModal>
   </div>
@@ -353,12 +353,7 @@ export default class CUDataTableFilters extends Vue {
       if (this.currentSort.direction === 'desc') {
         this.currentSort.direction = 'asc'
       } else if (this.currentSort.direction === 'asc') {
-        this.sorts.remove()
-        this.currentSort = {
-          prop: undefined,
-          direction: undefined,
-        }
-        this.initiateDefaultSort()
+        this.clearSorts()
       } else {
         this.currentSort.direction = 'desc'
       }
@@ -374,6 +369,15 @@ export default class CUDataTableFilters extends Vue {
     }
     this.sorts.add(this.currentSort)
     this.$emit('update:sorts', this.sorts)
+  }
+
+  clearSorts(): void {
+    this.sorts.remove()
+    this.currentSort = {
+      prop: undefined,
+      direction: undefined,
+    }
+    this.initiateDefaultSort()
   }
 
   handleFilterAdded(): void {
@@ -399,6 +403,10 @@ export default class CUDataTableFilters extends Vue {
     } else {
       this.debounce = setTimeout(() => EventBus.$emit('refresh-tableview'), 500)
     }
+  }
+
+  clear(): void {
+    this.clearSorts()
   }
 
   close(): void {

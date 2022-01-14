@@ -22,6 +22,7 @@ class BidDetailModule extends VuexModule {
   tripDetails: Trip[] = []
   bids: { [tripId: number]: TableViewBid } | null = null
   isEnteringBid = false
+  priceIsUpdated = false
   bidAmounts: { [tripId: number]: number | null } = {}
   bidAmount: number | null = null
   areAllSoldOut = false
@@ -42,6 +43,10 @@ class BidDetailModule extends VuexModule {
 
   get getBids() {
     return this.bids
+  }
+
+  get getBidPriceUpdated() {
+    return this.priceIsUpdated
   }
 
   get getBid() {
@@ -199,6 +204,7 @@ class BidDetailModule extends VuexModule {
   async submitMultiTripBids(): Promise<void> {
     this.submitting = true
     for (const trip of this.getTripDetails) {
+      this.priceIsUpdated = false
       const payload = await this.buildMultiTripPayload(trip)
       if (!payload) {
         return
@@ -216,6 +222,7 @@ class BidDetailModule extends VuexModule {
   @Action
   setIsEnteringBid(value: boolean): void {
     this.isEnteringBid = value
+    this.priceIsUpdated = true
   }
 
   @Action

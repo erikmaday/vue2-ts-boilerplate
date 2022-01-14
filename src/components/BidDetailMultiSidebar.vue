@@ -9,7 +9,7 @@
     <v-btn
       small
       color="primary"
-      :disabled="!areAllBidsComplete"
+      :disabled="!areBidAmountsUpdated"
       class="margin-t-4 w-full"
       :loading="bidDetail.getSubmitting"
       @click="submit"
@@ -40,18 +40,18 @@ import bid from '@/services/bid'
 export default class BidDetailMultiSidebar extends Vue {
   bidDetail = bidDetail
 
-  get areAllBidsComplete(): boolean {
-    let isComplete = false
-    if (bidDetail.getTrips) {
-      isComplete = true
+  get areBidAmountsUpdated(): boolean {
+    let areUpdated = false
+    if (bidDetail.getBidPriceUpdated) {
+      areUpdated = true
       for (const trip of bidDetail.getTrips) {
-        if (!bidDetail.getBidAmounts?.[trip.tripId]) {
-          isComplete = false
+        if (!bidDetail.getBidPriceUpdated) {
+          areUpdated = false
           break
         }
       }
     }
-    return isComplete
+    return areUpdated
   }
 
   async submit(): Promise<void> {

@@ -6,13 +6,7 @@
           v-for="(tab, tabIndex) in tabs"
           :id="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
           :key="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
-          class="
-            margin-x-3
-            padding-y-1
-            font-14 font-medium
-            text-gray-light
-            border-t-0 border-x-0 border-b-2 border-solid border-transparent
-          "
+          class="margin-x-3 padding-y-1 font-14 font-medium text-gray-light border-t-0 border-x-0 border-b-2 border-solid border-transparent"
           :class="{
             'text-primary border-primary': isTabActive(tab) && !tab.isLocked,
             'hover:border-gray-light': !isTabActive(tab) && !tab.isLocked,
@@ -359,10 +353,12 @@ export default class CUDataTableFilters extends Vue {
       if (this.currentSort.direction === 'desc') {
         this.currentSort.direction = 'asc'
       } else if (this.currentSort.direction === 'asc') {
-          this.sorts.remove()
-          this.currentSort = {}
-          this.initiateDefaultSort()
-          this.$emit('update:sorts', this.sorts)
+        this.sorts.remove()
+        this.currentSort = {
+          prop: undefined,
+          direction: undefined,
+        }
+        this.initiateDefaultSort()
       } else {
         this.currentSort.direction = 'desc'
       }

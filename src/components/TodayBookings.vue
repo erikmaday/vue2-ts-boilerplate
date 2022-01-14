@@ -42,15 +42,7 @@
         <BookingCard :reservation="reservation" />
       </v-col>
     </v-row>
-    <v-row v-else>
-      <v-col cols="12">
-        <div
-          class="h-180 background-gray-header border-1 border-solid border-gray-border border-radius-regular padding-a-3"
-        >
-          No bookings found
-        </div>
-      </v-col>
-    </v-row>
+    <TodayNotFound v-else message="No bookings found" icon="event_busy" />
     <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
       <Pagination v-model="pagination" :items="reservations" />
     </v-row>
@@ -61,6 +53,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import BookingCard from '@/components/BookingCard.vue'
 import Pagination from '@/components/Pagination.vue'
+import TodayNotFound from '@/components/TodayNotFound.vue'
 
 import { Reservation } from '@/models/dto'
 import reservation from '@/services/reservation'
@@ -77,6 +70,7 @@ const MAX_RESULTS = 24
 @Component({
   components: {
     BookingCard,
+    TodayNotFound,
     Pagination,
   },
 })

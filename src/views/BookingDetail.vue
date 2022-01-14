@@ -22,6 +22,7 @@
           :reservation="reservation"
           :trip="trip"
           :trip-assignments="tripAssignments"
+          @refresh="refresh"
         />
       </v-col>
 
@@ -79,6 +80,7 @@ import reservation from '@/services/reservation'
 import tripAssignments from '@/services/tripAssignment'
 import trip from '@/services/trip'
 import { ReferralStatus } from '@/utils/enum'
+import { EventBus } from '@/utils/eventBus'
 
 @Component({
   components: {
@@ -106,6 +108,7 @@ export default class BookingDetail extends Vue {
 
   mounted(): void {
     this.refresh()
+    EventBus.$on('refresh-assignments', () => this.refresh())
   }
 
   async refresh(): Promise<void> {

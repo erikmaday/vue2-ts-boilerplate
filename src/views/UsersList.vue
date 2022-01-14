@@ -118,6 +118,7 @@ export default class Users extends Vue {
       icon: 'trash',
       confirmModal: true,
       confirmModalText: 'Are you sure you want to delete this user?',
+      confirmModalPrimaryActionText: 'Delete User',
       action: function (row: UserDetail): Promise<AxiosResponse> {
         return user.delete(row.userId)
       },

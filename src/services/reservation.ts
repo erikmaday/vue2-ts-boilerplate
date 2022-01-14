@@ -61,4 +61,18 @@ export default {
     const url = `https://${host}/reservations/rejectReferral/${reservationId}${query}`
     return httpService.get(url)
   },
+  createAssignment(payload) {
+    const url = `https://${apiBaseUrl()}/tripAssignments/createAssignment`
+    return httpService.post(url, payload)
+  },
+  deleteAssignment(ids: number[]): Promise<AxiosResponse<ApiResult>> {
+    const payload = {
+      deleteAssignmentIds: ids,
+    }
+
+    return httpService.delete(
+      `https://${apiBaseUrl()}/tripAssignments/deleteAssignments`,
+      { data: payload }
+    )
+  },
 }

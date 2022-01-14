@@ -123,6 +123,7 @@ export default class GaragesList extends Vue {
       confirmModal: true,
       ariaLabel: 'Delete Garage',
       confirmModalText: 'Are you sure you want to delete this garage?',
+      confirmModalPrimaryActionText: 'Delete Garage',
       action: async (row: Garage): Promise<AxiosResponse<ApiResult>> => {
         return garage.delete(row.garageId)
       },

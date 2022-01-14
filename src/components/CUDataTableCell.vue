@@ -32,6 +32,7 @@
         :row-index="rowIndex"
         :display-actions-on-mobile="displayActionsOnMobile"
         :is-mobile="isMobile"
+        :is-detail-table="isDetailTable"
         @refresh="$emit('refresh')"
       />
     </template>

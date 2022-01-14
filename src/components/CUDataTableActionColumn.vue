@@ -1,25 +1,32 @@
 <template>
   <div class="align-center d-flex flex-grow-1">
     <template v-if="detailAction">
-      <v-btn
-        v-if="!isMobile"
-        text
-        x-small
-        color="primary"
-        class="font-medium font-14"
-        @click="pushDetailRoute"
-      >
-        Details
-      </v-btn>
-      <v-btn
-        v-else
-        color="primary"
-        small
-        class="w-full margin-t-4"
-        @click="pushDetailRoute"
-      >
-        Details
-      </v-btn>
+      <template v-if="!isDetailTable">
+        <v-btn
+          v-if="!isMobile"
+          text
+          x-small
+          color="primary"
+          class="font-medium font-14"
+          @click="pushDetailRoute"
+        >
+          Details
+        </v-btn>
+        <v-btn
+          v-else
+          color="primary"
+          small
+          class="w-full margin-t-4"
+          @click="pushDetailRoute"
+        >
+          Details
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-btn small icon @click="pushDetailRoute">
+          <CUIcon color="primary">view</CUIcon>
+        </v-btn>
+      </template>
     </template>
     <v-menu v-if="!isMobile && !isActionsListEmpty" offset-x left>
       <template v-slot:activator="{ on }">
@@ -134,6 +141,13 @@ export default class CUDataTableActionColumn extends Vue {
     required: false,
   })
   displayActionsOnMobile!: boolean
+
+  @Prop({
+    type: Boolean,
+    required: false,
+    default: false,
+  })
+  isDetailTable!: boolean
 
   dialogOpen = false
   dialogText: string | undefined = ''

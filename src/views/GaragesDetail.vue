@@ -137,6 +137,7 @@
             ></div>
             <h4 class="margin-b-3">Vehicles In Garage</h4>
             <CUDataTable
+              :actions="actions"
               :columns="columns"
               :server-items-length="currentGarage.vehicleDTOs.length"
               :items="currentGarage.vehicleDTOs"
@@ -183,6 +184,8 @@ import { ApiResult } from '@/models/dto'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import app from '@/store/modules/app'
 import { TableViewParameters } from '@/models/TableView'
+import { ActionColumn } from '@/models/ActionColumn'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: {
@@ -194,6 +197,21 @@ export default class GaragesDetail extends Vue {
   notFound = false
   isNotEmpty = isNotEmpty
   currentGarage: Garage | Record<string, never> = {}
+  actions: ActionColumn[] = [
+    {
+      displayText: 'Details',
+      key: 'details',
+      icon: 'view',
+      ariaLabel: 'View Vehicle Detail',
+      isDetail: true,
+      detailRoute: (row): RawLocation => ({
+        name: 'vehicles.view',
+        params: { id: row.vehicleId },
+      }),
+    }
+  ]
+
+
   columns: DataTableColumn[] = [
     {
       _t_id: 'd863456c-8159-4bc5-8b95-fc2950029d9a',
@@ -207,9 +225,9 @@ export default class GaragesDetail extends Vue {
     },
     {
       _t_id: 'b296e307-906a-49ce-9c91-56ed58d21e62',
-      text: 'Detail',
-      value: 'detail',
-      type: 'details',
+      text: 'Details',
+      value: 'actions',
+      type: 'actions',
     },
   ]
   options: TableViewParameters = {}

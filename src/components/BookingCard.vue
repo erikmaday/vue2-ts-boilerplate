@@ -74,6 +74,9 @@ export default class BookingCard extends Vue {
   }
 
   get formattedStartDateTime(): string {
+    if (!this.reservation.pickupDate) {
+      return 'No Pickup Date Available'
+    }
     const datetime = (this as any)
       .$dayjs(this.reservation.pickupDate)
       .tz(this.reservation.firstPickupTimeZone)

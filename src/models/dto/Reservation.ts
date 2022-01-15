@@ -63,7 +63,3 @@ export interface Reservation {
 }
 
 export type ReservationTableViewResult = TableViewResult<Reservation>
-
-export interface ReservationApiResult extends ApiResult {
-  reservation: Reservation
-}

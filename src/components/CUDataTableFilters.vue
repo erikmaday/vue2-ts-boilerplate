@@ -42,11 +42,7 @@
             </v-col>
             <v-col class="shrink padding-x-0 margin-r-1">
               <CUIcon
-                v-if="
-                  column.filterable &&
-                  !isFilterActive(column) &&
-                  !column.predefined
-                "
+                v-if="column.filterable && !isFilterActive(column)"
                 class="cursor-pointer text-gray-mid-light hover:text-gray-light"
                 :key="`${column.text}-${columnIndex}-filter-activate`"
                 @click="setFilter(column)"
@@ -77,7 +73,7 @@
                 {{ getColumnSortIcon(column) }}
               </CUIcon>
             </v-col>
-            <v-col v-if="column.predefined" cols="12">
+            <v-col v-if="column.predefined && isFilterActive(column)" cols="12">
               <v-chip
                 v-for="(
                   predefinedFilter, predefinedFilterIndex
@@ -92,23 +88,35 @@
               </v-chip>
             </v-col>
             <v-expand-transition>
-              <v-col
-                v-if="column.filterable && isFilterActive(column)"
-                cols="12"
-                class="padding-t-0"
-              >
-                <template v-if="column.predefined">
-                  <CUDatePicker
-                    v-for="(control, controlIndex) in predefinedFilter.controls"
-                    :key="controlIndex"
+              <v-col v-if="column.filterable" cols="12" class="padding-t-0">
+                <div>
+                  <template
+                    v-if="
+                      column.predefined &&
+                      isFilterActive(column) &&
+                      activeFilter &&
+                      activeFilter.selectedPredefined
+                    "
+                  >
+                    <CUDatePicker
+                      v-for="(control, controlIndex) in activeFilter
+                        .selectedPredefined.controls"
+                      :key="`${controlIndex}-${column._t_id}-${control.text}`"
+                      :value="control.value"
+                      :label="control.text"
+                      @input="
+                        (event) =>
+                          handleDatePickerInput(event, column, controlIndex)
+                      "
+                    />
+                  </template>
+                  <CUTextField
+                    v-if="!column.predefined"
+                    hide-details
+                    clearable
+                    @input="updateFilterCriteria($event, column._t_id)"
                   />
-                </template>
-                <CUTextField
-                  v-else
-                  hide-details
-                  clearable
-                  @input="updateFilterCriteria($event, column._t_id)"
-                />
+                </div>
               </v-col>
             </v-expand-transition>
           </v-row>
@@ -186,10 +194,11 @@ export default class CUDataTableFilters extends Vue {
     direction: undefined,
   }
   debounce: any = null
+  activeFilter: any = {}
 
   mounted(): void {
     this.initiateDefaultSort()
-    this.initializePredefinedFilters()
+    // this.initializePredefinedFilters()
   }
 
   initializePredefinedFilters(): void {
@@ -222,6 +231,13 @@ export default class CUDataTableFilters extends Vue {
     return this.currentSort.id === column._t_id
   }
 
+  getFilterByColumn(column: DataTableColumn): any {
+    return (
+      this.tableFilterList.find((f: any) => f.column?._t_id === column._t_id) ||
+      {}
+    )
+  }
+
   getColumnSortIcon(column: DataTableColumn): string {
     if (this.isColumnSortActive(column)) {
       if (this.currentSort.direction === 'asc') {
@@ -250,15 +266,6 @@ export default class CUDataTableFilters extends Vue {
     this.$emit('update:filters', this.filters)
   }
 
-  // selectPredefined(
-  //   column: DataTableColumn,
-  //   predefinedFilter: PredefinedFilter
-  // ): void {
-  //   // deselect other predefined in this group
-  //   console.log('column', column)
-  //   console.log('predefinedFilter', predefinedFilter)
-  // }
-
   async selectPredefined(
     column: DataTableColumn,
     predefinedFilter: PredefinedFilter
@@ -266,8 +273,6 @@ export default class CUDataTableFilters extends Vue {
     const filter = this.tableFilterList.find(
       (f: any) => f.column?._t_id === column._t_id
     )
-    console.log('filter', filter)
-    // this.getActiveFilter
     if (!predefinedFilter.id) {
       predefinedFilter.id = uuidv4()
     }
@@ -275,29 +280,23 @@ export default class CUDataTableFilters extends Vue {
     if (currentSelectedPredefinedId !== predefinedFilter.id) {
       this.unsetPeerFilters(filter)
     }
-    this.$nextTick(async () => {
-      filter.selectedPredefined = predefinedFilter
-      const valueRefs = deepPluckRef(predefinedFilter, ['value'])
-      for (const valueRef of valueRefs) {
-        if (typeof valueRef !== 'object') {
-          continue
-        }
-        const calculationFunction =
-          calculatedValues?.[valueRef.recalculate || valueRef.value]
-        if (typeof calculationFunction === 'function') {
-          valueRef.value = await calculationFunction()
-          valueRef.displayValue = this.$dayjs(valueRef.value).format(
-            'YYYY-MM-DD'
-          )
-        }
+    filter.selectedPredefined = predefinedFilter
+    const valueRefs = deepPluckRef(predefinedFilter, ['value'])
+    for (const valueRef of valueRefs) {
+      if (typeof valueRef !== 'object') {
+        continue
       }
-      // this.currentViewSettings.isDirty = true
-      this.$forceUpdate()
-      if (predefinedFilter.refreshOnSelect) {
-        console.log('REFRESH TABLE')
-        this.handleFilterAdded()
+      const calculationFunction =
+        calculatedValues?.[valueRef.recalculate || valueRef.value]
+      if (typeof calculationFunction === 'function') {
+        valueRef.value = await calculationFunction()
+        valueRef.displayValue = this.$dayjs(valueRef.value).format('YYYY-MM-DD')
       }
-    })
+    }
+    this.activeFilter = { ...filter }
+    if (predefinedFilter.refreshOnSelect) {
+      this.handleFilterAdded()
+    }
   }
 
   async setFilter(
@@ -326,6 +325,9 @@ export default class CUDataTableFilters extends Vue {
     )
     if (!filter) {
       return
+    }
+    if (this.activeFilter?.column?._t_id === column._t_id) {
+      this.activeFilter = undefined
     }
     for (const f of this.filters.parents()) {
       for (const c of this.filters.children(f)) {
@@ -376,6 +378,40 @@ export default class CUDataTableFilters extends Vue {
       activeFilter.value = filterValue
     }
     this.handleFilterAdded()
+  }
+
+  handleDatePickerInput(
+    event: any,
+    column: DataTableColumn,
+    controlIndex: number
+  ): void {
+    const timestamp = this.$dayjs(event).format('YYYY-MM-DD')
+    // if (controlIndex === 0) {
+    //   event = timestamp.startOf('day').toISODate()
+    // }
+    // if (controlIndex === 1) {
+    //   const newTimestamp = timestamp.startOf('day').toISODate()
+    //   event = newTimestamp
+    // }
+    this.updateMultiValueFilterCriteria(timestamp, column, controlIndex)
+  }
+
+  updateMultiValueFilterCriteria(
+    filterValue: any,
+    column: DataTableColumn,
+    index: number
+  ) {
+    const value =
+      filterValue && filterValue.target ? filterValue.target.value : filterValue
+    const activeFilter = this.getFilterByColumn(column)
+    const { selectedPredefined } = activeFilter
+    selectedPredefined.controls[index].value = value
+    if (activeFilter.column.type === 'date') {
+      const formattedDateValue = this.$dayjs(value).format('YYY-MM-DD')
+      selectedPredefined.controls[index].displayValue = formattedDateValue
+    }
+    this.handleFilterAdded()
+    this.initSort(column)
   }
 
   initiateDefaultSort(): void {

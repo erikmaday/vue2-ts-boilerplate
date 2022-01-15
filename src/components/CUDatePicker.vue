@@ -1,4 +1,4 @@
-<template>
+<template >
   <v-menu bottom offset-y>
     <template #activator="{ on }">
       <label class="font-14" v-if="$attrs.label">{{ $attrs.label }}</label>
@@ -34,7 +34,7 @@ export default class CUDatePicker extends Vue {
   dense!: boolean
 
   get computedISODate(): string {
-    return dayjs(this.value, 'MM/DD/YYYY').format('YYYY-MM-DD')
+    return dayjs(this.value).format('YYYY-MM-DD')
   }
 
   updateSelectedDate(e): void {

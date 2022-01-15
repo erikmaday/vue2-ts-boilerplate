@@ -241,7 +241,6 @@ class VehicleDetailModule extends VuexModule {
     if (!defaultPhoto || defaultPhoto?.file || !defaultPhoto.active) {
       return
     }
-    console.log("> default Photo:", defaultPhoto)
     await vehicle.makeVehiclePhotoDefault(this.vehicleId, defaultPhoto)
   }
 

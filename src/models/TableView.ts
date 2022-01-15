@@ -37,3 +37,21 @@ export interface ChipFilterState {
   filters: any
   filterParentOr: any
 }
+
+export interface PredefinedFilter {
+  id?: string
+  _t_id: string
+  active?: boolean 
+  text: string
+  refreshOnSelect: boolean
+  controls: PredefinedFilterControl[]
+}
+
+export interface PredefinedFilterControl {
+  _t_id: string
+  text: string
+  filterType: string
+  value: string
+  displayValue?: string
+  recalculate: string
+}

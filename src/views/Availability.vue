@@ -6,7 +6,12 @@
       class="padding-t-4 padding-b-8"
     >
       <span class="d-flex">
-        <CUDatePicker :value="datePickerDate" @input="updateDatePickerDate" />
+        <CUDatePicker
+          :value="datePickerDate"
+          @input="updateDatePickerDate"
+          dense
+          readonly
+        />
         <v-btn
           class="margin-l-3"
           outlined
@@ -281,7 +286,7 @@ export default class Availability extends Vue {
   }
 
   // Computed for the driver sidebar
-  // Returns a list of driver objects + how tall that row 
+  // Returns a list of driver objects + how tall that row
   // should be
   get driverKeyRows(): DriverKeyRow[] {
     const drivers: Driver[] = deepClone(this.displayedDrivers)
@@ -465,7 +470,7 @@ export default class Availability extends Vue {
     )
   }
 
-  // Load reservations for dates, and add them to the object that stores 
+  // Load reservations for dates, and add them to the object that stores
   // reservations by id (prevents duplicates).
   // Add the loaded dates to the interval tree
   async getDispatchDataForDates(

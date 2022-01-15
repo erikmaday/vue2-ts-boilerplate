@@ -79,9 +79,8 @@ export default {
   getActiveReferral(
     parentResId: number
   ): Promise<AxiosResponse<ReservationApiResult>> {
-    // const host = apiBaseUrl()
-    const host = 'localhost:8092'
-    const url = `http://${host}/reservations/getActiveReferral/${parentResId}?actorCompanyId=1703`
+    const host = apiBaseUrl()
+    const url = `https://${host}/reservations/getActiveReferral/${parentResId}`
     return httpService.get(url)
   },
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="$vuetify.breakpoint.smAndUp">
+    <template v-if="$vuetify.breakpoint.smAndUp || !enableMobileView">
       <v-tooltip top>
         <template #activator="{ on }">
           <div
@@ -91,6 +91,7 @@ export default class DriverAssignmentIcons extends Vue {
   @Prop({ required: false }) readonly reservation: Reservation
   @Prop({ required: false }) readonly showLabel: boolean
   @Prop({ required: false }) readonly row: Reservation
+  @Prop({ required: false, default: false }) readonly enableMobileView: boolean
 
   fetchedTrip: Trip | null = null
   fetchedVehicleAssignments: VehicleAssignment[] = []

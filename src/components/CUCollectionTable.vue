@@ -18,7 +18,10 @@
         <slot name="filter-row"></slot>
       </template>
     </CUDataTableFilters>
+
+    <CUSkeletonLoaderTableView v-show="!initialLoadCompleted" />
     <CUDataTable
+      v-show="initialLoadCompleted"
       :actions="actions"
       :options="options"
       :columns="visibleColumns"
@@ -35,7 +38,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import {
@@ -49,9 +52,10 @@ import { filter } from '@/utils/filter'
 import { sort } from '@/utils/sort'
 import { AxiosResponse } from 'axios'
 import { ActionColumn } from '@/models/ActionColumn'
+import CUSkeletonLoaderTableView from '@/components/CUSkeletonLoaderTableView.vue'
 
 @Component({
-  components: { CUDataTable, CUDataTableFilters },
+  components: { CUDataTable, CUDataTableFilters, CUSkeletonLoaderTableView },
 })
 export default class CUCollectionTable extends Vue {
   @Prop({ type: Array, required: false, default: () => [] })
@@ -78,6 +82,7 @@ export default class CUCollectionTable extends Vue {
   debounce: any = null
   filterList: any[] = []
   initialFiltersSet = false
+  initialLoadCompleted = false
 
   options: TableViewParameters = {
     page: 1,
@@ -90,6 +95,13 @@ export default class CUCollectionTable extends Vue {
 
   get visibleColumns(): DataTableColumn[] {
     return this.columns.filter((column) => !column.hidden)
+  }
+
+  @Watch('initialLoadCompleted', { immediate: true })
+  onInitialLoadCompleted(newVal: boolean, oldVal: boolean): void {
+    if (newVal !== oldVal && newVal) {
+      this.$emit('initial-load-completed')
+    }
   }
 
   mounted(): void {
@@ -126,6 +138,7 @@ export default class CUCollectionTable extends Vue {
         return Object.assign({}, item, obj)
       })
       this.loading = false
+      this.initialLoadCompleted = true
     })
   }
 }

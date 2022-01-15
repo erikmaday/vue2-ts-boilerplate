@@ -2,11 +2,14 @@
   <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
-        <h1>Vehicles</h1>
+        <v-skeleton-loader v-show="loading" type="heading" width="215px" />
+        <h1 v-show="!loading">Vehicles</h1>
       </v-col>
       <v-spacer />
       <v-col class="shrink">
+        <CUSkeletonLoaderButton v-show="loading" width="88px" />
         <v-btn
+          v-show="!loading"
           primary
           small
           color="primary"
@@ -16,7 +19,13 @@
         </v-btn>
       </v-col>
       <v-col class="shrink">
-        <v-btn color="primary" small @click="isFilterDialogOpen = true">
+        <CUSkeletonLoaderButton v-show="loading" width="101px" />
+        <v-btn
+          v-show="!loading"
+          color="primary"
+          small
+          @click="isFilterDialogOpen = true"
+        >
           <CUIcon color="white" class="margin-r-2">filter</CUIcon>
           Filter
         </v-btn>
@@ -30,6 +39,7 @@
       :fetch-method="tableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No vehicles found"
+      @initial-load-completed="loading = false"
     />
   </Main>
 </template>
@@ -53,6 +63,7 @@ import { ApiResult } from '@/models/dto'
 export default class VehiclesList extends Vue {
   tableView = vehicle.tableView
   isFilterDialogOpen = false
+  loading = true
   columns: DataTableColumn[] = [
     {
       _t_id: 'c9ba7e34-e446-4b83-9549-905f7771e42d',

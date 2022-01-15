@@ -2,11 +2,14 @@
   <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
-        <h1>Garages</h1>
+        <v-skeleton-loader v-show="loading" type="heading" width="215px" />
+        <h1 v-show="!loading">Garages</h1>
       </v-col>
       <v-spacer />
       <v-col class="shrink">
+        <CUSkeletonLoaderButton v-show="loading" width="88px" />
         <v-btn
+          v-show="!loading"
           primary
           small
           color="primary"
@@ -16,7 +19,13 @@
         </v-btn>
       </v-col>
       <v-col class="shrink">
-        <v-btn color="primary" small @click="isFilterDialogOpen = true">
+        <CUSkeletonLoaderButton v-show="loading" width="105px" />
+        <v-btn
+          v-show="!loading"
+          color="primary"
+          small
+          @click="isFilterDialogOpen = true"
+        >
           <CUIcon color="white" class="margin-r-2">filter</CUIcon>
           Filter
         </v-btn>
@@ -30,6 +39,7 @@
       :fetch-method="tableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No garages found"
+      @initial-load-completed="loading = false"
     />
   </Main>
 </template>
@@ -48,10 +58,15 @@ import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
 
 @Component({
-  components: { Main, CUCollectionTable, CUDataTableFilters },
+  components: {
+    Main,
+    CUCollectionTable,
+    CUDataTableFilters,
+  },
 })
 export default class GaragesList extends Vue {
   isFilterDialogOpen = false
+  loading = true
 
   columns: DataTableColumn[] = [
     {

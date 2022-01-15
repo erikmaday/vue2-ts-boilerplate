@@ -2,11 +2,14 @@
   <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
-        <h1>Team</h1>
+        <v-skeleton-loader v-show="loading" type="heading" width="180px" />
+        <h1 v-show="!loading">Team</h1>
       </v-col>
       <v-spacer />
       <v-col class="shrink">
+        <CUSkeletonLoaderButton v-show="loading" width="88px" />
         <v-btn
+          v-show="!loading"
           primary
           small
           color="primary"
@@ -16,7 +19,13 @@
         </v-btn>
       </v-col>
       <v-col class="shrink">
-        <v-btn color="primary" small @click="isFilterDialogOpen = true">
+        <CUSkeletonLoaderButton v-show="loading" width="101px" />
+        <v-btn
+          v-show="!loading"
+          color="primary"
+          small
+          @click="isFilterDialogOpen = true"
+        >
           <CUIcon color="white" class="margin-r-2">filter</CUIcon>
           Filter
         </v-btn>
@@ -30,6 +39,7 @@
       :fetch-method="usersTableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No users found"
+      @initial-load-completed="loading = false"
     />
   </Main>
 </template>
@@ -52,6 +62,7 @@ import { RawLocation } from 'vue-router'
 })
 export default class Users extends Vue {
   isFilterDialogOpen = false
+  loading = true
 
   columns: DataTableColumn[] = [
     {

@@ -1,6 +1,5 @@
 import { Trip, VehicleAssignment } from '.'
 import { TableViewResult } from '../TableView'
-import { ApiResult } from './ApiResult'
 
 export interface Reservation {
   active: boolean

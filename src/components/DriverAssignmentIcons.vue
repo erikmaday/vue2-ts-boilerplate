@@ -1,53 +1,67 @@
 <template>
-  <v-tooltip top>
-    <template #activator="{ on }">
-      <div
-        class="d-inline-flex margin-l-3 cursor-pointer align-center"
-        v-on="on"
-        @click="isDialogOpen = true"
-      >
-        <span
-          v-if="showLabel"
-          class="margin-r-5"
-          :class="`text-${label.color}`"
-        >
-          {{ label.text }}
-        </span>
-        <DriverAssignmentIcon
-          v-for="(driver, driverIndex) in driverAssignmentsToDisplay"
-          :driver-assignment="driver"
-          :key="`assigned-driver-${driverIndex}`"
-          class="margin-l-n3"
-        />
-        <DriverAssignmentIcon
-          v-for="driverIndex in unassignedToDisplay"
-          :key="`unassigned-driver-${driverIndex}`"
-          class="margin-l-n3"
-        />
-        <DriverAssignmentIcon
-          v-if="moreRequiredCount"
-          :more-required-count="moreRequiredCount"
-          class="margin-l-n3"
-        />
-        <template
-          v-if="
-            !!computedTrip &&
-            !!computedReservation &&
-            !!computedVehicleAssignments
-          "
-        >
-          <TripAssignmentsModal
-            v-model="isDialogOpen"
-            :reservationId="computedReservation.reservationId"
-            :tripAssignments="computedVehicleAssignments"
-            :trip="computedTrip"
-            @refresh="EventBus.$emit('refresh-assignments')"
-          />
+  <div>
+    <template v-if="$vuetify.breakpoint.smAndUp">
+      <v-tooltip top>
+        <template #activator="{ on }">
+          <div
+            class="d-inline-flex margin-l-3 cursor-pointer align-center"
+            v-on="on"
+            @click="isDialogOpen = true"
+          >
+            <span
+              v-if="showLabel"
+              class="margin-r-5"
+              :class="`text-${label.color}`"
+            >
+              {{ label.text }}
+            </span>
+            <DriverAssignmentIcon
+              v-for="(driver, driverIndex) in driverAssignmentsToDisplay"
+              :driver-assignment="driver"
+              :key="`assigned-driver-${driverIndex}`"
+              class="margin-l-n3"
+            />
+            <DriverAssignmentIcon
+              v-for="driverIndex in unassignedToDisplay"
+              :key="`unassigned-driver-${driverIndex}`"
+              class="margin-l-n3"
+            />
+            <DriverAssignmentIcon
+              v-if="moreRequiredCount"
+              :more-required-count="moreRequiredCount"
+              class="margin-l-n3"
+            />
+          </div>
         </template>
-      </div>
+        <span v-html="tooltipBody"></span>
+      </v-tooltip>
     </template>
-    <span v-html="tooltipBody"></span>
-  </v-tooltip>
+    <template v-else>
+      <div class="d-flex justify-space-between">
+        <h4>Driver Assignments</h4>
+        <div class="text-right">
+          <span v-html="driverAssignmentMobileBody"></span>
+        </div>
+      </div>
+      <v-btn color="primary" small outlined class="w-full margin-t-4 margin-b-n4" @click="isDialogOpen = true">Modify Assignments</v-btn>
+    </template>
+    <template
+      v-if="
+        !!computedTrip && !!computedReservation && !!computedVehicleAssignments
+      "
+    >
+      <TripAssignmentsModal
+        :key="`trip-assignments-modal-${
+          computedReservation.reservationId || 0
+        }`"
+        v-model="isDialogOpen"
+        :reservationId="computedReservation.reservationId"
+        :tripAssignments="computedVehicleAssignments"
+        :trip="computedTrip"
+        @refresh="EventBus.$emit('refresh-assignments')"
+      />
+    </template>
+  </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
@@ -211,6 +225,33 @@ export default class DriverAssignmentIcons extends Vue {
     } else {
       return line('No Drivers Assigned')
     }
+  }
+
+  get driverAssignmentMobileBody(): string {
+    const assignmentLine = (str: string) => `<p class="margin-a-0">${str}</p>`
+    const unassignedLine = `<p class="text-error margin-a-0">Unassigned Driver</p>`
+
+    let html = ''
+    let numDriverAssignments = 0
+
+    for (const vehicleAssignment of this.computedVehicleAssignments) {
+      for (const driverAssignment of vehicleAssignment.driverAssignments) {
+        html += assignmentLine(
+          `${driverAssignment.driver.firstName} ${driverAssignment.driver.lastName}`
+        )
+        numDriverAssignments++
+      }
+    }
+
+    const unassignedDriverCount =
+      this.totalRequiredDrivers - numDriverAssignments
+    if (unassignedDriverCount > 0) {
+      for (let i = 0; i < unassignedDriverCount; i++) {
+        html += unassignedLine
+      }
+    }
+
+    return html
   }
 }
 </script>

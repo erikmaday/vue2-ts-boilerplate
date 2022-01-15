@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <div
+    :class="{
+      'w-full margin-t-3': $vuetify.breakpoint.xs,
+    }"
+  >
     <p v-if="needsAcceptance" class="font-medium text-red margin-t-0">
       Needs Acceptance
     </p>

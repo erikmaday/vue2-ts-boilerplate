@@ -6,35 +6,58 @@ function promisify(syncFunction): Promise<string> {
 }
 
 export const calculatedValues = {
-  'Range Start': (): string => dayjs().local().format('YYYY-MM-DD'),
-  'Range End': (): string => dayjs().local().format('YYYY-MM-DD'),
-  'Last 7 Days Start': (): string =>
-    dayjs().subtract(7, 'days').local().format('YYYY-MM-DD'),
-  'Last 7 Days End': (): string => dayjs().local().format('YYYY-MM-DD'),
-  'Next 7 Days Start': (): string => dayjs().local().format('YYYY-MM-DD'),
-  'Next 7 Days End': (): string =>
-    dayjs().add(7, 'days').local().format('YYYY-MM-DD'),
-  'This Month Start': (): string =>
-    dayjs().local().startOf('month').format('YYYY-MM-DD'),
-  'This Month End': (): string =>
-    dayjs().local().endOf('month').format('YYYY-MM-DD'),
-  'Last Month Start': (): string =>
-    dayjs().local().subtract(1, 'months').startOf('month').format('YYYY-MM-DD'),
-  'Last Month End': (): string =>
-    dayjs().local().subtract(1, 'months').endOf('month').format('YYYY-MM-DD'),
-  'Next Month Start': (): string =>
-    dayjs().local().add(1, 'months').startOf('month').format('YYYY-MM-DD'),
-  'Next Month End': (): string =>
-    dayjs().local().add(1, 'months').endOf('month').format('YYYY-MM-DD'),
-  'In The Future': (): string => dayjs().local().format('YYYY-MM-DD'),
-  'In The Past': (): string => dayjs().local().format('YYYY-MM-DD'),
-  'Today Start': (): string =>
-    dayjs().local().startOf('day').format('YYYY-MM-DD'),
-  'Today End': (): string => dayjs().local().endOf('day').format('YYYY-MM-DD'),
-  'Tomorrow Start': (): string =>
-    dayjs().local().add(1, 'days').startOf('day').format('YYYY-MM-DD'),
-  'Tomorrow End': (): string =>
-    dayjs().local().add(1, 'days').endOf('day').format('YYYY-MM-DD'),
+  'Range Start': (): Promise<string> =>
+    promisify(() => dayjs().local().format('YYYY-MM-DD')),
+  'Range End': (): Promise<string> =>
+    promisify(() => dayjs().local().format('YYYY-MM-DD')),
+  'Last 7 Days Start': (): Promise<string> =>
+    promisify(() => dayjs().subtract(7, 'days').local().format('YYYY-MM-DD')),
+  'Last 7 Days End': (): Promise<string> =>
+    promisify(() => dayjs().local().format('YYYY-MM-DD')),
+  'Next 7 Days Start': (): Promise<string> =>
+    promisify(() => dayjs().local().format('YYYY-MM-DD')),
+  'Next 7 Days End': (): Promise<string> =>
+    promisify(() => dayjs().add(7, 'days').local().format('YYYY-MM-DD')),
+  'This Month Start': (): Promise<string> =>
+    promisify(() => dayjs().local().startOf('month').format('YYYY-MM-DD')),
+  'This Month End': (): Promise<string> =>
+    promisify(() => dayjs().local().endOf('month').format('YYYY-MM-DD')),
+  'Last Month Start': (): Promise<string> =>
+    promisify(() =>
+      dayjs()
+        .local()
+        .subtract(1, 'months')
+        .startOf('month')
+        .format('YYYY-MM-DD')
+    ),
+  'Last Month End': (): Promise<string> =>
+    promisify(() =>
+      dayjs().local().subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
+    ),
+  'Next Month Start': (): Promise<string> =>
+    promisify(() =>
+      dayjs().local().add(1, 'months').startOf('month').format('YYYY-MM-DD')
+    ),
+  'Next Month End': (): Promise<string> =>
+    promisify(() =>
+      dayjs().local().add(1, 'months').endOf('month').format('YYYY-MM-DD')
+    ),
+  'In The Future': (): Promise<string> =>
+    promisify(() => dayjs().local().format('YYYY-MM-DD')),
+  'In The Past': (): Promise<string> =>
+    promisify(() => dayjs().local().format('YYYY-MM-DD')),
+  'Today Start': (): Promise<string> =>
+    promisify(() => dayjs().local().startOf('day').format('YYYY-MM-DD')),
+  'Today End': (): Promise<string> =>
+    promisify(() => dayjs().local().endOf('day').format('YYYY-MM-DD')),
+  'Tomorrow Start': (): Promise<string> =>
+    promisify(() =>
+      dayjs().local().add(1, 'days').startOf('day').format('YYYY-MM-DD')
+    ),
+  'Tomorrow End': (): Promise<string> =>
+    promisify(() =>
+      dayjs().local().add(1, 'days').endOf('day').format('YYYY-MM-DD')
+    ),
 }
 
 export const datePredefined: PredefinedFilter[] = [

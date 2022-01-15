@@ -131,6 +131,17 @@ export default class BookingDetail extends Vue {
       }
       this.reservation = reservationResponse.data
     }
+    if (this.reservation?.reservationId) {
+      const res = await reservation.getActiveReferral(this.id)
+      if (res.data?.reservation?.reservationId) {
+        this.id = res.data.reservation.reservationId
+        this.refresh()
+      }
+    } else {
+      //FOR NOW, REDIRECT HOME
+      this.$router.push({ name: 'home' })
+      return
+    }
   }
 
   get isAccepted(): boolean {

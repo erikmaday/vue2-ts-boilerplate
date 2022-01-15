@@ -121,7 +121,9 @@
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vue, Component, Prop, Watch, PropSync } from 'vue-property-decorator'
 import { v4 as uuidv4 } from 'uuid'
+import { calculatedValues } from '@/data/predefined'
 import { EventBus } from '@/utils/eventBus'
+import deepPluckRef from 'deep-pluck-ref'
 import {
   PredefinedFilter,
   TableViewFilter,
@@ -182,6 +184,16 @@ export default class CUDataTableFilters extends Vue {
 
   mounted(): void {
     this.initiateDefaultSort()
+    this.initializePredefinedFilters()
+  }
+
+  initializePredefinedFilters(): void {
+    const columns = (this.columns as DataTableColumn[]) || []
+    Promise.all(
+      columns
+        .filter((column) => typeof column.predefined === 'object')
+        .map((column) => this.setFilter(column))
+    )
   }
 
   isTabActive(tab: TableViewTab): boolean {
@@ -233,13 +245,51 @@ export default class CUDataTableFilters extends Vue {
     this.$emit('update:filters', this.filters)
   }
 
-  selectPredefined(
-    column: DataTableColumn,
-    predefinedFilter: PredefinedFilter
-  ): void {
-    // deselect other predefined in this group
-    console.log('column', column)
-    console.log('predefinedFilter', predefinedFilter)
+  // selectPredefined(
+  //   column: DataTableColumn,
+  //   predefinedFilter: PredefinedFilter
+  // ): void {
+  //   // deselect other predefined in this group
+  //   console.log('column', column)
+  //   console.log('predefinedFilter', predefinedFilter)
+  // }
+
+  async selectPredefined(column: DataTableColumn, predefinedFilter: PredefinedFilter) {
+    const filter = this.tableFilterList.find(
+      (f: any) => f.column?._t_id === column._t_id
+    )
+    console.log('filter', filter)
+    // this.getActiveFilter
+    if (!predefinedFilter.id) {
+      predefinedFilter.id = uuidv4()
+    }
+    const currentSelectedPredefinedId = filter?.selectedPredefined?.id
+    if (currentSelectedPredefinedId !== predefinedFilter.id) {
+      this.unsetPeerFilters(filter)
+    }
+    this.$nextTick(async () => {
+      filter.selectedPredefined = predefinedFilter
+      const valueRefs = deepPluckRef(predefinedFilter, ['value'])
+      for (const valueRef of valueRefs) {
+        if (typeof valueRef !== 'object') {
+          continue
+        }
+        const calculationFunction =
+          calculatedValues?.[valueRef.recalculate || valueRef.value]
+        if (typeof calculationFunction === 'function') {
+          valueRef.value = await calculationFunction()
+          valueRef.displayValue = this.$dayjs(valueRef.value).format(
+            'YYYY-MM-DD'
+          )
+        }
+      }
+      // this.currentViewSettings.isDirty = true
+      this.$forceUpdate()
+      if (predefinedFilter.refreshOnSelect) {
+        console.log('REFRESH TABLE')
+        this.handleFilterAdded()
+      }
+    })
   }
 
   async setFilter(
@@ -295,7 +345,7 @@ export default class CUDataTableFilters extends Vue {
   }
 
   unsetPeerFilters(filter: any): void {
-    const { unset = [] } = filter.column
+    const unset = filter?.column?.unset || []
     unset.forEach((unsetFilterId) => {
       const foundColumn = this.columns.find(
         (column) => column._t_id === unsetFilterId

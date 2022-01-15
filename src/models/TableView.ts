@@ -39,6 +39,7 @@ export interface ChipFilterState {
 }
 
 export interface PredefinedFilter {
+  id?: string
   _t_id: string
   text: string
   refreshOnSelect: boolean

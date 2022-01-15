@@ -233,11 +233,6 @@ export default class CUDataTableFilters extends Vue {
     return !!this.findFilterById(filter._t_id)
   }
 
-  // isPredefinedFilterActive(
-  //   column: DataTableColumn,
-  //   predefinedFilter: PredefinedFilter
-  // ) {}
-
   isColumnSortActive(column: DataTableColumn): boolean {
     return this.currentSort.id === column._t_id
   }

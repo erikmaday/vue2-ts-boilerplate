@@ -7,6 +7,7 @@ import {
   ApiResult,
   DeleteVehiclePhotoPayload,
   VehicleDetailEntity,
+  VehiclePhotoDTO,
 } from '@/models/dto'
 import vehicleDetail from '@/store/modules/vehicleDetail'
 
@@ -61,7 +62,22 @@ export default {
     }
     return httpService.post<boolean, FormData>(url, form, config)
   },
-
+  makeVehiclePhotoDefault(
+    vehicleId: number,
+    vehiclePhoto: VehiclePhotoDTO
+  ): Promise<AxiosResponse> {
+    const url = `https://${apiBaseUrl()}/vehicles/${vehicleId}/updateVehiclePhoto`
+    return httpService.patch(url, vehiclePhoto)
+  },
+  deleteVehiclePhotos(
+    vehicleId: number,
+    payload: DeleteVehiclePhotoPayload
+  ): Promise<AxiosResponse<ApiResult>> {
+    const url = `https://${apiBaseUrl()}/vehicles/${vehicleId}/removeVehiclePhotos`
+    return httpService.delete(url, {
+      data: payload,
+    })
+  },
   deletePhotos(
     vehicleId: number,
     vehiclePhotos: DeleteVehiclePhotoPayload

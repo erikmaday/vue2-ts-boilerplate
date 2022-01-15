@@ -152,7 +152,10 @@ export const formatPickupTime = (stop: Stop): string => {
   return formatStopTime(stop.pickupDatetime, stop.address.timeZone)
 }
 
-export const cityFromAddressName = (addressName: string): string => {
+export const cityFromAddressName = (addressName: string): string | null => {
+  if (!addressName) {
+    return null
+  }
   const addressNameSplit = addressName.replace(anyNumberPattern, '').split(',')
   const stateIndex = addressNameSplit.findIndex((string) =>
     stateAbbreviationPattern.test(string)
@@ -160,18 +163,23 @@ export const cityFromAddressName = (addressName: string): string => {
   return addressNameSplit[stateIndex - 1]
 }
 
-export const formatReservationPickupDestinationText = (
-  reservation: Reservation
-): string => {
-  const pickupCity = reservation.pickupLocation.split(',')[0]
-  const dropOffCity = cityFromAddressName(reservation.firstDropoffAddressName)
-  return `${pickupCity} > ${dropOffCity}`
-}
-
 export const getReservationPickupDestinationCities = (
   reservation: Reservation
 ): { pickup: string; dropoff: string } => {
-  const pickup = reservation.pickupLocation.split(',')[0]
-  const dropoff = cityFromAddressName(reservation.firstDropoffAddressName)
+  const pickup = reservation.pickupLocation
+    ? reservation.pickupLocation.split(',')[0]
+    : cityFromAddressName(reservation.firstPickupAddressName)
+
+  const dropoff = reservation.firstDropoffAddressName
+    ? cityFromAddressName(reservation.firstDropoffAddressName)
+    : pickup
+
   return { pickup, dropoff }
+}
+
+export const formatReservationPickupDestinationText = (
+  reservation: Reservation
+): string => {
+  const cities = getReservationPickupDestinationCities(reservation)
+  return `${cities.pickup} > ${cities.dropoff}`
 }

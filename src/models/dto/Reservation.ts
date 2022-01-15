@@ -1,5 +1,6 @@
 import { Trip, VehicleAssignment } from '.'
 import { TableViewResult } from '../TableView'
+import { ApiResult } from './ApiResult'
 
 export interface Reservation {
   active: boolean
@@ -62,3 +63,7 @@ export interface Reservation {
 }
 
 export type ReservationTableViewResult = TableViewResult<Reservation>
+
+export interface ReservationApiResult extends ApiResult {
+  reservation: Reservation
+}

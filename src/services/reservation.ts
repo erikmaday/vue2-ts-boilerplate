@@ -75,4 +75,11 @@ export default {
       { data: payload }
     )
   },
+  getActiveReferral(
+    parentResId: number
+  ): Promise<AxiosResponse<ReservationDetail>> {
+    const host = apiBaseUrl()
+    const url = `https://${host}/reservations/getActiveReferral/${parentResId}`
+    return httpService.get(url)
+  },
 }

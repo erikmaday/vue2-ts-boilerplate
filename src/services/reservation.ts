@@ -5,7 +5,6 @@ import {
   ReservationDetailCommentPayload,
   ApiResult,
   ReservationDetail,
-  ReservationApiResult,
 } from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
@@ -78,7 +77,7 @@ export default {
   },
   getActiveReferral(
     parentResId: number
-  ): Promise<AxiosResponse<ReservationApiResult>> {
+  ): Promise<AxiosResponse<ReservationDetail>> {
     const host = apiBaseUrl()
     const url = `https://${host}/reservations/getActiveReferral/${parentResId}`
     return httpService.get(url)

@@ -5,6 +5,7 @@ import {
   ReservationDetailCommentPayload,
   ApiResult,
   ReservationDetail,
+  ReservationApiResult,
 } from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
@@ -74,5 +75,13 @@ export default {
       `https://${apiBaseUrl()}/tripAssignments/deleteAssignments`,
       { data: payload }
     )
+  },
+  getActiveReferral(
+    parentResId: number
+  ): Promise<AxiosResponse<ReservationApiResult>> {
+    // const host = apiBaseUrl()
+    const host = 'localhost:8092'
+    const url = `http://${host}/reservations/getActiveReferral/${parentResId}?actorCompanyId=1703`
+    return httpService.get(url)
   },
 }

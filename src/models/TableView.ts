@@ -43,7 +43,6 @@ export interface PredefinedFilter {
   _t_id: string
   text: string
   refreshOnSelect: boolean
-  active: boolean
   controls: PredefinedFilterControl[]
 }
 

@@ -65,7 +65,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: 'b0ee285c-36c0-4b67-852f-4d4061c71632',
     text: 'Range',
     refreshOnSelect: false,
-    active: false,
     controls: [
       {
         _t_id: '33d667e1-7680-4121-87ae-adc33d9639ec',
@@ -89,7 +88,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: '5e7022f5-7d5b-4863-9f77-bf6247b98131',
     text: 'Today',
     refreshOnSelect: true,
-    active: false,
     controls: [
       {
         _t_id: '2b4e7209-743a-4162-800c-56544247deb8',
@@ -114,7 +112,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: '6239fa82-b2cb-47ac-821d-52afc3e072b6',
     text: 'Tomorrow',
     refreshOnSelect: true,
-    active: false,
     controls: [
       {
         _t_id: 'd14f6d56-15e6-463e-bc70-a4de773733a5',
@@ -138,7 +135,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: '4142b5dc-37fb-433a-a363-5ae6a3ef5967',
     text: 'Last 7 days',
     refreshOnSelect: true,
-    active: false,
     controls: [
       {
         _t_id: 'a8fdfff9-4e7d-42d9-b43a-05de2e7c72e9',
@@ -162,7 +158,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: 'efc3b6cb-2be1-4809-9a75-8bd1cbd227d4',
     text: 'Next 7 days',
     refreshOnSelect: true,
-    active: false,
     controls: [
       {
         _t_id: 'e4a8b446-a3de-4883-bc04-a4064f7a1b97',
@@ -186,7 +181,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: '452f8663-083a-47d0-9578-e692a0ec3ce1',
     text: 'This month',
     refreshOnSelect: true,
-    active: false,
     controls: [
       {
         _t_id: 'c4a09705-2f69-4005-9aac-81eea3e2005d',
@@ -210,7 +204,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: 'fcb06d5a-a8db-425d-92fb-c54b543d3ff6',
     text: 'Last month',
     refreshOnSelect: true,
-    active: false,
     controls: [
       {
         _t_id: '7db5fb5b-70e6-447d-8879-fc35199363bc',
@@ -234,7 +227,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: '62318011-96ca-4386-9206-c741e39f314c',
     text: 'Next month',
     refreshOnSelect: true,
-    active: false,
     controls: [
       {
         _t_id: '68b79294-bd1e-410b-80f9-623de4894c49',
@@ -258,7 +250,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: 'f1598e76-34ee-4cd2-964b-2c6b0eb018dd',
     text: 'In the past',
     refreshOnSelect: true,
-    active: false,
     controls: [
       {
         _t_id: '44c9f676-06c5-446f-9485-9713dcfcbec5',
@@ -274,7 +265,6 @@ export const datePredefined: PredefinedFilter[] = [
     _t_id: '3f071975-fcf7-454d-9133-efcb25f1eda7',
     text: 'In the future',
     refreshOnSelect: true,
-    active: false,
     controls: [
       {
         _t_id: '2bad0a10-4efb-4e2e-964b-816a65b95636',

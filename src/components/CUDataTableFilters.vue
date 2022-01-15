@@ -97,7 +97,12 @@
                 cols="12"
                 class="padding-t-0"
               >
-                <span v-if="column.predefined">TEST</span>
+                <template v-if="column.predefined">
+                  <CUDatePicker
+                    v-for="(control, controlIndex) in predefinedFilter.controls"
+                    :key="controlIndex"
+                  />
+                </template>
                 <CUTextField
                   v-else
                   hide-details
@@ -254,7 +259,10 @@ export default class CUDataTableFilters extends Vue {
   //   console.log('predefinedFilter', predefinedFilter)
   // }
 
-  async selectPredefined(column: DataTableColumn, predefinedFilter: PredefinedFilter) {
+  async selectPredefined(
+    column: DataTableColumn,
+    predefinedFilter: PredefinedFilter
+  ) {
     const filter = this.tableFilterList.find(
       (f: any) => f.column?._t_id === column._t_id
     )

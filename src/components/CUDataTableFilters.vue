@@ -42,7 +42,11 @@
             </v-col>
             <v-col class="shrink padding-x-0 margin-r-1">
               <CUIcon
-                v-if="column.filterable && !isColumnFilterActive(column)"
+                v-if="
+                  column.filterable &&
+                  !isFilterActive(column) &&
+                  !column.predefined
+                "
                 class="cursor-pointer text-gray-mid-light hover:text-gray-light"
                 :key="`${column.text}-${columnIndex}-filter-activate`"
                 @click="setFilter(column)"
@@ -50,7 +54,7 @@
                 search
               </CUIcon>
               <CUIcon
-                v-if="column.filterable && isColumnFilterActive(column)"
+                v-if="column.filterable && isFilterActive(column)"
                 class="cursor-pointer text-gray-mid-light hover:text-gray-light"
                 :key="`${column.text}-${columnIndex}-filter-deactivate`"
                 @click="unsetFilter(column)"
@@ -73,16 +77,32 @@
                 {{ getColumnSortIcon(column) }}
               </CUIcon>
             </v-col>
+            <v-col v-if="column.predefined" cols="12">
+              <v-chip
+                v-for="(
+                  predefinedFilter, predefinedFilterIndex
+                ) in column.predefined"
+                outlined
+                :key="predefinedFilterIndex"
+                color="primary"
+                class="margin-r-2 margin-b-2"
+                @click="selectPredefined(column, predefinedFilter)"
+              >
+                {{ predefinedFilter.text }}
+              </v-chip>
+            </v-col>
             <v-expand-transition>
               <v-col
-                v-if="column.filterable && isColumnFilterActive(column)"
+                v-if="column.filterable && isFilterActive(column)"
                 cols="12"
                 class="padding-t-0"
               >
+                <span v-if="column.predefined">TEST</span>
                 <CUTextField
+                  v-else
                   hide-details
                   clearable
-                  @input="updateFilterCriteria($event, column)"
+                  @input="updateFilterCriteria($event, column._t_id)"
                 />
               </v-col>
             </v-expand-transition>
@@ -91,8 +111,7 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" small text @click="close">Cancel</v-btn>
-        <v-btn color="primary" small @click="close">Save</v-btn>
+        <v-btn color="primary" small @click="close">Close</v-btn>
       </template>
     </CUModal>
   </div>
@@ -103,7 +122,11 @@ import { DataTableColumn } from '@/models/DataTableColumn'
 import { Vue, Component, Prop, Watch, PropSync } from 'vue-property-decorator'
 import { v4 as uuidv4 } from 'uuid'
 import { EventBus } from '@/utils/eventBus'
-import { TableViewFilter, TableViewTab } from '@/models/TableView'
+import {
+  PredefinedFilter,
+  TableViewFilter,
+  TableViewTab,
+} from '@/models/TableView'
 
 @Component
 export default class CUDataTableFilters extends Vue {
@@ -165,13 +188,18 @@ export default class CUDataTableFilters extends Vue {
     if (tab.column.sortProp) {
       return this.isColumnSortActive(tab.column)
     } else {
-      return this.isColumnFilterActive(tab.column)
+      return this.isFilterActive(tab.column)
     }
   }
 
-  isColumnFilterActive(column: DataTableColumn): boolean {
-    return !!this.findFilterByColumn(column)
+  isFilterActive(filter: DataTableColumn | PredefinedFilter): boolean {
+    return !!this.findFilterById(filter._t_id)
   }
+
+  // isPredefinedFilterActive(
+  //   column: DataTableColumn,
+  //   predefinedFilter: PredefinedFilter
+  // ) {}
 
   isColumnSortActive(column: DataTableColumn): boolean {
     return this.currentSort.id === column._t_id
@@ -186,15 +214,15 @@ export default class CUDataTableFilters extends Vue {
     return 'arrow_down'
   }
 
-  findFilterByColumn(column: DataTableColumn): any {
-    return this.tableFilterList.find((f) => f.column._t_id === column._t_id)
+  findFilterById(_t_id: string): any {
+    return this.tableFilterList.find((f) => f.column._t_id === _t_id)
   }
 
   async setInitialFilters(): Promise<void> {
     for (const initialFilter of this.initialFilters) {
       const hide = initialFilter?.hideOnFilterBar || false
       await this.setFilter(initialFilter.column, hide)
-      this.updateFilterCriteria(initialFilter.value, initialFilter.column)
+      this.updateFilterCriteria(initialFilter.value, initialFilter.column._t_id)
     }
     this.receiveFilters()
     this.handleFilterAdded()
@@ -203,6 +231,15 @@ export default class CUDataTableFilters extends Vue {
 
   receiveFilters(): void {
     this.$emit('update:filters', this.filters)
+  }
+
+  selectPredefined(
+    column: DataTableColumn,
+    predefinedFilter: PredefinedFilter
+  ): void {
+    // deselect other predefined in this group
+    console.log('column', column)
+    console.log('predefinedFilter', predefinedFilter)
   }
 
   async setFilter(
@@ -273,8 +310,8 @@ export default class CUDataTableFilters extends Vue {
     })
   }
 
-  updateFilterCriteria(filterValue: any, column: DataTableColumn): void {
-    const activeFilter = this.findFilterByColumn(column)
+  updateFilterCriteria(filterValue: any, _t_id: string): void {
+    const activeFilter = this.findFilterById(_t_id)
     if (filterValue?.target) {
       activeFilter.value = filterValue?.target?.value
     } else {
@@ -316,7 +353,7 @@ export default class CUDataTableFilters extends Vue {
       return
     }
 
-    if (this.isColumnFilterActive(tab.column)) {
+    if (this.isFilterActive(tab.column)) {
       const showAllTab = this.tabs.find((t) => t.isShowAll)
       if (showAllTab && showAllTab.column._t_id !== tab.column._t_id) {
         this.setTabFilter(showAllTab)
@@ -329,7 +366,7 @@ export default class CUDataTableFilters extends Vue {
   setTabFilter(tab: TableViewTab): void {
     this.unsetAllTabs()
     this.setFilter(tab.column)
-    this.updateFilterCriteria(tab.value, tab.column)
+    this.updateFilterCriteria(tab.value, tab.column._t_id)
   }
 
   unsetAllTabs(): void {
@@ -340,7 +377,7 @@ export default class CUDataTableFilters extends Vue {
           this.currentSort = {}
           this.$emit('update:sorts', this.sorts)
         }
-      } else if (this.isColumnFilterActive(tab.column)) {
+      } else if (this.isFilterActive(tab.column)) {
         this.unsetFilter(tab.column)
       }
     }

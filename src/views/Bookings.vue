@@ -75,6 +75,7 @@ import {
   ReferralStatus,
 } from '@/utils/enum'
 import { EventBus } from '@/utils/eventBus'
+import { datePredefined } from '@/data/predefined'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Bookings extends Vue {
@@ -112,7 +113,7 @@ export default class Bookings extends Vue {
     {
       _t_id: 'c6a51018-3361-4f70-90b0-43caebe3d1f8',
       text: 'Pickup/Destination',
-      value: 'firstPickupAddressName',
+      value: ['firstPickupAddressName', 'firstDropoffAddressName'],
       filterable: true,
       sortable: true,
       filterProp: ['firstPickupAddressName', 'firstDropoffAddressName'],
@@ -125,10 +126,14 @@ export default class Bookings extends Vue {
       _t_id: '34b9d398-4bc9-4678-bbeb-470ecbec4133',
       text: 'Pickup Date',
       value: 'startDate',
+      filterable: true,
+      filterProp: 'startDate',
       sortable: true,
       sortProp: 'startDate',
+      type: 'date',
       computedText: (row: Reservation): string =>
         this.formatReservationStartDate(row),
+      predefined: datePredefined,
     },
     {
       _t_id: '15e7ecc8-849f-446a-9522-12ca049133fc',
@@ -255,9 +260,9 @@ export default class Bookings extends Vue {
       ariaLabel: 'Accept Booking',
       hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
       action: (row) => {
-        EventBus.$emit("accept-booking", row.reservationId)
+        EventBus.$emit('accept-booking', row.reservationId)
         this.isDialogOpen = true
-      }
+      },
     },
     {
       displayText: 'Reject Booking',
@@ -268,9 +273,9 @@ export default class Bookings extends Vue {
       ariaLabel: 'Reject Booking',
       hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
       action: (row) => {
-        EventBus.$emit("reject-booking", row.reservationId)
+        EventBus.$emit('reject-booking', row.reservationId)
         this.isDialogOpen = true
-      }
+      },
     },
   ]
 

@@ -1,6 +1,7 @@
 import { TextValue } from './TextValue'
 import { Component } from 'vue'
 import { Rule } from '@/models/Rule'
+import { PredefinedFilter } from './TableView'
 
 export interface DataTableColumn extends TextValue {
   _t_id: string
@@ -18,4 +19,5 @@ export interface DataTableColumn extends TextValue {
   sortDirection?: string
   hidden?: boolean
   defaultSort?: boolean
+  predefined?: PredefinedFilter[]
 }

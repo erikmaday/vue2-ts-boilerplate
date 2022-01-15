@@ -78,7 +78,7 @@
                 v-for="(
                   predefinedFilter, predefinedFilterIndex
                 ) in column.predefined"
-                outlined
+                :outlined="!predefinedFilter.active"
                 :key="predefinedFilterIndex"
                 color="primary"
                 class="margin-r-2 margin-b-2"
@@ -88,9 +88,13 @@
               </v-chip>
             </v-col>
             <v-expand-transition>
-              <v-col v-if="column.filterable" cols="12" class="padding-t-0">
+              <v-col
+                v-if="column.filterable && isFilterActive(column)"
+                cols="12"
+                class="padding-t-0"
+              >
                 <div>
-                  <template
+                  <v-row
                     v-if="
                       column.predefined &&
                       isFilterActive(column) &&
@@ -98,18 +102,25 @@
                       activeFilter.selectedPredefined
                     "
                   >
-                    <CUDatePicker
+                    <v-col
+                      cols="6"
                       v-for="(control, controlIndex) in activeFilter
                         .selectedPredefined.controls"
-                      :key="`${controlIndex}-${column._t_id}-${control.text}`"
-                      :value="control.value"
-                      :label="control.text"
-                      @input="
-                        (event) =>
-                          handleDatePickerInput(event, column, controlIndex)
-                      "
-                    />
-                  </template>
+                      :key="`${controlIndex}-${column._t_id}-${control.text}-col`"
+                    >
+                      <label class="font-14">
+                        {{ control.text }}
+                      </label>
+                      <CUDatePicker
+                        :key="`${controlIndex}-${column._t_id}-${control.text}`"
+                        :value="control.value"
+                        @input="
+                          (event) =>
+                            handleDatePickerInput(event, column, controlIndex)
+                        "
+                      />
+                    </v-col>
+                  </v-row>
                   <CUTextField
                     v-if="!column.predefined"
                     hide-details
@@ -269,10 +280,14 @@ export default class CUDataTableFilters extends Vue {
   async selectPredefined(
     column: DataTableColumn,
     predefinedFilter: PredefinedFilter
-  ) {
+  ): Promise<void> {
+    for (const predefined of column.predefined) {
+      predefined.active = predefined._t_id === column._t_id
+    }
     const filter = this.tableFilterList.find(
       (f: any) => f.column?._t_id === column._t_id
     )
+    predefinedFilter.active = true
     if (!predefinedFilter.id) {
       predefinedFilter.id = uuidv4()
     }
@@ -357,6 +372,7 @@ export default class CUDataTableFilters extends Vue {
   unsetPeerFilters(filter: any): void {
     const unset = filter?.column?.unset || []
     unset.forEach((unsetFilterId) => {
+      console.log('unsetting', unsetFilterId)
       const foundColumn = this.columns.find(
         (column) => column._t_id === unsetFilterId
       )
@@ -386,13 +402,6 @@ export default class CUDataTableFilters extends Vue {
     controlIndex: number
   ): void {
     const timestamp = this.$dayjs(event).format('YYYY-MM-DD')
-    // if (controlIndex === 0) {
-    //   event = timestamp.startOf('day').toISODate()
-    // }
-    // if (controlIndex === 1) {
-    //   const newTimestamp = timestamp.startOf('day').toISODate()
-    //   event = newTimestamp
-    // }
     this.updateMultiValueFilterCriteria(timestamp, column, controlIndex)
   }
 
@@ -400,7 +409,7 @@ export default class CUDataTableFilters extends Vue {
     filterValue: any,
     column: DataTableColumn,
     index: number
-  ) {
+  ): void {
     const value =
       filterValue && filterValue.target ? filterValue.target.value : filterValue
     const activeFilter = this.getFilterByColumn(column)

@@ -1,4 +1,4 @@
-<template >
+<template>
   <v-menu bottom offset-y>
     <template #activator="{ on }">
       <label class="font-14" v-if="$attrs.label">{{ $attrs.label }}</label>

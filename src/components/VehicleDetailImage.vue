@@ -1,12 +1,6 @@
 <template>
   <div
-    class="
-      w-full
-      h-80
-      border-radius-regular border-2 border-solid border-gray-border
-      d-flex
-      align-center
-    "
+    class="w-full h-80 border-radius-regular border-2 border-solid border-gray-border d-flex align-center"
     :class="{
       'background-error': isConfirmingDelete,
       'background-gray-header': noImagesFound,
@@ -48,23 +42,13 @@
     </div>
     <template v-else-if="!isConfirmingDelete">
       <img
-        class="
-          h-full
-          w-112
-          border-radius-top-left-3 border-radius-bottom-left-3
-          object-fit-cover
-        "
+        class="h-full w-112 border-radius-top-left-3 border-radius-bottom-left-3 object-fit-cover"
         :class="{ 'opacity-50': isUploading }"
         :src="photoSource"
       />
       <div
         v-if="isUploading"
-        class="
-          d-flex
-          h-full
-          background-blue-10
-          transition-all transition-duration-50
-        "
+        class="d-flex h-full background-blue-10 transition-all transition-duration-50"
         :style="{
           width: `calc(${vehicleDetail.getUploadPercentage}% - 112px)`,
         }"
@@ -80,14 +64,21 @@
         />
         <CUIcon
           v-if="vehicleDetail.getIsModeEdit"
+          width="24px"
+          height="24px"
+          :class="{
+            'text-yellow': photo.primaryImage,
+          }"
+          class="cursor-pointer text-gray-mid-light hover:text-yellow transition-all transition-duration-100"
+          key="default-icon"
+          @click="vehicleDetail.setPhotoAsPrimaryImage({ photo })"
+        >
+          star
+        </CUIcon>
+        <CUIcon
+          v-if="vehicleDetail.getIsModeEdit"
           :key="`delete-icon`"
-          class="
-            cursor-pointer
-            margin-r-4
-            text-gray-mid-light
-            hover:text-error
-            transition-all transition-duration-100
-          "
+          class="cursor-pointer margin-r-4 text-gray-mid-light hover:text-error transition-all transition-duration-100"
           @click="isConfirmingDelete = true"
         >
           trash

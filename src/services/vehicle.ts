@@ -7,6 +7,7 @@ import {
   ApiResult,
   DeleteVehiclePhotoPayload,
   VehicleDetailEntity,
+  VehiclePhotoDTO,
 } from '@/models/dto'
 import vehicleDetail from '@/store/modules/vehicleDetail'
 
@@ -50,7 +51,7 @@ export default {
     vehicleId: number,
     form: FormData
   ): Promise<AxiosResponse<boolean>> {
-    const url = `https://${apiBaseUrl()}/v2/photos/vehicles/${vehicleId}/vehiclePhotos`
+    const url = `http://localhost:8086/vehicles/${vehicleId}/vehiclePhotos?actorUserId=26893&actorCompanyId=11666`
     const config = {
       onUploadProgress: (progressEvent: ProgressEvent) => {
         const uploadPercentage = Math.round(
@@ -61,7 +62,22 @@ export default {
     }
     return httpService.post<boolean, FormData>(url, form, config)
   },
-
+  makeVehiclePhotoDefault(
+    vehicleId: number,
+    vehiclePhoto: VehiclePhotoDTO
+  ): Promise<AxiosResponse> {
+    const url = `https://${apiBaseUrl()}/vehicles/${vehicleId}/updateVehiclePhoto`
+    return httpService.patch(url, vehiclePhoto)
+  },
+  deleteVehiclePhotos(
+    vehicleId: number,
+    payload: DeleteVehiclePhotoPayload
+  ): Promise<AxiosResponse<ApiResult>> {
+    const url = `https://${apiBaseUrl()}/vehicles/${vehicleId}/removeVehiclePhotos`
+    return httpService.delete(url, {
+      data: payload,
+    })
+  },
   deletePhotos(
     vehicleId: number,
     vehiclePhotos: DeleteVehiclePhotoPayload

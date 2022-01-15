@@ -98,13 +98,13 @@
                     v-if="
                       column.predefined &&
                       isFilterActive(column) &&
-                      activeFilter &&
-                      activeFilter.selectedPredefined
+                      activePredefinedFilter &&
+                      activePredefinedFilter.selectedPredefined
                     "
                   >
                     <v-col
                       cols="6"
-                      v-for="(control, controlIndex) in activeFilter
+                      v-for="(control, controlIndex) in activePredefinedFilter
                         .selectedPredefined.controls"
                       :key="`${controlIndex}-${column._t_id}-${control.text}-col`"
                     >
@@ -205,20 +205,10 @@ export default class CUDataTableFilters extends Vue {
     direction: undefined,
   }
   debounce: any = null
-  activeFilter: any = {}
+  activePredefinedFilter: any = {}
 
   mounted(): void {
     this.initiateDefaultSort()
-    // this.initializePredefinedFilters()
-  }
-
-  initializePredefinedFilters(): void {
-    const columns = (this.columns as DataTableColumn[]) || []
-    Promise.all(
-      columns
-        .filter((column) => typeof column.predefined === 'object')
-        .map((column) => this.setFilter(column))
-    )
   }
 
   isTabActive(tab: TableViewTab): boolean {
@@ -303,7 +293,7 @@ export default class CUDataTableFilters extends Vue {
         valueRef.displayValue = this.$dayjs(valueRef.value).format('YYYY-MM-DD')
       }
     }
-    this.activeFilter = { ...filter }
+    this.activePredefinedFilter = { ...filter }
     if (predefinedFilter.refreshOnSelect) {
       this.handleFilterAdded()
     }
@@ -336,8 +326,8 @@ export default class CUDataTableFilters extends Vue {
     if (!filter) {
       return
     }
-    if (this.activeFilter?.column?._t_id === column._t_id) {
-      this.activeFilter = undefined
+    if (this.activePredefinedFilter?.column?._t_id === column._t_id) {
+      this.activePredefinedFilter = undefined
     }
     for (const f of this.filters.parents()) {
       for (const c of this.filters.children(f)) {
@@ -382,11 +372,11 @@ export default class CUDataTableFilters extends Vue {
   }
 
   updateFilterCriteria(filterValue: any, _t_id: string): void {
-    const activeFilter = this.findFilterById(_t_id)
+    const matchingFilter = this.findFilterById(_t_id)
     if (filterValue?.target) {
-      activeFilter.value = filterValue?.target?.value
+      matchingFilter.value = filterValue?.target?.value
     } else {
-      activeFilter.value = filterValue
+      matchingFilter.value = filterValue
     }
     this.handleFilterAdded()
   }
@@ -407,10 +397,10 @@ export default class CUDataTableFilters extends Vue {
   ): void {
     const value =
       filterValue && filterValue.target ? filterValue.target.value : filterValue
-    const activeFilter = this.getFilterByColumn(column)
-    const { selectedPredefined } = activeFilter
+    const columnFilter = this.getFilterByColumn(column)
+    const { selectedPredefined } = columnFilter
     selectedPredefined.controls[index].value = value
-    if (activeFilter.column.type === 'date') {
+    if (columnFilter.column.type === 'date') {
       const formattedDateValue = this.$dayjs(value).format('YYY-MM-DD')
       selectedPredefined.controls[index].displayValue = formattedDateValue
     }

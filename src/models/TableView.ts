@@ -41,6 +41,7 @@ export interface ChipFilterState {
 export interface PredefinedFilter {
   id?: string
   _t_id: string
+  active?: boolean 
   text: string
   refreshOnSelect: boolean
   controls: PredefinedFilterControl[]

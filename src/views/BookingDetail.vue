@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { ReservationDetail, Trip, VehicleAssignment } from '@/models/dto'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import BookingDetailStepTimeline from '@/components/BookingDetailStepTimeline.vue'
 import BookingDetailHeader from '@/components/BookingDetailHeader.vue'
@@ -104,6 +104,13 @@ export default class BookingDetail extends Vue {
   trip: Trip | null = null
   tripAssignments: VehicleAssignment[] = []
 
+  @Watch('id', { immediate: true })
+  valueChanged(): void {
+    if (this.id) {
+      this.refresh()
+    }
+  }
+
   created(): void {
     this.id = parseInt(this.$route.params.id)
   }
@@ -131,16 +138,11 @@ export default class BookingDetail extends Vue {
       }
       this.reservation = reservationResponse.data
     }
-    if (this.reservation?.reservationId) {
+    if (!this.reservation?.reservationId) {
       const res = await reservation.getActiveReferral(this.id)
-      if (res.data?.reservation?.reservationId) {
-        this.id = res.data.reservation.reservationId
-        this.refresh()
+      if (res.data?.reservationId) {
+        this.id = res.data.reservationId
       }
-    } else {
-      //FOR NOW, REDIRECT HOME
-      this.$router.push({ name: 'home' })
-      return
     }
   }
 

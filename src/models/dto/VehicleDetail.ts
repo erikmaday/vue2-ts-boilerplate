@@ -34,5 +34,5 @@ export interface VehiclePhotoDTO {
 }
 
 export interface DeleteVehiclePhotoPayload {
-  vehiclePhotos: { vehiclePhotoId: number }[]
+  vehiclePhotoIds: number[]
 }

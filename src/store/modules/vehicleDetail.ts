@@ -95,6 +95,21 @@ class VehicleDetailModule extends VuexModule {
       foundPhoto = photo
     }
   }
+
+  @Mutation
+  setPhotoDTOPrimaryImage(photo: VehiclePhotoDTO) {
+    for (const photo of this.vehicle.vehiclePhotoDTOs) {
+      photo.primaryImage = false
+    }
+
+    const foundPhoto = this.vehicle.vehiclePhotoDTOs.find(
+      (p) => p.imagePath === photo.imagePath
+    )
+    if (foundPhoto) {
+      foundPhoto.primaryImage = true
+    }
+  }
+
   // actions  @Action
   @Action
   initialize(): void {
@@ -194,6 +209,12 @@ class VehicleDetailModule extends VuexModule {
     photo.label = obj.label
     this.setPhotoDTOLabel(photo)
   }
+
+  @Action
+  async setPhotoAsPrimaryImage(photo: VehiclePhotoDTO): Promise<void> {
+    this.setPhotoDTOPrimaryImage(photo)
+  }
+
   @Action
   async uploadPhotos(): Promise<void> {
     if (this.vehicleId) {
@@ -201,10 +222,27 @@ class VehicleDetailModule extends VuexModule {
         this.vehicle.vehiclePhotoDTOs
       )
       if (newVehiclePhotos) {
-        await vehicle.uploadPhotos(this.vehicleId, newVehiclePhotos)
+        for (const form of newVehiclePhotos) {
+          await vehicle.uploadPhotos(this.vehicleId, form)
+        }
       }
     }
   }
+
+  @Action
+  async updateDefaultPhoto(): Promise<void> {
+    if (!this.vehicleId) {
+      return 
+    }
+    const defaultPhoto = this.vehicle.vehiclePhotoDTOs.find(p => p.primaryImage)
+
+    // If the defaultPhoto is a photo which still needs to be uploaded
+    if (!defaultPhoto || defaultPhoto?.file || !defaultPhoto.active) {
+      return
+    }
+    await vehicle.makeVehiclePhotoDefault(this.vehicleId, defaultPhoto)
+  }
+
   @Action
   addPhotos(photos: VehiclePhotoDTO[]): void {
     const newPhotosList = deepClone(this.vehicle.vehiclePhotoDTOs)
@@ -227,10 +265,11 @@ class VehicleDetailModule extends VuexModule {
     if (this.vehicleId) {
       try {
         const deletedPhotos = buildDeletePhotosPayload(this.vehicle)
-        if (deletedPhotos.vehiclePhotos.length) {
-          await vehicle.deletePhotos(this.vehicleId, deletedPhotos)
+        if (deletedPhotos.vehiclePhotoIds.length) {
+          await vehicle.deleteVehiclePhotos(this.vehicleId, deletedPhotos)
         }
         await vehicle.update(this.vehicle)
+        await this.updateDefaultPhoto()
         await this.uploadPhotos()
         router.push({
           name: 'vehicles.view',
@@ -244,6 +283,14 @@ class VehicleDetailModule extends VuexModule {
   @Action
   async addVehicle(): Promise<void> {
     try {
+      // If there are vehiclePhotoDTOs and no primary image 
+      // is set, set the first photo to be the primary image. 
+      if (this.vehicle.vehiclePhotoDTOs?.length) {
+        if (!this.vehicle.vehiclePhotoDTOs.filter(p => p.primaryImage).length) {
+          this.vehicle.vehiclePhotoDTOs[0].primaryImage = true
+        }
+      }
+
       const vehicleResponse = await vehicle.create(this.vehicle)
       const vehicleId = vehicleResponse.data
       this.setVehicleId(vehicleId)
@@ -271,17 +318,18 @@ const processVehicle = (vehicle: VehicleDetailEntity): VehicleDetailEntity => {
 
 const buildNewPhotosPayload = (
   vehiclePhotoDTOs: VehiclePhotoDTO[]
-): FormData | null => {
-  let count = 0
-  const form = new FormData()
+): FormData[] | null => {
+  const forms = []
   for (const photo of vehiclePhotoDTOs) {
     if (photo?.file) {
+      const form = new FormData()
       form.append('file', photo.file)
       form.append('label', photo.label)
-      count++
+      form.append('primaryImage', String(photo.primaryImage))
+      forms.push(form)
     }
   }
-  return count ? form : null
+  return forms.length ? forms : null
 }
 
 const buildDeletePhotosPayload = (
@@ -290,9 +338,9 @@ const buildDeletePhotosPayload = (
   const deletedPhotos = vehicle.vehiclePhotoDTOs
     .filter((photo) => !photo.active)
     .map((photo) => {
-      return { vehiclePhotoId: photo.vehiclePhotoId }
+      return photo.vehiclePhotoId
     })
-  return { vehiclePhotos: deletedPhotos }
+  return { vehiclePhotoIds: deletedPhotos }
 }
 
 // register module (could be in any file)

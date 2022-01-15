@@ -357,7 +357,6 @@ export default class CUDataTableFilters extends Vue {
   unsetPeerFilters(filter: any): void {
     const unset = filter?.column?.unset || []
     unset.forEach((unsetFilterId) => {
-      console.log('unsetting', unsetFilterId)
       const foundColumn = this.columns.find(
         (column) => column._t_id === unsetFilterId
       )

@@ -62,6 +62,22 @@
           placeholder="Add a title"
           hide-details
         />
+        <v-tooltip top v-if="vehicleDetail.getIsModeView && photo.primaryImage">
+          <template #activator="{ on }">
+            <span v-on="on">
+              <CUIcon
+                width="24px"
+                height="24px"
+                class="margin-r-4 cursor-pointer text-gray-mid-light transition-all transition-duration-100"
+                key="default-icon"
+              >
+                star
+              </CUIcon>
+            </span>
+          </template>
+          <span class="text-white">Default Vehicle Image</span>
+        </v-tooltip>
+        <div v-else-if="vehicleDetail.getIsModeView" class="w-24 h-24 margin-r-4"></div>
         <CUIcon
           v-if="vehicleDetail.getIsModeEdit"
           width="24px"
@@ -71,7 +87,7 @@
           }"
           class="cursor-pointer text-gray-mid-light hover:text-yellow transition-all transition-duration-100"
           key="default-icon"
-          @click="vehicleDetail.setPhotoAsPrimaryImage({ photo })"
+          @click="vehicleDetail.setPhotoAsPrimaryImage(photo)"
         >
           star
         </CUIcon>

@@ -211,8 +211,7 @@ class VehicleDetailModule extends VuexModule {
   }
 
   @Action
-  async setPhotoAsPrimaryImage(obj: { photo: VehiclePhotoDTO }): Promise<void> {
-    const photo = obj.photo
+  async setPhotoAsPrimaryImage(photo: VehiclePhotoDTO): Promise<void> {
     this.setPhotoDTOPrimaryImage(photo)
   }
 

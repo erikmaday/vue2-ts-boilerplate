@@ -82,6 +82,7 @@
               <v-simple-checkbox
                 color="primary"
                 :value="photo.primaryImage"
+                :ripple="false"
                 @input="vehicleDetail.setPhotoAsPrimaryImage(photo)"
               />
               <span class="text-12">Make Default</span>

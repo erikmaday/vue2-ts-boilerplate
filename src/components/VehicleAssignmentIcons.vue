@@ -4,9 +4,13 @@
       <v-tooltip top>
         <template #activator="{ on }">
           <div
-            class="d-inline-flex margin-l-3 cursor-pointer align-center"
+            class="d-inline-flex margin-l-3 align-center"
             v-on="on"
-            @click="isDialogOpen = true"
+            @click="openDialogue"
+            :class="{
+              'cursor-pointer': !needsAcceptance,
+              'cursor-not-allowed': needsAcceptance,
+            }"
           >
             <span
               v-if="showLabel"
@@ -64,6 +68,7 @@ import TripAssignmentsModal from '@/components/TripAssignmentsModal.vue'
 import { Reservation, Trip } from '@/models/dto'
 import { VehicleAssignment } from '@/models/dto'
 import { pluralize } from '@/utils/string'
+import { ReferralStatus } from '@/utils/enum'
 import { ColoredMessage } from '@/models/ColoredMessage'
 import trip from '@/services/trip'
 import tripAssignment from '@/services/tripAssignment'
@@ -114,6 +119,12 @@ export default class VehicleAssignmentIcons extends Vue {
     ])
     this.fetchedVehicleAssignments =
       tripAssignmentResponse.data.vehicleAssignments
+  }
+
+  openDialogue(): void {
+    if (!this.needsAcceptance) {
+      this.isDialogOpen = true
+    }
   }
 
   get computedTrip(): Trip | null {
@@ -188,10 +199,21 @@ export default class VehicleAssignmentIcons extends Vue {
     )
   }
 
+  get needsAcceptance(): boolean {
+    return this.reservation?.referralStatus === ReferralStatus.Offered
+  }
+
   get tooltipBody(): string {
     const start = `<p class="text-white margin-a-0">`
     const end = `</p>`
     const line = (str: string): string => `${start}${str}${end}`
+
+    if (this.needsAcceptance) {
+      return (
+        line('No Vehicles Can Be Assigned') +
+        line('Until A Booking Is Accepted')
+      )
+    }
 
     if (this.computedVehicleAssignments?.length) {
       let html = ''

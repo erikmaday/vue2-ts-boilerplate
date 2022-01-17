@@ -4,9 +4,13 @@
       <v-tooltip top>
         <template #activator="{ on }">
           <div
-            class="d-inline-flex margin-l-3 cursor-pointer align-center"
+            class="d-inline-flex margin-l-3 align-center"
             v-on="on"
-            @click="isDialogOpen = true"
+            @click="openDialogue"
+            :class="{
+              'cursor-pointer': !needsAcceptance,
+              'cursor-not-allowed': needsAcceptance,
+            }"
           >
             <span
               v-if="showLabel"
@@ -43,7 +47,15 @@
           <span v-html="driverAssignmentMobileBody"></span>
         </div>
       </div>
-      <v-btn color="primary" small outlined class="w-full margin-t-4 margin-b-n4" @click="isDialogOpen = true">Modify Assignments</v-btn>
+      <v-btn
+        color="primary"
+        small
+        outlined
+        class="w-full margin-t-4 margin-b-n4"
+        @click="openDialogue"
+      >
+        Modify Assignments
+      </v-btn>
     </template>
     <template
       v-if="
@@ -70,6 +82,7 @@ import DriverAssignmentIcon from '@/components/DriverAssignmentIcon.vue'
 import { VehicleAssignment, Trip, Reservation } from '@/models/dto'
 import { DriverAssignment } from '@/models/dto/DriverAssignment'
 import { pluralize } from '@/utils/string'
+import { ReferralStatus } from '@/utils/enum'
 import { ColoredMessage } from '@/models/ColoredMessage'
 import trip from '@/services/trip'
 import tripAssignment from '@/services/tripAssignment'
@@ -123,6 +136,12 @@ export default class DriverAssignmentIcons extends Vue {
     ])
     this.fetchedVehicleAssignments =
       tripAssignmentResponse.data.vehicleAssignments
+  }
+
+  openDialogue(): void {
+    if (!this.needsAcceptance) {
+      this.isDialogOpen = true
+    }
   }
 
   get computedTrip(): Trip | null {
@@ -208,10 +227,20 @@ export default class DriverAssignmentIcons extends Vue {
     return this.driverAssignments.length === this.totalRequiredDrivers
   }
 
+  get needsAcceptance(): boolean {
+    return this.reservation?.referralStatus === ReferralStatus.Offered
+  }
+
   get tooltipBody(): string {
     const start = `<p class="text-white margin-a-0">`
     const end = `</p>`
     const line = (str: string): string => `${start}${str}${end}`
+
+    if (this.needsAcceptance) {
+      return (
+        line('No Drivers Can Be Assigned') + line('Until A Booking Is Accepted')
+      )
+    }
 
     if (this.computedVehicleAssignments?.length) {
       let html = ''

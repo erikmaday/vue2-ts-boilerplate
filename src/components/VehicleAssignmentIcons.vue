@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-if="$vuetify.breakpoint.smAndUp || !enableMobileView">
-      <v-tooltip top>
+      <v-tooltip top v-model="showTooltip">
         <template #activator="{ on }">
           <div
             class="d-inline-flex margin-l-3 align-center"
@@ -93,6 +93,7 @@ export default class VehicleAssignmentIcons extends Vue {
   fetchedVehicleAssignments: VehicleAssignment[] = []
   isDialogOpen = false
   EventBus = EventBus
+  showTooltip = false
 
   mounted(): void {
     EventBus.$on('refresh-assignments', () => this.refreshAssignments())
@@ -124,6 +125,11 @@ export default class VehicleAssignmentIcons extends Vue {
   openDialogue(): void {
     if (!this.needsAcceptance) {
       this.isDialogOpen = true
+    } else {
+      this.showTooltip = true
+      setTimeout(() => {
+        this.showTooltip = false
+      }, 4000)
     }
   }
 

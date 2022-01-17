@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-if="$vuetify.breakpoint.smAndUp || !enableMobileView">
-      <v-tooltip top>
+      <v-tooltip top v-model="showTooltip">
         <template #activator="{ on }">
           <div
             class="d-inline-flex margin-l-3 align-center"
@@ -111,6 +111,7 @@ export default class DriverAssignmentIcons extends Vue {
   fetchedVehicleAssignments: VehicleAssignment[] = []
   isDialogOpen = false
   EventBus = EventBus
+  showTooltip = false
 
   @Watch('computedReservation', { immediate: true })
   async reservationChanged(reservation: Reservation): Promise<void> {
@@ -142,6 +143,11 @@ export default class DriverAssignmentIcons extends Vue {
   openDialogue(): void {
     if (!this.needsAcceptance) {
       this.isDialogOpen = true
+    } else {
+      this.showTooltip = true
+      setTimeout(() => {
+        this.showTooltip = false
+      }, 4000)
     }
   }
 

@@ -7,10 +7,13 @@ export const apiBaseUrl = (prefix = 'api'): string => {
   if (process.env.VUE_APP_BASE_URL_OVERRIDE) {
     host = process.env.VUE_APP_BASE_URL_OVERRIDE
   } else {
-    const hostSubdomain = window.location.host.split(':')[0].split('.')[0]
+    let hostSubdomain = window.location.host.split(':')[0].split('.')[0]
     if (hostSubdomain === 'localhost') {
       host = 'dev.coachrail.com'
     } else {
+      if (hostSubdomain === 'operators') {
+        hostSubdomain = 'app'
+      }
       host = hostSubdomain + '.coachrail.com'
     }
   }

@@ -31,6 +31,20 @@
     <CUModal v-model="isOpen">
       <template #title>Filter</template>
       <template #text>
+        <v-row v-if="chips.length">
+          <v-col cols="12">
+            <v-chip
+              v-for="(chip, chipIndex) in chips"
+              :key="`${chip.text}-${chipIndex}`"
+              :outlined="!isFilterActive(chip)"
+              color="primary"
+              class="margin-r-2 last-of-type:margin-r-0"
+              @click="setChipFilter(chip)"
+            >
+              {{ chip.text }}
+            </v-chip>
+          </v-col>
+        </v-row>
         <template v-for="(column, columnIndex) in columns">
           <v-row
             v-if="column.filterable || column.sortable"
@@ -150,6 +164,8 @@ import { EventBus } from '@/utils/eventBus'
 import deepPluckRef from 'deep-pluck-ref'
 import {
   PredefinedFilter,
+  TableViewChip,
+  TableViewChipValue,
   TableViewFilter,
   TableViewTab,
 } from '@/models/TableView'
@@ -177,6 +193,8 @@ export default class CUDataTableFilters extends Vue {
   tableFilterList!: any[]
   @Prop({ required: false, default: () => [] })
   tabs!: TableViewTab[]
+  @Prop({ required: false, default: () => [] })
+  chips!: TableViewChip[]
 
   @Watch('isOpen')
   isDialogOpenChanged(value: boolean): void {
@@ -219,7 +237,9 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
-  isFilterActive(filter: DataTableColumn | PredefinedFilter): boolean {
+  isFilterActive(
+    filter: DataTableColumn | PredefinedFilter | TableViewChip
+  ): boolean {
     return !!this.findFilterById(filter._t_id)
   }
 
@@ -299,6 +319,39 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
+  setChipFilter(chip: TableViewChipValue): void {
+    const exists = !!this.isFilterActive(chip)
+
+    if (!exists) {
+      const filterParentAnd = this.filters.createParent('and')
+      for (const value of chip.values) {
+        this.filters.add(filterParentAnd, value)
+      }
+      this.tableFilterList.push({ column: { ...chip } })
+      this.handleFilterAdded()
+    } else {
+      this.unsetChipFilter(chip)
+    }
+  }
+
+  unsetChipFilter(chip: TableViewChipValue): void {
+    this.unsetChipChildFilters(chip)
+    this.unsetFilter(chip)
+  }
+
+  unsetChipChildFilters(chip: TableViewChipValue): void {
+    const chipFilter = this.tableFilterList.find(
+      (f) => f.column._t_id === chip._t_id
+    )
+    if (!chipFilter) {
+      return
+    }
+    for (const filter of chipFilter.column.values) {
+      this.filters.remove(filter)
+      this.$emit('update:filters', this.filters)
+    }
+  }
+
   async setFilter(
     column: DataTableColumn,
     hideOnFilterBar = false
@@ -319,7 +372,7 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
-  unsetFilter(column: DataTableColumn): void {
+  unsetFilter(column: DataTableColumn | TableViewChipValue): void {
     const filter = this.tableFilterList.find(
       (f) => f.column._t_id === column._t_id
     )

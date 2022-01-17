@@ -10,6 +10,7 @@
       :initial-filters="initialFilters"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :tabs="tabs"
+      :chips="chips"
       :key="`bookings-list`"
       no-data-text="No bookings found"
     >
@@ -68,7 +69,11 @@ import {
 import { RawLocation } from 'vue-router'
 import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
 import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
-import { TableViewFilter, TableViewTab } from '@/models/TableView'
+import {
+  TableViewChip,
+  TableViewFilter,
+  TableViewTab,
+} from '@/models/TableView'
 import {
   ReservationStatus,
   ReservationType,
@@ -225,6 +230,61 @@ export default class Bookings extends Vue {
       },
       value: null,
       isShowAll: true,
+    },
+  ]
+
+  chips: TableViewChip[] = [
+    {
+      _t_id: '889ae4fa-485d-464b-9f70-389d8bb6bfec',
+      text: 'Needs Assignment',
+      values: [
+        {
+          column: {
+            _t_id: 'f9dd8140-d676-4485-9c8b-0cd2f226a2ad',
+            value: 'referralStatus',
+            filterType: 'eq',
+            text: '',
+            type: 'text',
+          },
+          value: ReferralStatus.Accepted,
+        },
+        {
+          column: {
+            _t_id: '7fb1567c-3059-4431-94e7-b2ec07ebf888',
+            value: 'assignedDriverPercentage',
+            filterType: 'lte',
+            text: '',
+            type: 'number',
+          },
+          value: 99.99,
+        },
+        {
+          column: {
+            _t_id: '87cd39b0-1208-4a75-87ea-399bab050767',
+            value: 'assignedVehiclePercentage',
+            filterType: 'lte',
+            text: '',
+            type: 'number',
+          },
+          value: 99.99,
+        },
+      ],
+    },
+    {
+      _t_id: '9ff98f95-53b4-4b14-83d5-04522ca7a04e',
+      text: 'Needs Acceptance',
+      values: [
+        {
+          column: {
+            _t_id: '811a37f3-6bb1-45ee-8f21-d4f4ee670d01',
+            value: 'referralStatus',
+            filterType: 'eq',
+            text: '',
+            type: 'text',
+          },
+          value: ReferralStatus.Offered,
+        },
+      ],
     },
   ]
 

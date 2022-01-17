@@ -4,11 +4,7 @@
       'w-full margin-t-3': $vuetify.breakpoint.xs,
     }"
   >
-    <DriverAssignmentIcons
-      v-if="!needsAcceptance"
-      :reservation="row"
-      :enable-mobile-view="true"
-    />
+    <DriverAssignmentIcons :reservation="row" :enable-mobile-view="true" />
   </div>
 </template>
 <script lang="ts">

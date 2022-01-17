@@ -4,14 +4,7 @@
       'w-full margin-t-3': $vuetify.breakpoint.xs,
     }"
   >
-    <p v-if="needsAcceptance" class="font-medium text-red margin-t-0">
-      Needs Acceptance
-    </p>
-    <VehicleAssignmentIcons
-      v-else
-      :reservation="row"
-      :enable-mobile-view="true"
-    />
+    <VehicleAssignmentIcons :reservation="row" :enable-mobile-view="true" />
   </div>
 </template>
 <script lang="ts">

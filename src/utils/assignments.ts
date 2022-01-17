@@ -26,6 +26,15 @@ export function buildModel(
   driverCount = 0
 ): any {
 
+  const requiredVehicleCount = requiredVehicles.reduce(
+    (sum, vehicle) => sum + vehicle.quantity,
+    0
+  )
+
+  if (requiredVehicleCount > driverCount) {
+    driverCount = requiredVehicleCount
+  }
+
   vehicleAssignments = deepClone(vehicleAssignments)
   requiredVehicles = deepClone(requiredVehicles)
   const UNASSIGNED_VEHICLE_TYPE_ID = 99

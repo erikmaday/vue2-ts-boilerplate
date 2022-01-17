@@ -1,17 +1,18 @@
 <template>
   <Detail>
     <template #back>
-      <v-btn
-        :icon="$vuetify.breakpoint.mdAndUp"
-        :x-small="$vuetify.breakpoint.mdAndUp"
-        :small="$vuetify.breakpoint.smAndDown"
-        plain
-        color="primary"
-        @click="pushLastRoute"
-      >
-        <CUIcon>arrow_left</CUIcon>
-        <span v-if="$vuetify.breakpoint.xs" class="margin-l-1">Back</span>
-      </v-btn>
+      <router-link :to="vehicleDetail.lastRoute">
+        <v-btn
+          :icon="$vuetify.breakpoint.mdAndUp"
+          :x-small="$vuetify.breakpoint.mdAndUp"
+          :small="$vuetify.breakpoint.smAndDown"
+          plain
+          color="primary"
+        >
+          <CUIcon>arrow_left</CUIcon>
+          <span v-if="$vuetify.breakpoint.xs" class="margin-l-1">Back</span>
+        </v-btn>
+      </router-link>
     </template>
     <template #title>{{ headerTitle }}</template>
     <template #buttons>
@@ -254,6 +255,7 @@ import UsersDetailUserPhoto from '@/components/UsersDetailUserPhoto.vue'
 import UsersDetailDriverInfo from '@/components/UsersDetailDriverInfo.vue'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 import app from '@/store/modules/app'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: {
@@ -300,18 +302,16 @@ export default class UsersDetail extends Vue {
     }
   }
 
-  // When hitting back button, prevent infinite loop when going from
-  // view -> edit -> view, etc.
-  pushLastRoute(): void {
+  get lastRoute(): RawLocation {
+    let lastRoute = app.getLastRoute
     if (
       !app.getLastRoute?.name ||
       app.getLastRoute?.name === 'users.view' ||
       app.getLastRoute?.name === 'users.add'
     ) {
-      this.$router.push({ name: 'users' })
-    } else {
-      this.$router.push(app.getLastRoute)
+      lastRoute = { name: 'users' }
     }
+    return lastRoute
   }
 
   // Get the user's roles. If we determine that the user is a driver,

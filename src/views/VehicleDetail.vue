@@ -1,17 +1,18 @@
 <template>
   <Detail>
     <template #back>
-      <v-btn
-        :icon="$vuetify.breakpoint.mdAndUp"
-        :x-small="$vuetify.breakpoint.mdAndUp"
-        :small="$vuetify.breakpoint.smAndDown"
-        plain
-        color="primary"
-        @click="vehicleDetail.goBack"
-      >
-        <CUIcon>arrow_left</CUIcon>
-        <span v-if="$vuetify.breakpoint.xs" class="margin-l-1">Back</span>
-      </v-btn>
+      <router-link :to="vehicleDetail.getLastRoute">
+        <v-btn
+          :icon="$vuetify.breakpoint.mdAndUp"
+          :x-small="$vuetify.breakpoint.mdAndUp"
+          :small="$vuetify.breakpoint.smAndDown"
+          plain
+          color="primary"
+        >
+          <CUIcon>arrow_left</CUIcon>
+          <span v-if="true" class="margin-l-1">Back</span>
+        </v-btn>
+      </router-link>
     </template>
     <template #title>{{ headerText }}</template>
     <template #buttons>
@@ -116,6 +117,8 @@ import VehicleDetailImages from '@/components/VehicleDetailImages.vue'
 import vehicleDetail from '@/store/modules/vehicleDetail'
 import vehicle from '@/services/vehicle'
 import { AxiosResponse } from 'axios'
+import app from '@/store/modules/app'
+import { RawLocation } from 'vue-router/types/router'
 
 @Component({
   components: {

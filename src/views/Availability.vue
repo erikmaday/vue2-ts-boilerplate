@@ -433,7 +433,6 @@ export default class Availability extends Vue {
   onCalendarDisplayDateChange(newDate: dayjs.Dayjs): void {
     this.datePickerDate = newDate.format('MM/DD/YYYY')
     const startDate = this.startOfWeek.valueOf()
-    const endDate = this.endOfWeek.valueOf()
 
     // Each interval will be in increments of weeks for now,
     // so we can assume any intersection is a full intersection
@@ -441,7 +440,7 @@ export default class Availability extends Vue {
     // in non-weekly intervals
     const dataIsLoadedForNewInterval = this.loadedDateIntervals.intersect_any([
       startDate,
-      endDate,
+      startDate,
     ])
     if (!dataIsLoadedForNewInterval) {
       this.getDispatchDataForDates(

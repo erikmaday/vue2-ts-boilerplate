@@ -7,7 +7,7 @@
     <DriverAssignmentIcons
       :reservation="row"
       :enable-mobile-view="true"
-      v-if="!needsAcceptance && !isMobile"
+      v-if="!needsAcceptance || !isMobile"
     />
   </div>
 </template>

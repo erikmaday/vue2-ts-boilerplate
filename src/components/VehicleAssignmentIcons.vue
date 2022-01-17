@@ -209,10 +209,7 @@ export default class VehicleAssignmentIcons extends Vue {
     const line = (str: string): string => `${start}${str}${end}`
 
     if (this.needsAcceptance) {
-      return (
-        line('No Vehicles Can Be Assigned') +
-        line('Until A Booking Is Accepted')
-      )
+      return line('Accept the booking to start') + line('assigning vehicles')
     }
 
     if (this.computedVehicleAssignments?.length) {

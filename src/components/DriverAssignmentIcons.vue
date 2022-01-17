@@ -238,9 +238,7 @@ export default class DriverAssignmentIcons extends Vue {
     const line = (str: string): string => `${start}${str}${end}`
 
     if (this.needsAcceptance) {
-      return (
-        line('No Drivers Can Be Assigned') + line('Until A Booking Is Accepted')
-      )
+      return line('Accept the booking to start') + line('assigning drivers')
     }
 
     if (this.computedVehicleAssignments?.length) {

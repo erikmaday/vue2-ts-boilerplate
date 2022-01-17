@@ -1,7 +1,7 @@
 <template>
   <v-row dense class="font-12 align-end">
     <v-col>
-      1/3 Accept the Job
+      1/3 Accept or Reject the Job
       <div
         class="h-8 w-full"
         :class="{

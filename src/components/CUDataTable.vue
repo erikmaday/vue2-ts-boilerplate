@@ -7,7 +7,6 @@
     }"
   >
     <v-data-table
-      :hide-default-header="hideDefaultHeader"
       :headers="columns"
       :items="items"
       :server-items-length="serverItemsLength"
@@ -174,12 +173,6 @@ export default class CUDataTable extends Vue {
     default: 'No data found',
   })
   noDataText!: string
-  @Prop({
-    type: Boolean,
-    required: false,
-    default: false,
-  })
-  hideDefaultHeader!: boolean
 
   get isMobile(): boolean {
     switch (this.mobileViewOnBreakpoint) {

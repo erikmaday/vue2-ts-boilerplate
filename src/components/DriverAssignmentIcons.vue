@@ -53,6 +53,7 @@
         outlined
         class="w-full margin-t-4 margin-b-n4"
         @click="openDialogue"
+        v-show="!needsAcceptance"
       >
         Modify Assignments
       </v-btn>

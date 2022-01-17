@@ -9,7 +9,7 @@
         <CUDatePicker
           :value="datePickerDate"
           @input="updateDatePickerDate"
-          dense
+          dense="true"
           readonly
         />
         <v-btn

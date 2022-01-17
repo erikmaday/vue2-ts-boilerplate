@@ -28,6 +28,7 @@
       :loading="loading"
       :server-items-length="serverItemsLength"
       :no-data-text="noDataText"
+      :hide-default-header="$vuetify.breakpoint.xs"
       @update:options="load"
       @pagination="options = $event"
       @refresh="load"

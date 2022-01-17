@@ -309,7 +309,7 @@ export default class UsersDetail extends Vue {
       app.getLastRoute?.name === 'users.view' ||
       app.getLastRoute?.name === 'users.add'
     ) {
-      lastRoute = { name: 'users' }
+      return { name: 'users' }
     }
     return lastRoute
   }

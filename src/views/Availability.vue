@@ -478,7 +478,7 @@ export default class Availability extends Vue {
     endDatetime: string
   ): Promise<void> {
     const dates: AvailabilityGetRequest = { startDatetime, endDatetime }
-    const res = await availability.getData(dates)
+    const res = await availability.getData(dates, true)
 
     for (const reservation of res.data.reservations) {
       const availabilityBlock =

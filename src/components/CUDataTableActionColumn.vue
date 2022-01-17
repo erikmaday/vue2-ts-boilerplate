@@ -1,5 +1,5 @@
 <template>
-  <div class="align-center d-flex flex-grow-1">
+  <div class="align-center d-flex flex-grow-1" :class="{ 'w-full': isMobile }">
     <template v-if="detailAction">
       <template v-if="!isDetailTable">
         <v-btn

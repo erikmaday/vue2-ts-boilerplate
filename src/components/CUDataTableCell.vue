@@ -2,7 +2,7 @@
   <!-- eslint-disable vue/valid-v-slot -->
   <div
     :class="
-      isMobile ? 'd-flex justify-space-between align-center margin-y-1' : ''
+      isMobile ? 'd-flex flex-column align-start margin-y-1' : ''
     "
   >
     <h4
@@ -111,7 +111,7 @@
       />
     </template>
     <template v-else>
-      <span class="white-space-pre">{{ computedCellItemText }}</span>
+      <span>{{ computedCellItemText }}</span>
     </template>
   </div>
 </template>

@@ -37,9 +37,9 @@
       </v-tooltip>
     </template>
     <template v-else>
-      <div class="d-flex justify-space-between">
+      <div class="d-flex flex-column ">
         <h4>Vehicle Assignments</h4>
-        <div class="text-right">
+        <div class="text-left">
           <span v-html="vehicleAssignmentMobileBody"></span>
         </div>
       </div>

@@ -30,6 +30,18 @@
         </v-chip>
       </v-col>
     </v-row>
+    <v-row v-if="loading">
+      <v-col
+        v-for="bookingCardSkeletonIndex in 1"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+        :key="`booking-card-skeleton-${bookingCardSkeletonIndex}`"
+      >
+        <BookingCardSkeletonLoader />
+      </v-col>
+    </v-row>
     <v-row v-if="reservationsToDisplay.length">
       <v-col
         v-for="(reservation, reservationIndex) in reservationsToDisplay"
@@ -52,6 +64,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import BookingCard from '@/components/BookingCard.vue'
+import BookingCardSkeletonLoader from '@/components/BookingCardSkeletonLoader.vue'
 import Pagination from '@/components/Pagination.vue'
 import TodayNotFound from '@/components/TodayNotFound.vue'
 
@@ -72,6 +85,7 @@ const MAX_RESULTS = 24
     BookingCard,
     TodayNotFound,
     Pagination,
+    BookingCardSkeletonLoader,
   },
 })
 export default class TodayBookings extends Vue {
@@ -96,6 +110,8 @@ export default class TodayBookings extends Vue {
       xl: 4,
     },
   }
+
+  loading = false
 
   get reservationsToDisplay(): Reservation[] {
     const startIndex =
@@ -164,15 +180,18 @@ export default class TodayBookings extends Vue {
   }
 
   async mounted(): Promise<void> {
+    this.loading = true
     this.getAllCounts()
     const { filters } = this.buildFilters()
     this.getBookings(filters)
   }
 
   async getBookings(filters: any): Promise<void> {
+    this.loading = true
     this.params.filters = filters.asQueryParams()
     const reservationResponse = await reservation.tableView(this.params)
     this.reservations = reservationResponse.data.resultList
+    // this.loading = false
   }
 
   getAllCounts(): void {

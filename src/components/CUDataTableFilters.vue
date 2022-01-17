@@ -165,7 +165,6 @@ import deepPluckRef from 'deep-pluck-ref'
 import {
   PredefinedFilter,
   TableViewChip,
-  TableViewChipValue,
   TableViewFilter,
   TableViewTab,
 } from '@/models/TableView'
@@ -319,7 +318,7 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
-  setChipFilter(chip: TableViewChipValue): void {
+  setChipFilter(chip: TableViewChip): void {
     const exists = !!this.isFilterActive(chip)
 
     if (!exists) {
@@ -334,12 +333,12 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
-  unsetChipFilter(chip: TableViewChipValue): void {
+  unsetChipFilter(chip: TableViewChip): void {
     this.unsetChipChildFilters(chip)
     this.unsetFilter(chip)
   }
 
-  unsetChipChildFilters(chip: TableViewChipValue): void {
+  unsetChipChildFilters(chip: TableViewChip): void {
     const chipFilter = this.tableFilterList.find(
       (f) => f.column._t_id === chip._t_id
     )
@@ -372,7 +371,7 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
-  unsetFilter(column: DataTableColumn | TableViewChipValue): void {
+  unsetFilter(column: DataTableColumn | TableViewChip): void {
     const filter = this.tableFilterList.find(
       (f) => f.column._t_id === column._t_id
     )

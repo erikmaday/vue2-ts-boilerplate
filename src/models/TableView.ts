@@ -29,11 +29,6 @@ export interface TableViewTab extends TableViewFilter {
 export interface TableViewChip {
   _t_id: string
   text: string
-  values: TableViewChipValue
-}
-
-export interface TableViewChipValue {
-  text: string
   values: TableViewFilter[]
 }
 

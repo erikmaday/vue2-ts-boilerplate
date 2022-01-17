@@ -4,8 +4,9 @@
       sidebar-width="404"
       sidebar-color="white"
       main-color="gray-header"
+      :disable-parent-padding="$vuetify.breakpoint.xs"
     >
-      <template v-slot:navigation>
+      <template v-if="$vuetify.breakpoint.smAndUp" v-slot:navigation>
         <v-container class="padding-x-2 padding-t-12">
           <v-col class="padding-x-0" align="center">
             <BusJoinUs class="w-220 margin-b-9" />
@@ -52,7 +53,7 @@
         </v-container>
       </template>
       <template v-slot:default>
-        <v-container>
+        <v-container :class="{ 'padding-a-0': $vuetify.breakpoint.xs }">
           <v-col cols="12" align="center" class="margin-b-8">
             <h1 class="font-30">CharterUP for Operators</h1>
             <p class="font-18">
@@ -61,10 +62,14 @@
           </v-col>
           <v-form
             ref="form"
-            class="background-white max-w-536 margin-x-auto margin-y-8 padding-x-15 padding-y-10 border-solid border-1 border-gray-border border-radius-5 shadow"
+            class="background-white margin-x-auto margin-y-8 padding-y-10 border-solid max-w-536 border-1 border-gray-border border-radius-5 shadow"
+            :class="{
+              'padding-x-8': $vuetify.breakpoint.xs,
+              'padding-x-15': $vuetify.breakpoint.smAndUp,
+            }"
           >
             <v-row justify="center">
-              <v-col sm="10" class="padding-a-0">
+              <v-col cols="12" sm="10" class="padding-a-0">
                 <CUTextField
                   type="email"
                   :disabled="true"
@@ -73,7 +78,7 @@
                   class="font-14"
                 />
               </v-col>
-              <v-col sm="10" class="padding-a-0">
+              <v-col cols="12" sm="10" class="padding-a-0">
                 <CUTextField
                   type="password"
                   :rules="[
@@ -84,7 +89,7 @@
                   class="font-14"
                 />
               </v-col>
-              <v-col sm="10" class="padding-a-0">
+              <v-col cols="12" sm="10" class="padding-a-0">
                 <CUTextField
                   type="password"
                   v-model="confirmPassword"
@@ -97,7 +102,7 @@
                   validate-on-blur
                 />
               </v-col>
-              <v-col sm="10" class="padding-a-0" align="center">
+              <v-col cols="12" sm="10" class="padding-a-0" align="center">
                 <v-btn
                   small
                   color="primary"

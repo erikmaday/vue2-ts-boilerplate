@@ -10,7 +10,7 @@
           color="primary"
         >
           <CUIcon>arrow_left</CUIcon>
-          <span v-if="true" class="margin-l-1">Back</span>
+          <span v-if="$vuetify.breakpoint.xs" class="margin-l-1">Back</span>
         </v-btn>
       </router-link>
     </template>

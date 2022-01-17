@@ -1,7 +1,7 @@
 <template>
   <Detail>
     <template #back>
-      <router-link :to="vehicleDetail.lastRoute">
+      <router-link :to="lastRoute">
         <v-btn
           :icon="$vuetify.breakpoint.mdAndUp"
           :x-small="$vuetify.breakpoint.mdAndUp"
@@ -303,9 +303,9 @@ export default class UsersDetail extends Vue {
   }
 
   get lastRoute(): RawLocation {
-    let lastRoute = app.getLastRoute
+    const lastRoute = app.getLastRoute
     if (
-      !app.getLastRoute?.name ||
+      !app.getLastRoute ||
       app.getLastRoute?.name === 'users.view' ||
       app.getLastRoute?.name === 'users.add'
     ) {

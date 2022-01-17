@@ -71,11 +71,11 @@ import { sort } from '@/utils/sort'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { TableViewFilterChip } from '@/models/TableView'
+import { TodayFilterChip } from '@/models/TableView'
 
 @Component({ components: { MarketplaceCard, TodayNotFound, Pagination } })
 export default class TodayMarketplace extends Vue {
-  chips: { [key: string]: TableViewFilterChip } = {
+  chips: { [key: string]: TodayFilterChip } = {
     createdToday: {
       label: 'Created Today',
       count: 0,
@@ -247,7 +247,7 @@ export default class TodayMarketplace extends Vue {
     return Object.values(bundleMap)
   }
 
-  handleFilterClick(filterChip: TableViewFilterChip): void {
+  handleFilterClick(filterChip: TodayFilterChip): void {
     filterChip.active = !filterChip.active
     this.setActiveFilters()
   }

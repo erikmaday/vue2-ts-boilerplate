@@ -1,4 +1,5 @@
 import { DataTableColumn } from './DataTableColumn'
+import { TextValue } from './TextValue'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface TableViewParameters {
@@ -25,7 +26,13 @@ export interface TableViewTab extends TableViewFilter {
   isLocked?: boolean
 }
 
-export interface TableViewFilterChip {
+export interface TableViewChip {
+  _t_id: string
+  text: string
+  values: TableViewFilter[]
+}
+
+export interface TodayFilterChip {
   label: string
   count: number
   filters?: TableViewFilter[]
@@ -33,7 +40,7 @@ export interface TableViewFilterChip {
   buildFilters?: any
 }
 
-export interface ChipFilterState {
+export interface TodayChipFilterState {
   filters: any
   filterParentOr: any
 }
@@ -41,7 +48,7 @@ export interface ChipFilterState {
 export interface PredefinedFilter {
   id?: string
   _t_id: string
-  active?: boolean 
+  active?: boolean
   text: string
   refreshOnSelect: boolean
   controls: PredefinedFilterControl[]

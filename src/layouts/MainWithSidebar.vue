@@ -42,7 +42,7 @@
               </div>
             </template>
           </v-row>
-          <v-container>
+          <v-container :class="{ 'padding-a-0': disableParentPadding }">
             <v-row justify="center">
               <slot />
             </v-row>
@@ -66,5 +66,8 @@ export default class MainWithSidebar extends Vue {
 
   @Prop({ default: 'white' })
   mainColor!: string
+
+  @Prop({ default: false })
+  disableParentPadding!: boolean
 }
 </script>

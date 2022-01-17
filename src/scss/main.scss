@@ -172,6 +172,8 @@
     }
     input[type='password'] {
       font-size: 24px;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
     &.v-input--is-disabled fieldset {
@@ -509,3 +511,10 @@
     }
   }
 }
+
+// @media only screen and (max-width: 960px) {
+//   input[type='password'] {
+//     padding: 0 !important;
+//     margin: 0 !important;
+//   }
+// }

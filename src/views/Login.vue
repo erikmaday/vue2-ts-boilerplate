@@ -112,3 +112,9 @@ export default class Login extends Vue {
   }
 }
 </script>
+// <style lang="scss" scoped>
+//   .v-application.theme--light .v-text-field input[type=password] {
+//     padding-bottom: 3px;
+//     font-size: 12px;
+//   }
+// </style>

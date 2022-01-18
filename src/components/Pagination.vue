@@ -1,14 +1,22 @@
 <template>
   <div class="d-inline-flex">
+    <CUIcon
+      @click="page(-1)"
+      :hidden="pagesCount <= totalVisible"
+      :disabled="pagesCount === 0"
+    >
+      arrow_left
+    </CUIcon>
     <PaginationDot
-      v-for="(page, pageIndex) in pagesCount"
-      :key="`page-${pageIndex}`"
-      :active="activeIndex === pageIndex"
+      v-for="(page, pageIndex) in visibleItems"
+      :key="`page-${page}-${pageIndex}`"
+      :active="value.currentPage === page"
       :active-color="activeColor"
       :inactive-color="inactiveColor"
       :hover-color="hoverColor"
       @click="handlePageChange(page)"
     />
+    <CUIcon @click="page(1)" :hidden="pagesCount <= totalVisible">arrow_right</CUIcon>
   </div>
 </template>
 
@@ -29,6 +37,10 @@ export default class Pagination extends Vue {
   @Prop({ default: 'primary' }) readonly activeColor?: string
   @Prop({ default: 'gray-mid-light' }) readonly hoverColor?: string
   @Prop({ default: 'gray-border' }) readonly inactiveColor?: string
+  @Prop({ default: 5 }) readonly totalVisible?: number
+
+  maxButtons = 0
+  selected = null
 
   @Watch('breakpointName', { immediate: true })
   didBreakpointChange(breakpoint: string): void {
@@ -61,14 +73,61 @@ export default class Pagination extends Vue {
     return this.$vuetify.breakpoint.name
   }
 
-  get activeIndex(): number {
-    return this.value.currentPage - 1
+  get visibleItems(): (string | number)[] {
+    /* a modified version of a function implemented in v-pagination from here: https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/components/VPagination/VPagination.ts */
+    const maxLength = Math.min(
+      Math.max(0, this.totalVisible) || this.pagesCount,
+      Math.max(0, this.maxButtons) || this.pagesCount,
+      this.pagesCount
+    )
+    if (this.pagesCount <= maxLength) {
+      return this.range({ from: 1, to: this.pagesCount })
+    }
+
+    const even = maxLength % 2 === 0 ? 1 : 0
+    const left = Math.floor(maxLength / 2)
+    const right = this.pagesCount - left + 1 + even
+
+    if (this.value.currentPage > left && this.value.currentPage < right) {
+      const start = this.value.currentPage - left
+      const end = this.value.currentPage + left - even
+
+      return this.range({ from: start, to: end })
+    } else if (this.value.currentPage >= right) {
+      const start = this.pagesCount - this.totalVisible + 1
+      return this.range({ from: start, to: this.pagesCount })
+    } else {
+      return this.range({ from: 1, to: this.totalVisible })
+    }
+  }
+
+  range({ from, to }: { from: number; to: number }): number[] {
+    const range = []
+
+    from = from > 0 ? from : 1
+
+    for (let i = from; i <= to; i++) {
+      range.push(i)
+    }
+
+    return range
   }
 
   handlePageChange(page: number): void {
     const valueCopy = deepClone(this.value)
     valueCopy.currentPage = page
     this.$emit('change', valueCopy)
+  }
+
+  page(direction: number): void {
+    if (this.value.currentPage + direction < 1) {
+      return
+    }
+    if (this.value.currentPage + direction > this.pagesCount) {
+      return
+    }
+
+    this.handlePageChange(this.value.currentPage + direction)
   }
 }
 </script>

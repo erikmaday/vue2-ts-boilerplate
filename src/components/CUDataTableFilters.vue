@@ -368,6 +368,9 @@ export default class CUDataTableFilters extends Vue {
         this.filters.and(newFilter).add(newFilter)
         this.$emit('update:filters', this.filters)
       }
+      if (this.isOpen) {
+        EventBus.$emit('add-filter')
+      }
     }
   }
 
@@ -391,6 +394,9 @@ export default class CUDataTableFilters extends Vue {
     }
     this.unsetPeerFilters(filter)
     this.filters.remove(filter)
+    if (this.isOpen) {
+      EventBus.$emit('remove-filter')
+    }
     this.$emit('update:filters', this.filters)
     this.$nextTick(() => {
       this.tableFilterList = this.tableFilterList.filter(

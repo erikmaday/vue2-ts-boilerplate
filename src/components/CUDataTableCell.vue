@@ -21,7 +21,6 @@
         :is="column.component"
         :row="row"
         :actions="actions"
-        :is-mobile="isMobile"
         v-on="$listeners"
       />
     </template>

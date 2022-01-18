@@ -32,7 +32,7 @@
             </v-chip>
           </v-col>
         </v-row>
-        <v-row v-if="loading">
+        <v-row v-if="showLoaders">
           <v-col
             v-for="skeletonCardIndex in skeletonCardCount"
             cols="12"
@@ -88,6 +88,7 @@ import { sort } from '@/utils/sort'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { TodayFilterChip } from '@/models/TableView'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -183,6 +184,10 @@ export default class TodayMarketplace extends Vue {
       return this.tripBundlesToDisplay.length
     }
     return this.pagination.pageSize
+  }
+
+  get showLoaders(): boolean {
+    return this.loading && app.getAreLoadersEnabled
   }
 
   get tripBundlesToDisplay(): TableViewTrip[][] {

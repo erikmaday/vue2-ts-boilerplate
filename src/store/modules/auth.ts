@@ -53,7 +53,7 @@ class AuthModule extends VuexModule {
       this.token = response.data.token
       this.user = response.data.user
       this.userId = response.data.user.userId
-      this.isTokenSet = true
+      this.isTokenSet = !!response.data.token
       registerBearerToken(response.data.token)
     }
   }
@@ -62,7 +62,7 @@ class AuthModule extends VuexModule {
   autoLogin() {
     this.user = load('user')
     this.token = load('token')
-    this.isTokenSet = true
+    this.isTokenSet = !!load('token')
     if (this.token) {
       registerBearerToken(this.token)
     }
@@ -110,6 +110,21 @@ class AuthModule extends VuexModule {
     if (response.status === 200) {
       this.user = response.data
       save('user', response.data)
+    }
+  }
+
+  @Action
+  refreshUser() {
+    this.registerToken()
+    this.getUserDetail()
+    this.getUserProfile()
+  }
+
+  @Action
+  registerToken() {
+    const token = load('token')
+    if (token) {
+      registerBearerToken(token)
     }
   }
 }

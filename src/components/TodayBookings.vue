@@ -30,7 +30,7 @@
         </v-chip>
       </v-col>
     </v-row>
-    <v-row v-if="loading">
+    <v-row v-if="showLoaders">
       <v-col
         v-for="bookingCardSkeletonIndex in skeletonCardCount"
         cols="12"
@@ -78,6 +78,7 @@ import utc from 'dayjs/plugin/utc'
 import reservationFilters from '@/data/reservationFilters'
 import { TodayFilterChip, TodayChipFilterState } from '@/models/TableView'
 import deepClone from '@/utils/deepClone'
+import app from '@/store/modules/app'
 
 const MAX_RESULTS = -1
 @Component({
@@ -118,6 +119,10 @@ export default class TodayBookings extends Vue {
       return this.reservationsToDisplay.length
     }
     return this.pagination.pageSize
+  }
+
+  get showLoaders(): boolean {
+    return this.loading && app.getAreLoadersEnabled
   }
 
   get reservationsToDisplay(): Reservation[] {

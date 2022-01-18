@@ -2,17 +2,17 @@
   <v-card class="border-radius-2x">
     <v-card-text class="padding-a-4">
       <CUSkeletonLoader
-        height="18px"
+        type="text"
         width="47.5%"
         style="margin-right: 5%"
         :classes="['d-inline-flex', 'border-radius-root']"
       />
       <CUSkeletonLoader
-        height="18px"
+        type="text"
         width="47.5%"
         :classes="['d-inline-flex', 'border-radius-root']"
       />
-      <CUSkeletonLoader height="16px" />
+      <CUSkeletonLoader type="detail-text" />
       <div class="d-inline-flex margin-t-4 margin-b-2">
         <TripAssignmentIconsSkeletonLoader class="margin-r-4" />
         <TripAssignmentIconsSkeletonLoader />

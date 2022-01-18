@@ -56,7 +56,6 @@ export default class CUSkeletonLoader extends Vue {
 <style lang="scss" scoped>
 div {
   background-color: $gray-border;
-  // border-radius: $border-radius-root;
   position: relative;
   overflow: hidden;
   border-radius: $border-radius-root;

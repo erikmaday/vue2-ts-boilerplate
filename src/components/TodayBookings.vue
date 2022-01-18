@@ -32,7 +32,7 @@
     </v-row>
     <v-row v-if="loading">
       <v-col
-        v-for="bookingCardSkeletonIndex in 1"
+        v-for="bookingCardSkeletonIndex in skeletonCardCount"
         cols="12"
         sm="6"
         md="4"
@@ -42,7 +42,7 @@
         <BookingCardSkeletonLoader />
       </v-col>
     </v-row>
-    <v-row v-if="reservationsToDisplay.length">
+    <v-row v-else-if="reservationsToDisplay.length">
       <v-col
         v-for="(reservation, reservationIndex) in reservationsToDisplay"
         cols="12"
@@ -79,7 +79,7 @@ import reservationFilters from '@/data/reservationFilters'
 import { TodayFilterChip, TodayChipFilterState } from '@/models/TableView'
 import deepClone from '@/utils/deepClone'
 
-const MAX_RESULTS = 24
+const MAX_RESULTS = -1
 @Component({
   components: {
     BookingCard,
@@ -112,6 +112,13 @@ export default class TodayBookings extends Vue {
   }
 
   loading = false
+
+  get skeletonCardCount(): number {
+    if (this.reservationsToDisplay.length) {
+      return this.reservationsToDisplay.length
+    }
+    return this.pagination.pageSize
+  }
 
   get reservationsToDisplay(): Reservation[] {
     const startIndex =
@@ -191,7 +198,7 @@ export default class TodayBookings extends Vue {
     this.params.filters = filters.asQueryParams()
     const reservationResponse = await reservation.tableView(this.params)
     this.reservations = reservationResponse.data.resultList
-    // this.loading = false
+    this.loading = false
   }
 
   getAllCounts(): void {

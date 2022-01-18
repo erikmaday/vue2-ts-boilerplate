@@ -18,7 +18,15 @@
         <v-spacer />
         <v-col class="shrink">
           <v-btn color="primary" small @click="isFilterDialogOpen = true">
-            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+            <v-badge
+              :content="filterCount"
+              :value="filterCount"
+              overlap
+              color="red"
+              offset-x="20"
+            >
+              <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+            </v-badge>
             Filter
           </v-btn>
         </v-col>
@@ -91,6 +99,7 @@ export default class Bookings extends Vue {
   isDialogOpen = false
   rejectNote = ''
   currentReservationId = -1
+  filterCount = 0
 
   mounted(): void {
     EventBus.$on('reject-booking', (e) => {
@@ -101,6 +110,14 @@ export default class Bookings extends Vue {
     EventBus.$on('accept-booking', async (e) => {
       this.currentReservationId = e
       this.accept(e)
+    })
+
+    EventBus.$on('add-filter', (e) => {
+      this.filterCount++
+    })
+
+    EventBus.$on('remove-filter', (e) => {
+      this.filterCount--
     })
   }
 

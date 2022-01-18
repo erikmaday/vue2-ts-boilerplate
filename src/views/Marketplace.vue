@@ -16,7 +16,15 @@
         <v-spacer />
         <v-col class="shrink">
           <v-btn color="primary" small @click="isFilterDialogOpen = true">
-            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+            <v-badge
+              :content="filterCount"
+              :value="filterCount"
+              overlap
+              color="red"
+              offset-x="20"
+            >
+              <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+            </v-badge>
             Filter
           </v-btn>
         </v-col>
@@ -42,6 +50,7 @@ import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
 import { datePredefined } from '@/data/predefined'
+import { EventBus } from '@/utils/eventBus'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Marketplace extends Vue {
@@ -49,6 +58,17 @@ export default class Marketplace extends Vue {
   isFilterDialogOpen = false
   sorts: any = sort()
   filters: any = filter()
+  filterCount = 0
+
+  mounted(): void {
+    EventBus.$on('add-filter', (e) => {
+      this.filterCount++
+    })
+
+    EventBus.$on('remove-filter', (e) => {
+      this.filterCount--
+    })
+  }
 
   columns: DataTableColumn[] = [
     {

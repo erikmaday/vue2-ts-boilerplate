@@ -17,7 +17,15 @@
       </v-col>
       <v-col class="shrink">
         <v-btn color="primary" small @click="isFilterDialogOpen = true">
-          <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+          <v-badge
+            :content="filterCount"
+            :value="filterCount"
+            overlap
+            color="red"
+            offset-x="20"
+          >
+            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
+          </v-badge>
           Filter
         </v-btn>
       </v-col>
@@ -46,12 +54,24 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { AxiosResponse } from 'axios'
 import { RawLocation } from 'vue-router'
+import { EventBus } from '@/utils/eventBus'
 
 @Component({
   components: { Main, CUDataTable, CUCollectionTable, CUDataTableFilters },
 })
 export default class Users extends Vue {
   isFilterDialogOpen = false
+  filterCount = 0
+
+  mounted(): void {
+    EventBus.$on('add-filter', (e) => {
+      this.filterCount++
+    })
+
+    EventBus.$on('remove-filter', (e) => {
+      this.filterCount--
+    })
+  }
 
   columns: DataTableColumn[] = [
     {

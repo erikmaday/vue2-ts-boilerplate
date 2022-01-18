@@ -5,9 +5,9 @@
     }"
   >
     <DriverAssignmentIcons
-      v-if="!needsAcceptance"
       :reservation="row"
       :enable-mobile-view="true"
+      v-if="!needsAcceptance || !isMobile"
     />
   </div>
 </template>
@@ -20,6 +20,7 @@ import { ReferralStatus } from '@/utils/enum'
 @Component({ components: { DriverAssignmentIcons } })
 export default class BookingsListDriverAssignments extends Vue {
   @Prop({ required: false }) readonly row: Reservation
+  @Prop({ required: false }) readonly isMobile: boolean
 
   get needsAcceptance(): boolean {
     return this.row.referralStatus !== ReferralStatus.Accepted

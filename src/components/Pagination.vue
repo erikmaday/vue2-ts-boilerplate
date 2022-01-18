@@ -9,8 +9,8 @@
       <CUIcon>arrow_left</CUIcon>
     </button>
     <PaginationDot
-      v-for="(page, pageIndex) in visibleItems"
-      :key="`page-${page}-${pageIndex}`"
+      v-for="(page, dotIndex) in visibleItems"
+      :key="`page-${page}-dot-${dotIndex}`"
       :active="value.currentPage === page"
       :active-color="activeColor"
       :inactive-color="inactiveColor"
@@ -47,9 +47,6 @@ export default class Pagination extends Vue {
   @Prop({ default: 'gray-border' }) readonly inactiveColor?: string
   @Prop({ default: 5 }) readonly totalVisible?: number
 
-  maxButtons = 0
-  selected = null
-
   @Watch('breakpointName', { immediate: true })
   didBreakpointChange(breakpoint: string): void {
     if (this.value.breakpointSizes) {
@@ -82,7 +79,10 @@ export default class Pagination extends Vue {
   }
 
   get visibleItems(): (string | number)[] {
-    /* a modified version of a function implemented in v-pagination from here: https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/components/VPagination/VPagination.ts */
+    /* 
+    a modified version of a function implemented in v-pagination from here:
+    https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/components/VPagination/VPagination.ts
+    */
     if (this.pagesCount <= this.totalVisible) {
       return this.range({ from: 1, to: this.pagesCount })
     }

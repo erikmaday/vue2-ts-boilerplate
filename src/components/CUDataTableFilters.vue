@@ -396,12 +396,13 @@ export default class CUDataTableFilters extends Vue {
       this.tableFilterList = this.tableFilterList.filter(
         (f) => f.column._t_id !== filter.column._t_id
       )
-      const nextDefaultFilter = this.tableFilterList.find(
-        (f) => !f.hideOnFilterBar
-      )
-      if (nextDefaultFilter && nextDefaultFilter.column) {
-        this.setFilter(nextDefaultFilter.column)
-      }
+      // This functionality is not needed at this time and causes issues with removing filters
+      // const nextDefaultFilter = this.tableFilterList.find(
+      //   (f) => !f.hideOnFilterBar
+      // )
+      // if (nextDefaultFilter && nextDefaultFilter.column) {
+      //   this.setFilter(nextDefaultFilter.column)
+      // }
       this.handleFilterRemoved()
     })
   }

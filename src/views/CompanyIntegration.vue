@@ -1,12 +1,17 @@
 <template>
-  <div>
+  <div
+    class="w-full max-w-500"
+    :class="{
+      'text-center d-flex flex-column align-center': $vuetify.breakpoint.xs,
+    }"
+  >
     <h1>Accounts Integration</h1>
-    <template v-for="[key, val] in Object.entries(credentialMap)">    
+    <template v-for="[key, val] in Object.entries(credentialsMap)">
       <CompanyIntegrationBlock
         :key="`integration-block-${key}`"
         class="margin-y-4"
         v-bind="val"
-        :typeId="key"
+        :eld-credential-type-id="key"
         @input="val.accessToken = $event"
       />
     </template>
@@ -22,32 +27,24 @@ import deepClone from '@/utils/deepClone'
 @Component({ components: { CompanyIntegrationBlock } })
 export default class CompanyIntegration extends Vue {
   credentials: EldCredential[] = []
-  
+  credentialsMap = { 2: { accessToken: '' }, 3: { accessToken: '' } }
 
-  async mounted() {
-    const res = await credentials.getAll()
-    this.credentials = res.data.eldCredentials
+  async mounted(): Promise<void> {
+    this.initializeCredentials()
   }
 
-  get credentialMap(): any {
+  async initializeCredentials(): Promise<void> {
+    const res = await credentials.getAll()
+    this.credentials = res.data.eldCredentials
 
-    const emptyBlock = {
-      accessToken: '',
-    }
-
-    // def a cleaner way to do this
-    const map = { 2: deepClone(emptyBlock), 3: deepClone(emptyBlock) }
-
-    for (const key in map) {
+    for (const key in this.credentialsMap) {
       const matchingCredential = this.credentials.find(
         (c) => c.eldCredentialTypeId === Number(key)
       )
       if (matchingCredential) {
-        map[key] = deepClone(matchingCredential)
+        this.credentialsMap[key] = deepClone(matchingCredential)
       }
     }
-    return map
   }
-
 }
 </script>

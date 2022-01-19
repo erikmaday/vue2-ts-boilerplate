@@ -1,7 +1,7 @@
 import SamsaraLogo from '@/assets/images/samsara-logo.png'
 import KeepTruckinLogo from '@/assets/images/keep-truckin-logo.png'
-import SamsaraLogoMobile from '@/assets/images/samsara-mobile-logo.jpeg'
-import KeepTruckingLogoMobile from '@/assets/images/keep-truckin-mobile-logo.jpeg'
+import SamsaraLogoMobile from '@/assets/images/samsara-mobile-logo.png'
+import KeepTruckingLogoMobile from '@/assets/images/keep-truckin-mobile-logo.png'
 
 export const eldInformation = {
   2: {

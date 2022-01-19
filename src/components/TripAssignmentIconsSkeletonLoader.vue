@@ -32,9 +32,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import CUSkeletonLoader from '@/components/CUSkeletonLoader.vue'
 
-@Component({ components: { CUSkeletonLoader } })
+@Component
 export default class TripAssignmentIconsSkeletonLoader extends Vue {
   @Prop({ required: false, default: false }) readonly enableMobileView: boolean
   @Prop({ required: false }) readonly showLabel: boolean

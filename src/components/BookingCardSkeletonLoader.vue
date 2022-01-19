@@ -35,11 +35,10 @@
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import CUSkeletonLoader from '@/components/CUSkeletonLoader.vue'
 import TripAssignmentIconsSkeletonLoader from '@/components/TripAssignmentIconsSkeletonLoader.vue'
 
 @Component({
-  components: { CUSkeletonLoader, TripAssignmentIconsSkeletonLoader },
+  components: { TripAssignmentIconsSkeletonLoader },
 })
 export default class BookingCardSkeletonLoader extends Vue {}
 </script>

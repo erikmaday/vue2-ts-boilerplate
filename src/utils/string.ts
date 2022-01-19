@@ -170,9 +170,13 @@ export const getReservationPickupDestinationCities = (
     ? reservation.pickupLocation.split(',')[0]
     : cityFromAddressName(reservation.firstPickupAddressName)
 
-  const dropoff = reservation.firstDropoffAddressName
-    ? cityFromAddressName(reservation.firstDropoffAddressName)
-    : pickup
+  let dropoff
+  if (reservation.firstDropoffAddressName) {
+    dropoff = cityFromAddressName(reservation.firstDropoffAddressName)
+  }
+  if (!dropoff) {
+    dropoff = pickup
+  }
 
   return { pickup, dropoff }
 }

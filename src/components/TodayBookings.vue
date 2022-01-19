@@ -1,13 +1,20 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row class="align-center">
       <h3
         class="col shrink white-space-nowrap font-book font-weight-400 font-20"
       >
         Your Bookings
       </h3>
       <v-spacer />
+      <CUSkeletonLoader
+        v-if="showCountLoaders"
+        type="detail-text"
+        width="160px"
+        :classes="['col col-auto']"
+      />
       <router-link
+        v-else
         class="col shrink white-space-nowrap text-primary font-14 font-medium text-decoration-underline cursor-pointer"
         :to="{ name: 'bookings' }"
       >
@@ -15,7 +22,18 @@
       </router-link>
     </v-row>
     <v-row>
-      <v-col cols="12">
+      <v-col v-if="showCountLoaders" cols="12">
+        <CUSkeletonLoader
+          height="32px"
+          width="120px"
+          v-for="chipIndex in Object.values(chips).length"
+          type="chip"
+          :classes="['d-inline-flex', 'margin-r-2', 'cursor-pointer']"
+          :key="`booking-filter-skeleton-loader-${chipIndex}`"
+          style="margin-bottom: 1px"
+        />
+      </v-col>
+      <v-col v-else cols="12">
         <v-chip
           v-for="(filter, filterIndex) in Object.values(chips)"
           :color="filter.active ? 'primary' : 'gray-border'"
@@ -30,7 +48,7 @@
         </v-chip>
       </v-col>
     </v-row>
-    <v-row v-if="showLoaders">
+    <v-row v-if="showCardLoaders">
       <v-col
         v-for="bookingCardSkeletonIndex in skeletonCardCount"
         cols="12"
@@ -56,7 +74,8 @@
     </v-row>
     <TodayNotFound v-else message="No bookings found" icon="event_busy" />
     <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
-      <Pagination v-model="pagination" :items="reservations" />
+      <PaginationSkeletonLoader v-if="showCardLoaders" style="margin: 6px 0" />
+      <Pagination v-else v-model="pagination" :items="reservations" />
     </v-row>
   </v-container>
 </template>
@@ -66,6 +85,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import BookingCard from '@/components/BookingCard.vue'
 import BookingCardSkeletonLoader from '@/components/BookingCardSkeletonLoader.vue'
 import Pagination from '@/components/Pagination.vue'
+import PaginationSkeletonLoader from '@/components/PaginationSkeletonLoader.vue'
 import TodayNotFound from '@/components/TodayNotFound.vue'
 
 import { Reservation } from '@/models/dto'
@@ -87,6 +107,7 @@ const MAX_RESULTS = -1
     TodayNotFound,
     Pagination,
     BookingCardSkeletonLoader,
+    PaginationSkeletonLoader,
   },
 })
 export default class TodayBookings extends Vue {
@@ -112,7 +133,8 @@ export default class TodayBookings extends Vue {
     },
   }
 
-  loading = false
+  cardsLoading = false
+  countsLoading = false
 
   get skeletonCardCount(): number {
     if (this.reservationsToDisplay.length) {
@@ -121,8 +143,12 @@ export default class TodayBookings extends Vue {
     return this.pagination.pageSize
   }
 
-  get showLoaders(): boolean {
-    return this.loading && app.getAreLoadersEnabled
+  get showCardLoaders(): boolean {
+    return (this.cardsLoading || this.countsLoading) && app.getAreLoadersEnabled
+  }
+
+  get showCountLoaders(): boolean {
+    return this.countsLoading && app.getAreLoadersEnabled
   }
 
   get reservationsToDisplay(): Reservation[] {
@@ -192,25 +218,27 @@ export default class TodayBookings extends Vue {
   }
 
   async mounted(): Promise<void> {
-    this.loading = true
+    this.cardsLoading = true
     this.getAllCounts()
     const { filters } = this.buildFilters()
     this.getBookings(filters)
   }
 
   async getBookings(filters: any): Promise<void> {
-    this.loading = true
+    this.cardsLoading = true
     this.params.filters = filters.asQueryParams()
     const reservationResponse = await reservation.tableView(this.params)
     this.reservations = reservationResponse.data.resultList
-    this.loading = false
+    this.cardsLoading = false
   }
 
-  getAllCounts(): void {
+  async getAllCounts(): void {
+    this.countsLoading = true
     this.getAllBookingsCount()
     for (const chip of Object.values(this.chips)) {
-      this.getFilterChipCount(chip)
+      await this.getFilterChipCount(chip)
     }
+    this.countsLoading = false
   }
 
   async getFilterChipCount(chip: TodayFilterChip): Promise<void> {

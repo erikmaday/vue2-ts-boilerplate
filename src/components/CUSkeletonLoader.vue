@@ -37,10 +37,14 @@ export default class CUSkeletonLoader extends Vue {
   }
 
   get styles(): { [key: string]: string | number } {
-    return {
+    const styles = {
       height: this.computedHeight,
       width: this.computedWidth,
     }
+    if (this.type === 'chip') {
+      styles['border-radius'] = this.computedHeight
+    }
+    return styles
   }
 
   get computedClasses(): string[] {

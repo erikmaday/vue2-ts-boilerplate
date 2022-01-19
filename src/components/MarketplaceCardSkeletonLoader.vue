@@ -56,10 +56,9 @@
 
 <script lang="ts">
 import { Component, Inject, Prop, Vue } from 'vue-property-decorator'
-import CUSkeletonLoader from '@/components/CUSkeletonLoader.vue'
 import PaginationSkeletonLoader from '@/components/PaginationSkeletonLoader.vue'
 
-@Component({ components: { CUSkeletonLoader, PaginationSkeletonLoader } })
+@Component({ components: { PaginationSkeletonLoader } })
 export default class MarketplaceCardSkeletonLoader extends Vue {
   @Inject({ from: 'isInBidDetail', default: false })
   readonly isInBidDetail!: boolean

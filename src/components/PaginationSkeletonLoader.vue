@@ -11,8 +11,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import CUSkeletonLoader from '@/components/CUSkeletonLoader.vue'
-@Component({ components: { CUSkeletonLoader } })
+@Component
 export default class PaginationSkeletonLoader extends Vue {
   @Prop({ type: Number, required: false, default: 3 }) readonly count: number
 }

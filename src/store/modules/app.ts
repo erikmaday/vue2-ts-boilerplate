@@ -45,22 +45,9 @@ class AppModule extends VuexModule {
 
   @Action
   async fetchSystemParameters() {
-    const filters = filter()
-    const filterParentAnd = filters.createParent('and')
-    filters.add(filterParentAnd, {
-      column: {
-        _t_id: '331c1175-cab9-4255-94df-f49631065673',
-        value: 'systemParameterId',
-        filterType: 'gte',
-        text: '',
-        type: 'number',
-      },
-      value: 27,
-    })
-
     const response = await systemParameter.tableView({
       sorts: null,
-      filters: filters.asQueryParams(),
+      filters: null,
       pageSize: -1,
       page: 1,
     })

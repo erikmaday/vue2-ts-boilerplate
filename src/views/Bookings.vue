@@ -80,7 +80,7 @@ import {
   ReferralStatus,
 } from '@/utils/enum'
 import { EventBus } from '@/utils/eventBus'
-import { datePredefined } from '@/data/predefined'
+import { datePredefined, noFutureDatesPredefined } from '@/data/predefined'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Bookings extends Vue {
@@ -114,6 +114,18 @@ export default class Bookings extends Vue {
       filterProp: 'managedId',
       filterType: 'contains',
       sortProp: 'managedId',
+    },
+    {
+      _t_id: '5u19cdg8-itum-tj1u-1z5d-hr5lh70mdusu',
+      text: 'Created On',
+      value: 'createdOn',
+      filterable: true,
+      filterProp: 'createdOn',
+      sortable: true,
+      sortProp: 'startDate',
+      type: 'date',
+      predefined: noFutureDatesPredefined,
+      hidden: true,
     },
     {
       _t_id: 'c6a51018-3361-4f70-90b0-43caebe3d1f8',

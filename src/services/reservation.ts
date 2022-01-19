@@ -32,7 +32,7 @@ export default {
   },
   byId(id: number): Promise<AxiosResponse<ReservationDetail>> {
     const host = apiBaseUrl()
-    const url = `https://${host}/reservations/v2/${id}`
+    const url = `https://${host}/reservations/v2/${id}?marketplaceOnly=true`
     return httpService.get(url)
   },
   addComment(

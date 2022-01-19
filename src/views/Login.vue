@@ -22,6 +22,7 @@
                 v-model="email"
                 :rules="[(val) => isNotEmpty(val) || 'This field is required']"
                 label="E-mail address"
+                class="font-14"
                 @keyup.enter="submit"
               />
             </v-col>
@@ -43,6 +44,7 @@
                 :rules="[(val) => isNotEmpty(val) || 'This field is required']"
                 v-model="password"
                 name="password"
+                class="font-14"
                 @keyup.enter="submit"
               />
             </v-col>

@@ -41,7 +41,7 @@ export default class BookingDetailMap extends Vue {
   markerOptions = {
     visible: false,
   }
-  trackingData: Map<number, TrackingPoint[]> = {}
+  trackingData: { [key: number]: TrackingPoint[] } = {}
 
   get google(): any {
     return gmapApi()
@@ -67,7 +67,7 @@ export default class BookingDetailMap extends Vue {
   }
 
   async loadTrackingData(): Promise<void> {
-    const trackingData: Map<number, TrackingPoint[]> = {}
+    const trackingData: { [key: number]: TrackingPoint[] } = {}
     for (const journey of this.reservation.journeys) {
       const response = await tracking.byReservationAndJourneyId({
         reservationId: journey.reservationId,
@@ -168,7 +168,7 @@ export default class BookingDetailMap extends Vue {
     }
   }
 
-  async plotVehicleLastLocation(journeyData: TrackingPoint[]): void {
+  async plotVehicleLastLocation(journeyData: TrackingPoint[]): Promise<void> {
     const gpsPoint = journeyData[0]
     const heading = this.calculateHeading(gpsPoint, journeyData[1])
     const journey = this.getJourney(gpsPoint.journey_id)
@@ -290,7 +290,7 @@ export default class BookingDetailMap extends Vue {
       }
       // round to nearest 10.
       if (heading !== 0) {
-        heading = (parseInt(heading / 10, 10) + 1) * 10
+        heading = Math.round(heading / 10) * 10
         heading = heading % 360
       }
     }

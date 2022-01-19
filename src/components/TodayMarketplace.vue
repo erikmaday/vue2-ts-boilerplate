@@ -11,7 +11,7 @@
         v-if="showCountLoaders"
         type="detail-text"
         width="160px"
-        :classes="['col col-auto']"
+        classes="col col-auto"
       />
       <router-link
         v-else
@@ -28,7 +28,7 @@
           width="120px"
           v-for="chipIndex in Object.values(chips).length"
           type="chip"
-          :classes="['d-inline-flex', 'margin-r-2', 'cursor-pointer']"
+          classes="d-inline-flex margin-r-2 cursor-pointer"
           :key="`booking-filter-skeleton-loader-${chipIndex}`"
           style="margin-bottom: 1px"
         />
@@ -74,7 +74,7 @@
     </v-row>
     <TodayNotFound v-else message="No bids found" icon="work_off" />
     <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
-      <PaginationSkeletonLoader v-if="showCardLoaders" style="margin: 6px 0" />
+      <PaginationSkeletonLoader v-if="showCardLoaders" />
       <Pagination
         v-else
         v-model="pagination"

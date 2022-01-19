@@ -1,11 +1,11 @@
 <template>
-  <div class="d-inline-flex">
+  <div class="d-inline-flex h-24 align-center">
     <CUSkeletonLoader
       v-for="index in count"
       :key="`pagination-loader-${index}`"
       width="10px"
       height="10px"
-      :classes="['margin-x-2']"
+      classes="margin-x-2"
     />
   </div>
 </template>

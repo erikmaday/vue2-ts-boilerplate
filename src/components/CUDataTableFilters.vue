@@ -328,6 +328,7 @@ export default class CUDataTableFilters extends Vue {
       }
       this.tableFilterList.push({ column: { ...chip } })
       this.handleFilterAdded()
+      EventBus.$emit('add-filter')
     } else {
       this.unsetChipFilter(chip)
     }

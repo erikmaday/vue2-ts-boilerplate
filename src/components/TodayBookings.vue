@@ -232,7 +232,7 @@ export default class TodayBookings extends Vue {
     this.cardsLoading = false
   }
 
-  async getAllCounts(): void {
+  async getAllCounts(): Promise<void> {
     this.countsLoading = true
     this.getAllBookingsCount()
     for (const chip of Object.values(this.chips)) {

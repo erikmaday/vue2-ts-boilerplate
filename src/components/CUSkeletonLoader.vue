@@ -47,7 +47,7 @@ export default class CUSkeletonLoader extends Vue {
     return styles
   }
 
-  get computedClasses(): string[] {
+  get computedClasses(): string {
     let classes = deepClone(this.classes)
     if (this.type === 'avatar') {
       classes = `${classes} border-radius-round`

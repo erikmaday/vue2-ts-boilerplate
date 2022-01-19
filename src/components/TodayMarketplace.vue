@@ -231,11 +231,11 @@ export default class TodayMarketplace extends Vue {
     this.cardsLoading = true
     this.establishFilters()
     this.establishSorts()
-    this.getCounts()
+    this.getAllCounts()
     this.setActiveFilters()
   }
 
-  async getCounts(): void {
+  async getAllCounts(): Promise<void> {
     this.countsLoading = true
     this.getAllBidsCount()
     for (const key of Object.keys(this.chips)) {

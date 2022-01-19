@@ -102,6 +102,7 @@ export default class Login extends Vue {
       await modules.auth.login({ email: this.email, password: this.password })
       await modules.auth.getUserProfile()
       await modules.auth.getUserDetail()
+      await modules.app.fetchSystemParameters()
       this.isSubmitting = false
     } catch (error) {
       this.isSubmitting = false

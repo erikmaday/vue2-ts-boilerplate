@@ -32,7 +32,22 @@
             </v-chip>
           </v-col>
         </v-row>
-        <v-row v-if="tripBundlesToDisplay.length">
+        <v-row v-if="loading">
+          <v-col
+            v-for="skeletonCardIndex in skeletonCardCount"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+            :key="`marketplace-skeleton-${skeletonCardIndex}`"
+          >
+            <MarketplaceCardSkeletonLoader
+              show-pagination
+              show-action-message
+            />
+          </v-col>
+        </v-row>
+        <v-row v-else-if="tripBundlesToDisplay.length">
           <v-col
             v-for="(tripBundle, tripBundleIndex) in tripBundlesToDisplay"
             cols="12"
@@ -63,6 +78,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import TodayNotFound from '@/components/TodayNotFound.vue'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
+import MarketplaceCardSkeletonLoader from '@/components/MarketplaceCardSkeletonLoader.vue'
 import Pagination from '@/components/Pagination.vue'
 import { TableViewTrip } from '@/models/dto'
 import trip from '@/services/trip'
@@ -73,8 +89,41 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { TodayFilterChip } from '@/models/TableView'
 
-@Component({ components: { MarketplaceCard, TodayNotFound, Pagination } })
+@Component({
+  components: {
+    MarketplaceCard,
+    MarketplaceCardSkeletonLoader,
+    TodayNotFound,
+    Pagination,
+  },
+})
 export default class TodayMarketplace extends Vue {
+  trips: TableViewTrip[] = []
+  tripCount: number | null = null
+  tripBundles: TableViewTrip[][] | null = []
+  loading = false
+  filters: any = null
+  sorts: any = null
+
+  params = {
+    pageSize: 24,
+    page: 1,
+    filters: null,
+    sorts: null,
+  }
+
+  pagination = {
+    pageSize: 4,
+    currentPage: 1,
+    breakpointSizes: {
+      xs: 1,
+      sm: 2,
+      md: 3,
+      lg: 4,
+      xl: 4,
+    },
+  }
+
   chips: { [key: string]: TodayFilterChip } = {
     createdToday: {
       label: 'Created Today',
@@ -124,35 +173,16 @@ export default class TodayMarketplace extends Vue {
     },
   }
 
-  trips: TableViewTrip[] = []
-  tripCount: number | null = null
-  tripBundles: TableViewTrip[][] | null = []
-
-  params = {
-    pageSize: 24,
-    page: 1,
-    filters: null,
-    sorts: null,
-  }
-
-  pagination = {
-    pageSize: 4,
-    currentPage: 1,
-    breakpointSizes: {
-      xs: 1,
-      sm: 2,
-      md: 3,
-      lg: 4,
-      xl: 4,
-    },
-  }
-
-  filters: any = null
-  sorts: any = null
-
   @Watch('params', { deep: true })
   onParamsChanged(): void {
     this.getTrips()
+  }
+
+  get skeletonCardCount(): number {
+    if (this.tripBundlesToDisplay.length) {
+      return this.tripBundlesToDisplay.length
+    }
+    return this.pagination.pageSize
   }
 
   get tripBundlesToDisplay(): TableViewTrip[][] {
@@ -173,6 +203,7 @@ export default class TodayMarketplace extends Vue {
   }
 
   async mounted(): Promise<void> {
+    this.loading = true
     this.establishFilters()
     this.establishSorts()
     this.getCounts()
@@ -224,6 +255,7 @@ export default class TodayMarketplace extends Vue {
   }
 
   async getTrips(): Promise<void> {
+    this.loading = true
     this.params.filters = this.filters.asQueryParams()
     const preliminaryTripResponse = await trip.tableView(this.params)
     const quoteIdList: string = preliminaryTripResponse.data.resultList
@@ -233,6 +265,7 @@ export default class TodayMarketplace extends Vue {
     const tripResponse = await trip.tableView(secondaryParams, quoteIdList)
     this.trips = tripResponse.data.resultList
     this.tripBundles = this.bundleTrips(this.trips)
+    this.loading = false
   }
 
   bundleTrips(trips: TableViewTrip[]): TableViewTrip[][] {

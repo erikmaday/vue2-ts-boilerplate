@@ -20,6 +20,7 @@ import last from '@/assets/images/stopIcons/last.png'
 import tracking from '@/services/tracking'
 import { TrackingPoint } from '@/models/dto/Tracking'
 import { toCamel } from '@/utils/string'
+import { Journey } from '@/models/dto/Journey'
 
 @Component
 export default class BookingDetailMap extends Vue {
@@ -170,7 +171,8 @@ export default class BookingDetailMap extends Vue {
   plotVehicleLastLocation(journeyData: TrackingPoint[]): void {
     const gpsPoint = journeyData[0]
     const heading = this.calculateHeading(gpsPoint, journeyData[1])
-    const vehicle = this.getJourneyVehicle(gpsPoint.journey_id)
+    const journey = this.getJourney(gpsPoint.journey_id)
+    const vehicle = journey.vehicle
     const vehicleType = toCamel(vehicle.vehicleName)
     const icon = this.makeVehicleIcon(vehicleType, heading)
 
@@ -182,19 +184,24 @@ export default class BookingDetailMap extends Vue {
         gpsPoint.longitude
       ),
     })
-    if (infoWindow) {
-      marker.addListener('mouseover', () => {
-        infoWindow.open(this.map, marker)
-        this.$emit('mouseover-vehicle', marker.trak4DeviceId)
-      })
-      marker.addListener('mouseout', () => {
-        infoWindow.close(this.map, marker)
-        this.$emit('mouseout-vehicle')
-      })
-    }
+
+    const infoWindowContent = this.getVehicleInfoWindowContent(
+      journey.reservationId,
+      vehicle,
+      journey.driver
+    )
+    const infoWindow = new this.google.maps.InfoWindow({
+      content: infoWindowContent,
+    })
+    marker.addListener('mouseover', () => {
+      infoWindow.open(this.map, marker)
+    })
+    marker.addListener('mouseout', () => {
+      infoWindow.close(this.map, marker)
+    })
   }
 
-  getJourneyVehicle(journeyId: number): VehicleDetailEntity {
+  getJourney(journeyId: number): Journey {
     return this.reservation.journeys.find(
       (journey) => journey.journeyId === journeyId
     )
@@ -219,22 +226,12 @@ export default class BookingDetailMap extends Vue {
     return { url, scaledSize: new this.google.maps.Size(...size) }
   }
 
-  makeVehicleInfoWindow(reservationId, vehicle, currentDriver) {
-      if (!vehicle) {
-        vehicle = {}
-      }
-
-      const {
-        vehicleMake,
-        vehicleModel,
-        vehicleTypeName,
-        vehicleName,
-      } = vehicle
-      const { firstName = 'No Driver', lastName = 'Assigned' } =
-        currentDriver || {}
-      const phone = op(currentDriver, 'driverInfo/phone') || ''
-      const driverFullName = `${firstName} ${lastName}`
-      const infowindow = `
+  getVehicleInfoWindowContent(reservationId, vehicle, currentDriver): string {
+    const { vehicleMake, vehicleModel, vehicleTypeName, vehicleName } = vehicle
+    const { firstName = 'No Driver', lastName = 'Assigned' } =
+      currentDriver || {}
+    const phone = currentDriver?.driverInfo?.phone || ''
+    return `
               <table>
                 <tr>
                   <td colspan=2>Reservation #: ${reservationId}</td>
@@ -259,7 +256,7 @@ export default class BookingDetailMap extends Vue {
                     <path d="M28.941 19.495c0-2.841-3.76-5.102-9.198-5.815 0.97-0.965 1.574-2.298 1.574-3.773 0-0.492-0.403-0.89-0.896-0.89s-0.887 0.398-0.887 0.89c0 1.949-1.584 3.53-3.533 3.53-1.942 0-3.525-1.581-3.525-3.53 0-0.492-0.403-0.89-0.895-0.89s-0.888 0.398-0.888 0.89c0 1.475 0.597 2.807 1.572 3.773-5.445 0.713-9.207 2.973-9.207 5.815 0 1.523 1.121 2.931 3.141 4.011-0.013 0.112-0.037 0.223-0.037 0.341 0 1.474 1.064 2.699 2.467 2.961l0.081 0.189c1.26 2.915 4.129 4.803 7.311 4.803 3.079 0 5.907-1.809 7.211-4.61 0.057-0.123 0.080-0.239 0.081-0.367 1.483-0.183 2.645-1.441 2.645-2.977 0-0.139-0.022-0.266-0.041-0.403 1.95-1.069 3.023-2.451 3.023-3.949zM9.185 22.605c0.687 0 1.242 0.555 1.242 1.243 0 0.678-0.555 1.234-1.242 1.234-0.681 0-1.238-0.556-1.238-1.234-0.001-0.688 0.557-1.243 1.238-1.243zM16.023 30.017c-2.286 0-4.367-1.257-5.44-3.249 0.005-0.037 0.009-0.074 0.009-0.109 0-0.051-0.020-0.095-0.029-0.143 0.97-0.501 1.645-1.503 1.645-2.669 0-1.203-0.709-2.231-1.719-2.719 1.035-2.105 3.169-3.463 5.533-3.463 2.355 0 4.517 1.371 5.547 3.498-0.984 0.501-1.659 1.505-1.659 2.684 0 1.17 0.675 2.174 1.661 2.675-1.028 2.124-3.193 3.495-5.548 3.495zM22.934 25.081c-0.681 0-1.241-0.556-1.241-1.234 0-0.688 0.559-1.243 1.241-1.243 0.686 0 1.242 0.555 1.242 1.243 0.001 0.678-0.555 1.234-1.242 1.234zM25.175 21.825c-0.473-0.523-1.127-0.873-1.861-0.967 0-0.119-0.025-0.245-0.081-0.364-1.303-2.802-4.131-4.612-7.209-4.612-3.179 0-6.048 1.887-7.31 4.808-0.025 0.060-0.027 0.119-0.039 0.182-0.702 0.121-1.318 0.483-1.762 0.997-1.319-0.725-2.069-1.577-2.069-2.375 0-2.023 4.581-4.273 11.159-4.273 6.576 0 11.155 2.249 11.155 4.273-0.001 0.783-0.717 1.614-1.983 2.331zM17.954 24.53c0.069-0.211 0.122-0.441 0.122-0.682 0-0.822-0.484-1.534-1.18-1.867v-1.781c0-0.495-0.403-0.893-0.896-0.893-0.492 0-0.887 0.399-0.887 0.893v1.781c-0.704 0.333-1.187 1.045-1.187 1.867 0 0.241 0.051 0.471 0.129 0.682l-1.261 1.251c-0.344 0.353-0.345 0.914-0.001 1.262 0.179 0.178 0.406 0.262 0.635 0.262s0.453-0.084 0.633-0.26l1.256-1.252c0.215 0.079 0.442 0.13 0.684 0.13s0.472-0.051 0.687-0.13l1.279 1.263c0.171 0.177 0.397 0.26 0.624 0.26s0.459-0.085 0.635-0.265c0.343-0.344 0.341-0.909-0.005-1.261l-1.267-1.259zM15.708 23.847c0-0.165 0.135-0.289 0.292-0.289 0.162 0 0.292 0.124 0.292 0.289 0 0.155-0.13 0.289-0.292 0.289-0.155 0-0.292-0.133-0.292-0.289zM8.869 5.429v0.726c0 0.192 0.055 0.376 0.173 0.532 0.299 0.399 1.681 1.705 7.095 1.705 5.405 0 6.787-1.308 7.085-1.705 0.117-0.157 0.181-0.34 0.181-0.532v-0.727c0.997-0.741 1.287-1.978 1.323-2.134 0.093-0.467-0.192-0.929-0.653-1.049l-7.711-2.016c-0.153-0.038-0.305-0.038-0.457 0l-7.721 2.016c-0.46 0.119-0.746 0.582-0.641 1.050 0.035 0.157 0.318 1.393 1.325 2.134zM16.137 2.014l6.479 1.692c-0.127 0.168-0.278 0.318-0.47 0.401-0.319 0.142-0.527 0.463-0.527 0.815v0.801c-0.503 0.286-1.957 0.886-5.481 0.886-3.581 0-5.029-0.615-5.485-0.875v-0.812c0-0.352-0.209-0.673-0.533-0.815-0.194-0.083-0.346-0.233-0.465-0.402l6.483-1.69z"></path>
                     </svg>
                   </td>
-                  <td>${driverFullName}</td>
+                  <td>${firstName} ${lastName}</td>
                 </tr>
                 <tr>
                   <td></td>
@@ -267,12 +264,7 @@ export default class BookingDetailMap extends Vue {
                 </tr>
               </table>
             `
-      const infoWindowObj = new this.google.maps.InfoWindow({
-        content: infowindow,
-      })
-      this.infoWindows.push(infoWindowObj)
-      return infoWindowObj
-    },
+  }
 
   getIconVehicleType(vehicleType: string): string {
     if (vehicleType) {

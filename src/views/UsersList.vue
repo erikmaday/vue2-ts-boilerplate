@@ -15,20 +15,7 @@
           Add New
         </v-btn>
       </v-col>
-      <v-col class="shrink">
-        <v-btn color="primary" small @click="isFilterDialogOpen = true">
-          <v-badge
-            :content="filterCount"
-            :value="filterCount"
-            overlap
-            color="red"
-            offset-x="20"
-          >
-            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
-          </v-badge>
-          Filter
-        </v-btn>
-      </v-col>
+      <CUDataTableFilterButton v-model="isFilterDialogOpen" />
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -48,6 +35,7 @@ import Main from '@/layouts/Main.vue'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
+import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import user from '@/services/user'
 import { UserDetail } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
@@ -57,21 +45,16 @@ import { RawLocation } from 'vue-router'
 import { EventBus } from '@/utils/eventBus'
 
 @Component({
-  components: { Main, CUDataTable, CUCollectionTable, CUDataTableFilters },
+  components: {
+    Main,
+    CUDataTable,
+    CUCollectionTable,
+    CUDataTableFilters,
+    CUDataTableFilterButton,
+  },
 })
 export default class Users extends Vue {
   isFilterDialogOpen = false
-  filterCount = 0
-
-  mounted(): void {
-    EventBus.$on('add-filter', (e) => {
-      this.filterCount++
-    })
-
-    EventBus.$on('remove-filter', (e) => {
-      this.filterCount--
-    })
-  }
 
   columns: DataTableColumn[] = [
     {

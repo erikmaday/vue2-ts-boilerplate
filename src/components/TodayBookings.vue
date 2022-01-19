@@ -138,6 +138,14 @@ export default class TodayBookings extends Vue {
       ) => this.buildStartingSoonFilters(filterState),
       active: true,
     },
+    bookedToday: {
+      label: 'Booked Today',
+      count: 0,
+      buildFilters: (
+        filterState: TodayChipFilterState = this.buildBaseFilters()
+      ) => this.buildBookedTodayFilters(filterState),
+      active: false,
+    },
     needsAcceptance: {
       label: 'Needs Acceptance',
       count: 0,
@@ -285,6 +293,21 @@ export default class TodayBookings extends Vue {
     const filterParent = filters.createParent('and', filterParentOr)
     filters.add(filterParent, filterIsStartDateInFuture)
     filters.add(filterParent, filterIsStartDateLessThanADayAway)
+
+    return { filters, filterParentOr }
+  }
+
+  buildBookedTodayFilters(
+    filterState: TodayChipFilterState
+  ): TodayChipFilterState {
+    const { filters, filterParentOr } = filterState
+
+    const filterCreatedOnToday = deepClone(reservationFilters.createdOnToday)
+
+    filterCreatedOnToday.column._t_id = uuidv4()
+
+    const filterParent = filters.createParent('and', filterParentOr)
+    filters.add(filterParent, filterCreatedOnToday)
 
     return { filters, filterParentOr }
   }

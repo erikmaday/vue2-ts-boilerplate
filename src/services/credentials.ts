@@ -8,7 +8,7 @@ const httpService: HttpService = new HttpService()
 
 export default {
   getAll(): Promise<AxiosResponse<GetEldCredentialResponse>> {
-    const url = `http://localhost:8084/credentials?actorCompanyId=11666`
+    const url = `https://${apiBaseUrl()}/credentials?actorCompanyId=11666`
     return httpService.get(url)
   },
   create(eldCredential: EldCredential): Promise<AxiosResponse<ApiResult>> {

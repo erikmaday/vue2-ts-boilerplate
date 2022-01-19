@@ -107,21 +107,21 @@ export default class CUDataTable extends Vue {
     required: false,
     default: undefined,
   })
-  actions!: Array<ActionColumn>
+  actions!: ActionColumn[]
 
   @Prop({
     type: Array,
     required: false,
     default: undefined,
   })
-  items!: Array<any>
+  items!: any[]
 
   @Prop({
     type: Array,
     required: true,
     default: [],
   })
-  columns!: Array<DataTableColumn>
+  columns!: DataTableColumn[]
 
   @Prop({
     type: Number,
@@ -146,32 +146,27 @@ export default class CUDataTable extends Vue {
     required: false,
   })
   detailName!: string
-
   @Prop({
     type: Boolean,
     required: false,
   })
   isEditableTable!: boolean
-
   @Prop({
     type: String,
     required: false,
   })
   itemKey!: string
-
   @Prop({
     type: String,
     required: false,
     default: 'xs',
   })
   mobileViewOnBreakpoint!: string
-
   @Prop({
     type: Boolean,
     required: false,
   })
   displayActionsOnMobile!: boolean
-
   @Prop({
     type: String,
     required: false,

@@ -107,7 +107,7 @@ export default class TodayMarketplace extends Vue {
   sorts: any = null
 
   params = {
-    pageSize: 24,
+    pageSize: -1,
     page: 1,
     filters: null,
     sorts: null,

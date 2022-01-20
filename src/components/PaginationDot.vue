@@ -19,7 +19,7 @@ export default class PaginationDot extends Vue {
   @Prop() readonly active!: boolean
   @Prop({ default: 'primary' }) readonly activeColor!: string
   @Prop({ default: 'gray-mid-light' }) readonly hoverColor!: string
-  @Prop({ default: 'gray-border' }) readonly inactiveColor!: string
+  @Prop({ default: 'gray-border' }) readonly color!: string
 
   hover = false
 
@@ -30,7 +30,7 @@ export default class PaginationDot extends Vue {
     if (this.hover) {
       return this.hoverColor
     }
-    return this.inactiveColor
+    return this.color
   }
 }
 </script>

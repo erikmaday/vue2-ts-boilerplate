@@ -49,7 +49,7 @@
           <Pagination
             v-model="pagination"
             active-color="white"
-            inactive-color="black"
+            color="black"
             hover-color="gray-light"
             :items="tripBundles"
           />

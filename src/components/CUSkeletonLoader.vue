@@ -10,7 +10,7 @@ export default class CUSkeletonLoader extends Vue {
   @Prop({ type: String, default: '', required: false }) readonly type: string
   @Prop({ type: String, default: '', required: false }) readonly width: string
   @Prop({ type: String, default: '', required: false }) readonly height: string
-  @Prop({ type: String, default: () => [], required: false })
+  @Prop({ type: String, default: '', required: false })
   readonly classes: string
 
   get computedHeight(): string {

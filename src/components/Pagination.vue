@@ -11,7 +11,7 @@
           <CUIcon
             :color="arrowColor(hover)"
             :class="{
-              'transparent--text': value.currentPage === 1,
+              transparent: value.currentPage === 1,
             }"
           >
             arrow_left
@@ -147,9 +147,11 @@ export default class Pagination extends Vue {
   next(): void {
     this.handlePageChange(this.value.currentPage + 1)
   }
+
   previous(): void {
     this.handlePageChange(this.value.currentPage - 1)
   }
+
   arrowColor(hover: boolean): string {
     if (hover) {
       return this.hoverColor

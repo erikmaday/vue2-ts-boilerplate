@@ -30,7 +30,19 @@
         </v-chip>
       </v-col>
     </v-row>
-    <v-row v-if="reservationsToDisplay.length">
+    <v-row v-if="showLoaders">
+      <v-col
+        v-for="bookingCardSkeletonIndex in skeletonCardCount"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+        :key="`booking-card-skeleton-${bookingCardSkeletonIndex}`"
+      >
+        <BookingCardSkeletonLoader />
+      </v-col>
+    </v-row>
+    <v-row v-else-if="reservationsToDisplay.length">
       <v-col
         v-for="(reservation, reservationIndex) in reservationsToDisplay"
         cols="12"
@@ -42,15 +54,7 @@
         <BookingCard :reservation="reservation" />
       </v-col>
     </v-row>
-    <v-row v-else>
-      <v-col cols="12">
-        <div
-          class="h-180 background-gray-header border-1 border-solid border-gray-border border-radius-regular padding-a-3"
-        >
-          No bookings found
-        </div>
-      </v-col>
-    </v-row>
+    <TodayNotFound v-else message="No bookings found" icon="event_busy" />
     <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
       <Pagination v-model="pagination" :items="reservations" />
     </v-row>
@@ -60,7 +64,9 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import BookingCard from '@/components/BookingCard.vue'
+import BookingCardSkeletonLoader from '@/components/BookingCardSkeletonLoader.vue'
 import Pagination from '@/components/Pagination.vue'
+import TodayNotFound from '@/components/TodayNotFound.vue'
 
 import { Reservation } from '@/models/dto'
 import reservation from '@/services/reservation'
@@ -70,14 +76,17 @@ import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import reservationFilters from '@/data/reservationFilters'
-import { TableViewFilterChip, ChipFilterState } from '@/models/TableView'
+import { TodayFilterChip, TodayChipFilterState } from '@/models/TableView'
 import deepClone from '@/utils/deepClone'
+import app from '@/store/modules/app'
 
-const MAX_RESULTS = 24
+const MAX_RESULTS = -1
 @Component({
   components: {
     BookingCard,
+    TodayNotFound,
     Pagination,
+    BookingCardSkeletonLoader,
   },
 })
 export default class TodayBookings extends Vue {
@@ -103,6 +112,19 @@ export default class TodayBookings extends Vue {
     },
   }
 
+  loading = false
+
+  get skeletonCardCount(): number {
+    if (this.reservationsToDisplay.length) {
+      return this.reservationsToDisplay.length
+    }
+    return this.pagination.pageSize
+  }
+
+  get showLoaders(): boolean {
+    return this.loading && app.getAreLoadersEnabled
+  }
+
   get reservationsToDisplay(): Reservation[] {
     const startIndex =
       (this.pagination.currentPage - 1) * this.pagination.pageSize
@@ -112,40 +134,45 @@ export default class TodayBookings extends Vue {
     )
   }
 
-  chips: { [key: string]: TableViewFilterChip } = {
+  chips: { [key: string]: TodayFilterChip } = {
     startingSoon: {
       label: 'Starting Soon',
       count: 0,
-      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
-        this.buildStartingSoonFilters(filterState),
+      buildFilters: (
+        filterState: TodayChipFilterState = this.buildBaseFilters()
+      ) => this.buildStartingSoonFilters(filterState),
       active: true,
     },
     needsAcceptance: {
       label: 'Needs Acceptance',
       count: 0,
-      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
-        this.buildNeedsAcceptanceFilters(filterState),
+      buildFilters: (
+        filterState: TodayChipFilterState = this.buildBaseFilters()
+      ) => this.buildNeedsAcceptanceFilters(filterState),
       active: false,
     },
     needsAssignment: {
       label: 'Needs Assignment',
       count: 0,
-      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
-        this.buildNeedsAssignmentFilters(filterState),
+      buildFilters: (
+        filterState: TodayChipFilterState = this.buildBaseFilters()
+      ) => this.buildNeedsAssignmentFilters(filterState),
       active: false,
     },
     inProgress: {
       label: 'In Progress',
       count: 0,
-      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
-        this.buildIsInProgressFilters(filterState),
+      buildFilters: (
+        filterState: TodayChipFilterState = this.buildBaseFilters()
+      ) => this.buildIsInProgressFilters(filterState),
       active: false,
     },
     finished: {
       label: 'Finished',
       count: 0,
-      buildFilters: (filterState: ChipFilterState = this.buildBaseFilters()) =>
-        this.buildIsFinishedFilters(filterState),
+      buildFilters: (
+        filterState: TodayChipFilterState = this.buildBaseFilters()
+      ) => this.buildIsFinishedFilters(filterState),
       active: false,
     },
   }
@@ -165,15 +192,18 @@ export default class TodayBookings extends Vue {
   }
 
   async mounted(): Promise<void> {
+    this.loading = true
     this.getAllCounts()
     const { filters } = this.buildFilters()
     this.getBookings(filters)
   }
 
   async getBookings(filters: any): Promise<void> {
+    this.loading = true
     this.params.filters = filters.asQueryParams()
     const reservationResponse = await reservation.tableView(this.params)
     this.reservations = reservationResponse.data.resultList
+    this.loading = false
   }
 
   getAllCounts(): void {
@@ -183,7 +213,7 @@ export default class TodayBookings extends Vue {
     }
   }
 
-  async getFilterChipCount(chip: TableViewFilterChip): Promise<void> {
+  async getFilterChipCount(chip: TodayFilterChip): Promise<void> {
     const result = chip.buildFilters()
 
     const response = await reservation.tableView({
@@ -206,7 +236,7 @@ export default class TodayBookings extends Vue {
     this.bookingsCount = response.data.count
   }
 
-  buildBaseFilters(): ChipFilterState {
+  buildBaseFilters(): TodayChipFilterState {
     const filters = filter()
     const parentFilter = filters.createParent('and')
     const parentReferralFilter = filters.createParent('and', parentFilter)
@@ -218,7 +248,7 @@ export default class TodayBookings extends Vue {
     return { filters, filterParentOr }
   }
 
-  buildNoChipsSelectedFilters(): ChipFilterState {
+  buildNoChipsSelectedFilters(): TodayChipFilterState {
     const filters = filter()
     const parentFilter = filters.createParent('and')
     // const parentReferralFilter = filters.createParent('and', parentFilter)
@@ -242,7 +272,9 @@ export default class TodayBookings extends Vue {
     return { filters, filterParentOr: null }
   }
 
-  buildStartingSoonFilters(filterState: ChipFilterState): ChipFilterState {
+  buildStartingSoonFilters(
+    filterState: TodayChipFilterState
+  ): TodayChipFilterState {
     const { filters, filterParentOr } = filterState
 
     const filterIsStartDateInFuture = deepClone(
@@ -262,7 +294,9 @@ export default class TodayBookings extends Vue {
     return { filters, filterParentOr }
   }
 
-  buildNeedsAcceptanceFilters(filterState: ChipFilterState): ChipFilterState {
+  buildNeedsAcceptanceFilters(
+    filterState: TodayChipFilterState
+  ): TodayChipFilterState {
     const { filters, filterParentOr } = filterState
 
     const filterIsReferral = deepClone(reservationFilters.isReferral)
@@ -296,7 +330,9 @@ export default class TodayBookings extends Vue {
     return { filters, filterParentOr }
   }
 
-  buildNeedsAssignmentFilters(filterState: ChipFilterState): ChipFilterState {
+  buildNeedsAssignmentFilters(
+    filterState: TodayChipFilterState
+  ): TodayChipFilterState {
     const { filters, filterParentOr } = filterState
 
     const filterIsReferral = deepClone(reservationFilters.isReferral)
@@ -333,7 +369,9 @@ export default class TodayBookings extends Vue {
     return { filters, filterParentOr }
   }
 
-  buildIsInProgressFilters(filterState: ChipFilterState): ChipFilterState {
+  buildIsInProgressFilters(
+    filterState: TodayChipFilterState
+  ): TodayChipFilterState {
     const { filters, filterParentOr } = filterState
 
     const filterIsReferral = deepClone(reservationFilters.isReferral)
@@ -349,7 +387,9 @@ export default class TodayBookings extends Vue {
     return { filters, filterParentOr }
   }
 
-  buildIsFinishedFilters(filterState: ChipFilterState): ChipFilterState {
+  buildIsFinishedFilters(
+    filterState: TodayChipFilterState
+  ): TodayChipFilterState {
     const { filters, filterParentOr } = filterState
 
     const filterIsReferral = deepClone(reservationFilters.isReferral)
@@ -370,7 +410,7 @@ export default class TodayBookings extends Vue {
     return { filters, filterParentOr }
   }
 
-  buildFilters(): ChipFilterState {
+  buildFilters(): TodayChipFilterState {
     let filters, filterParentOr
     const activeChips = Object.values(this.chips).filter((chip) => chip.active)
     if (activeChips.length) {

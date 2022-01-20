@@ -6,7 +6,12 @@
       class="padding-t-4 padding-b-8"
     >
       <span class="d-flex">
-        <CUDatePicker :value="datePickerDate" @input="updateDatePickerDate" />
+        <CUDatePicker
+          :value="datePickerDate"
+          @input="updateDatePickerDate"
+          dense="true"
+          readonly
+        />
         <v-btn
           class="margin-l-3"
           outlined
@@ -281,7 +286,7 @@ export default class Availability extends Vue {
   }
 
   // Computed for the driver sidebar
-  // Returns a list of driver objects + how tall that row 
+  // Returns a list of driver objects + how tall that row
   // should be
   get driverKeyRows(): DriverKeyRow[] {
     const drivers: Driver[] = deepClone(this.displayedDrivers)
@@ -428,7 +433,6 @@ export default class Availability extends Vue {
   onCalendarDisplayDateChange(newDate: dayjs.Dayjs): void {
     this.datePickerDate = newDate.format('MM/DD/YYYY')
     const startDate = this.startOfWeek.valueOf()
-    const endDate = this.endOfWeek.valueOf()
 
     // Each interval will be in increments of weeks for now,
     // so we can assume any intersection is a full intersection
@@ -436,7 +440,7 @@ export default class Availability extends Vue {
     // in non-weekly intervals
     const dataIsLoadedForNewInterval = this.loadedDateIntervals.intersect_any([
       startDate,
-      endDate,
+      startDate,
     ])
     if (!dataIsLoadedForNewInterval) {
       this.getDispatchDataForDates(
@@ -465,7 +469,7 @@ export default class Availability extends Vue {
     )
   }
 
-  // Load reservations for dates, and add them to the object that stores 
+  // Load reservations for dates, and add them to the object that stores
   // reservations by id (prevents duplicates).
   // Add the loaded dates to the interval tree
   async getDispatchDataForDates(
@@ -473,7 +477,7 @@ export default class Availability extends Vue {
     endDatetime: string
   ): Promise<void> {
     const dates: AvailabilityGetRequest = { startDatetime, endDatetime }
-    const res = await availability.getData(dates)
+    const res = await availability.getData(dates, true)
 
     for (const reservation of res.data.reservations) {
       const availabilityBlock =

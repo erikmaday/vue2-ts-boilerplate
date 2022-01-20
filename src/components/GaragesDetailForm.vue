@@ -1,17 +1,33 @@
 <template>
   <v-form v-if="currentGarage" :disabled="isModeView" ref="form">
-    <CUTextField
-      v-model="model.garageName"
-      :rules="[(val) => isNotEmpty(val) || 'Name is Required']"
-      label="Name"
-      @input="$emit('update:currentGarage', model)"
-    />
-    <AutocompleteAddress
-      v-model="model.addressDTO"
-      label="Address"
-      :error-messages="formErrors.address"
-      :rules="[(val) => isNotEmpty(val) || 'Address is Required']"
-    />
+    <v-row>
+      <v-col
+        cols="12"
+        md="6"
+        class="padding-b-0"
+        :class="{ 'margin-t-2': $vuetify.breakpoint.smAndDown }"
+      >
+        <CUTextField
+          v-model="model.garageName"
+          :rules="[(val) => isNotEmpty(val) || 'Name is Required']"
+          label="Name"
+          @input="$emit('update:currentGarage', model)"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        md="6"
+        class="padding-b-0"
+        :class="{ 'padding-t-0': $vuetify.breakpoint.smAndDown }"
+      >
+        <AutocompleteAddress
+          v-model="model.addressDTO"
+          label="Address"
+          :error-messages="formErrors.address"
+          :rules="[(val) => isNotEmpty(val) || 'Address is Required']"
+        />
+      </v-col>
+    </v-row>
   </v-form>
 </template>
 <script lang="ts">

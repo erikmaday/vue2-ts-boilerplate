@@ -52,7 +52,7 @@ export const routes: RouteConfig[] = [
                 name: 'users',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-users" */ '@/views/Users.vue'
+                    /* webpackChunkName: "company-users" */ '@/views/UsersList.vue'
                   ),
               },
               {
@@ -60,7 +60,7 @@ export const routes: RouteConfig[] = [
                 name: 'users.edit',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-users" */ '@/views/Users.vue'
+                    /* webpackChunkName: "company-users" */ '@/views/UsersDetail.vue'
                   ),
               },
               {
@@ -68,7 +68,7 @@ export const routes: RouteConfig[] = [
                 name: 'users.view',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-users" */ '@/views/Users.vue'
+                    /* webpackChunkName: "company-users" */ '@/views/UsersDetail.vue'
                   ),
               },
               {
@@ -76,7 +76,7 @@ export const routes: RouteConfig[] = [
                 name: 'users.add',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-users" */ '@/views/Users.vue'
+                    /* webpackChunkName: "company-users" */ '@/views/UsersDetail.vue'
                   ),
               },
             ],
@@ -93,7 +93,15 @@ export const routes: RouteConfig[] = [
                 name: 'vehicles',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-vehicles-list" */ '@/views/Vehicles.vue'
+                    /* webpackChunkName: "vehicles-list" */ '@/views/VehiclesList.vue'
+                  ),
+              },
+              {
+                path: 'add',
+                name: 'vehicles.add',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "vehicles-add" */ '@/views/VehicleDetail.vue'
                   ),
               },
               {
@@ -101,16 +109,15 @@ export const routes: RouteConfig[] = [
                 name: 'vehicles.edit',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-vehicles-edit" */ '@/views/Vehicles.vue'
+                    /* webpackChunkName: "vehicles-edit" */ '@/views/VehicleDetail.vue'
                   ),
               },
-
               {
                 path: 'view/:id',
                 name: 'vehicles.view',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-vehicles-view" */ '@/views/Vehicles.vue'
+                    /* webpackChunkName: "vehicles-edit" */ '@/views/VehicleDetail.vue'
                   ),
               },
             ],
@@ -127,7 +134,7 @@ export const routes: RouteConfig[] = [
                 name: 'garages',
                 component: () =>
                   import(
-                    /* webpackChunkName: "company-garages-list" */ '@/views/Garages.vue'
+                    /* webpackChunkName: "company-garages-list" */ '@/views/GaragesList.vue'
                   ),
               },
               {
@@ -201,7 +208,7 @@ export const routes: RouteConfig[] = [
           {
             path: 'company',
             name: 'company',
-            redirect: 'company/users',
+            redirect: 'company/settings',
             component: () =>
               import(/* webpackChunkName: "company" */ '@/views/Empty.vue'),
             children: [
@@ -224,47 +231,6 @@ export const routes: RouteConfig[] = [
                     component: () => import('@/views/Company.vue'),
                   },
                 ],
-              },
-            ],
-          },
-          {
-            path: 'vehicles',
-            component: () =>
-              import(
-                /* webpackChunkName: "company-vehicles" */ '@/views/Empty.vue'
-              ),
-            children: [
-              {
-                path: '',
-                name: 'vehicles',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "vehicles-list" */ '@/views/Vehicles.vue'
-                  ),
-              },
-              {
-                path: 'add',
-                name: 'vehicles.add',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "vehicles-add" */ '@/views/Vehicles.vue'
-                  ),
-              },
-              {
-                path: 'edit/:id',
-                name: 'vehicles.edit',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "vehicles-edit" */ '@/views/Vehicles.vue'
-                  ),
-              },
-              {
-                path: 'view/:id',
-                name: 'vehicles.view',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "vehicles-edit" */ '@/views/Vehicles.vue'
-                  ),
               },
             ],
           },

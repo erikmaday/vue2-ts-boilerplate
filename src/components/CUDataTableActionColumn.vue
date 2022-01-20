@@ -1,26 +1,15 @@
 <template>
-  <div class="align-center d-flex flex-grow-1">
+  <div class="align-center d-flex flex-grow-1" :class="{ 'w-full': isMobile }">
     <template v-if="detailAction">
       <template v-if="!isDetailTable">
-        <v-btn
-          v-if="!isMobile"
-          text
-          x-small
-          color="primary"
-          class="font-medium font-14"
-          @click="pushDetailRoute"
-        >
-          Details
-        </v-btn>
-        <v-btn
-          v-else
-          color="primary"
-          small
-          class="w-full margin-t-4"
-          @click="pushDetailRoute"
-        >
-          Details
-        </v-btn>
+        <router-link :to="detailRoute" v-if="!isMobile">
+          <v-btn text x-small color="primary" class="font-medium font-14">
+            Details
+          </v-btn>
+        </router-link>
+        <router-link v-else :to="detailRoute">
+          <v-btn color="primary" small class="w-full margin-t-4">Details</v-btn>
+        </router-link>
       </template>
       <template v-else>
         <v-btn small icon @click="pushDetailRoute">
@@ -28,7 +17,7 @@
         </v-btn>
       </template>
     </template>
-    <v-menu v-if="!isMobile && !isActionsListEmpty" offset-x left>
+    <v-menu v-if="!isMobile && visibleActionsList.length" offset-x left>
       <template v-slot:activator="{ on }">
         <CUIcon
           width="20px"
@@ -43,9 +32,7 @@
       </template>
       <v-list>
         <v-list-item
-          v-for="(action, actionIndex) in actions.filter(
-            (action) => !action.isDetail && !action.hide
-          )"
+          v-for="(action, actionIndex) in visibleActionsList"
           :key="`action-${action.key}-${actionIndex}`"
           @click="handleAction(action, row)"
         >
@@ -95,8 +82,12 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" small text @click="closeDialog">{{ dialogSecondaryActionText }}</v-btn>
-        <v-btn color="primary" small @click="confirmAction">{{ dialogPrimaryActionText }}</v-btn>
+        <v-btn color="primary" small text @click="closeDialog">
+          {{ dialogSecondaryActionText }}
+        </v-btn>
+        <v-btn color="primary" small @click="confirmAction">
+          {{ dialogPrimaryActionText }}
+        </v-btn>
       </template>
     </CUModal>
   </div>
@@ -105,7 +96,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { ActionColumn } from '@/models/ActionColumn'
 import { AxiosResponse } from 'axios'
-
+import { RawLocation } from 'vue-router'
 @Component
 export default class CUDataTableActionColumn extends Vue {
   @Prop({
@@ -177,8 +168,10 @@ export default class CUDataTableActionColumn extends Vue {
     if (action.confirmModal) {
       this.dialogOpen = true
       this.dialogText = action.confirmModalText
-      this.dialogPrimaryActionText = action.confirmModalPrimaryActionText || 'OK'
-      this.dialogSecondaryActionText = action.confirmModalSecondaryActionText || 'Cancel'
+      this.dialogPrimaryActionText =
+        action.confirmModalPrimaryActionText || 'OK'
+      this.dialogSecondaryActionText =
+        action.confirmModalSecondaryActionText || 'Cancel'
       this.currentAction = action
     } else if (action.action) {
       action.action(this.row, this.rowIndex)
@@ -193,14 +186,23 @@ export default class CUDataTableActionColumn extends Vue {
     return this.actions.filter((action) => !action.isDetail).length < 1
   }
 
-  pushDetailRoute(): void {
-    const detailAction = this.actions.find((action) => action.key === 'details')
+  get visibleActionsList() {
+    let visibleActions = this.actions.filter((action) => !action.isDetail)
+    visibleActions = visibleActions.filter((action) => {
+      if (!action.hideOn) {
+        return true
+      }
+      return !action.hideOn(this.row)
+    })
+    return visibleActions
+  }
 
-    if (detailAction?.detailRoute) {
-      this.$router.push(detailAction.detailRoute(this.row))
-      return
+  get detailRoute(): RawLocation {
+    const detailAction = this.actions.find((action) => action.key === 'details')
+    if (detailAction) {
+      return detailAction.detailRoute(this.row)
     }
-    this.$router.push({ path: `view/${this.row[this.row.id]}` })
+    return {}
   }
 }
 </script>

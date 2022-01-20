@@ -18,7 +18,9 @@
         <slot name="navigation" />
       </v-col>
       <v-col class="padding-a-6" :class="`background-${mainColor}`">
-        <v-container>
+        <v-container
+          :style="{ 'max-width': `${$vuetify.breakpoint.thresholds.md}px` }"
+        >
           <v-row align="center">
             <v-col cols="auto">
               <h1><slot name="section-title" /></h1>
@@ -40,7 +42,7 @@
               </div>
             </template>
           </v-row>
-          <v-container>
+          <v-container :class="{ 'padding-a-0': disableParentPadding }">
             <v-row justify="center">
               <slot />
             </v-row>
@@ -64,5 +66,8 @@ export default class MainWithSidebar extends Vue {
 
   @Prop({ default: 'white' })
   mainColor!: string
+
+  @Prop({ default: false })
+  disableParentPadding!: boolean
 }
 </script>

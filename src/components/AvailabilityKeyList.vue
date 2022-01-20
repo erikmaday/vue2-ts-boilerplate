@@ -33,18 +33,23 @@
           :style="`height: ${row.rowHeight}px`"
           :key="`${index}-vehicle-block`"
         >
-          <div class="d-flex align-center">
+          <div
+            class="d-flex align-center justify-center min-w-32 min-h-32 w-32 h-32 flex-shrink-0"
+            :class="{
+              'border-gray-light background-gray-header border-radius-round border-solid border-1 margin-r-1':
+                !row.vehicle.imagePath,
+            }"
+          >
             <img
-              :src="
-                getImageSrc(
-                  row.vehicle.imagePath,
-                  'https://www.nationalbuscharter.com/employee/upload/cityBanner/1593699841national-atlanta-charter-bus.jpg'
-                )
-              "
+              v-if="row.vehicle.imagePath"
+              :src="getImageSrc(row.vehicle.imagePath)"
               width="32"
               height="32"
               class="border-radius-round border-gray-border border-solid border-2 margin-r-1"
             />
+            <CUIcon v-else width="24px" height="24px" color="gray-light">
+              directions_bus
+            </CUIcon>
           </div>
           <div>
             <p class="margin-a-0 overflow-hidden text-overflow-ellipsis">
@@ -67,18 +72,23 @@
           :style="`height: ${row.rowHeight}px`"
           :key="`${index}-driver-block`"
         >
-          <div class="d-flex align-center">
+          <div
+            class="d-flex align-center justify-center w-32 h-32 flex-shrink-0"
+            :class="{
+              'border-gray-light background-gray-header border-radius-round border-solid border-1 margin-r-1':
+                !row.driver.imagePath,
+            }"
+          >
             <img
-              :src="
-                getImageSrc(
-                  row.driver.imagePath,
-                  'https://www.gravatar.com/avatar/35781abe4b5920be6df45021ced0bf7e?s=256&d=mm'
-                )
-              "
+              v-if="row.driver.imagePath"
+              :src="getImageSrc(row.driver.imagePath)"
               width="32"
               height="32"
               class="border-radius-round border-gray-border border-solid border-2 margin-r-1"
             />
+            <CUIcon v-else width="24px" height="24px" color="gray-light">
+              person
+            </CUIcon>
           </div>
           <div>
             <p class="margin-a-0 overflow-hidden text-overflow-ellipsis">
@@ -116,12 +126,8 @@ export default class AvailabilityKeyList extends Vue {
   })
   isVehicleDisplay!: boolean
 
-  getImageSrc(imagePath: string | undefined, defaultImage: string): string {
-    if (imagePath) {
-      return `https://${baseUrl()}${imagePath}`
-    } else {
-      return defaultImage
-    }
+  getImageSrc(imagePath: string | undefined): string {
+    return `https://${baseUrl()}${imagePath}`
   }
 }
 </script>

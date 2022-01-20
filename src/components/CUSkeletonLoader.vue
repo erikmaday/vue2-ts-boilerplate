@@ -1,0 +1,87 @@
+<template>
+  <div :style="styles" :class="computedClasses" />
+</template>
+<script lang="ts">
+import deepClone from '@/utils/deepClone'
+import { Vue, Component, Prop } from 'vue-property-decorator'
+
+@Component({})
+export default class CUSkeletonLoader extends Vue {
+  @Prop({ type: String, default: '', required: false }) readonly type: string
+  @Prop({ type: String, default: '', required: false }) readonly width: string
+  @Prop({ type: String, default: '', required: false }) readonly height: string
+  @Prop({ type: Array, default: () => [], required: false })
+  readonly classes: string[]
+
+  get computedHeight(): string {
+    if (this.height) {
+      return this.height
+    }
+    if (this.type === 'button') {
+      return '40px'
+    }
+    if (this.type === 'text') {
+      return '18px'
+    }
+    if (this.type === 'detail-text') {
+      return '16px'
+    }
+    return '14px'
+  }
+
+  get computedWidth(): string {
+    if (this.width) {
+      return this.width
+    }
+    return '100%'
+  }
+
+  get styles(): { [key: string]: string | number } {
+    return {
+      height: this.computedHeight,
+      width: this.computedWidth,
+    }
+  }
+
+  get computedClasses(): string[] {
+    const classes = deepClone(this.classes)
+    if (this.type === 'avatar') {
+      classes.push('border-radius-round')
+    }
+    return classes
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+div {
+  background-color: $gray-border;
+  position: relative;
+  overflow: hidden;
+  border-radius: $border-radius-root;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      rgba(#fff, 0) 0,
+      rgba(#fff, 0.2) 20%,
+      rgba(#fff, 0.5) 60%,
+      rgba(#fff, 0)
+    );
+    animation: shimmer 2s infinite;
+    content: '';
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+</style>

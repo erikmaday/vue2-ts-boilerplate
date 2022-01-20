@@ -1,5 +1,5 @@
 <template>
-  <CUModal v-model="value" v-on="$listeners">
+  <CUModal :value="value" @input="$emit('input', $event)" v-on="$listeners">
     <template #title>Assign Drivers and Vehicles</template>
     <template #text>
       <div v-for="(assignment, vi) in model" :key="`assignment-group-${vi}`">
@@ -12,6 +12,7 @@
               <div class="d-flex flex-row justify-space-between">
                 <label>Drivers</label>
                 <a
+                  v-show="!!driverAssignment.driver.userId"
                   :key="`driver-assignment-clear-link-${vi}-${di}`"
                   class="font-12"
                   @click="clearDriver(vi, di)"
@@ -35,7 +36,13 @@
           <v-col cols="6">
             <div class="d-flex flex-row justify-space-between">
               <label>{{ assignment.vehicleTypeLabel }}</label>
-              <a class="font-12" @click="clearVehicle(vi)">Clear Vehicle</a>
+              <a
+                class="font-12"
+                v-show="!!assignment.vehicle.vehicleId"
+                @click="clearVehicle(vi)"
+              >
+                Clear Vehicle
+              </a>
             </div>
             <CUSelect
               :error-messages="assignment.vehicle.errors"

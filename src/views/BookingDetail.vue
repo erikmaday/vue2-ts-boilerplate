@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <Main>
     <v-row>
       <v-col cols="12">
         <BookingDetailStepTimeline
@@ -60,12 +60,13 @@
       </v-col>
       <v-col cols="12"><BookingDetailSupport /></v-col>
     </v-row>
-  </v-container>
+  </Main>
 </template>
 
 <script lang="ts">
 import { ReservationDetail, Trip, VehicleAssignment } from '@/models/dto'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import Main from '@/layouts/Main.vue'
 import BookingDetailStepTimeline from '@/components/BookingDetailStepTimeline.vue'
 import BookingDetailHeader from '@/components/BookingDetailHeader.vue'
 import BookingDetailTripNumbers from '@/components/BookingDetailTripNumbers.vue'
@@ -84,6 +85,7 @@ import { EventBus } from '@/utils/eventBus'
 
 @Component({
   components: {
+    Main,
     BookingDetailStepTimeline,
     BookingDetailHeader,
     BookingDetailTripNumbers,
@@ -101,6 +103,13 @@ export default class BookingDetail extends Vue {
   reservation: ReservationDetail | null = null
   trip: Trip | null = null
   tripAssignments: VehicleAssignment[] = []
+
+  @Watch('id', { immediate: true })
+  valueChanged(): void {
+    if (this.id) {
+      this.refresh()
+    }
+  }
 
   created(): void {
     this.id = parseInt(this.$route.params.id)
@@ -127,7 +136,14 @@ export default class BookingDetail extends Vue {
         this.$router.push({ name: 'home' })
         return
       }
-      this.reservation = reservationResponse.data
+      if (!reservationResponse.data?.reservationId) {
+        const res = await reservation.getActiveReferral(this.id)
+        if (res.data?.reservationId) {
+          this.id = res.data.reservationId
+        }
+      } else {
+        this.reservation = reservationResponse.data
+      }
     }
   }
 

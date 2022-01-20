@@ -1,15 +1,6 @@
 <template>
   <div
-    class="
-      w-full
-      d-flex
-      h-80
-      align-center
-      justify-center
-      border-radius-regular border-2 border-dashed
-      position-relative
-      cursor-pointer
-    "
+    class="w-full d-flex h-80 align-center justify-center border-radius-regular border-2 border-dashed position-relative cursor-pointer"
     :class="{
       'background-blue-10 border-primary': !errorMessage,
       'background-red-10 border-error': errorMessage,
@@ -21,15 +12,7 @@
       type="file"
       accept="image/*"
       multiple
-      class="
-        opacity-0
-        w-full
-        h-full
-        position-absolute
-        top-0
-        left-0
-        cursor-pointer
-      "
+      class="opacity-0 w-full h-full position-absolute top-0 left-0 cursor-pointer"
       @change="handleBrowse"
     />
     <CUIcon

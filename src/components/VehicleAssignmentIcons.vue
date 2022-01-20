@@ -1,27 +1,53 @@
 <template>
-  <div
-    class="d-inline-flex margin-l-3 cursor-pointer align-center"
-    @click="isDialogOpen = true"
-  >
-    <span v-if="showLabel" class="margin-r-5" :class="`text-${label.color}`">
-      {{ label.text }}
-    </span>
-    <VehicleAssignmentIcon
-      v-for="(vehicle, vehicleIndex) in vehicleAssignmentsToDisplay"
-      :vehicle-assignment="vehicle"
-      :key="`assigned-vehicle-${vehicleIndex}`"
-      class="margin-l-n3"
-    />
-    <VehicleAssignmentIcon
-      v-for="(vehicle, vehicleIndex) in unassignedToDisplay"
-      :key="`unassigned-vehicle-${vehicleIndex}`"
-      class="margin-l-n3"
-    />
-    <VehicleAssignmentIcon
-      v-if="moreRequiredCount"
-      :more-required-count="moreRequiredCount"
-      class="margin-l-n3"
-    />
+  <div>
+    <template v-if="$vuetify.breakpoint.smAndUp || !enableMobileView">
+      <v-tooltip top>
+        <template #activator="{ on }">
+          <div
+            class="d-inline-flex margin-l-3 align-center"
+            v-on="on"
+            @click="openDialogue"
+            :class="{
+              'cursor-pointer': !needsAcceptance,
+              'cursor-not-allowed': needsAcceptance,
+            }"
+          >
+            <span
+              v-if="showLabel"
+              class="margin-r-5"
+              :class="`text-${label.color}`"
+            >
+              {{ label.text }}
+            </span>
+            <VehicleAssignmentIcon
+              v-for="(vehicle, vehicleIndex) in vehicleAssignmentsToDisplay"
+              :vehicle-assignment="vehicle"
+              :key="`assigned-vehicle-${vehicleIndex}`"
+              class="margin-l-n3"
+            />
+            <VehicleAssignmentIcon
+              v-for="vehicleIndex in unassignedToDisplay"
+              :key="`unassigned-vehicle-${vehicleIndex}`"
+              class="margin-l-n3"
+            />
+            <VehicleAssignmentIcon
+              v-if="moreRequiredCount"
+              :more-required-count="moreRequiredCount"
+              class="margin-l-n3"
+            />
+          </div>
+        </template>
+        <span class="text-white" v-html="tooltipBody"></span>
+      </v-tooltip>
+    </template>
+    <template v-else>
+      <div class="d-flex flex-column ">
+        <h4>Vehicle Assignments</h4>
+        <div class="text-left">
+          <span v-html="vehicleAssignmentMobileBody"></span>
+        </div>
+      </div>
+    </template>
     <template
       v-if="computedTrip && computedReservation && computedVehicleAssignments"
     >
@@ -42,6 +68,7 @@ import TripAssignmentsModal from '@/components/TripAssignmentsModal.vue'
 import { Reservation, Trip } from '@/models/dto'
 import { VehicleAssignment } from '@/models/dto'
 import { pluralize } from '@/utils/string'
+import { ReferralStatus } from '@/utils/enum'
 import { ColoredMessage } from '@/models/ColoredMessage'
 import trip from '@/services/trip'
 import tripAssignment from '@/services/tripAssignment'
@@ -60,6 +87,7 @@ export default class VehicleAssignmentIcons extends Vue {
   @Prop({ required: false }) readonly trip: Trip
   @Prop({ required: false }) readonly reservation: Reservation
   @Prop({ required: false }) readonly showLabel: boolean
+  @Prop({ required: false, default: false }) readonly enableMobileView: boolean
 
   fetchedTrip: Trip | null = null
   fetchedVehicleAssignments: VehicleAssignment[] = []
@@ -91,6 +119,12 @@ export default class VehicleAssignmentIcons extends Vue {
     ])
     this.fetchedVehicleAssignments =
       tripAssignmentResponse.data.vehicleAssignments
+  }
+
+  openDialogue(): void {
+    if (!this.needsAcceptance) {
+      this.isDialogOpen = true
+    }
   }
 
   get computedTrip(): Trip | null {
@@ -131,10 +165,11 @@ export default class VehicleAssignmentIcons extends Vue {
   get unassignedToDisplay(): number {
     const displayedAssignedVehicles =
       this.vehicleAssignmentsToDisplay?.length || 0
-    return Math.min(
+    const min = Math.min(
       this.totalRequiredVehicles - displayedAssignedVehicles,
       MAX_DISPLAY
     )
+    return Math.max(min, 0)
   }
 
   get moreRequiredCount(): number {
@@ -162,6 +197,50 @@ export default class VehicleAssignmentIcons extends Vue {
     return (
       this.computedVehicleAssignments?.length === this.totalRequiredVehicles
     )
+  }
+
+  get needsAcceptance(): boolean {
+    return this.reservation?.referralStatus === ReferralStatus.Offered
+  }
+
+  get tooltipBody(): string {
+    const start = `<p class="text-white margin-a-0">`
+    const end = `</p>`
+    const line = (str: string): string => `${start}${str}${end}`
+
+    if (this.needsAcceptance) {
+      return line('Accept the booking to start') + line('assigning vehicles')
+    }
+
+    if (this.computedVehicleAssignments?.length) {
+      let html = ''
+      for (const vehicleAssignment of this.computedVehicleAssignments) {
+        html += line(vehicleAssignment.vehicle.vehicleName)
+      }
+      return html
+    } else {
+      return line('No Vehicles Assigned')
+    }
+  }
+
+  get vehicleAssignmentMobileBody(): string {
+    const assignmentLine = (str: string) => `<p class="margin-a-0">${str}</p>`
+    const unassignedLine = `<p class="text-error margin-a-0">Unassigned Vehicle</p>`
+
+    let html = ''
+    for (const vehicleAssignment of this.computedVehicleAssignments) {
+      html += assignmentLine(vehicleAssignment.vehicle.vehicleName)
+    }
+
+    const unassignedVehicleNumber =
+      this.totalRequiredVehicles - this.computedVehicleAssignments.length
+    if (unassignedVehicleNumber > 0) {
+      for (let i = 0; i < unassignedVehicleNumber; i++) {
+        html += unassignedLine
+      }
+    }
+
+    return html
   }
 }
 </script>

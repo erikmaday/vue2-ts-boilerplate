@@ -8,6 +8,7 @@
       :sorts="sorts"
       :filter-list.sync="filterList"
       :tabs="tabs"
+      :chips="chips"
       :initial-filters="initialFilters"
       @initial-filters-set="initialFiltersSet = true"
       @update:sorts="$emit('update:sorts', $event)"
@@ -27,6 +28,7 @@
       :loading="loading"
       :server-items-length="serverItemsLength"
       :no-data-text="noDataText"
+      :hide-default-header="$vuetify.breakpoint.xs"
       @update:options="load"
       @pagination="options = $event"
       @refresh="load"
@@ -42,6 +44,7 @@ import {
   TableViewFilter,
   TableViewTab,
   TableViewParameters,
+  TableViewChip,
 } from '@/models/TableView'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { EventBus } from '@/utils/eventBus'
@@ -67,6 +70,8 @@ export default class CUCollectionTable extends Vue {
   initialFilters!: TableViewFilter[]
   @Prop({ required: false, default: () => [] })
   tabs!: TableViewTab[]
+  @Prop({ required: false, default: () => [] })
+  chips!: TableViewChip[]
   @Prop({ type: Boolean, required: false, default: false })
   isFilterDialogOpen: boolean
   @Prop({ type: String, required: false })

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
         <h1>Garages</h1>
@@ -29,13 +29,14 @@
       collection="garages"
       :fetch-method="tableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
-      no-data-text="No matching garages found"
+      no-data-text="No garages found"
     />
-  </div>
+  </Main>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import Main from '@/layouts/Main.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import garage from '@/services/garage'
@@ -47,7 +48,7 @@ import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
 
 @Component({
-  components: { CUCollectionTable, CUDataTableFilters },
+  components: { Main, CUCollectionTable, CUDataTableFilters },
 })
 export default class GaragesList extends Vue {
   isFilterDialogOpen = false

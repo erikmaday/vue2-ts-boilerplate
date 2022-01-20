@@ -1,6 +1,6 @@
 <template>
-<div>
-    <label v-if="$attrs.label">{{ $attrs.label }}</label>
+  <div>
+    <label class="font-14" v-if="$attrs.label">{{ $attrs.label }}</label>
     <v-menu
       v-model="isFocused"
       :open-on-click="false"
@@ -51,7 +51,7 @@
         </v-list>
       </v-card>
     </v-menu>
-</div>
+  </div>
 </template>
 
 <script lang="ts">

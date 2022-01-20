@@ -10,6 +10,7 @@
       :tabs="tabs"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :key="`marketplace-list`"
+      no-data-text="No bids found"
     >
       <template slot="filter-row">
         <v-spacer />
@@ -40,6 +41,7 @@ import { pluralize } from '@/utils/string'
 import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
+import { datePredefined } from '@/data/predefined'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Marketplace extends Vue {
@@ -68,10 +70,13 @@ export default class Marketplace extends Vue {
       _t_id: 'a40e2a3e-25d7-4f1f-bff0-d0296d7a0d25',
       text: 'Pickup Date',
       value: 'startDate',
+      filterable: true,
+      filterProp: 'startDate',
       sortable: true,
       sortProp: 'startDate',
       computedText: (row: TableViewTrip): string =>
         this.formatReservationStartDate(row),
+      predefined: datePredefined,
     },
     {
       _t_id: '2c1660f9-ba0a-46b8-8ee5-32ec50728901',
@@ -145,16 +150,17 @@ export default class Marketplace extends Vue {
         .add(1, 'day')
         .format('YYYY-MM-DDTHH:mm:ss.000Z')}`,
     },
-    {
-      column: {
-        _t_id: 'cf309108-6fa5-4205-8dd6-31f373443939',
-        text: 'Large Contracts',
-        value: '',
-        filterType: '',
-      },
-      value: null,
-      isLocked: true,
-    },
+    // Hide for now
+    // {
+    //   column: {
+    //     _t_id: 'cf309108-6fa5-4205-8dd6-31f373443939',
+    //     text: 'Large Contracts',
+    //     value: '',
+    //     filterType: '',
+    //   },
+    //   value: null,
+    //   isLocked: true,
+    // },
     {
       column: {
         _t_id: '3bc3f254-7fce-43d3-b6d2-87ef778c41ef',

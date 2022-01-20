@@ -1,176 +1,167 @@
 <template>
-  <div>
-    <v-container>
-      <v-row justify="space-between">
-        <v-col cols="12" md="7">
-          <div
-            class="d-flex align-center"
+  <div class="w-full">
+    <v-row justify="space-between" class="margin-b-2">
+      <v-col cols="12" md="7">
+        <div
+          class="d-flex align-center"
+          :class="{
+            'flex-column': $vuetify.breakpoint.smAndDown,
+            'flex-row': $vuetify.breakpoint.mdAndUp,
+          }"
+        >
+          <h1
+            class="margin-a-0"
             :class="{
-              'flex-column': $vuetify.breakpoint.smAndDown,
-              'flex-row': $vuetify.breakpoint.mdAndUp,
+              'text-center': $vuetify.breakpoint.xs,
             }"
           >
-            <h1
-              class="margin-a-0"
-              :class="{
-                'text-center': $vuetify.breakpoint.xs,
-              }"
-            >
-              Company Information
-            </h1>
-          </div>
-        </v-col>
+            Company Information
+          </h1>
+        </div>
+      </v-col>
+      <v-col cols="12" md="5">
+        <div
+          class="d-flex"
+          :class="{
+            'flex-row': $vuetify.breakpoint.smAndUp,
+            'justify-center': $vuetify.breakpoint.sm,
+            'justify-end': $vuetify.breakpoint.mdAndUp,
+            'flex-column flex-column-reverse': $vuetify.breakpoint.xs,
+          }"
+        >
+          <v-btn
+            v-show="isModeEdit"
+            :class="{
+              'w-full margin-y-2': $vuetify.breakpoint.xs,
+              'margin-l-4': $vuetify.breakpoint.smAndUp,
+            }"
+            outlined
+            small
+            color="primary"
+            :loading="saving"
+            @click="
+              $router.push({
+                name: 'settings',
+                params: { id: $route.params.id },
+              })
+            "
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            v-show="isModeView"
+            :class="{
+              'w-full margin-y-2': $vuetify.breakpoint.xs,
+              'margin-l-4': $vuetify.breakpoint.smAndUp,
+            }"
+            small
+            outlined
+            color="primary"
+            @click="
+              $router.push({
+                name: 'settings.edit',
+                params: { id: $route.params.id },
+              })
+            "
+          >
+            Edit
+          </v-btn>
+          <v-btn
+            v-show="isModeEdit"
+            :class="{
+              'w-full margin-y-2': $vuetify.breakpoint.xs,
+              'margin-l-4': $vuetify.breakpoint.smAndUp,
+            }"
+            small
+            color="primary"
+            :loading="saving"
+            @click="submit"
+          >
+            Save
+          </v-btn>
+        </div>
+      </v-col>
+    </v-row>
+    <v-form :disabled="isModeView" ref="form" lazy-validation>
+      <v-row>
         <v-col cols="12" md="5">
-          <div
-            class="d-flex"
-            :class="{
-              'flex-row': $vuetify.breakpoint.smAndUp,
-              'justify-center': $vuetify.breakpoint.sm,
-              'justify-end': $vuetify.breakpoint.mdAndUp,
-              'flex-column': $vuetify.breakpoint.xs,
-            }"
-          >
-            <v-btn
-              v-show="isModeEdit"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              outlined
-              small
-              color="primary"
-              @click="
-                $router.push({
-                  name: 'settings',
-                  params: { id: $route.params.id },
-                })
-              "
-            >
-              Cancel
-            </v-btn>
-            <v-btn
-              v-show="isModeView"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              small
-              color="primary"
-              @click="
-                $router.push({
-                  name: 'settings.edit',
-                  params: { id: $route.params.id },
-                })
-              "
-            >
-              Edit
-            </v-btn>
-            <v-btn
-              v-show="isModeEdit"
-              :class="{
-                'w-full margin-y-2': $vuetify.breakpoint.xs,
-                'margin-l-4': $vuetify.breakpoint.smAndUp,
-              }"
-              small
-              color="primary"
-              @click="submit"
-            >
-              Save
-            </v-btn>
-          </div>
+          <CompanyLogoUpload
+            label="Logo"
+            :src="darkLogoSource"
+            :disabled="isModeView"
+            @input="darkLogoFile = $event"
+          />
+        </v-col>
+        <v-col cols="12" md="7">
+          <v-row>
+            <v-col cols="12" sm="6">
+              <CUTextField
+                label="Name"
+                :rules="[(val) => !!val || 'Name is Required']"
+                v-model="company.name"
+              />
+            </v-col>
+            <v-col cols="12" sm="6">
+              <CUTextField
+                label="DOT"
+                :rules="[(val) => !!val || 'DOT is Required']"
+                v-model="company.dotNumber"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="py-0">
+              <AutocompleteAddress
+                label="Address"
+                :error-messages="formErrors.address"
+                :rules="[(val) => !!val || 'Address is Required']"
+                v-model="address"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="py-0">
+              <CUTextField
+                label="Email"
+                :rules="[(val) => !!val || 'Email is Required']"
+                v-model="company.email"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="py-0">
+              <CUTextField label="Website" v-model="company.websiteUrl" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="py-0">
+              <CUTextField
+                label="Company Phone"
+                v-mask="['(###) ###-####', '+## ## #### ####']"
+                :rules="[
+                  (val) => !!val || 'Company Phone Number is Required',
+                  (val) => validatePhoneNumber(val),
+                ]"
+                v-model="company.phone"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="py-0">
+              <CUTextField
+                label="Dispatch Phone"
+                v-mask="['(###) ###-####', '+## ## #### ####']"
+                :rules="[
+                  (val) => !!val || 'Dispatch Phone Number is Required',
+                  (val) => validatePhoneNumber(val),
+                ]"
+                v-model="company.opsPhone"
+              />
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
-      <v-row
-        class="padding-b-8"
-        align="center"
-        justify-sm="space-between"
-        justify="center"
-      ></v-row>
-      <v-form :disabled="isModeView" ref="form" lazy-validation>
-        <v-row>
-          <v-col
-            cols="12"
-            md="4"
-            :class="{
-              'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
-            }"
-          >
-            <!-- <ProfileIcon entityType="company" :editMode="mode === 'edit'" /> -->
-          </v-col>
-          <v-col cols="12" md="8">
-            <v-row>
-              <v-col cols="12" sm="6" class="py-0">
-                <CUTextField
-                  label="Name"
-                  :rules="[(val) => !!val || 'Name is Required']"
-                  v-model="currentCompany.name"
-                />
-              </v-col>
-              <v-col cols="12" sm="6" class="py-0">
-                <CUTextField
-                  label="DOT"
-                  :rules="[(val) => !!val || 'DOT is Required']"
-                  v-model="currentCompany.dotNumber"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col class="py-0">
-                <AutocompleteAddress
-                  label="Address"
-                  :error-messages="formErrors.address"
-                  :rules="[(val) => !!val || 'Address is Required']"
-                  v-model="address"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col class="py-0">
-                <CUTextField
-                  label="Email"
-                  :rules="[(val) => !!val || 'Email is Required']"
-                  v-model="currentCompany.email"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col class="py-0">
-                <CUTextField
-                  label="Website"
-                  v-model="currentCompany.websiteUrl"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col class="py-0">
-                <CUTextField
-                  label="Company Phone"
-                  v-mask="['(###) ###-####', '+## ## #### ####']"
-                  :rules="[
-                    (val) => !!val || 'Company Phone Number is Required',
-                    (val) => validatePhoneNumber(val),
-                  ]"
-                  v-model="currentCompany.phone"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col class="py-0">
-                <CUTextField
-                  label="Dispatch Phone"
-                  v-mask="['(###) ###-####', '+## ## #### ####']"
-                  :rules="[
-                    (val) => !!val || 'Dispatch Phone Number is Required',
-                    (val) => validatePhoneNumber(val),
-                  ]"
-                  v-model="currentCompany.opsPhone"
-                />
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-form>
-    </v-container>
+    </v-form>
   </div>
 </template>
 
@@ -182,34 +173,57 @@ import auth from '@/store/modules/auth'
 import company from '@/services/company'
 import { Company } from '@/models/dto/Company'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
-import ProfileIcon from '@/components/ProfileIcon.vue'
+import CompanyLogoUpload from '@/components/CompanyLogoUpload.vue'
 import { verifyPhoneLength } from '@/utils/validators'
+import { baseUrl } from '@/utils/env'
 
 @Component({
   components: {
     AutocompleteAddress,
-    ProfileIcon,
+    CompanyLogoUpload,
   },
 })
 export default class CompanyDetail extends Vue {
   notFound = false
   formErrors: Record<string, string[]> = {}
-  currentCompany: Company | Record<string, never> = {}
+  company: Company | Record<string, never> = {}
   companyPhoto = ''
+  darkLogoFile: File | null = null
 
-  mounted(): void {
-    if (this.isModeEdit || this.isModeView) {
-      this.getCurrentCompany()
+  darkLogoSource = ''
+
+  saving = false
+
+  @Watch('darkLogoFile', { deep: true })
+  darkLogoFileChanged(value: File | null): void {
+    if (value) {
+      this.darkLogoSource = URL.createObjectURL(value)
     }
   }
 
-  async getCurrentCompany(): Promise<void> {
+  @Watch('mode')
+  onModeChange(newMode: string): void {
+    if (newMode === 'view') {
+      this.getCompany()
+    }
+  }
+
+  mounted(): void {
+    if (this.isModeEdit || this.isModeView) {
+      this.getCompany()
+    }
+  }
+
+  async getCompany(): Promise<void> {
     try {
       const companyId = auth.getUser.companyId
       if (companyId) {
         const response = await company.byId(companyId)
         const companyResponseData = response.data.company
-        this.currentCompany = companyResponseData as Company
+        this.company = companyResponseData as Company
+        this.darkLogoSource = this.company.darkLogoUrl
+          ? `https://${baseUrl()}${this.company.darkLogoUrl}`
+          : ''
       } else {
         this.notFound = true
         return
@@ -219,13 +233,6 @@ export default class CompanyDetail extends Vue {
       // eslint-disable-next-line no-console
       console.error(e)
       return
-    }
-  }
-
-  @Watch('mode')
-  onModeChange(newMode: string): void {
-    if (newMode === 'edit' || newMode === 'view') {
-      this.getCurrentCompany()
     }
   }
 
@@ -247,11 +254,11 @@ export default class CompanyDetail extends Vue {
   }
 
   get address(): Address {
-    return this.currentCompany?.address
+    return this.company?.address
   }
 
   set address(addr: Address) {
-    this.currentCompany.address = addr
+    this.company.address = addr
   }
 
   validatePhoneNumber(val: string): boolean | string {
@@ -260,8 +267,21 @@ export default class CompanyDetail extends Vue {
 
   async editExistingCompany(): Promise<number> {
     let companyId = Number(auth.getUser.companyId)
-    await company.update(companyId, this.currentCompany as Company)
+    await this.uploadPhotos()
+    await company.update(companyId, this.company as Company)
     return companyId
+  }
+
+  uploadPhotos(): void {
+    if (this.darkLogoFile) {
+      this.uploadBrandingPhoto('dark', this.darkLogoFile)
+    }
+  }
+
+  async uploadBrandingPhoto(type: string, file: File): Promise<void> {
+    const formData = new FormData()
+    formData.append('file', file)
+    await company.uploadBranding(auth.user.companyId, type, formData)
   }
 
   async submit(): Promise<void> {
@@ -279,8 +299,13 @@ export default class CompanyDetail extends Vue {
       ]
       return
     }
-
-    await this.editExistingCompany()
+    this.saving = true
+    try {
+      await this.editExistingCompany()
+    } catch (e) {
+      console.error(e)
+    }
+    this.saving = false
 
     this.$router.push({
       name: 'settings',

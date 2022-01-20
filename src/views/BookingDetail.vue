@@ -25,6 +25,7 @@
           :reservation="reservation"
           :trip="trip"
           :trip-assignments="tripAssignments"
+          :loading="loading"
           @refresh="refresh"
         />
       </v-col>

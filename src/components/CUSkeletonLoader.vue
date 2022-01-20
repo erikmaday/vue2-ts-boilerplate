@@ -29,12 +29,21 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'detail-text') {
       return '16px'
     }
+    if (this.type === 'icon') {
+      return '24px'
+    }
     return '14px'
   }
 
   get computedWidth(): string {
     if (this.width) {
       return this.width
+    }
+    if (this.type === 'icon') {
+      return '24px'
+    }
+    if (this.type === 'avatar') {
+      return this.computedHeight
     }
     return '100%'
   }

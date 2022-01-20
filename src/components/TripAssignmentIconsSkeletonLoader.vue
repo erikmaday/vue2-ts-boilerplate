@@ -36,6 +36,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 @Component
 export default class TripAssignmentIconsSkeletonLoader extends Vue {
   @Prop({ required: false, default: false }) readonly enableMobileView: boolean
-  @Prop({ required: false }) readonly showLabel: boolean
+  @Prop({ required: false, type: Boolean, default: false })
+  readonly showLabel: boolean
 }
 </script>

@@ -40,7 +40,9 @@ export default class CUDataTableFilterButton extends Vue {
     })
 
     EventBus.$on('remove-filter', (e) => {
-      this.filterCount--
+      if (this.filterCount > 0) {
+        this.filterCount--
+      }
     })
   }
 }

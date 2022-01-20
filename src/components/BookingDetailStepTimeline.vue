@@ -2,7 +2,13 @@
   <v-row dense class="font-12 align-end">
     <v-col>
       1/3 Accept or Reject the Job
+      <CUSkeletonLoader
+        v-if="showLoaders"
+        height="8px"
+        classes="border-radius-none"
+      />
       <div
+        v-else
         class="h-8 w-full"
         :class="{
           'background-primary': isAccepted,
@@ -12,7 +18,13 @@
     </v-col>
     <v-col>
       2/3 Assign Drivers and Vehicles
+      <CUSkeletonLoader
+        v-if="showLoaders"
+        height="8px"
+        classes="border-radius-none"
+      />
       <div
+        v-else
         class="h-8 w-full"
         :class="{
           'background-primary': isFullyAssigned,
@@ -22,7 +34,13 @@
     </v-col>
     <v-col>
       3/3 Driver Tracking via Mobile App
+      <CUSkeletonLoader
+        v-if="showLoaders"
+        height="8px"
+        classes="border-radius-none"
+      />
       <div
+        v-else
         class="h-8 w-full"
         :class="{
           'background-primary': isTracked,
@@ -41,10 +59,17 @@ import {
 } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ReferralStatus } from '@/utils/enum'
+import app from '@/store/modules/app'
 @Component
 export default class BookingDetailStepTimeline extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
   @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
+
+  get showLoaders(): boolean {
+    return (
+      !(this.reservation && this.tripAssignments) && app.getAreLoadersEnabled
+    )
+  }
 
   get isAccepted(): boolean {
     return this.reservation?.referralStatus === ReferralStatus.Accepted

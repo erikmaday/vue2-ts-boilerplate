@@ -214,7 +214,7 @@ export const routes: RouteConfig[] = [
             children: [
               {
                 path: 'settings',
-                name: 'settings',
+                name: '',
                 component: () =>
                   import(
                     /* webpackChunkName: "company-settings" */ '@/views/Empty.vue'
@@ -236,7 +236,7 @@ export const routes: RouteConfig[] = [
           },
           {
             path: 'marketplace',
-            name: 'marketplace',
+            name: '',
             component: () => import('@/views/Empty.vue'),
             children: [
               {
@@ -259,7 +259,7 @@ export const routes: RouteConfig[] = [
           },
           {
             path: 'bookings',
-            name: 'bookings',
+            name: '',
             component: () => import('@/views/Empty.vue'),
             children: [
               {

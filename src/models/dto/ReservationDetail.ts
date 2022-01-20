@@ -1,6 +1,7 @@
 import { VehicleType } from './Vehicle'
 import { Type } from './Type'
 import { Address } from './Address'
+import { Journey } from './Journey'
 
 export interface ReservationDetail {
   reservationId: number
@@ -71,7 +72,7 @@ export interface ReservationDetail {
   stops: ReservationDetailStop[]
   reservationComments: ReservationDetailComment[]
   reservationTickets?: any
-  journeys: any[]
+  journeys: Journey[]
   transactions: any[]
   paymentsSummary: PaymentSummary[]
   companyAmenityDTO: CompanyAmenity[]

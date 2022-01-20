@@ -15,12 +15,7 @@
           Add New
         </v-btn>
       </v-col>
-      <v-col class="shrink">
-        <v-btn color="primary" small @click="isFilterDialogOpen = true">
-          <CUIcon color="white" class="margin-r-2">filter</CUIcon>
-          Filter
-        </v-btn>
-      </v-col>
+      <CUDataTableFilterButton v-model="isFilterDialogOpen" />
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -39,6 +34,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
+import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import garage from '@/services/garage'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
@@ -48,7 +44,7 @@ import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
 
 @Component({
-  components: { Main, CUCollectionTable, CUDataTableFilters },
+  components: { Main, CUCollectionTable, CUDataTableFilters, CUDataTableFilterButton },
 })
 export default class GaragesList extends Vue {
   isFilterDialogOpen = false

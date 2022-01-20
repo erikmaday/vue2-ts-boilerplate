@@ -14,12 +14,7 @@
     >
       <template slot="filter-row">
         <v-spacer />
-        <v-col class="shrink">
-          <v-btn color="primary" small @click="isFilterDialogOpen = true">
-            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
-            Filter
-          </v-btn>
-        </v-col>
+        <CUDataTableFilterButton v-model="isFilterDialogOpen" />
       </template>
     </CUCollectionTable>
   </Main>
@@ -30,6 +25,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
+import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import MarketplaceListBidPrice from '@/components/MarketplaceListBidPrice.vue'
 import MarketplaceListExpiration from '@/components/MarketplaceListExpiration.vue'
 import { ActionColumn } from '@/models/ActionColumn'
@@ -42,8 +38,16 @@ import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
 import { datePredefined } from '@/data/predefined'
+import { EventBus } from '@/utils/eventBus'
 
-@Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
+@Component({
+  components: {
+    Main,
+    CUDataTableFilters,
+    CUCollectionTable,
+    CUDataTableFilterButton,
+  },
+})
 export default class Marketplace extends Vue {
   tableView = trip.tableView
   isFilterDialogOpen = false

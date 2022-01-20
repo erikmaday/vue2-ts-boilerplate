@@ -16,12 +16,7 @@
     >
       <template slot="filter-row">
         <v-spacer />
-        <v-col class="shrink">
-          <v-btn color="primary" small @click="isFilterDialogOpen = true">
-            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
-            Filter
-          </v-btn>
-        </v-col>
+        <CUDataTableFilterButton v-model="isFilterDialogOpen" />
       </template>
     </CUCollectionTable>
     <CUModal v-model="isDialogOpen">
@@ -56,10 +51,12 @@ import { Vue, Component } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
+import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
+import { processPredefined } from '@/utils/predefined'
 import reservation from '@/services/reservation'
 import { Reservation } from '@/models/dto'
 import {
@@ -80,9 +77,16 @@ import {
   ReferralStatus,
 } from '@/utils/enum'
 import { EventBus } from '@/utils/eventBus'
-import { datePredefined } from '@/data/predefined'
+import { datePredefined, noFutureDatesPredefined } from '@/data/predefined'
 
-@Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
+@Component({
+  components: {
+    Main,
+    CUDataTableFilters,
+    CUCollectionTable,
+    CUDataTableFilterButton,
+  },
+})
 export default class Bookings extends Vue {
   isFilterDialogOpen = false
   sorts: any = sort()
@@ -116,6 +120,18 @@ export default class Bookings extends Vue {
       sortProp: 'managedId',
     },
     {
+      _t_id: '5u19cdg8-itum-tj1u-1z5d-hr5lh70mdusu',
+      text: 'Booked On',
+      value: 'createdOn',
+      filterable: true,
+      filterProp: 'createdOn',
+      sortable: true,
+      sortProp: 'createdOn',
+      type: 'date',
+      predefined: processPredefined(noFutureDatesPredefined),
+      hidden: true,
+    },
+    {
       _t_id: 'c6a51018-3361-4f70-90b0-43caebe3d1f8',
       text: 'Pickup/Destination',
       value: ['firstPickupAddressName', 'firstDropoffAddressName'],
@@ -138,7 +154,7 @@ export default class Bookings extends Vue {
       type: 'date',
       computedText: (row: Reservation): string =>
         this.formatReservationStartDate(row),
-      predefined: datePredefined,
+      predefined: processPredefined(datePredefined),
     },
     {
       _t_id: '15e7ecc8-849f-446a-9522-12ca049133fc',

@@ -79,7 +79,7 @@
         v-else
         v-model="pagination"
         active-color="white"
-        inactive-color="black"
+        color="black"
         hover-color="gray-light"
         :items="tripBundles"
       />
@@ -227,7 +227,7 @@ export default class TodayMarketplace extends Vue {
     return dayjs().utc()
   }
 
-  async mounted(): Promise<void> {
+  mounted(): void {
     this.cardsLoading = true
     this.establishFilters()
     this.establishSorts()

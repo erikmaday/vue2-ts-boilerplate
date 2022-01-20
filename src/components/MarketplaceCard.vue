@@ -59,7 +59,7 @@
           v-if="tripsList.length > 1"
           v-model="pagination"
           active-color="gray-light"
-          inactive-color="gray-border"
+          color="gray-border"
           hover-color="gray-mid-light"
           :items="tripsList"
         />

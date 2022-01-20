@@ -1,14 +1,52 @@
 <template>
   <div class="d-inline-flex">
+    <v-hover v-slot:default="{ hover }">
+      <div>
+        <button
+          @click="previous"
+          :hidden="allDotsAreVisible"
+          :disabled="isFirstPage"
+          class="mr-4 transition-all transition-duration-100"
+        >
+          <CUIcon
+            :color="arrowColor(hover)"
+            :class="{
+              'transparent--text': isFirstPage,
+            }"
+          >
+            arrow_left
+          </CUIcon>
+        </button>
+      </div>
+    </v-hover>
     <PaginationDot
-      v-for="(page, pageIndex) in pagesCount"
-      :key="`page-${pageIndex}`"
-      :active="activeIndex === pageIndex"
+      v-for="(page, dotIndex) in visibleItems"
+      :key="`page-${page}-dot-${dotIndex}`"
+      :active="value.currentPage === page"
       :active-color="activeColor"
-      :inactive-color="inactiveColor"
+      :color="color"
       :hover-color="hoverColor"
       @click="handlePageChange(page)"
     />
+    <v-hover v-slot:default="{ hover }">
+      <div>
+        <button
+          @click="next"
+          :hidden="allDotsAreVisible"
+          :disabled="isLastPage"
+          class="ml-4 transition-all transition-duration-100"
+        >
+          <CUIcon
+            :color="arrowColor(hover)"
+            :class="{
+              'transparent--text': isLastPage,
+            }"
+          >
+            arrow_right
+          </CUIcon>
+        </button>
+      </div>
+    </v-hover>
   </div>
 </template>
 
@@ -28,7 +66,8 @@ export default class Pagination extends Vue {
   @Prop() readonly items!: any[]
   @Prop({ default: 'primary' }) readonly activeColor?: string
   @Prop({ default: 'gray-mid-light' }) readonly hoverColor?: string
-  @Prop({ default: 'gray-border' }) readonly inactiveColor?: string
+  @Prop({ default: 'gray-border' }) readonly color?: string
+  @Prop({ default: 5 }) readonly totalVisible?: number
 
   @Watch('breakpointName', { immediate: true })
   didBreakpointChange(breakpoint: string): void {
@@ -61,14 +100,77 @@ export default class Pagination extends Vue {
     return this.$vuetify.breakpoint.name
   }
 
-  get activeIndex(): number {
-    return this.value.currentPage - 1
+  get allDotsAreVisible(): boolean {
+    return this.pagesCount < this.totalVisible
+  }
+
+  get isFirstPage(): boolean {
+    return this.value.currentPage === 1
+  }
+
+  get isLastPage(): boolean {
+    return this.value.currentPage === this.pagesCount
+  }
+
+  get visibleItems(): (string | number)[] {
+    /* 
+    a modified version of a function implemented in v-pagination from here:
+    https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/components/VPagination/VPagination.ts
+    */
+    if (this.allDotsAreVisible) {
+      return this.range(1, this.pagesCount)
+    }
+
+    const currentPage = this.value.currentPage
+
+    const even = this.totalVisible % 2 === 0 ? 1 : 0
+    const left = Math.floor(this.totalVisible / 2)
+    const right = this.pagesCount - left + 1 + even
+
+    if (currentPage > left && currentPage < right) {
+      const start = currentPage - left
+      const end = currentPage + left - even
+
+      return this.range(start, end)
+    } else if (currentPage >= right) {
+      const start = this.pagesCount - this.totalVisible + 1
+      return this.range(start, this.pagesCount)
+    } else {
+      return this.range(1, this.totalVisible)
+    }
+  }
+
+  range(from: number, to: number): number[] {
+    const range = []
+
+    from = from > 0 ? from : 1
+
+    for (let i = from; i <= to; i++) {
+      range.push(i)
+    }
+
+    return range
   }
 
   handlePageChange(page: number): void {
     const valueCopy = deepClone(this.value)
     valueCopy.currentPage = page
     this.$emit('change', valueCopy)
+  }
+
+  next(): void {
+    this.handlePageChange(this.value.currentPage + 1)
+  }
+
+  previous(): void {
+    this.handlePageChange(this.value.currentPage - 1)
+  }
+
+  arrowColor(hover: boolean): string {
+    if (hover) {
+      return this.hoverColor
+    }
+    return this.color
   }
 }
 </script>

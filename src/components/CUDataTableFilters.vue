@@ -401,17 +401,21 @@ export default class CUDataTableFilters extends Vue {
     if (!filter) {
       return
     }
-    const activeFilter = this.activePredefinedFilters.find(
-      (pf) => pf?.column?._t_id === column._t_id
-    )
-    if (activeFilter) {
-      this.activePredefinedFilters.splice(
-        this.activePredefinedFilters.indexOf(activeFilter),
-        1
+    if (this.activePredefinedFilters) {
+      const activeFilter = this.activePredefinedFilters.find(
+        (pf) => pf?.column?._t_id === column._t_id
       )
+      if (activeFilter) {
+        this.activePredefinedFilters.splice(
+          this.activePredefinedFilters.indexOf(activeFilter),
+          1
+        )
+      }
     }
-    for (const c of column?.predefined) {
-      c.active = false
+    if (column?.predefined) {
+      for (const c of column?.predefined) {
+        c.active = false
+      }
     }
 
     for (const f of this.filters.parents()) {

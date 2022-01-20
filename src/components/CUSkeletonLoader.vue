@@ -20,6 +20,9 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'button') {
       return '40px'
     }
+    if (this.type === 'h1') {
+      return '29px'
+    }
     if (this.type === 'text') {
       return '18px'
     }

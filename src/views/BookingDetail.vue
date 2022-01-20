@@ -1,16 +1,19 @@
 <template>
   <Main>
+    <v-switch v-model="loading" />
     <v-row>
       <v-col cols="12">
         <BookingDetailStepTimeline
           :reservation="reservation"
           :trip-assignments="tripAssignments"
+          :loading="showLoaders"
         />
       </v-col>
       <v-col cols="12">
         <BookingDetailHeader
           :reservation="reservation"
           :trip-assignments="tripAssignments"
+          :loading="showLoaders"
           @refresh="refresh"
         />
       </v-col>
@@ -82,6 +85,7 @@ import tripAssignments from '@/services/tripAssignment'
 import trip from '@/services/trip'
 import { ReferralStatus } from '@/utils/enum'
 import { EventBus } from '@/utils/eventBus'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -103,6 +107,7 @@ export default class BookingDetail extends Vue {
   reservation: ReservationDetail | null = null
   trip: Trip | null = null
   tripAssignments: VehicleAssignment[] = []
+  loading = false
 
   @Watch('id', { immediate: true })
   valueChanged(): void {
@@ -111,7 +116,16 @@ export default class BookingDetail extends Vue {
     }
   }
 
+  get isAccepted(): boolean {
+    return this.reservation?.referralStatus === ReferralStatus.Accepted
+  }
+
+  get showLoaders(): boolean {
+    return this.loading && app.areLoadersEnabled
+  }
+
   created(): void {
+    this.loading = true
     this.id = parseInt(this.$route.params.id)
   }
 
@@ -121,9 +135,11 @@ export default class BookingDetail extends Vue {
   }
 
   async refresh(): Promise<void> {
+    this.loading = true
     await this.getReservation()
     this.getTripAssignments()
     this.getTrip()
+    this.loading = false
   }
 
   async getReservation(): Promise<void> {
@@ -145,10 +161,6 @@ export default class BookingDetail extends Vue {
         this.reservation = reservationResponse.data
       }
     }
-  }
-
-  get isAccepted(): boolean {
-    return this.reservation?.referralStatus === ReferralStatus.Accepted
   }
 
   async getTrip(): Promise<void> {

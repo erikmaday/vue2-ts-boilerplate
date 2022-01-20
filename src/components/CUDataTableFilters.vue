@@ -149,6 +149,7 @@
       </template>
       <template #actions>
         <v-spacer />
+        <v-btn color="primary" small text @click="clear">Clear</v-btn>
         <v-btn color="primary" small @click="close">Close</v-btn>
       </template>
     </CUModal>
@@ -432,10 +433,12 @@ export default class CUDataTableFilters extends Vue {
 
   updateFilterCriteria(filterValue: any, _t_id: string): void {
     const matchingFilter = this.findFilterById(_t_id)
-    if (filterValue?.target) {
-      matchingFilter.value = filterValue?.target?.value
-    } else {
-      matchingFilter.value = filterValue
+    if (matchingFilter) {
+      if (filterValue?.target) {
+        matchingFilter.value = filterValue?.target?.value
+      } else {
+        matchingFilter.value = filterValue
+      }
     }
     this.handleFilterAdded()
   }
@@ -530,6 +533,16 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
+  isTabFilter(filter: TableViewFilter): boolean {
+    return !!this.tabs.find((tab) => tab.column._t_id === filter.column._t_id)
+  }
+
+  isInitialFilter(filter: TableViewFilter): boolean {
+    return !!this.initialFilters.find(
+      (initialFilter) => initialFilter.column._t_id === filter.column._t_id
+    )
+  }
+
   initSort(column: DataTableColumn): void {
     const sortProp = column.sortProp || column.value
     this.currentSort.key = uuidv4()
@@ -537,12 +550,7 @@ export default class CUDataTableFilters extends Vue {
       if (this.currentSort.direction === 'desc') {
         this.currentSort.direction = 'asc'
       } else if (this.currentSort.direction === 'asc') {
-        this.sorts.remove()
-        this.currentSort = {
-          prop: undefined,
-          direction: undefined,
-        }
-        this.initiateDefaultSort()
+        this.clearSorts()
       } else {
         this.currentSort.direction = 'desc'
       }
@@ -558,6 +566,32 @@ export default class CUDataTableFilters extends Vue {
     }
     this.sorts.add(this.currentSort)
     this.$emit('update:sorts', this.sorts)
+  }
+
+  clearSorts(): void {
+    this.sorts.remove()
+    this.currentSort = {
+      prop: undefined,
+      direction: undefined,
+    }
+    this.initiateDefaultSort()
+  }
+
+  clearAddedFilters(): void {
+    let initialFilterList = []
+    for (const filter of this.tableFilterList) {
+      const isInitialFilter = this.isInitialFilter(filter)
+      const isCurrentTab = this.isTabFilter(filter)
+      if (isInitialFilter || isCurrentTab) {
+        initialFilterList.push(filter)
+      } else {
+        this.unsetFilter(filter.column)
+      }
+    }
+    for (const chip of this.chips) {
+      this.unsetChipFilter(chip)
+    }
+    this.tableFilterList = initialFilterList
   }
 
   handleFilterAdded(): void {
@@ -583,6 +617,13 @@ export default class CUDataTableFilters extends Vue {
     } else {
       this.debounce = setTimeout(() => EventBus.$emit('refresh-tableview'), 500)
     }
+  }
+
+  clear(): void {
+    this.clearSorts()
+    this.clearAddedFilters()
+
+    this.close()
   }
 
   close(): void {

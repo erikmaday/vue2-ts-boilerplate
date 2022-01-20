@@ -112,14 +112,15 @@
                     v-if="
                       column.predefined &&
                       isFilterActive(column) &&
-                      activePredefinedFilter &&
-                      activePredefinedFilter.selectedPredefined
+                      activePredefinedFilter(column) &&
+                      activePredefinedFilter(column).selectedPredefined
                     "
                   >
                     <v-col
                       cols="6"
-                      v-for="(control, controlIndex) in activePredefinedFilter
-                        .selectedPredefined.controls"
+                      v-for="(control, controlIndex) in activePredefinedFilter(
+                        column
+                      ).selectedPredefined.controls"
                       :key="`${controlIndex}-${column._t_id}-${control.text}-col`"
                     >
                       <label class="font-14">
@@ -222,10 +223,23 @@ export default class CUDataTableFilters extends Vue {
     direction: undefined,
   }
   debounce: any = null
-  activePredefinedFilter: any = {}
+  activePredefinedFilters = []
 
   mounted(): void {
+    for (const column of this.columns) {
+      if (column?.predefined) {
+        for (const p of column.predefined) {
+          p.active = false
+        }
+      }
+    }
     this.initiateDefaultSort()
+  }
+
+  activePredefinedFilter(column: any): any {
+    return this.activePredefinedFilters.find(
+      (pf) => pf.column._t_id === column._t_id
+    )
   }
 
   isTabActive(tab: TableViewTab): boolean {
@@ -312,7 +326,16 @@ export default class CUDataTableFilters extends Vue {
         valueRef.displayValue = this.$dayjs(valueRef.value).format('YYYY-MM-DD')
       }
     }
-    this.activePredefinedFilter = { ...filter }
+    const findActiveFilter = this.activePredefinedFilters.find(
+      (pf) => pf.parent == filter.parent
+    )
+    if (findActiveFilter) {
+      this.activePredefinedFilters.splice(
+        this.activePredefinedFilters.indexOf(findActiveFilter),
+        1
+      )
+    }
+    this.activePredefinedFilters.push(filter)
     if (predefinedFilter.refreshOnSelect) {
       this.handleFilterAdded()
     }
@@ -378,9 +401,19 @@ export default class CUDataTableFilters extends Vue {
     if (!filter) {
       return
     }
-    if (this.activePredefinedFilter?.column?._t_id === column._t_id) {
-      this.activePredefinedFilter = undefined
+    const activeFilter = this.activePredefinedFilters.find(
+      (pf) => pf?.column?._t_id === column._t_id
+    )
+    if (activeFilter) {
+      this.activePredefinedFilters.splice(
+        this.activePredefinedFilters.indexOf(activeFilter),
+        1
+      )
     }
+    for (const c of column?.predefined) {
+      c.active = false
+    }
+
     for (const f of this.filters.parents()) {
       for (const c of this.filters.children(f)) {
         if (filter.column._t_id === c.stepParent) {

@@ -1,19 +1,23 @@
 <template>
   <div class="d-inline-flex">
     <v-hover v-slot:default="{ hover }">
-      <button
-        @click="previous"
-        :hidden="pagesCount <= totalVisible"
-        :disabled="value.currentPage === 1"
-        class="mr-4"
-      >
-        <CUIcon
-        :color="hover ? hoverColor : inactiveColor"
-        :class="{
-          'transparent--text': value.currentPage === 1,
-        }"
-        >arrow_left</CUIcon>
-      </button>
+      <div>
+        <button
+          @click="previous"
+          :hidden="pagesCount <= totalVisible"
+          :disabled="value.currentPage === 1"
+          class="mr-4"
+        >
+          <CUIcon
+            :color="arrowColor(hover)"
+            :class="{
+              'transparent--text': value.currentPage === 1,
+            }"
+          >
+            arrow_left
+          </CUIcon>
+        </button>
+      </div>
     </v-hover>
     <PaginationDot
       v-for="(page, dotIndex) in visibleItems"
@@ -25,18 +29,23 @@
       @click="handlePageChange(page)"
     />
     <v-hover v-slot:default="{ hover }">
-      <button
-        @click="next"
-        :hidden="pagesCount <= totalVisible"
-        :disabled="value.currentPage === pagesCount"
-        class="ml-4"
-      >
-        <CUIcon :color="hover ? hoverColor : inactiveColor"
-        :class="{
-          'transparent--text': value.currentPage === pagesCount,
-        }"
-        >arrow_right</CUIcon>
-      </button>
+      <div>
+        <button
+          @click="next"
+          :hidden="pagesCount <= totalVisible"
+          :disabled="value.currentPage === pagesCount"
+          class="ml-4"
+        >
+          <CUIcon
+            :color="arrowColor(hover)"
+            :class="{
+              'transparent--text': value.currentPage === pagesCount,
+            }"
+          >
+            arrow_right
+          </CUIcon>
+        </button>
+      </div>
     </v-hover>
   </div>
 </template>
@@ -140,6 +149,12 @@ export default class Pagination extends Vue {
   }
   previous(): void {
     this.handlePageChange(this.value.currentPage - 1)
+  }
+  arrowColor(hover: boolean): string {
+    if (hover) {
+      return this.hoverColor
+    }
+    return this.inactiveColor
   }
 }
 </script>

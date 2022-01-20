@@ -70,6 +70,7 @@ import { RawLocation } from 'vue-router'
 import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
 import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
 import {
+  PredefinedFilter,
   TableViewChip,
   TableViewFilter,
   TableViewTab,
@@ -81,6 +82,8 @@ import {
 } from '@/utils/enum'
 import { EventBus } from '@/utils/eventBus'
 import { datePredefined, noFutureDatesPredefined } from '@/data/predefined'
+import deepClone from '@/utils/deepClone'
+import { v4 as uuidv4 } from 'uuid'
 
 @Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
 export default class Bookings extends Vue {
@@ -91,6 +94,17 @@ export default class Bookings extends Vue {
   isDialogOpen = false
   rejectNote = ''
   currentReservationId = -1
+
+  get noFutureDatesPredefined(): PredefinedFilter[] {
+    const processedPredefined = deepClone(noFutureDatesPredefined)
+    for (const predefined of processedPredefined) {
+      for (const control of predefined.controls) {
+        control._t_id = uuidv4()
+      }
+      predefined._t_id = uuidv4()
+    }
+    return processedPredefined
+  }
 
   mounted(): void {
     EventBus.$on('reject-booking', (e) => {
@@ -117,14 +131,14 @@ export default class Bookings extends Vue {
     },
     {
       _t_id: '5u19cdg8-itum-tj1u-1z5d-hr5lh70mdusu',
-      text: 'Created On',
+      text: 'Booked On',
       value: 'createdOn',
       filterable: true,
       filterProp: 'createdOn',
       sortable: true,
-      sortProp: 'startDate',
+      sortProp: 'createdOn',
       type: 'date',
-      predefined: noFutureDatesPredefined,
+      predefined: this.noFutureDatesPredefined,
       hidden: true,
     },
     {

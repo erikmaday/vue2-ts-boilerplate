@@ -16,12 +16,7 @@
     >
       <template slot="filter-row">
         <v-spacer />
-        <v-col class="shrink">
-          <v-btn color="primary" small @click="isFilterDialogOpen = true">
-            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
-            Filter
-          </v-btn>
-        </v-col>
+        <CUDataTableFilterButton v-model="isFilterDialogOpen" />
       </template>
     </CUCollectionTable>
     <CUModal v-model="isDialogOpen">
@@ -56,6 +51,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
+import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { sort } from '@/utils/sort'
@@ -82,7 +78,14 @@ import {
 import { EventBus } from '@/utils/eventBus'
 import { datePredefined } from '@/data/predefined'
 
-@Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
+@Component({
+  components: {
+    Main,
+    CUDataTableFilters,
+    CUCollectionTable,
+    CUDataTableFilterButton,
+  },
+})
 export default class Bookings extends Vue {
   isFilterDialogOpen = false
   sorts: any = sort()

@@ -7,7 +7,7 @@
       <v-form ref="token-form">
         <p class="margin-b-4">
           Where do I find this?
-          <a :href="eldInformation[eldCredentialTypeId].supportUrl" target="_blank">
+          <a :href="supportUrl" target="_blank">
             Click here to learn more
           </a>
         </p>
@@ -15,15 +15,15 @@
           <CUTextField
             type="password"
             dense
-            :value="accessToken"
+            value="placeholdertoken"
             disabled
-            :label="'Current ' + eldInformation[eldCredentialTypeId].accessTokenLabel"
+            :label="'Current ' + accessTokenLabel"
           />
         </div>
         <CUPasswordField
           dense
           v-model="newAccessToken"
-          :label="'New ' + eldInformation[eldCredentialTypeId].accessTokenLabel"
+          :label="'New ' + accessTokenLabel"
           :rules="[(val) => isNotEmptyInput(val) || 'This field is required']"
         />
       </v-form>
@@ -77,6 +77,14 @@ export default class CompanyIntegrationModal extends Vue {
 
   get credentialIsExisting(): boolean {
     return this.eldCredentialsId != null
+  }
+
+  get supportUrl(): string {
+    return this.eldInformation[this.eldCredentialTypeId].supportUrl
+  }
+
+  get accessTokenLabel(): string {
+    return this.eldInformation[this.eldCredentialTypeId].accessTokenLabel
   }
 
   async submit(): Promise<void> {

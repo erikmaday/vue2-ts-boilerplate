@@ -6,13 +6,7 @@
           v-for="(tab, tabIndex) in tabs"
           :id="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
           :key="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
-          class="
-            margin-x-3
-            padding-y-1
-            font-14 font-medium
-            text-gray-light
-            border-t-0 border-x-0 border-b-2 border-solid border-transparent
-          "
+          class="margin-x-3 padding-y-1 font-14 font-medium text-gray-light border-t-0 border-x-0 border-b-2 border-solid border-transparent"
           :class="{
             'text-primary border-primary': isTabActive(tab) && !tab.isLocked,
             'hover:border-gray-light': !isTabActive(tab) && !tab.isLocked,
@@ -532,6 +526,16 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
+  isTabFilter(filter: TableViewFilter): boolean {
+    return !!this.tabs.find((tab) => tab.column._t_id === filter.column._t_id)
+  }
+
+  isInitialFilter(filter: TableViewFilter): boolean {
+    return !!this.initialFilters.find(
+      (initialFilter) => initialFilter.column._t_id === filter.column._t_id
+    )
+  }
+
   initSort(column: DataTableColumn): void {
     const sortProp = column.sortProp || column.value
     this.currentSort.key = uuidv4()
@@ -569,13 +573,12 @@ export default class CUDataTableFilters extends Vue {
   clearAddedFilters(): void {
     let initialFilterList = []
     for (const filter of this.tableFilterList) {
-      const isInitialFilter = this.initialFilters.find(
-        (initialFilter) => initialFilter.column._t_id === filter.column._t_id
-      )
-      const isCurrentTab = filter.column.value === 'reservationStatus'
-
+      const isInitialFilter = this.isInitialFilter(filter)
+      const isCurrentTab = this.isTabFilter(filter)
       if (isInitialFilter || isCurrentTab) {
         initialFilterList.push(filter)
+      } else {
+        this.unsetFilter(filter.column)
       }
     }
     for (const chip of this.chips) {

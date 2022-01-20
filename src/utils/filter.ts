@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PredefinedFilter } from '@/models/TableView'
 import { v4 as uuidv4 } from 'uuid'
-import deepClone from '@/utils/deepClone'
 
 interface Filter {
   column: { _t_id: string }
@@ -332,19 +330,7 @@ export function filter(): any {
       .join('&')
   }
 
-  function processPredefined(set): PredefinedFilter[] {
-    const processedPredefined = deepClone(set)
-    for (const predefined of processedPredefined) {
-      for (const control of predefined.controls) {
-        control._t_id = uuidv4()
-      }
-      predefined._t_id = uuidv4()
-    }
-    return processedPredefined
-  }
-
   return {
-    processPredefined,
     asQueryParams,
     createParent,
     parents,

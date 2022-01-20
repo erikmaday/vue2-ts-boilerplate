@@ -63,14 +63,24 @@
               >
                 search
               </CUIcon>
-              <CUIcon
-                v-if="column.filterable && isFilterActive(column)"
-                class="cursor-pointer text-gray-mid-light hover:text-gray-light"
-                :key="`${column.text}-${columnIndex}-filter-deactivate`"
-                @click="unsetFilter(column)"
-              >
-                close
-              </CUIcon>
+              <template v-if="column.filterable && isFilterActive(column)">
+                <CUIcon
+                  v-if="column.predefined"
+                  class="cursor-pointer text-gray-mid-light hover:text-gray-light"
+                  :key="`${column.text}-${columnIndex}-filter-deactivate`"
+                  @click="unsetPredefinedFilter(column)"
+                >
+                  close
+                </CUIcon>
+                <CUIcon
+                  v-if="!column.predefined"
+                  class="cursor-pointer text-gray-mid-light hover:text-gray-light"
+                  :key="`${column.text}-${columnIndex}-filter-deactivate`"
+                  @click="unsetFilter(column)"
+                >
+                  close
+                </CUIcon>
+              </template>
             </v-col>
             <v-col class="shrink padding-x-0">
               <CUIcon
@@ -87,20 +97,25 @@
                 {{ getColumnSortIcon(column) }}
               </CUIcon>
             </v-col>
-            <v-col v-if="column.predefined && isFilterActive(column)" cols="12">
-              <v-chip
-                v-for="(
-                  predefinedFilter, predefinedFilterIndex
-                ) in column.predefined"
-                :outlined="!predefinedFilter.active"
-                :key="predefinedFilterIndex"
-                color="primary"
-                class="margin-r-2 margin-b-2"
-                @click="selectPredefined(column, predefinedFilter)"
+            <v-expand-transition>
+              <v-col
+                v-if="column.predefined && isFilterActive(column)"
+                cols="12"
               >
-                {{ predefinedFilter.text }}
-              </v-chip>
-            </v-col>
+                <v-chip
+                  v-for="(
+                    predefinedFilter, predefinedFilterIndex
+                  ) in column.predefined"
+                  :outlined="!predefinedFilter.active"
+                  :key="predefinedFilterIndex"
+                  color="primary"
+                  class="margin-r-2 margin-b-2"
+                  @click="selectPredefined(column, predefinedFilter)"
+                >
+                  {{ predefinedFilter.text }}
+                </v-chip>
+              </v-col>
+            </v-expand-transition>
             <v-expand-transition>
               <v-col
                 v-if="column.filterable && isFilterActive(column)"
@@ -412,11 +427,6 @@ export default class CUDataTableFilters extends Vue {
         )
       }
     }
-    if (column?.predefined) {
-      for (const c of column?.predefined) {
-        c.active = false
-      }
-    }
 
     for (const f of this.filters.parents()) {
       for (const c of this.filters.children(f)) {
@@ -442,6 +452,13 @@ export default class CUDataTableFilters extends Vue {
       // }
       this.handleFilterRemoved()
     })
+  }
+
+  unsetPredefinedFilter(column: DataTableColumn): void {
+    for (const c of column?.predefined) {
+      c.active = false
+    }
+    this.unsetFilter(column)
   }
 
   unsetPeerFilters(filter: any): void {

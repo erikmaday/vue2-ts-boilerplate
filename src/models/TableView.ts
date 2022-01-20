@@ -30,7 +30,6 @@ export interface TableViewChip {
   _t_id: string
   text: string
   values: TableViewFilter[]
-  predefined?: PredefinedFilter[]
 }
 
 export interface TodayFilterChip {

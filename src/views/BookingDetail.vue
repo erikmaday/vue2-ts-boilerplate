@@ -31,7 +31,7 @@
       </v-col>
 
       <v-col cols="12">
-        <BookingDetailMap v-if="reservation" :reservation="reservation" />
+        <BookingDetailMap :reservation="reservation" :loading="loading" />
       </v-col>
       <v-col cols="12">
         <BookingDetailItinerary v-if="reservation" :reservation="reservation" />

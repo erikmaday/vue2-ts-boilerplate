@@ -1,13 +1,20 @@
 <template>
   <div class="d-inline-flex">
-    <button
-      @click="previous"
-      :hidden="pagesCount <= totalVisible"
-      type="button"
-      :disabled="value.currentPage <= 1"
-    >
-      <CUIcon>arrow_left</CUIcon>
-    </button>
+    <v-hover v-slot:default="{ hover }">
+      <button
+        @click="previous"
+        :hidden="pagesCount <= totalVisible"
+        :disabled="value.currentPage === 1"
+        class="mr-4"
+      >
+        <CUIcon
+        :color="hover ? hoverColor : inactiveColor"
+        :class="{
+          'transparent--text': value.currentPage === 1,
+        }"
+        >arrow_left</CUIcon>
+      </button>
+    </v-hover>
     <PaginationDot
       v-for="(page, dotIndex) in visibleItems"
       :key="`page-${page}-dot-${dotIndex}`"
@@ -17,14 +24,20 @@
       :hover-color="hoverColor"
       @click="handlePageChange(page)"
     />
-    <button
-      @click="next"
-      :hidden="pagesCount <= totalVisible"
-      type="button"
-      :disabled="value.currentPage === pagesCount"
-    >
-      <CUIcon>arrow_right</CUIcon>
-    </button>
+    <v-hover v-slot:default="{ hover }">
+      <button
+        @click="next"
+        :hidden="pagesCount <= totalVisible"
+        :disabled="value.currentPage === pagesCount"
+        class="ml-4"
+      >
+        <CUIcon :color="hover ? hoverColor : inactiveColor"
+        :class="{
+          'transparent--text': value.currentPage === pagesCount,
+        }"
+        >arrow_right</CUIcon>
+      </button>
+    </v-hover>
   </div>
 </template>
 

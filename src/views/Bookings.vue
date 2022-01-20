@@ -60,6 +60,7 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
+import { processPredefined } from '@/utils/predefined'
 import reservation from '@/services/reservation'
 import { Reservation } from '@/models/dto'
 import {
@@ -124,7 +125,7 @@ export default class Bookings extends Vue {
       sortable: true,
       sortProp: 'createdOn',
       type: 'date',
-      predefined: this.filters.processPredefined(noFutureDatesPredefined),
+      predefined: processPredefined(noFutureDatesPredefined),
       hidden: true,
     },
     {
@@ -150,7 +151,7 @@ export default class Bookings extends Vue {
       type: 'date',
       computedText: (row: Reservation): string =>
         this.formatReservationStartDate(row),
-      predefined: this.filters.processPredefined(datePredefined),
+      predefined: processPredefined(datePredefined),
     },
     {
       _t_id: '15e7ecc8-849f-446a-9522-12ca049133fc',

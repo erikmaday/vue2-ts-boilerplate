@@ -143,6 +143,16 @@ const reservationFilters: { [key: string]: TableViewFilter } = {
     },
     value: currentTimestamp().subtract(1, 'day').local().format('YYYY-MM-DD'),
   },
+  createdOnToday: {
+    column: {
+      _t_id: '95zmug2y-n8pb-4psy-35bi-uvjuta93gs3p',
+      value: 'createdOn',
+      filterType: 'gte',
+      text: '',
+      type: 'date',
+    },
+    value: currentTimestamp().local().format('YYYY-MM-DD'),
+  }
 }
 
 export default reservationFilters

@@ -15,6 +15,7 @@ import MainWithSidebar from '@/layouts/MainWithSidebar.vue'
 import { Vue, Component } from 'vue-property-decorator'
 import MainWithSidebarNavigation from '@/components/MainWithSidebarNavigation.vue'
 import CompanyDetail from '@/views/CompanyDetail.vue'
+import CompanyIntegration from '@/views/CompanyIntegration.vue'
 import { SidebarLink } from '@/models/SidebarLink'
 import { toTitle } from '@/utils/string'
 
@@ -23,6 +24,7 @@ import { toTitle } from '@/utils/string'
     MainWithSidebarNavigation,
     MainWithSidebar,
     CompanyDetail,
+    CompanyIntegration,
   },
 })
 export default class Company extends Vue {
@@ -34,6 +36,13 @@ export default class Company extends Vue {
       name: 'settings',
       component: CompanyDetail,
       icon: 'business',
+    },
+    {
+      label: 'Integrations',
+      href: '',
+      name: 'integrations',
+      component: CompanyIntegration,
+      icon: 'settings_gear',
     },
   ]
 

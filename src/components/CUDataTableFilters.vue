@@ -63,14 +63,24 @@
               >
                 search
               </CUIcon>
-              <CUIcon
-                v-if="column.filterable && isFilterActive(column)"
-                class="cursor-pointer text-gray-mid-light hover:text-gray-light"
-                :key="`${column.text}-${columnIndex}-filter-deactivate`"
-                @click="unsetFilter(column)"
-              >
-                close
-              </CUIcon>
+              <template v-if="column.filterable && isFilterActive(column)">
+                <CUIcon
+                  v-if="column.predefined"
+                  class="cursor-pointer text-gray-mid-light hover:text-gray-light"
+                  :key="`${column.text}-${columnIndex}-filter-deactivate`"
+                  @click="unsetPredefinedFilter(column)"
+                >
+                  close
+                </CUIcon>
+                <CUIcon
+                  v-if="!column.predefined"
+                  class="cursor-pointer text-gray-mid-light hover:text-gray-light"
+                  :key="`${column.text}-${columnIndex}-filter-deactivate`"
+                  @click="unsetFilter(column)"
+                >
+                  close
+                </CUIcon>
+              </template>
             </v-col>
             <v-col class="shrink padding-x-0">
               <CUIcon
@@ -87,20 +97,25 @@
                 {{ getColumnSortIcon(column) }}
               </CUIcon>
             </v-col>
-            <v-col v-if="column.predefined && isFilterActive(column)" cols="12">
-              <v-chip
-                v-for="(
-                  predefinedFilter, predefinedFilterIndex
-                ) in column.predefined"
-                :outlined="!predefinedFilter.active"
-                :key="predefinedFilterIndex"
-                color="primary"
-                class="margin-r-2 margin-b-2"
-                @click="selectPredefined(column, predefinedFilter)"
+            <v-expand-transition>
+              <v-col
+                v-if="column.predefined && isFilterActive(column)"
+                cols="12"
               >
-                {{ predefinedFilter.text }}
-              </v-chip>
-            </v-col>
+                <v-chip
+                  v-for="(
+                    predefinedFilter, predefinedFilterIndex
+                  ) in column.predefined"
+                  :outlined="!predefinedFilter.active"
+                  :key="predefinedFilterIndex"
+                  color="primary"
+                  class="margin-r-2 margin-b-2"
+                  @click="selectPredefined(column, predefinedFilter)"
+                >
+                  {{ predefinedFilter.text }}
+                </v-chip>
+              </v-col>
+            </v-expand-transition>
             <v-expand-transition>
               <v-col
                 v-if="column.filterable && isFilterActive(column)"
@@ -112,14 +127,15 @@
                     v-if="
                       column.predefined &&
                       isFilterActive(column) &&
-                      activePredefinedFilter &&
-                      activePredefinedFilter.selectedPredefined
+                      activePredefinedFilter(column) &&
+                      activePredefinedFilter(column).selectedPredefined
                     "
                   >
                     <v-col
                       cols="6"
-                      v-for="(control, controlIndex) in activePredefinedFilter
-                        .selectedPredefined.controls"
+                      v-for="(control, controlIndex) in activePredefinedFilter(
+                        column
+                      ).selectedPredefined.controls"
                       :key="`${controlIndex}-${column._t_id}-${control.text}-col`"
                     >
                       <label class="font-14">
@@ -149,6 +165,7 @@
       </template>
       <template #actions>
         <v-spacer />
+        <v-btn color="primary" small text @click="clear">Clear</v-btn>
         <v-btn color="primary" small @click="close">Close</v-btn>
       </template>
     </CUModal>
@@ -222,10 +239,23 @@ export default class CUDataTableFilters extends Vue {
     direction: undefined,
   }
   debounce: any = null
-  activePredefinedFilter: any = {}
+  activePredefinedFilters = []
 
   mounted(): void {
+    for (const column of this.columns) {
+      if (column?.predefined) {
+        for (const p of column.predefined) {
+          p.active = false
+        }
+      }
+    }
     this.initiateDefaultSort()
+  }
+
+  activePredefinedFilter(column: any): any {
+    return this.activePredefinedFilters.find(
+      (pf) => pf.column._t_id === column._t_id
+    )
   }
 
   isTabActive(tab: TableViewTab): boolean {
@@ -312,7 +342,16 @@ export default class CUDataTableFilters extends Vue {
         valueRef.displayValue = this.$dayjs(valueRef.value).format('YYYY-MM-DD')
       }
     }
-    this.activePredefinedFilter = { ...filter }
+    const findActiveFilter = this.activePredefinedFilters.find(
+      (pf) => pf.parent == filter.parent
+    )
+    if (findActiveFilter) {
+      this.activePredefinedFilters.splice(
+        this.activePredefinedFilters.indexOf(findActiveFilter),
+        1
+      )
+    }
+    this.activePredefinedFilters.push(filter)
     if (predefinedFilter.refreshOnSelect) {
       this.handleFilterAdded()
     }
@@ -328,6 +367,7 @@ export default class CUDataTableFilters extends Vue {
       }
       this.tableFilterList.push({ column: { ...chip } })
       this.handleFilterAdded()
+      EventBus.$emit('add-filter')
     } else {
       this.unsetChipFilter(chip)
     }
@@ -368,6 +408,9 @@ export default class CUDataTableFilters extends Vue {
         this.filters.and(newFilter).add(newFilter)
         this.$emit('update:filters', this.filters)
       }
+      if (this.isOpen) {
+        EventBus.$emit('add-filter')
+      }
     }
   }
 
@@ -378,9 +421,18 @@ export default class CUDataTableFilters extends Vue {
     if (!filter) {
       return
     }
-    if (this.activePredefinedFilter?.column?._t_id === column._t_id) {
-      this.activePredefinedFilter = undefined
+    if (this.activePredefinedFilters) {
+      const activeFilter = this.activePredefinedFilters.find(
+        (pf) => pf?.column?._t_id === column._t_id
+      )
+      if (activeFilter) {
+        this.activePredefinedFilters.splice(
+          this.activePredefinedFilters.indexOf(activeFilter),
+          1
+        )
+      }
     }
+
     for (const f of this.filters.parents()) {
       for (const c of this.filters.children(f)) {
         if (filter.column._t_id === c.stepParent) {
@@ -391,6 +443,9 @@ export default class CUDataTableFilters extends Vue {
     }
     this.unsetPeerFilters(filter)
     this.filters.remove(filter)
+    if (this.isOpen) {
+      EventBus.$emit('remove-filter')
+    }
     this.$emit('update:filters', this.filters)
     this.$nextTick(() => {
       this.tableFilterList = this.tableFilterList.filter(
@@ -405,6 +460,13 @@ export default class CUDataTableFilters extends Vue {
       // }
       this.handleFilterRemoved()
     })
+  }
+
+  unsetPredefinedFilter(column: DataTableColumn): void {
+    for (const c of column?.predefined) {
+      c.active = false
+    }
+    this.unsetFilter(column)
   }
 
   unsetPeerFilters(filter: any): void {
@@ -425,10 +487,12 @@ export default class CUDataTableFilters extends Vue {
 
   updateFilterCriteria(filterValue: any, _t_id: string): void {
     const matchingFilter = this.findFilterById(_t_id)
-    if (filterValue?.target) {
-      matchingFilter.value = filterValue?.target?.value
-    } else {
-      matchingFilter.value = filterValue
+    if (matchingFilter) {
+      if (filterValue?.target) {
+        matchingFilter.value = filterValue?.target?.value
+      } else {
+        matchingFilter.value = filterValue
+      }
     }
     this.handleFilterAdded()
   }
@@ -523,6 +587,16 @@ export default class CUDataTableFilters extends Vue {
     }
   }
 
+  isTabFilter(filter: TableViewFilter): boolean {
+    return !!this.tabs.find((tab) => tab.column._t_id === filter.column._t_id)
+  }
+
+  isInitialFilter(filter: TableViewFilter): boolean {
+    return !!this.initialFilters.find(
+      (initialFilter) => initialFilter.column._t_id === filter.column._t_id
+    )
+  }
+
   initSort(column: DataTableColumn): void {
     const sortProp = column.sortProp || column.value
     this.currentSort.key = uuidv4()
@@ -530,12 +604,7 @@ export default class CUDataTableFilters extends Vue {
       if (this.currentSort.direction === 'desc') {
         this.currentSort.direction = 'asc'
       } else if (this.currentSort.direction === 'asc') {
-        this.sorts.remove()
-        this.currentSort = {
-          prop: undefined,
-          direction: undefined,
-        }
-        this.initiateDefaultSort()
+        this.clearSorts()
       } else {
         this.currentSort.direction = 'desc'
       }
@@ -551,6 +620,32 @@ export default class CUDataTableFilters extends Vue {
     }
     this.sorts.add(this.currentSort)
     this.$emit('update:sorts', this.sorts)
+  }
+
+  clearSorts(): void {
+    this.sorts.remove()
+    this.currentSort = {
+      prop: undefined,
+      direction: undefined,
+    }
+    this.initiateDefaultSort()
+  }
+
+  clearAddedFilters(): void {
+    let initialFilterList = []
+    for (const filter of this.tableFilterList) {
+      const isInitialFilter = this.isInitialFilter(filter)
+      const isCurrentTab = this.isTabFilter(filter)
+      if (isInitialFilter || isCurrentTab) {
+        initialFilterList.push(filter)
+      } else {
+        this.unsetFilter(filter.column)
+      }
+    }
+    for (const chip of this.chips) {
+      this.unsetChipFilter(chip)
+    }
+    this.tableFilterList = initialFilterList
   }
 
   handleFilterAdded(): void {
@@ -576,6 +671,13 @@ export default class CUDataTableFilters extends Vue {
     } else {
       this.debounce = setTimeout(() => EventBus.$emit('refresh-tableview'), 500)
     }
+  }
+
+  clear(): void {
+    this.clearSorts()
+    this.clearAddedFilters()
+
+    this.close()
   }
 
   close(): void {

@@ -9,13 +9,13 @@
             <CUIcon
               height="32px"
               width="32px"
-              :color="dark ? 'white' : 'gray-light'"
+              :color="dark ? 'white' : 'black'"
             >
               {{ icon }}
             </CUIcon>
           </v-col>
           <v-col cols="12" class="padding-t-0">
-            <p :class="{ 'text-white': dark, 'text-gray-light': !dark }">{{ message }}</p>
+            <p :class="{ 'text-white': dark, 'text-black': !dark }">{{ message }}</p>
           </v-col>
         </v-row>
       </div>

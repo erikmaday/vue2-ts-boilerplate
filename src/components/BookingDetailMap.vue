@@ -14,9 +14,10 @@ import { mapStyles } from '@/data/mapStyles'
 import { gmapApi } from 'vue2-google-maps'
 import { ReservationDetail, VehicleDetailEntity } from '@/models/dto'
 import upcoming from '@/assets/images/stopIcons/upcoming.png'
-import inprogress from '@/assets/images/stopIcons/inprogress.png'
-import completed from '@/assets/images/stopIcons/completed.png'
-import last from '@/assets/images/stopIcons/last.png'
+// UNCOMMENT THIS WHEN WE WANT TO START SHOWING STOP STATUS IN THE MAP
+// import inprogress from '@/assets/images/stopIcons/inprogress.png'
+// import completed from '@/assets/images/stopIcons/completed.png'
+// import last from '@/assets/images/stopIcons/last.png'
 import tracking from '@/services/tracking'
 import { TrackingPoint } from '@/models/dto/Tracking'
 import { toCamel } from '@/utils/string'
@@ -361,12 +362,13 @@ export default class BookingDetailMap extends Vue {
     waypoints: { location: any; stopover: boolean }[],
     waypointIndex: number
   ): any {
-    if (waypointIndex === waypoints.length - 1) {
-      return last
-    }
-    if (waypointIndex === 0) {
-      return inprogress
-    }
+    // UNCOMMENT THIS WHEN WE WANT TO START SHOWING STOP STATUS IN THE MAP
+    // if (waypointIndex === waypoints.length - 1) {
+    //   return last
+    // }
+    // if (waypointIndex === 0) {
+    //   return inprogress
+    // }
     return upcoming
   }
 }

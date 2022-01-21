@@ -12,9 +12,9 @@
           </CUIcon>
         </v-col>
         <BidDetailUnsavedChanges
-          v-if="isUnsavedChangedModalOpen"
+          v-if="showUnsavedChangesWarning"
           @leave-page="goBack(true)"
-          @cancel="isUnsavedChangedModalOpen = false"
+          @cancel="showUnsavedChangesWarning = false"
         />
         <BidDetailMultiSidebar
           v-else-if="isModeMulti && !bidDetail.trip && !loading"
@@ -68,7 +68,7 @@ export default class BidDetail extends Vue {
   formatPickupTime = formatPickupTime
   bidDetail = bidDetail
   loading = false
-  isUnsavedChangedModalOpen = false
+  showUnsavedChangesWarning = false
 
   get isModeMulti(): boolean {
     return bidDetail.getTrips?.length > 1
@@ -132,7 +132,7 @@ export default class BidDetail extends Vue {
       bidDetail.getIsSubmitEnabled &&
       !ignoreUnsavedChanges
     ) {
-      this.isUnsavedChangedModalOpen = true
+      this.showUnsavedChangesWarning = true
     } else {
       this.$router.push(app.getLastRoute)
     }

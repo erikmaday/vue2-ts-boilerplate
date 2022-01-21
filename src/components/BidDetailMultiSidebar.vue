@@ -1,5 +1,11 @@
 <template>
-  <v-col class="grow padding-r-10 padding-b-0">
+  <v-col
+    class="grow padding-r-10"
+    :class="{
+      'padding-b-4': $vuetify.breakpoint.smAndUp,
+      'padding-b-6': $vuetify.breakpoint.xs,
+    }"
+  >
     <MarketplaceCard
       v-for="(trip, tripIndex) in bidDetail.trips"
       :trip="trip"
@@ -14,7 +20,7 @@
       :loading="bidDetail.getSubmitting"
       @click="submit"
     >
-      Submit Bids
+      Submit All Bids
     </v-btn>
     <v-btn
       v-if="!bidDetail.getAreAllSoldOut"

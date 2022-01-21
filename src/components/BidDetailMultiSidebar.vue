@@ -40,7 +40,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
 import bidDetail from '@/store/modules/bidDetail'
-import bid from '@/services/bid'
+import app from '@/store/modules/app'
 
 @Component({ components: { MarketplaceCard } })
 export default class BidDetailMultiSidebar extends Vue {
@@ -48,6 +48,7 @@ export default class BidDetailMultiSidebar extends Vue {
 
   async submit(): Promise<void> {
     await bidDetail.submitMultiTripBids()
+    this.$router.push(app.getLastRoute)
   }
 
   async markSoldOut(): Promise<void> {

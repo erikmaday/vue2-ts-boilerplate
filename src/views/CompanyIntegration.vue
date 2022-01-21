@@ -12,7 +12,7 @@
         class="margin-y-4"
         v-bind="val"
         :eld-credential-type-id="key"
-        @input="val.accessToken = $event"
+        @refresh="initializeCredentials"
       />
     </template>
   </div>

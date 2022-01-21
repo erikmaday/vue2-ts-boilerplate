@@ -123,7 +123,7 @@ export default class TodayMarketplace extends Vue {
   sorts: any = null
 
   params = {
-    pageSize: 24,
+    pageSize: -1,
     page: 1,
     filters: null,
     sorts: null,
@@ -245,11 +245,27 @@ export default class TodayMarketplace extends Vue {
   }
 
   async getAllBidsCount(): Promise<void> {
+    const filters = filter()
+    const parentFilterAnd = filters.createParent('and')
+    const todayOrFuture = {
+      column: {
+        _t_id: 'cca2c222-4622-4b3f-9b5e-de35d2b9b3ff',
+        value: 'startDate',
+        filterType: 'gte',
+        text: '',
+      },
+      value: `${(this as any)
+        .$dayjs()
+        .utc()
+        .format('YYYY-MM-DDTHH:mm:ss.000Z')}`,
+    }
+    filters.add(parentFilterAnd, todayOrFuture)
+
     const response = await trip.tableView({
       page: 1,
       pageSize: 0,
       sorts: null,
-      filters: null,
+      filters: filters.asQueryParams(),
     })
     this.tripCount = response.data.count
   }

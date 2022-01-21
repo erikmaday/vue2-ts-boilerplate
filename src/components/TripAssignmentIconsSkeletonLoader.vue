@@ -4,7 +4,7 @@
       <div class="d-inline-flex margin-l-3 align-center">
         <CUSkeletonLoader
           v-if="showLabel"
-          :classes="['margin-r-5']"
+          classes="margin-r-5"
           width="100px"
           height="20px"
         />
@@ -14,7 +14,7 @@
           height="32px"
           width="32px"
           type="avatar"
-          :classes="['d-inline-flex', 'margin-l-n3']"
+          classes="d-inline-flex margin-l-n3"
         />
       </div>
     </template>
@@ -32,9 +32,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import CUSkeletonLoader from '@/components/CUSkeletonLoader.vue'
 
-@Component({ components: { CUSkeletonLoader } })
+@Component
 export default class TripAssignmentIconsSkeletonLoader extends Vue {
   @Prop({ required: false, default: false }) readonly enableMobileView: boolean
   @Prop({ required: false }) readonly showLabel: boolean

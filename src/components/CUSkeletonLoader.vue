@@ -10,8 +10,8 @@ export default class CUSkeletonLoader extends Vue {
   @Prop({ type: String, default: '', required: false }) readonly type: string
   @Prop({ type: String, default: '', required: false }) readonly width: string
   @Prop({ type: String, default: '', required: false }) readonly height: string
-  @Prop({ type: Array, default: () => [], required: false })
-  readonly classes: string[]
+  @Prop({ type: String, default: () => [], required: false })
+  readonly classes: string
 
   get computedHeight(): string {
     if (this.height) {
@@ -37,16 +37,20 @@ export default class CUSkeletonLoader extends Vue {
   }
 
   get styles(): { [key: string]: string | number } {
-    return {
+    const styles = {
       height: this.computedHeight,
       width: this.computedWidth,
     }
+    if (this.type === 'chip') {
+      styles['border-radius'] = this.computedHeight
+    }
+    return styles
   }
 
-  get computedClasses(): string[] {
-    const classes = deepClone(this.classes)
+  get computedClasses(): string {
+    let classes = deepClone(this.classes)
     if (this.type === 'avatar') {
-      classes.push('border-radius-round')
+      classes = `${classes} border-radius-round`
     }
     return classes
   }

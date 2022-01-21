@@ -72,12 +72,7 @@
         <MarketplaceCard show-pagination :trips="tripBundle" />
       </v-col>
     </v-row>
-    <TodayNotFound
-      v-else
-      :dark="true"
-      message="No bids found"
-      icon="work_off"
-    />
+    <TodayNotFound v-else dark message="No bids found" icon="work_off" />
     <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
       <PaginationSkeletonLoader v-if="showCardLoaders" />
       <Pagination

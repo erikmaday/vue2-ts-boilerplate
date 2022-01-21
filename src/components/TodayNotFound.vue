@@ -29,6 +29,6 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 export default class TodayNotFound extends Vue {
   @Prop({ required: true, type: String }) readonly icon!: string
   @Prop({ required: true, type: String }) readonly message!: string
-  @Prop({ required: false, default: false }) readonly dark!: boolean
+  @Prop({ required: false, type: Boolean, default: false }) readonly dark!: boolean
 }
 </script>

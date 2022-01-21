@@ -7,9 +7,7 @@
       <v-form ref="token-form">
         <p class="margin-b-4">
           Where do I find this?
-          <a :href="supportUrl" target="_blank">
-            Click here to learn more
-          </a>
+          <a :href="supportUrl" target="_blank">Click here to learn more</a>
         </p>
         <div v-if="credentialIsExisting">
           <CUTextField
@@ -24,6 +22,7 @@
           dense
           v-model="newAccessToken"
           :label="'New ' + accessTokenLabel"
+          autocomplete="off"
           :rules="[(val) => isNotEmptyInput(val) || 'This field is required']"
         />
       </v-form>
@@ -88,14 +87,14 @@ export default class CompanyIntegrationModal extends Vue {
   }
 
   async submit(): Promise<void> {
-    const form: any = this.$refs["token-form"]
+    const form: any = this.$refs['token-form']
     if (!form.validate()) {
       return
     }
 
     let payload: any = {
       accessToken: this.newAccessToken,
-      eldCredentialsType: Number(this.eldCredentialTypeId),
+      eldCredentialTypeId: Number(this.eldCredentialTypeId),
       companyId: auth.getUser.companyId,
     }
 
@@ -111,6 +110,7 @@ export default class CompanyIntegrationModal extends Vue {
 
     form.reset()
     this.$emit('input', false)
+    this.$emit('refresh')
   }
 }
 </script>

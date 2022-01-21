@@ -28,7 +28,7 @@
         <CUIcon width="20px" height="20px" color="primary">arrow_right</CUIcon>
       </div>
     </template>
-    <CompanyIntegrationModal v-model="isDialogOpen" v-bind="$props" />
+    <CompanyIntegrationModal v-model="isDialogOpen" v-bind="$props" @refresh="$emit('refresh')" />
   </v-card>
 </template>
 <script lang="ts">

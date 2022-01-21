@@ -3,11 +3,13 @@
     <v-col cols="12">
       <v-row class="align-center">
         <v-col class="shrink">
-          <h3 class="font-18 white-space-nowrap">Comments</h3>
+          <CUSkeletonLoader v-if="loading" type="h3" width="100px" />
+          <h3 v-else class="font-18 white-space-nowrap">Comments</h3>
         </v-col>
         <v-spacer />
         <v-col class="shrink">
-          <v-btn text small color="primary" @click="isDialogOpen = true">
+          <CUSkeletonLoader v-if="loading" type="text-button" width="120px" />
+          <v-btn v-else text small color="primary" @click="isDialogOpen = true">
             Add Comment
           </v-btn>
         </v-col>
@@ -59,11 +61,11 @@
 import { ReservationDetail, ReservationDetailComment } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import reservation from '@/services/reservation'
-import dayjs from 'dayjs'
 
 @Component
 export default class BookingDetailComments extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
+  @Prop({ required: true }) readonly loading!: boolean
 
   isDialogOpen = false
   newComment = ''

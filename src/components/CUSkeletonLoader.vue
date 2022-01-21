@@ -22,8 +22,14 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'button') {
       return '40px'
     }
+    if (this.type === 'text-button') {
+      return '24px'
+    }
     if (this.type === 'h1') {
       return '29px'
+    }
+    if (this.type === 'h3') {
+      return '27px'
     }
     if (this.type === 'text') {
       return '18px'
@@ -68,6 +74,9 @@ export default class CUSkeletonLoader extends Vue {
     }
     if (this.multiply) {
       classes = `${classes} multiply`
+    }
+    if (this.type === 'text-button') {
+      classes = `${classes} margin-y-2`
     }
     return classes
   }

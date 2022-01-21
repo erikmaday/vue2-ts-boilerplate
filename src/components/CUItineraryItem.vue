@@ -1,12 +1,27 @@
 <template>
   <div class="cu-timeline-item d-flex">
     <div class="cu-timeline-item__divider position-relative top-0">
+      <CUSkeletonLoader
+        v-if="loading"
+        width="2px"
+        height="100%"
+        classes="cu-timeline-item__line h-full position-absolute z-0 top-2 left-one-half"
+        style="transform: translateX(-50%)"
+      />
       <div
-        class="cu-timeline-item__line w-2 h-full background-primary position-absolute z-0 top-2 left-one-half"
+        v-else
+        class="cu-timeline-item__line w-2 h-full position-absolute z-0 top-2 left-one-half background-primary"
         style="transform: translateX(-50%)"
       />
       <slot name="icon">
+        <CUSkeletonLoader
+          v-if="loading"
+          type="avatar"
+          height="16px"
+          width="16px"
+        />
         <img
+          v-else
           class="cu-timeline-item__icon h-16 w-16 position-relative top-0"
           :src="icon"
         />
@@ -30,6 +45,7 @@ export default class CUItineraryItem extends Vue {
   @Prop({ default: false }) inProgress: boolean
   @Prop({ default: false }) completed: boolean
   @Prop({ default: false }) lastStop: boolean
+  @Prop({ type: Boolean, default: false, required: false }) loading!: boolean
 
   get icon(): any {
     // UNCOMMENT WHEN WE WANT TO BEGIN SHOWING STOP STATUS ON ITINERARIES AGAIN

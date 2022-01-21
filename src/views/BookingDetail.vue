@@ -1,6 +1,5 @@
 <template>
   <Main>
-    <v-switch v-model="loading" />
     <v-row>
       <v-col cols="12">
         <BookingDetailStepTimeline
@@ -39,7 +38,11 @@
         <BookingDetailMap v-else :reservation="reservation" />
       </v-col>
       <v-col cols="12">
-        <BookingDetailItinerary v-if="reservation" :reservation="reservation" />
+        <BookingDetailItinerary
+          v-if="reservation"
+          :reservation="reservation"
+          :loading="showLoaders"
+        />
       </v-col>
       <v-col cols="12" v-if="reservation && reservation.customerNotes">
         <BookingDetailCustomerNotes :reservation="reservation" />
@@ -59,7 +62,11 @@
         <v-divider />
       </v-col>
       <v-col cols="12">
-        <BookingDetailComments :reservation="reservation" @refresh="refresh" />
+        <BookingDetailComments
+          :reservation="reservation"
+          :loading="showLoaders"
+          @refresh="refresh"
+        />
       </v-col>
       <v-col cols="12">
         <v-divider />
@@ -73,7 +80,7 @@
       <v-col cols="12">
         <v-divider />
       </v-col>
-      <v-col cols="12"><BookingDetailSupport /></v-col>
+      <v-col cols="12"><BookingDetailSupport :loading="showLoaders" /></v-col>
     </v-row>
   </Main>
 </template>

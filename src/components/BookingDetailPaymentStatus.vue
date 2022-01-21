@@ -1,12 +1,13 @@
 <template>
   <v-row>
     <v-col class="shrink">
-      <h3 class="font-18 white-space-nowrap">Payment Status</h3>
+      <CUSkeletonLoader v-if="loading" type="h3" width="135px" />
+      <h3 v-else class="font-18 white-space-nowrap">Payment Status</h3>
     </v-col>
     <v-col class="shrink">
       <CUSkeletonLoader
         v-if="loading"
-        height="24px"
+        height="25px"
         width="64px"
         classes="border-radius-2"
       />

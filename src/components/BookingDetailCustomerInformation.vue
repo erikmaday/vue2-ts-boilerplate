@@ -1,7 +1,8 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <h3 class="font-18 white-space-nowrap">Customer Information</h3>
+      <CUSkeletonLoader v-if="loading" type="h3" width="180px" />
+      <h3 v-else class="font-18 white-space-nowrap">Customer Information</h3>
     </v-col>
     <v-col
       cols="12"

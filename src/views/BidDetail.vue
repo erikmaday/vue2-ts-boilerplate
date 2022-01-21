@@ -6,16 +6,21 @@
           <CUIcon
             color="primary"
             class="margin-t-1 cursor-pointer"
-            @click="goBack"
+            @click="goBack(false)"
           >
             arrow_left
           </CUIcon>
         </v-col>
+        <BidDetailUnsavedChanges
+          v-if="isUnsavedChangedModalOpen"
+          @leave-page="goBack(true)"
+          @cancel="isUnsavedChangedModalOpen = false"
+        />
         <BidDetailMultiSidebar
-          v-if="isModeMulti && !bidDetail.trip && !loading"
+          v-else-if="isModeMulti && !bidDetail.trip && !loading"
         />
         <BidDetailSingleSidebar
-          v-if="bidDetail.getTrip && !loading"
+          v-else-if="bidDetail.getTrip && !loading"
           :trip="bidDetail.getTrip"
           :is-multi-bid="isModeMulti"
         />
@@ -33,6 +38,7 @@ import MapWithSidebar from '@/layouts/MapWithSidebar.vue'
 import BidDetailMap from '@/components/BidDetailMap.vue'
 import BidDetailMultiSidebar from '@/components/BidDetailMultiSidebar.vue'
 import BidDetailSingleSidebar from '@/components/BidDetailSingleSidebar.vue'
+import BidDetailUnsavedChanges from '@/components/BidDetailUnsavedChanges.vue'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
 import { Trip } from '@/models/dto'
 import {
@@ -50,6 +56,7 @@ import bidDetail from '@/store/modules/bidDetail'
     BidDetailMap,
     BidDetailMultiSidebar,
     BidDetailSingleSidebar,
+    BidDetailUnsavedChanges,
   },
 })
 export default class BidDetail extends Vue {
@@ -61,6 +68,7 @@ export default class BidDetail extends Vue {
   formatPickupTime = formatPickupTime
   bidDetail = bidDetail
   loading = false
+  isUnsavedChangedModalOpen = false
 
   get isModeMulti(): boolean {
     return bidDetail.getTrips?.length > 1
@@ -116,9 +124,15 @@ export default class BidDetail extends Vue {
 
   // get all existing bids and store them here
 
-  goBack(): void {
+  goBack(ignoreUnsavedChanges = false): void {
     if (this.isModeMulti && bidDetail.getTrip) {
       bidDetail.deselectTrip()
+    } else if (
+      this.isModeMulti &&
+      bidDetail.getIsSubmitEnabled &&
+      !ignoreUnsavedChanges
+    ) {
+      this.isUnsavedChangedModalOpen = true
     } else {
       this.$router.push(app.getLastRoute)
     }

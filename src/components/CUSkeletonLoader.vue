@@ -12,6 +12,8 @@ export default class CUSkeletonLoader extends Vue {
   @Prop({ type: String, default: '', required: false }) readonly height: string
   @Prop({ type: String, default: '', required: false })
   readonly classes: string
+  @Prop({ type: Boolean, default: false, required: false })
+  readonly multiply: boolean
 
   get computedHeight(): string {
     if (this.height) {
@@ -64,6 +66,9 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'avatar') {
       classes = `${classes} border-radius-round`
     }
+    if (this.multiply) {
+      classes = `${classes} multiply`
+    }
     return classes
   }
 }
@@ -75,6 +80,10 @@ div {
   position: relative;
   overflow: hidden;
   border-radius: $border-radius-root;
+
+  &.multiply {
+    mix-blend-mode: multiply;
+  }
 
   &::after {
     position: absolute;

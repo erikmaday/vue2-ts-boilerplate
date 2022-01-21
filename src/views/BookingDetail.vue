@@ -25,13 +25,18 @@
           :reservation="reservation"
           :trip="trip"
           :trip-assignments="tripAssignments"
-          :loading="loading"
+          :loading="showLoaders"
           @refresh="refresh"
         />
       </v-col>
 
       <v-col cols="12">
-        <BookingDetailMap :reservation="reservation" :loading="loading" />
+        <CUSkeletonLoader
+          v-if="showLoaders"
+          classes="border-radius-none"
+          height="280px"
+        />
+        <BookingDetailMap v-else :reservation="reservation" />
       </v-col>
       <v-col cols="12">
         <BookingDetailItinerary v-if="reservation" :reservation="reservation" />
@@ -44,7 +49,10 @@
           <v-divider />
         </v-col>
         <v-col cols="12">
-          <BookingDetailPaymentStatus :reservation="reservation" />
+          <BookingDetailPaymentStatus
+            :reservation="reservation"
+            :loading="showLoaders"
+          />
         </v-col>
       </template>
       <v-col cols="12">
@@ -57,7 +65,10 @@
         <v-divider />
       </v-col>
       <v-col cols="12">
-        <BookingDetailCustomerInformation :reservation="reservation" />
+        <BookingDetailCustomerInformation
+          :reservation="reservation"
+          :loading="showLoaders"
+        />
       </v-col>
       <v-col cols="12">
         <v-divider />

@@ -1,5 +1,6 @@
 <template>
   <GmapMap
+    v-show="reservation && !loading"
     ref="map"
     :center="center"
     :zoom="10"

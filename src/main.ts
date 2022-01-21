@@ -16,6 +16,7 @@ import CUModal from '@/components/CUModal.vue'
 import CUTextArea from '@/components/CUTextArea.vue'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUDatePicker from '@/components/CUDatePicker.vue'
+import CUPasswordField from '@/components/CUPasswordField.vue'
 
 Vue.use(VueTheMask)
 Vue.component('CUIcon', CUIcon)
@@ -25,6 +26,7 @@ Vue.component('CUSelect', CUSelect)
 Vue.component('CUModal', CUModal)
 Vue.component('CUDataTable', CUDataTable)
 Vue.component('CUDatePicker', CUDatePicker)
+Vue.component('CUPasswordField', CUPasswordField)
 Vue.config.productionTip = false
 
 new Vue({

@@ -232,6 +232,11 @@ export const routes: RouteConfig[] = [
                   },
                 ],
               },
+              {
+                path: 'integrations',
+                name: 'integrations',
+                component: () => import('@/views/Company.vue'),
+              },
             ],
           },
           {

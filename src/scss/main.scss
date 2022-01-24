@@ -510,4 +510,9 @@
       font-size: 16px;
     }
   }
+
+  .border-radius-2x.v-card {
+    border-radius: 9px !important;
+    overflow: hidden;
+  }
 }

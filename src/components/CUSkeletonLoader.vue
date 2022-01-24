@@ -10,8 +10,10 @@ export default class CUSkeletonLoader extends Vue {
   @Prop({ type: String, default: '', required: false }) readonly type: string
   @Prop({ type: String, default: '', required: false }) readonly width: string
   @Prop({ type: String, default: '', required: false }) readonly height: string
-  @Prop({ type: String, default: () => [], required: false })
+  @Prop({ type: String, default: '', required: false })
   readonly classes: string
+  @Prop({ type: Boolean, default: false, required: false })
+  readonly multiply: boolean
 
   get computedHeight(): string {
     if (this.height) {
@@ -20,11 +22,23 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'button') {
       return '40px'
     }
+    if (this.type === 'text-button') {
+      return '24px'
+    }
+    if (this.type === 'h1') {
+      return '29px'
+    }
+    if (this.type === 'h3') {
+      return '27px'
+    }
     if (this.type === 'text') {
       return '18px'
     }
     if (this.type === 'detail-text') {
       return '16px'
+    }
+    if (this.type === 'icon') {
+      return '24px'
     }
     return '14px'
   }
@@ -32,6 +46,12 @@ export default class CUSkeletonLoader extends Vue {
   get computedWidth(): string {
     if (this.width) {
       return this.width
+    }
+    if (this.type === 'icon') {
+      return '24px'
+    }
+    if (this.type === 'avatar') {
+      return this.computedHeight
     }
     return '100%'
   }
@@ -52,6 +72,12 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'avatar') {
       classes = `${classes} border-radius-round`
     }
+    if (this.multiply) {
+      classes = `${classes} multiply`
+    }
+    if (this.type === 'text-button') {
+      classes = `${classes} margin-y-2`
+    }
     return classes
   }
 }
@@ -63,6 +89,10 @@ div {
   position: relative;
   overflow: hidden;
   border-radius: $border-radius-root;
+
+  &.multiply {
+    mix-blend-mode: multiply;
+  }
 
   &::after {
     position: absolute;

@@ -1,10 +1,18 @@
 <template>
   <v-row>
     <v-col class="shrink">
-      <h3 class="font-18 white-space-nowrap">Payment Status</h3>
+      <CUSkeletonLoader v-if="loading" type="h3" width="135px" />
+      <h3 v-else class="font-18 white-space-nowrap">Payment Status</h3>
     </v-col>
     <v-col class="shrink">
+      <CUSkeletonLoader
+        v-if="loading"
+        height="25px"
+        width="64px"
+        classes="border-radius-2"
+      />
       <v-chip
+        v-else
         small
         :color="paymentStatus.color"
         text-color="white"
@@ -18,21 +26,15 @@
         <v-list-item
           v-for="(payment, paymentIndex) in paymentsSummary"
           :key="`payment-${paymentIndex}`"
-          class="
-            border-solid border-gray-border
-            first-of-type:border-radius-top-left-regular
-            first-of-type:border-radius-top-right-regular
-            first-of-type:border-t-1
-            border-r-1 border-l-1 border-b-1 border-t-0
-            last-of-type:font-medium
-            last-of-type:border-radius-bottom-left-regular
-            last-of-type:border-radius-bottom-right-regular
-            last-of-type:background-gray-border
-          "
+          class="border-solid border-gray-border first-of-type:border-radius-top-left-regular first-of-type:border-radius-top-right-regular first-of-type:border-t-1 border-r-1 border-l-1 border-b-1 border-t-0 last-of-type:font-medium last-of-type:border-radius-bottom-left-regular last-of-type:border-radius-bottom-right-regular last-of-type:background-gray-border"
         >
-          <p class="d-flex margin-t-0">{{ payment.label }}</p>
+          <CUSkeletonLoader v-if="loading" type="text" width="125px" multiply />
+          <p v-else class="d-flex margin-t-0">{{ payment.label }}</p>
           <v-spacer />
-          <p class="d-flex margin-t-0">{{ currencyFilter(payment.amount) }}</p>
+          <CUSkeletonLoader v-if="loading" type="text" width="125px" multiply />
+          <p v-else class="d-flex margin-t-0">
+            {{ currencyFilter(payment.amount) }}
+          </p>
         </v-list-item>
       </v-list>
     </v-col>
@@ -49,6 +51,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 @Component
 export default class BookingDetailPaymentStatus extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
+  @Prop({ required: true }) readonly loading!: boolean
 
   get paymentStatus(): ColoredMessage {
     let status = {

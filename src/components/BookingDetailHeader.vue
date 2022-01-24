@@ -1,31 +1,27 @@
 <template>
   <v-row class="align-center">
     <v-col cols="auto">
+      <CUSkeletonLoader
+        v-if="loading"
+        type="detail-text"
+        width="80px"
+        classes="margin-y-1"
+      />
       <span
-        class="
-          d-flex-inline
-          flex-shrink-1
-          white-space-nowrap
-          font-14
-          margin-r-3
-        "
+        v-else
+        class="d-flex-inline flex-shrink-1 white-space-nowrap font-14 margin-r-3"
       >
         <span class="text-gray-light">ID</span>
         {{ reservationId }}
       </span>
       <span
-        v-if="actionMessage"
-        class="
-          d-flex-inline
-          flex-shrink-1
-          white-space-nowrap
-          font-medium
-          text-error
-        "
+        v-if="actionMessage & !loading"
+        class="d-flex-inline flex-shrink-1 white-space-nowrap font-medium text-error"
       >
         {{ actionMessage }}
       </span>
-      <h1 class="margin-b-0">
+      <CUSkeletonLoader v-if="loading" width="220px" type="h1" />
+      <h1 v-else class="margin-b-0">
         {{ firstPickupCity }} to {{ firstDropoffCity }}
       </h1>
     </v-col>
@@ -76,7 +72,6 @@ import {
   ReservationDetail,
   RequiredVehicleType,
   VehicleAssignment,
-  Stop,
   ReservationDetailStop,
 } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
@@ -85,6 +80,7 @@ import reservation from '@/services/reservation'
 
 @Component
 export default class BookingDetailHeader extends Vue {
+  @Prop({ required: true }) readonly loading!: boolean
   @Prop({ required: true }) readonly reservation!: ReservationDetail
   @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
 

@@ -1,7 +1,8 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <h3 class="font-18 white-space-nowrap">Customer Information</h3>
+      <CUSkeletonLoader v-if="loading" type="h3" width="180px" />
+      <h3 v-else class="font-18 white-space-nowrap">Customer Information</h3>
     </v-col>
     <v-col
       cols="12"
@@ -10,8 +11,14 @@
     >
       <v-row>
         <v-col cols="auto">
+          <CUSkeletonLoader
+            v-if="loading"
+            type="avatar"
+            width="88px"
+            height="88px"
+          />
           <img
-            v-if="customerImage"
+            v-else-if="customerImage"
             :src="customerImage"
             class="border-radius-round max-h-88 max-w-88"
             width="auto"
@@ -32,10 +39,23 @@
           </div>
         </v-col>
         <v-col cols="auto">
-          <p class="font-16 font-medium">
+          <CUSkeletonLoader
+            v-if="loading"
+            width="80px"
+            type="text"
+            classes="margin-t-3"
+          />
+          <p v-else class="font-16 font-medium">
             {{ name }}
           </p>
+          <CUSkeletonLoader
+            v-if="loading"
+            type="text"
+            width="110px"
+            classes="margin-t-3"
+          />
           <button
+            v-else
             class="font-16 text-primary font-medium padding-x-0 margin-t-2"
             @click="emailCustomer"
           >
@@ -47,12 +67,36 @@
     <v-col cols="12" md="auto">
       <v-row>
         <v-col cols="auto">
-          <p class="font-16 text-gray-mid-light">Email</p>
-          <p class="font-medium">{{ email }}</p>
+          <CUSkeletonLoader
+            v-if="loading"
+            type="text"
+            width="80px"
+            classes="margin-t-3"
+          />
+          <p v-else class="font-16 text-gray-mid-light">Email</p>
+          <CUSkeletonLoader
+            v-if="loading"
+            type="text"
+            width="200px"
+            classes="margin-t-3"
+          />
+          <p v-else class="font-medium">{{ email }}</p>
         </v-col>
         <v-col cols="auto">
-          <p class="font-16 text-gray-mid-light">Phone</p>
-          <p class="font-medium">{{ phone }}</p>
+          <CUSkeletonLoader
+            v-if="loading"
+            width="80px"
+            type="text"
+            classes="margin-t-3"
+          />
+          <p v-else class="font-16 text-gray-mid-light">Phone</p>
+          <CUSkeletonLoader
+            v-if="loading"
+            width="150px"
+            type="text"
+            classes="margin-t-3"
+          />
+          <p v-else class="font-medium">{{ phone }}</p>
         </v-col>
       </v-row>
     </v-col>
@@ -67,6 +111,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 @Component
 export default class BookingDetailCustomerInformation extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
+  @Prop({ required: true }) readonly loading!: boolean
 
   get customerImage(): string {
     const customerImage = ''

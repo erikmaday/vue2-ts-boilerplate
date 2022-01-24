@@ -64,6 +64,7 @@ export default class CUCollectionTable extends Vue {
   actions!: ActionColumn[]
   @Prop({ type: String, required: false }) itemKey!: string
   @Prop(Function) fetchMethod!: any
+  @Prop({ type: Function, required: false }) detailMethod!: any
   @Prop({ required: false, default: () => filter() }) filters: any
   @Prop({ required: false, default: () => sort() }) sorts: any
   @Prop({ required: false, default: () => [] })
@@ -125,6 +126,12 @@ export default class CUCollectionTable extends Vue {
       this.serverItemsLength = data.count
 
       const items: unknown[] = data.resultList
+
+      if (this.detailMethod) {
+        for (const item of items) {
+          await this.detailMethod(item)
+        }
+      }
 
       this.items = items.map((item: any) => {
         const obj = { id: item[this.itemKey] }

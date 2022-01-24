@@ -3,10 +3,11 @@
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
-      item-key="vehicleId"
-      collection="vehicles"
+      item-key="tripId"
+      collection="trips"
       :initial-filters="initialFilters"
       :fetch-method="tableView"
+      :detail-method="detailMethod"
       :tabs="tabs"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :key="`marketplace-list`"
@@ -32,13 +33,13 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
-import { Reservation, TableViewTrip } from '@/models/dto'
+import { Bid, TableViewTrip } from '@/models/dto'
 import { pluralize } from '@/utils/string'
 import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
 import { datePredefined } from '@/data/predefined'
-import { EventBus } from '@/utils/eventBus'
+import auth from '@/store/modules/auth'
 
 @Component({
   components: {
@@ -60,8 +61,11 @@ export default class Marketplace extends Vue {
       text: 'Trip ID',
       value: 'tripId',
       sortProp: 'tripId',
+      filterable: true,
+      filterProp: 'tripId',
+      filterType: 'eq',
       defaultSort: true,
-      hidden: true,
+      // hidden: true,
     },
     {
       _t_id: '755e663f-0126-4f31-a642-94b90dfc81cc',
@@ -112,6 +116,11 @@ export default class Marketplace extends Vue {
       component: MarketplaceListBidPrice,
     },
     {
+      _t_id: 'a53b52fa-d708-4411-8ef6-e8416efe3bdb',
+      text: 'Total Trips',
+      value: 'totalTrips',
+    },
+    {
       _t_id: '47345e11-754c-480b-a415-133569a01347',
       text: '',
       value: 'details',
@@ -122,6 +131,24 @@ export default class Marketplace extends Vue {
       text: '',
       value: 'actions',
       type: 'actions',
+    },
+  ]
+
+  actions: ActionColumn[] = [
+    {
+      displayText: 'Details',
+      key: 'details',
+      color: 'primary',
+      icon: '',
+      confirmModal: false,
+      ariaLabel: 'View Booking Details',
+      isDetail: true,
+      detailRoute: (row: TableViewTrip): RawLocation => {
+        return {
+          name: 'bid-detail',
+          params: { id: String(row.quoteId) },
+        }
+      },
     },
   ]
 
@@ -228,22 +255,27 @@ export default class Marketplace extends Vue {
     return string
   }
 
-  actions: ActionColumn[] = [
-    {
-      displayText: 'Details',
-      key: 'details',
-      color: 'primary',
-      icon: '',
-      confirmModal: false,
-      ariaLabel: 'View Booking Details',
-      isDetail: true,
-      detailRoute: (row: TableViewTrip): RawLocation => {
-        return {
-          name: 'bid-detail',
-          params: { id: String(row.quoteId) },
+  async detailMethod(row: TableViewTrip): Promise<void> {
+    const params = {
+      page: 1,
+      pageSize: -1,
+      sorts: undefined,
+      filters: undefined,
+    }
+    const response = await trip.tableView(params, row.quoteId.toString())
+    const allTrips = response.data.resultList
+
+    let totalBidAmount = 0
+    for (let trip of allTrips) {
+      totalBidAmount = trip.bids.reduce((sum, bid: Bid) => {
+        if (bid.active && bid.companyId === auth.getUser.companyId) {
+          sum += bid.bidAmount
         }
-      },
-    },
-  ]
+        return sum
+      }, totalBidAmount)
+    }
+    row.totalBidAmount = totalBidAmount
+    row.totalTrips = response.data.count
+  }
 }
 </script>

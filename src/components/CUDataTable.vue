@@ -31,7 +31,7 @@
           >
             <CUDataTableCell
               :column="col"
-              :key="`data-table-cell-${col.value}-${colIndex}-${index}`"
+              :key="`data-table-cell-${col.value}-${colIndex}-${index}-${item[itemKey]}`"
               :row="item"
               :row-index="index"
               :actions="actions"

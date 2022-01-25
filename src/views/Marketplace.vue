@@ -14,12 +14,7 @@
     >
       <template slot="filter-row">
         <v-spacer />
-        <v-col class="shrink">
-          <v-btn color="primary" small @click="isFilterDialogOpen = true">
-            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
-            Filter
-          </v-btn>
-        </v-col>
+        <CUDataTableFilterButton v-model="isFilterDialogOpen" />
       </template>
     </CUCollectionTable>
   </Main>
@@ -30,6 +25,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
+import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import MarketplaceListBidPrice from '@/components/MarketplaceListBidPrice.vue'
 import MarketplaceListExpiration from '@/components/MarketplaceListExpiration.vue'
 import { ActionColumn } from '@/models/ActionColumn'
@@ -41,8 +37,17 @@ import { pluralize } from '@/utils/string'
 import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
+import { datePredefined } from '@/data/predefined'
+import { EventBus } from '@/utils/eventBus'
 
-@Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
+@Component({
+  components: {
+    Main,
+    CUDataTableFilters,
+    CUCollectionTable,
+    CUDataTableFilterButton,
+  },
+})
 export default class Marketplace extends Vue {
   tableView = trip.tableView
   isFilterDialogOpen = false
@@ -69,10 +74,13 @@ export default class Marketplace extends Vue {
       _t_id: 'a40e2a3e-25d7-4f1f-bff0-d0296d7a0d25',
       text: 'Pickup Date',
       value: 'startDate',
+      filterable: true,
+      filterProp: 'startDate',
       sortable: true,
       sortProp: 'startDate',
       computedText: (row: TableViewTrip): string =>
         this.formatReservationStartDate(row),
+      predefined: datePredefined,
     },
     {
       _t_id: '2c1660f9-ba0a-46b8-8ee5-32ec50728901',

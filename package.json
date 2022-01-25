@@ -18,6 +18,7 @@
     "chart.js": "^3.6.2",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.7",
+    "deep-pluck-ref": "^1.2.0",
     "simple-object-path": "^1.1.0",
     "uuid": "^8.3.2",
     "v-money": "^0.8.1",

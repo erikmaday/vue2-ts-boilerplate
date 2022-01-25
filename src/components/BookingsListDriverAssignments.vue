@@ -1,8 +1,15 @@
 <template>
-  <DriverAssignmentIcons
-    v-if="!needsAcceptance"
-    :reservation="row"
-  />
+  <div
+    :class="{
+      'w-full margin-t-3': $vuetify.breakpoint.xs,
+    }"
+  >
+    <DriverAssignmentIcons
+      :reservation="row"
+      :enable-mobile-view="true"
+      v-if="!needsAcceptance"
+    />
+  </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'

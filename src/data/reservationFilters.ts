@@ -57,21 +57,21 @@ const reservationFilters: { [key: string]: TableViewFilter } = {
     column: {
       _t_id: '3716f4e0-ee25-4426-9493-9cce6547475d',
       value: 'assignedDriverPercentage',
-      filterType: 'lte',
+      filterType: 'lt',
       text: '',
       type: 'number',
     },
-    value: 99.99,
+    value: 100,
   },
   needsVehicleAssignment: {
     column: {
       _t_id: '348a7adb-72ee-4da5-8134-753263c7663c',
       value: 'assignedVehiclePercentage',
-      filterType: 'lte',
+      filterType: 'lt',
       text: '',
       type: 'number',
     },
-    value: 99.99,
+    value: 100,
   },
   isFinished: {
     column: {
@@ -143,6 +143,16 @@ const reservationFilters: { [key: string]: TableViewFilter } = {
     },
     value: currentTimestamp().subtract(1, 'day').local().format('YYYY-MM-DD'),
   },
+  createdOnToday: {
+    column: {
+      _t_id: '95zmug2y-n8pb-4psy-35bi-uvjuta93gs3p',
+      value: 'createdOn',
+      filterType: 'gte',
+      text: '',
+      type: 'date',
+    },
+    value: currentTimestamp().local().format('YYYY-MM-DD'),
+  }
 }
 
 export default reservationFilters

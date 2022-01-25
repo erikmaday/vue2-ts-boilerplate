@@ -1,9 +1,17 @@
 <template>
-  <div>
+  <div
+    :class="{
+      'w-full margin-t-3': $vuetify.breakpoint.xs,
+    }"
+  >
     <p v-if="needsAcceptance" class="font-medium text-red margin-t-0">
       Needs Acceptance
     </p>
-    <VehicleAssignmentIcons v-else :reservation="row" />
+    <VehicleAssignmentIcons
+      :reservation="row"
+      :enable-mobile-view="true"
+      v-if="!needsAcceptance"
+    />
   </div>
 </template>
 <script lang="ts">

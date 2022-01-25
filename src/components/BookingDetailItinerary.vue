@@ -1,5 +1,6 @@
 <template>
-  <CUItinerary>
+  <CUItinerarySkeletonLoader :count="4" v-if="loading" />
+  <CUItinerary v-else>
     <CUItineraryItem
       v-for="(stop, stopIndex) in stops"
       :key="`stop-${stopIndex}-${stop.stopId}`"
@@ -32,10 +33,14 @@ import {
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import CUItinerary from '@/components/CUItinerary.vue'
 import CUItineraryItem from '@/components/CUItineraryItem.vue'
+import CUItinerarySkeletonLoader from '@/components/CUItinerarySkeletonLoader.vue'
 
-@Component({ components: { CUItinerary, CUItineraryItem } })
+@Component({
+  components: { CUItinerary, CUItineraryItem, CUItinerarySkeletonLoader },
+})
 export default class BookingDetailHeader extends Vue {
   @Prop({ required: true }) readonly reservation!: ReservationDetail
+  @Prop({ required: true }) readonly loading!: boolean
 
   get stops(): ReservationDetailStop[] {
     return this.reservation.stops

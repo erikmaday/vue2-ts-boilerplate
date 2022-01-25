@@ -10,17 +10,13 @@
       :initial-filters="initialFilters"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :tabs="tabs"
+      :chips="chips"
       :key="`bookings-list`"
       no-data-text="No bookings found"
     >
       <template slot="filter-row">
         <v-spacer />
-        <v-col class="shrink">
-          <v-btn color="primary" small @click="isFilterDialogOpen = true">
-            <CUIcon color="white" class="margin-r-2">filter</CUIcon>
-            Filter
-          </v-btn>
-        </v-col>
+        <CUDataTableFilterButton v-model="isFilterDialogOpen" />
       </template>
     </CUCollectionTable>
     <CUModal v-model="isDialogOpen">
@@ -55,10 +51,12 @@ import { Vue, Component } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
+import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
+import { processPredefined } from '@/utils/predefined'
 import reservation from '@/services/reservation'
 import { Reservation } from '@/models/dto'
 import {
@@ -68,15 +66,27 @@ import {
 import { RawLocation } from 'vue-router'
 import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
 import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
-import { TableViewFilter, TableViewTab } from '@/models/TableView'
+import {
+  TableViewChip,
+  TableViewFilter,
+  TableViewTab,
+} from '@/models/TableView'
 import {
   ReservationStatus,
   ReservationType,
   ReferralStatus,
 } from '@/utils/enum'
 import { EventBus } from '@/utils/eventBus'
+import { datePredefined, noFutureDatesPredefined } from '@/data/predefined'
 
-@Component({ components: { Main, CUDataTableFilters, CUCollectionTable } })
+@Component({
+  components: {
+    Main,
+    CUDataTableFilters,
+    CUCollectionTable,
+    CUDataTableFilterButton,
+  },
+})
 export default class Bookings extends Vue {
   isFilterDialogOpen = false
   sorts: any = sort()
@@ -110,9 +120,21 @@ export default class Bookings extends Vue {
       sortProp: 'managedId',
     },
     {
+      _t_id: '5u19cdg8-itum-tj1u-1z5d-hr5lh70mdusu',
+      text: 'Booked On',
+      value: 'createdOn',
+      filterable: true,
+      filterProp: 'createdOn',
+      sortable: true,
+      sortProp: 'createdOn',
+      type: 'date',
+      predefined: processPredefined(noFutureDatesPredefined),
+      hidden: true,
+    },
+    {
       _t_id: 'c6a51018-3361-4f70-90b0-43caebe3d1f8',
       text: 'Pickup/Destination',
-      value: 'firstPickupAddressName',
+      value: ['firstPickupAddressName', 'firstDropoffAddressName'],
       filterable: true,
       sortable: true,
       filterProp: ['firstPickupAddressName', 'firstDropoffAddressName'],
@@ -125,10 +147,14 @@ export default class Bookings extends Vue {
       _t_id: '34b9d398-4bc9-4678-bbeb-470ecbec4133',
       text: 'Pickup Date',
       value: 'startDate',
+      filterable: true,
+      filterProp: 'startDate',
       sortable: true,
       sortProp: 'startDate',
+      type: 'date',
       computedText: (row: Reservation): string =>
         this.formatReservationStartDate(row),
+      predefined: processPredefined(datePredefined),
     },
     {
       _t_id: '15e7ecc8-849f-446a-9522-12ca049133fc',
@@ -223,6 +249,61 @@ export default class Bookings extends Vue {
     },
   ]
 
+  chips: TableViewChip[] = [
+    {
+      _t_id: '889ae4fa-485d-464b-9f70-389d8bb6bfec',
+      text: 'Needs Assignment',
+      values: [
+        {
+          column: {
+            _t_id: 'f9dd8140-d676-4485-9c8b-0cd2f226a2ad',
+            value: 'referralStatus',
+            filterType: 'eq',
+            text: '',
+            type: 'text',
+          },
+          value: ReferralStatus.Accepted,
+        },
+        {
+          column: {
+            _t_id: '7fb1567c-3059-4431-94e7-b2ec07ebf888',
+            value: 'assignedDriverPercentage',
+            filterType: 'lte',
+            text: '',
+            type: 'number',
+          },
+          value: 99.99,
+        },
+        {
+          column: {
+            _t_id: '87cd39b0-1208-4a75-87ea-399bab050767',
+            value: 'assignedVehiclePercentage',
+            filterType: 'lte',
+            text: '',
+            type: 'number',
+          },
+          value: 99.99,
+        },
+      ],
+    },
+    {
+      _t_id: '9ff98f95-53b4-4b14-83d5-04522ca7a04e',
+      text: 'Needs Acceptance',
+      values: [
+        {
+          column: {
+            _t_id: '811a37f3-6bb1-45ee-8f21-d4f4ee670d01',
+            value: 'referralStatus',
+            filterType: 'eq',
+            text: '',
+            type: 'text',
+          },
+          value: ReferralStatus.Offered,
+        },
+      ],
+    },
+  ]
+
   formatReservationStartDate(reservation: Reservation): string {
     const datetime = (this as any)
       .$dayjs(reservation.pickupDate)
@@ -255,9 +336,9 @@ export default class Bookings extends Vue {
       ariaLabel: 'Accept Booking',
       hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
       action: (row) => {
-        EventBus.$emit("accept-booking", row.reservationId)
+        EventBus.$emit('accept-booking', row.reservationId)
         this.isDialogOpen = true
-      }
+      },
     },
     {
       displayText: 'Reject Booking',
@@ -268,9 +349,9 @@ export default class Bookings extends Vue {
       ariaLabel: 'Reject Booking',
       hideOn: (row: any) => row.referralStatus === ReferralStatus.Accepted,
       action: (row) => {
-        EventBus.$emit("reject-booking", row.reservationId)
+        EventBus.$emit('reject-booking', row.reservationId)
         this.isDialogOpen = true
-      }
+      },
     },
   ]
 

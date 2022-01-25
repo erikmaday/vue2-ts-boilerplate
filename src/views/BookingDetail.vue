@@ -5,12 +5,14 @@
         <BookingDetailStepTimeline
           :reservation="reservation"
           :trip-assignments="tripAssignments"
+          :loading="showLoaders"
         />
       </v-col>
       <v-col cols="12">
         <BookingDetailHeader
           :reservation="reservation"
           :trip-assignments="tripAssignments"
+          :loading="showLoaders"
           @refresh="refresh"
         />
       </v-col>
@@ -22,15 +24,25 @@
           :reservation="reservation"
           :trip="trip"
           :trip-assignments="tripAssignments"
+          :loading="showLoaders"
           @refresh="refresh"
         />
       </v-col>
 
       <v-col cols="12">
-        <BookingDetailMap v-if="reservation" :reservation="reservation" />
+        <CUSkeletonLoader
+          v-if="showLoaders"
+          classes="border-radius-none"
+          height="280px"
+        />
+        <BookingDetailMap v-else :reservation="reservation" />
       </v-col>
       <v-col cols="12">
-        <BookingDetailItinerary v-if="reservation" :reservation="reservation" />
+        <BookingDetailItinerary
+          v-if="reservation"
+          :reservation="reservation"
+          :loading="showLoaders"
+        />
       </v-col>
       <v-col cols="12" v-if="reservation && reservation.customerNotes">
         <BookingDetailCustomerNotes :reservation="reservation" />
@@ -40,32 +52,42 @@
           <v-divider />
         </v-col>
         <v-col cols="12">
-          <BookingDetailPaymentStatus :reservation="reservation" />
+          <BookingDetailPaymentStatus
+            :reservation="reservation"
+            :loading="showLoaders"
+          />
         </v-col>
       </template>
       <v-col cols="12">
         <v-divider />
       </v-col>
       <v-col cols="12">
-        <BookingDetailComments :reservation="reservation" @refresh="refresh" />
+        <BookingDetailComments
+          :reservation="reservation"
+          :loading="showLoaders"
+          @refresh="refresh"
+        />
       </v-col>
       <v-col cols="12">
         <v-divider />
       </v-col>
       <v-col cols="12">
-        <BookingDetailCustomerInformation :reservation="reservation" />
+        <BookingDetailCustomerInformation
+          :reservation="reservation"
+          :loading="showLoaders"
+        />
       </v-col>
       <v-col cols="12">
         <v-divider />
       </v-col>
-      <v-col cols="12"><BookingDetailSupport /></v-col>
+      <v-col cols="12"><BookingDetailSupport :loading="showLoaders" /></v-col>
     </v-row>
   </Main>
 </template>
 
 <script lang="ts">
 import { ReservationDetail, Trip, VehicleAssignment } from '@/models/dto'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import BookingDetailStepTimeline from '@/components/BookingDetailStepTimeline.vue'
 import BookingDetailHeader from '@/components/BookingDetailHeader.vue'
@@ -82,6 +104,7 @@ import tripAssignments from '@/services/tripAssignment'
 import trip from '@/services/trip'
 import { ReferralStatus } from '@/utils/enum'
 import { EventBus } from '@/utils/eventBus'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -103,8 +126,25 @@ export default class BookingDetail extends Vue {
   reservation: ReservationDetail | null = null
   trip: Trip | null = null
   tripAssignments: VehicleAssignment[] = []
+  loading = false
+
+  @Watch('id', { immediate: true })
+  valueChanged(): void {
+    if (this.id) {
+      this.refresh()
+    }
+  }
+
+  get isAccepted(): boolean {
+    return this.reservation?.referralStatus === ReferralStatus.Accepted
+  }
+
+  get showLoaders(): boolean {
+    return this.loading && app.areLoadersEnabled
+  }
 
   created(): void {
+    this.loading = true
     this.id = parseInt(this.$route.params.id)
   }
 
@@ -114,9 +154,11 @@ export default class BookingDetail extends Vue {
   }
 
   async refresh(): Promise<void> {
+    this.loading = true
     await this.getReservation()
     this.getTripAssignments()
     this.getTrip()
+    this.loading = false
   }
 
   async getReservation(): Promise<void> {
@@ -129,12 +171,15 @@ export default class BookingDetail extends Vue {
         this.$router.push({ name: 'home' })
         return
       }
-      this.reservation = reservationResponse.data
+      if (!reservationResponse.data?.reservationId) {
+        const res = await reservation.getActiveReferral(this.id)
+        if (res.data?.reservationId) {
+          this.id = res.data.reservationId
+        }
+      } else {
+        this.reservation = reservationResponse.data
+      }
     }
-  }
-
-  get isAccepted(): boolean {
-    return this.reservation?.referralStatus === ReferralStatus.Accepted
   }
 
   async getTrip(): Promise<void> {

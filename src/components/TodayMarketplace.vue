@@ -1,60 +1,88 @@
 <template>
   <v-container>
+    <v-row class="align-center">
+      <h3
+        class="col shrink white-space-nowrap font-book font-weight-400 text-white font-20"
+      >
+        Marketplace
+      </h3>
+      <v-spacer />
+      <CUSkeletonLoader
+        v-if="showCountLoaders"
+        type="detail-text"
+        width="160px"
+        classes="col col-auto"
+      />
+      <router-link
+        v-else
+        class="col shrink white-space-nowrap text-white font-14 font-medium text-decoration-underline cursor-pointer"
+        :to="{ name: 'marketplace' }"
+      >
+        All Bids ({{ tripCount }})
+      </router-link>
+    </v-row>
     <v-row>
-      <v-col cols="12">
-        <v-row>
-          <h3
-            class="col shrink white-space-nowrap font-book font-weight-400 text-white font-20"
-          >
-            Marketplace
-          </h3>
-          <v-spacer />
-          <router-link
-            class="col shrink white-space-nowrap text-white font-14 font-medium text-decoration-underline cursor-pointer"
-            :to="{ name: 'marketplace' }"
-          >
-            All Bids ({{ tripCount }})
-          </router-link>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <v-chip
-              v-for="(filter, filterIndex) in Object.values(chips)"
-              color="white"
-              :text-color="filter.active ? 'black-true' : 'white'"
-              :outlined="!filter.active"
-              class="margin-r-2 cursor-pointer margin-b-2"
-              :key="`marketplace-filter-${filterIndex}`"
-              @click="handleFilterClick(filter)"
-            >
-              {{ filter.label }}
-              ({{ filter.count }})
-            </v-chip>
-          </v-col>
-        </v-row>
-        <v-row v-if="tripBundlesToDisplay.length">
-          <v-col
-            v-for="(tripBundle, tripBundleIndex) in tripBundlesToDisplay"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
-            :key="`trip-${tripBundleIndex}-${tripBundle[0].quoteId}`"
-          >
-            <MarketplaceCard show-pagination :trips="tripBundle" />
-          </v-col>
-        </v-row>
-        <TodayNotFound v-else message="No bids found" icon="work_off" />
-        <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
-          <Pagination
-            v-model="pagination"
-            active-color="white"
-            inactive-color="black"
-            hover-color="gray-light"
-            :items="tripBundles"
-          />
-        </v-row>
+      <v-col v-if="showCountLoaders" cols="12">
+        <CUSkeletonLoader
+          height="32px"
+          width="120px"
+          v-for="chipIndex in Object.values(chips).length"
+          type="chip"
+          classes="d-inline-flex margin-r-2 cursor-pointer"
+          :key="`booking-filter-skeleton-loader-${chipIndex}`"
+          style="margin-bottom: 1px"
+        />
       </v-col>
+      <v-col v-else cols="12">
+        <v-chip
+          v-for="(filter, filterIndex) in Object.values(chips)"
+          color="white"
+          :text-color="filter.active ? 'black-true' : 'white'"
+          :outlined="!filter.active"
+          class="margin-r-2 cursor-pointer margin-b-2"
+          :key="`marketplace-filter-${filterIndex}`"
+          @click="handleFilterClick(filter)"
+        >
+          {{ filter.label }}
+          ({{ filter.count }})
+        </v-chip>
+      </v-col>
+    </v-row>
+    <v-row v-if="showCardLoaders">
+      <v-col
+        v-for="skeletonCardIndex in skeletonCardCount"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+        :key="`marketplace-skeleton-${skeletonCardIndex}`"
+      >
+        <MarketplaceCardSkeletonLoader show-pagination show-action-message />
+      </v-col>
+    </v-row>
+    <v-row v-else-if="tripBundlesToDisplay.length">
+      <v-col
+        v-for="(tripBundle, tripBundleIndex) in tripBundlesToDisplay"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+        :key="`trip-${tripBundleIndex}-${tripBundle[0].quoteId}`"
+      >
+        <MarketplaceCard show-pagination :trips="tripBundle" />
+      </v-col>
+    </v-row>
+    <TodayNotFound v-else dark message="No bids found" icon="work_off" />
+    <v-row class="justify-center margin-x-0 margin-b-0 margin-t-3">
+      <PaginationSkeletonLoader v-if="showCardLoaders" />
+      <Pagination
+        v-else
+        v-model="pagination"
+        active-color="white"
+        color="black"
+        hover-color="gray-light"
+        :items="tripBundles"
+      />
     </v-row>
   </v-container>
 </template>
@@ -63,7 +91,9 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import TodayNotFound from '@/components/TodayNotFound.vue'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
+import MarketplaceCardSkeletonLoader from '@/components/MarketplaceCardSkeletonLoader.vue'
 import Pagination from '@/components/Pagination.vue'
+import PaginationSkeletonLoader from '@/components/PaginationSkeletonLoader.vue'
 import { TableViewTrip } from '@/models/dto'
 import trip from '@/services/trip'
 import { filter } from '@/utils/filter'
@@ -71,11 +101,47 @@ import { sort } from '@/utils/sort'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { TableViewFilterChip } from '@/models/TableView'
+import { TodayFilterChip } from '@/models/TableView'
+import app from '@/store/modules/app'
 
-@Component({ components: { MarketplaceCard, TodayNotFound, Pagination } })
+@Component({
+  components: {
+    MarketplaceCard,
+    MarketplaceCardSkeletonLoader,
+    TodayNotFound,
+    Pagination,
+    PaginationSkeletonLoader,
+  },
+})
 export default class TodayMarketplace extends Vue {
-  chips: { [key: string]: TableViewFilterChip } = {
+  trips: TableViewTrip[] = []
+  tripCount: number | null = null
+  tripBundles: TableViewTrip[][] | null = []
+  cardsLoading = false
+  countsLoading = false
+  filters: any = null
+  sorts: any = null
+
+  params = {
+    pageSize: -1,
+    page: 1,
+    filters: null,
+    sorts: null,
+  }
+
+  pagination = {
+    pageSize: 4,
+    currentPage: 1,
+    breakpointSizes: {
+      xs: 1,
+      sm: 2,
+      md: 3,
+      lg: 4,
+      xl: 4,
+    },
+  }
+
+  chips: { [key: string]: TodayFilterChip } = {
     createdToday: {
       label: 'Created Today',
       count: 0,
@@ -124,35 +190,24 @@ export default class TodayMarketplace extends Vue {
     },
   }
 
-  trips: TableViewTrip[] = []
-  tripCount: number | null = null
-  tripBundles: TableViewTrip[][] | null = []
-
-  params = {
-    pageSize: 24,
-    page: 1,
-    filters: null,
-    sorts: null,
-  }
-
-  pagination = {
-    pageSize: 4,
-    currentPage: 1,
-    breakpointSizes: {
-      xs: 1,
-      sm: 2,
-      md: 3,
-      lg: 4,
-      xl: 4,
-    },
-  }
-
-  filters: any = null
-  sorts: any = null
-
   @Watch('params', { deep: true })
   onParamsChanged(): void {
     this.getTrips()
+  }
+
+  get skeletonCardCount(): number {
+    if (this.tripBundlesToDisplay.length) {
+      return this.tripBundlesToDisplay.length
+    }
+    return this.pagination.pageSize
+  }
+
+  get showCardLoaders(): boolean {
+    return (this.cardsLoading || this.countsLoading) && app.getAreLoadersEnabled
+  }
+
+  get showCountLoaders(): boolean {
+    return this.countsLoading && app.getAreLoadersEnabled
   }
 
   get tripBundlesToDisplay(): TableViewTrip[][] {
@@ -172,26 +227,45 @@ export default class TodayMarketplace extends Vue {
     return dayjs().utc()
   }
 
-  async mounted(): Promise<void> {
+  mounted(): void {
+    this.cardsLoading = true
     this.establishFilters()
     this.establishSorts()
-    this.getCounts()
+    this.getAllCounts()
     this.setActiveFilters()
   }
 
-  getCounts(): void {
+  async getAllCounts(): Promise<void> {
+    this.countsLoading = true
     this.getAllBidsCount()
     for (const key of Object.keys(this.chips)) {
-      this.getChipCount(key)
+      await this.getChipCount(key)
     }
+    this.countsLoading = false
   }
 
   async getAllBidsCount(): Promise<void> {
+    const filters = filter()
+    const parentFilterAnd = filters.createParent('and')
+    const todayOrFuture = {
+      column: {
+        _t_id: 'cca2c222-4622-4b3f-9b5e-de35d2b9b3ff',
+        value: 'startDate',
+        filterType: 'gte',
+        text: '',
+      },
+      value: `${(this as any)
+        .$dayjs()
+        .utc()
+        .format('YYYY-MM-DDTHH:mm:ss.000Z')}`,
+    }
+    filters.add(parentFilterAnd, todayOrFuture)
+
     const response = await trip.tableView({
       page: 1,
       pageSize: 0,
       sorts: null,
-      filters: null,
+      filters: filters.asQueryParams(),
     })
     this.tripCount = response.data.count
   }
@@ -224,6 +298,7 @@ export default class TodayMarketplace extends Vue {
   }
 
   async getTrips(): Promise<void> {
+    this.cardsLoading = true
     this.params.filters = this.filters.asQueryParams()
     const preliminaryTripResponse = await trip.tableView(this.params)
     const quoteIdList: string = preliminaryTripResponse.data.resultList
@@ -233,6 +308,7 @@ export default class TodayMarketplace extends Vue {
     const tripResponse = await trip.tableView(secondaryParams, quoteIdList)
     this.trips = tripResponse.data.resultList
     this.tripBundles = this.bundleTrips(this.trips)
+    this.cardsLoading = false
   }
 
   bundleTrips(trips: TableViewTrip[]): TableViewTrip[][] {
@@ -247,7 +323,7 @@ export default class TodayMarketplace extends Vue {
     return Object.values(bundleMap)
   }
 
-  handleFilterClick(filterChip: TableViewFilterChip): void {
+  handleFilterClick(filterChip: TodayFilterChip): void {
     filterChip.active = !filterChip.active
     this.setActiveFilters()
   }

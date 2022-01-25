@@ -1,5 +1,11 @@
 <template>
-  <v-col class="grow padding-r-10 padding-b-0">
+  <v-col
+    class="grow padding-r-10"
+    :class="{
+      'padding-b-4': $vuetify.breakpoint.smAndUp,
+      'padding-b-6': $vuetify.breakpoint.xs,
+    }"
+  >
     <MarketplaceCard
       v-for="(trip, tripIndex) in bidDetail.trips"
       :trip="trip"
@@ -14,7 +20,7 @@
       :loading="bidDetail.getSubmitting"
       @click="submit"
     >
-      Submit Bids
+      Submit All Bids
     </v-btn>
     <v-btn
       v-if="!bidDetail.getAreAllSoldOut"
@@ -34,7 +40,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
 import bidDetail from '@/store/modules/bidDetail'
-import bid from '@/services/bid'
+import app from '@/store/modules/app'
 
 @Component({ components: { MarketplaceCard } })
 export default class BidDetailMultiSidebar extends Vue {
@@ -42,6 +48,7 @@ export default class BidDetailMultiSidebar extends Vue {
 
   async submit(): Promise<void> {
     await bidDetail.submitMultiTripBids()
+    this.$router.push(app.getLastRoute)
   }
 
   async markSoldOut(): Promise<void> {

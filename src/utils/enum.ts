@@ -58,3 +58,9 @@ export enum TripTypeKeys {
 export enum TakeRate {
   Default = 10,
 }
+
+export enum EldType {
+  Trak4 = 1,
+  Samsara = 2,
+  KeepTruckin = 3,
+}

@@ -1,17 +1,18 @@
 <template>
   <Detail>
     <template #back>
-      <v-btn
-        :icon="$vuetify.breakpoint.mdAndUp"
-        :x-small="$vuetify.breakpoint.mdAndUp"
-        :small="$vuetify.breakpoint.smAndDown"
-        plain
-        color="primary"
-        @click="pushLastRoute"
-      >
-        <CUIcon>arrow_left</CUIcon>
-        <span v-if="$vuetify.breakpoint.xs" class="margin-l-1">Back</span>
-      </v-btn>
+      <router-link :to="lastRoute">
+        <v-btn
+          :icon="$vuetify.breakpoint.mdAndUp"
+          :x-small="$vuetify.breakpoint.mdAndUp"
+          :small="$vuetify.breakpoint.smAndDown"
+          plain
+          color="primary"
+        >
+          <CUIcon>arrow_left</CUIcon>
+          <span v-if="$vuetify.breakpoint.xs" class="margin-l-1">Back</span>
+        </v-btn>
+      </router-link>
     </template>
     <template #title>{{ headerTitle }}</template>
     <template #buttons>
@@ -279,16 +280,16 @@ export default class GaragesDetail extends Vue {
     }
   }
 
-  pushLastRoute(): void {
+  get lastRoute(): RawLocation {
+    const lastRoute = app.getLastRoute
     if (
       !app.getLastRoute?.name ||
-      app.getLastRoute.name === 'garages.view' ||
+      app.getLastRoute.name === 'garages.edit' ||
       app.getLastRoute.name === 'garages.add'
     ) {
-      this.$router.push({ name: 'garages' })
-    } else {
-      this.$router.push(app.getLastRoute)
+      return { name: 'garages' }
     }
+    return lastRoute
   }
 
   cancel(): void {

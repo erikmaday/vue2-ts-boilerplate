@@ -18,18 +18,10 @@
           Add New
         </v-btn>
       </v-col>
-      <v-col class="shrink">
-        <CUSkeletonLoaderButton v-show="loading" width="105px" />
-        <v-btn
-          v-show="!loading"
-          color="primary"
-          small
-          @click="isFilterDialogOpen = true"
-        >
-          <CUIcon color="white" class="margin-r-2">filter</CUIcon>
-          Filter
-        </v-btn>
+      <v-col v-show="loading" class="shrink">
+        <CUSkeletonLoaderButton width="101px" />
       </v-col>
+      <CUDataTableFilterButton v-model="isFilterDialogOpen" />
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -49,6 +41,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 import CUCollectionTable from '@/components/CUCollectionTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
+import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import garage from '@/services/garage'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
@@ -62,6 +55,7 @@ import { ApiResult } from '@/models/dto'
     Main,
     CUCollectionTable,
     CUDataTableFilters,
+    CUDataTableFilterButton,
   },
 })
 export default class GaragesList extends Vue {

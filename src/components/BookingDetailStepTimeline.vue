@@ -1,8 +1,21 @@
 <template>
   <v-row dense class="font-12 align-end">
     <v-col>
-      1/3 Accept the Job
+      <CUSkeletonLoader
+        v-if="loading"
+        height="12px"
+        width="66%"
+        classes="border-radius-3"
+        style="margin-bottom: 6px"
+      />
+      <span v-else>1/3 Accept or Reject the Job</span>
+      <CUSkeletonLoader
+        v-if="loading"
+        height="8px"
+        classes="border-radius-none"
+      />
       <div
+        v-else
         class="h-8 w-full"
         :class="{
           'background-primary': isAccepted,
@@ -11,8 +24,22 @@
       />
     </v-col>
     <v-col>
-      2/3 Assign Drivers and Vehicles
+      <CUSkeletonLoader
+        v-if="loading"
+        height="12px"
+        width="66%"
+        classes="border-radius-3"
+        style="margin-bottom: 6px"
+      />
+      <span v-else>2/3 Assign Drivers and Vehicles</span>
+
+      <CUSkeletonLoader
+        v-if="loading"
+        height="8px"
+        classes="border-radius-none"
+      />
       <div
+        v-else
         class="h-8 w-full"
         :class="{
           'background-primary': isFullyAssigned,
@@ -21,8 +48,21 @@
       />
     </v-col>
     <v-col>
-      3/3 Driver Tracking via Mobile App
+      <CUSkeletonLoader
+        v-if="loading"
+        height="12px"
+        width="66%"
+        classes="border-radius-3"
+        style="margin-bottom: 6px"
+      />
+      <span v-else>3/3 Driver Tracking via Mobile App</span>
+      <CUSkeletonLoader
+        v-if="loading"
+        height="8px"
+        classes="border-radius-none"
+      />
       <div
+        v-else
         class="h-8 w-full"
         :class="{
           'background-primary': isTracked,
@@ -43,6 +83,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ReferralStatus } from '@/utils/enum'
 @Component
 export default class BookingDetailStepTimeline extends Vue {
+  @Prop({ required: true }) readonly loading!: boolean
   @Prop({ required: true }) readonly reservation!: ReservationDetail
   @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
 

@@ -36,10 +36,15 @@
           <v-col cols="6">
             <div class="d-flex flex-row justify-space-between">
               <label>{{ assignment.vehicleTypeLabel }}</label>
-              <a class="font-12" @click="clearVehicle(vi)">Clear Vehicle</a>
+              <a
+                class="font-12"
+                v-show="!!assignment.vehicle.vehicleId"
+                @click="clearVehicle(vi)"
+              >
+                Clear Vehicle
+              </a>
             </div>
             <CUSelect
-              v-show="!!assignment.vehicle.vehicleId"
               :error-messages="assignment.vehicle.errors"
               placeholder="Select Vehicles"
               :items="

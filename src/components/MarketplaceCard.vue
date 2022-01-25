@@ -19,9 +19,9 @@
       <p class="font-14 margin-t-0 margin-b-3">
         {{ formattedStartDateTime }}
       </p>
-      <div class="d-flex align-start font-14">
+      <div class="d-flex align-center font-14">
         <CUIcon class="text-gray-mid-light margin-r-2">directions_bus</CUIcon>
-        <span class="white-space-pre">{{ formattedRequiredVehicles }}</span>
+        {{ formattedRequiredVehicles }}
       </div>
       <div class="d-flex align-center font-14">
         <CUIcon class="text-gray-mid-light margin-r-2">person</CUIcon>
@@ -59,7 +59,7 @@
           v-if="tripsList.length > 1"
           v-model="pagination"
           active-color="gray-light"
-          inactive-color="gray-border"
+          color="gray-border"
           hover-color="gray-mid-light"
           :items="tripsList"
         />

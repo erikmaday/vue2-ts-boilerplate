@@ -16,6 +16,9 @@
           @leave-page="goBack(true)"
           @cancel="showUnsavedChangesWarning = false"
         />
+        <BidDetailChangePriceMessage
+          v-else-if="bidDetail.getShowChangePriceMessage"
+        />
         <BidDetailMultiSidebar
           v-else-if="isModeMulti && !bidDetail.trip && !loading"
         />
@@ -39,6 +42,7 @@ import BidDetailMap from '@/components/BidDetailMap.vue'
 import BidDetailMultiSidebar from '@/components/BidDetailMultiSidebar.vue'
 import BidDetailSingleSidebar from '@/components/BidDetailSingleSidebar.vue'
 import BidDetailUnsavedChanges from '@/components/BidDetailUnsavedChanges.vue'
+import BidDetailChangePriceMessage from '@/components/BidDetailChangePriceMessage.vue'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
 import { Trip } from '@/models/dto'
 import {
@@ -57,6 +61,7 @@ import bidDetail from '@/store/modules/bidDetail'
     BidDetailMultiSidebar,
     BidDetailSingleSidebar,
     BidDetailUnsavedChanges,
+    BidDetailChangePriceMessage,
   },
 })
 export default class BidDetail extends Vue {
@@ -125,7 +130,9 @@ export default class BidDetail extends Vue {
   // get all existing bids and store them here
 
   goBack(ignoreUnsavedChanges = false): void {
-    if (this.isModeMulti && bidDetail.getTrip) {
+    if (bidDetail.getShowChangePriceMessage) {
+      bidDetail.setIsEnteringBid(false)
+    } else if (this.isModeMulti && bidDetail.getTrip) {
       bidDetail.deselectTrip()
     } else if (
       this.isModeMulti &&

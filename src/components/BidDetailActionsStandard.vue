@@ -1,16 +1,18 @@
 <template>
   <div>
     <template v-if="currentBidPrice">
-      <p class="font-14">Calculated Price: {{ calculatedPrice }}</p>
+      <p class="font-14">{{ priceLabel }}: {{ calculatedPrice }}</p>
       <p class="font-14 margin-b-4">
         Actual awarded price would be: {{ awardedPrice }}
       </p>
     </template>
     <v-btn
       color="primary"
-      outlined
+      :text="bidDetail.getIsEditingPrevented"
+      :outlined="!bidDetail.getIsEditingPrevented"
       small
       class="w-full margin-t-0"
+      :class="{ 'font-book': bidDetail.getIsEditingPrevented }"
       :loading="bidDetail.getSubmitting"
       @click="bidDetail.setIsEnteringBid(true)"
     >
@@ -18,7 +20,8 @@
     </v-btn>
     <v-btn
       v-if="!isMultiBid && !bidDetail.getIsSoldOut"
-      text
+      :text="!bidDetail.getIsEditingPrevented"
+      :outlined="bidDetail.getIsEditingPrevented"
       small
       color="primary"
       class="w-full margin-t-4"
@@ -46,10 +49,20 @@ export default class BidDetailActionsStandard extends Vue {
   }
 
   get customBidButtonText(): string {
+    if (bidDetail.getIsEditingPrevented) {
+      return 'Change Price'
+    }
     if (this.currentBidPrice) {
       return 'Edit Bid'
     }
     return 'Make Bid'
+  }
+
+  get priceLabel(): string {
+    if (bidDetail.getIsEditingPrevented) {
+      return 'Automated Price'
+    }
+    return 'Calculated Price'
   }
 
   get calculatedPrice(): string {

@@ -30,7 +30,7 @@
           >
             <CUDataTableCell
               :column="col"
-              :key="`data-table-cell-${col.value}-${colIndex}-${index}-${item[itemKey]}`"
+              :key="`data-table-cell-${col.value}-${colIndex}-${index}`"
               :row="item"
               :row-index="index"
               :actions="actions"

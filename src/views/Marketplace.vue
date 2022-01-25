@@ -7,7 +7,7 @@
       collection="trips"
       :initial-filters="initialFilters"
       :fetch-method="tableView"
-      :detail-method="detailMethod"
+      :supplemental-row-method="supplementalRowMethod"
       :tabs="tabs"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :key="`marketplace-list`"
@@ -242,7 +242,7 @@ export default class Marketplace extends Vue {
     return string
   }
 
-  async detailMethod(row: TableViewTrip): Promise<void> {
+  async supplementalRowMethod(row: TableViewTrip): Promise<void> {
     const params = {
       page: 1,
       pageSize: -1,

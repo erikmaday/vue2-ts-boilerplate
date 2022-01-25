@@ -29,7 +29,7 @@
       :server-items-length="serverItemsLength"
       :no-data-text="noDataText"
       :hide-default-header="$vuetify.breakpoint.xs"
-      @update:options="load"
+      @update:options="updateOptions"
       @refresh="load"
       v-on="$listeners"
     />
@@ -63,7 +63,7 @@ export default class CUCollectionTable extends Vue {
   actions!: ActionColumn[]
   @Prop({ type: String, required: false }) itemKey!: string
   @Prop(Function) fetchMethod!: any
-  @Prop({ type: Function, required: false }) detailMethod!: any
+  @Prop({ type: Function, required: false }) supplementalRowMethod!: any
   @Prop({ required: false, default: () => filter() }) filters: any
   @Prop({ required: false, default: () => sort() }) sorts: any
   @Prop({ required: false, default: () => [] })
@@ -128,9 +128,9 @@ export default class CUCollectionTable extends Vue {
 
       // FOR BETTER SPEED, BUT MORE API CALLS, WE CAN MOVE THE CALLING OF DETAIL FUNCTIONS TO COMPONENTS SLOTTED INTO THE PROPER CELLS
       // THIS WILL DEFINITELY INCREASE SPEED, BUT ALSO THE NUMBER OF CALLS TO THE BACKEND WILL DOUBLE
-      if (this.detailMethod) {
+      if (this.supplementalRowMethod) {
         for (const item of items) {
-          await this.detailMethod(item)
+          await this.supplementalRowMethod(item)
         }
       }
 
@@ -140,6 +140,11 @@ export default class CUCollectionTable extends Vue {
       })
       this.loading = false
     })
+  }
+
+  updateOptions(event: any): void {
+    this.options = event
+    this.load()
   }
 }
 </script>

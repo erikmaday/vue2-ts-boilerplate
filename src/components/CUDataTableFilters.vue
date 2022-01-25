@@ -6,12 +6,14 @@
           v-for="(tab, tabIndex) in tabs"
           :id="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
           :key="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
-          class="margin-x-3 padding-y-1 font-14 font-medium text-gray-light border-t-0 border-x-0 border-b-2 border-solid border-transparent"
+          class="margin-x-3 padding-y-1 font-14 font-medium text-gray-light border-t-0 border-x-0 border-b-2 border-solid"
           :class="{
-            'text-primary border-primary': isTabActive(tab) && !tab.isLocked,
-            'hover:border-gray-light': !isTabActive(tab) && !tab.isLocked,
+            'text-primary border-primary': isTabActive(tab),
+            'border-transparent hover:border-gray-light':
+              !isTabActive(tab) && !tab.isLocked,
             'cursor-pointer': !tab.isLocked,
-            'text-gray-mid-light cursor-default': tab.isLocked,
+            'text-gray-mid-light cursor-default border-transparent':
+              tab.isLocked,
           }"
           @click="handleTabClick(tab)"
         >

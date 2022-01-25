@@ -30,7 +30,6 @@
       :no-data-text="noDataText"
       :hide-default-header="$vuetify.breakpoint.xs"
       @update:options="load"
-      @pagination="options = $event"
       @refresh="load"
       v-on="$listeners"
     />
@@ -127,6 +126,8 @@ export default class CUCollectionTable extends Vue {
 
       const items: unknown[] = data.resultList
 
+      // FOR BETTER SPEED, BUT MORE API CALLS, WE CAN MOVE THE CALLING OF DETAIL FUNCTIONS TO COMPONENTS SLOTTED INTO THE PROPER CELLS
+      // THIS WILL DEFINITELY INCREASE SPEED, BUT ALSO THE NUMBER OF CALLS TO THE BACKEND WILL DOUBLE
       if (this.detailMethod) {
         for (const item of items) {
           await this.detailMethod(item)

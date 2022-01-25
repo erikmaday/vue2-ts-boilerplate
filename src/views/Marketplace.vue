@@ -29,6 +29,7 @@ import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import MarketplaceListBidPrice from '@/components/MarketplaceListBidPrice.vue'
 import MarketplaceListExpiration from '@/components/MarketplaceListExpiration.vue'
+import MarketplacePickupDestination from '@/components/MarketplacePickupDestination.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { sort } from '@/utils/sort'
@@ -61,18 +62,15 @@ export default class Marketplace extends Vue {
       text: 'Trip ID',
       value: 'tripId',
       sortProp: 'tripId',
-      filterable: true,
-      filterProp: 'tripId',
-      filterType: 'eq',
       defaultSort: true,
-      // hidden: true,
+      hidden: true,
     },
     {
       _t_id: '755e663f-0126-4f31-a642-94b90dfc81cc',
       text: 'Pickup/Destination',
       value: 'stops[0].address.city',
-      computedText: (row: TableViewTrip): string =>
-        this.formatPickupDestination(row),
+      type: 'slot',
+      component: MarketplacePickupDestination,
     },
     {
       _t_id: 'a40e2a3e-25d7-4f1f-bff0-d0296d7a0d25',
@@ -114,11 +112,6 @@ export default class Marketplace extends Vue {
       value: 'bids',
       type: 'slot',
       component: MarketplaceListBidPrice,
-    },
-    {
-      _t_id: 'a53b52fa-d708-4411-8ef6-e8416efe3bdb',
-      text: 'Total Trips',
-      value: 'totalTrips',
     },
     {
       _t_id: '47345e11-754c-480b-a415-133569a01347',
@@ -236,12 +229,6 @@ export default class Marketplace extends Vue {
       .$dayjs(firstStop?.pickupDate)
       .tz(firstStop?.address?.timeZone)
     return datetime.format('MMM D, YYYY\nh:mma z')
-  }
-
-  formatPickupDestination(trip: TableViewTrip): string {
-    const firstPickup = trip.stops?.[0]
-    const firstDropoff = trip.stops?.[1] || firstPickup
-    return `${firstPickup.address.city} > ${firstDropoff.address.city}`
   }
 
   formatVehicles(trip: TableViewTrip): string {

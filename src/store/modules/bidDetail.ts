@@ -11,6 +11,7 @@ import bid from '@/services/bid'
 import { getExistingBidsByTripId } from '@/utils/bid'
 import { TableViewBid } from '@/models/dto/TableViewBid'
 import auth from './auth'
+import app from './app'
 import deepClone from '@/utils/deepClone'
 
 @Module({ generateMutationSetters: true })
@@ -160,7 +161,7 @@ class BidDetailModule extends VuexModule {
         if (!bidAmounts[tripId]) {
           this.areBidsComplete = false
         }
-        if (bid.isPricedByPricingEngine) {
+        if (bid?.isPricedByPricingEngine) {
           isAutoPriced = true
         }
       }
@@ -429,5 +430,4 @@ const buildBidVehicles = (trip: Trip): BidPayloadVehicle[] => {
 
 // register module
 import store from '@/store/index'
-import app from './app'
 export default new BidDetailModule({ store, name: 'bidDetail' })

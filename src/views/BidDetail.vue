@@ -3,7 +3,9 @@
     <template v-slot:sidebar>
       <v-row>
         <v-col class="shrink padding-r-0">
+          <CUSkeletonLoader v-if="bidDetail.getShowLoaders" type="icon" />
           <CUIcon
+            v-else
             color="primary"
             class="margin-t-1 cursor-pointer"
             @click="goBack(false)"

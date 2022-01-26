@@ -25,7 +25,8 @@
     <CUSkeletonLoader
       v-if="bidDetail.getShowLoaders"
       type="text"
-      classes="margin-t-6"
+      width="120px"
+      classes="margin-t-6 margin-x-auto"
     />
     <v-btn
       v-else-if="!isMultiBid && !bidDetail.getIsSoldOut"

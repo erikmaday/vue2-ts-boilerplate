@@ -17,7 +17,7 @@
         <v-spacer />
         <CUDataTableFilterButton
           v-model="isFilterDialogOpen"
-          :loading="loading"
+          :loading="showLoaders"
         />
       </template>
     </CUCollectionTable>
@@ -42,6 +42,7 @@ import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
 import { datePredefined } from '@/data/predefined'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -57,6 +58,10 @@ export default class Marketplace extends Vue {
   sorts: any = sort()
   filters: any = filter()
   loading = true
+
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && this.loading
+  }
 
   columns: DataTableColumn[] = [
     {

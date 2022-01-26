@@ -2,14 +2,14 @@
   <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
-        <CUSkeletonLoader v-show="loading" type="h1" width="100px" />
-        <h1 v-show="!loading">Garages</h1>
+        <CUSkeletonLoader v-show="showLoaders" type="h1" width="100px" />
+        <h1 v-show="!showLoaders">Garages</h1>
       </v-col>
       <v-spacer />
       <v-col class="shrink">
-        <CUSkeletonLoader v-show="loading" type="button" width="88px" />
+        <CUSkeletonLoader v-show="showLoaders" type="button" width="88px" />
         <v-btn
-          v-show="!loading"
+          v-show="!showLoaders"
           primary
           small
           color="primary"
@@ -20,7 +20,7 @@
       </v-col>
       <CUDataTableFilterButton
         v-model="isFilterDialogOpen"
-        :loading="loading"
+        :loading="showLoaders"
       />
     </v-row>
     <CUCollectionTable
@@ -49,6 +49,7 @@ import { Garage } from '@/models/dto/Garage'
 import { RawLocation } from 'vue-router'
 import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -154,5 +155,9 @@ export default class GaragesList extends Vue {
       },
     },
   ]
+
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && this.loading
+  }
 }
 </script>

@@ -2,14 +2,14 @@
   <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
-        <CUSkeletonLoader v-show="loading" type="h1" width="66px" />
-        <h1 v-show="!loading">Team</h1>
+        <CUSkeletonLoader v-show="showLoaders" type="h1" width="66px" />
+        <h1 v-show="!showLoaders">Team</h1>
       </v-col>
       <v-spacer />
       <v-col class="shrink">
-        <CUSkeletonLoader v-show="loading" type="button" width="88px" />
+        <CUSkeletonLoader v-show="showLoaders" type="button" width="88px" />
         <v-btn
-          v-show="!loading"
+          v-show="!showLoaders"
           primary
           small
           color="primary"
@@ -20,7 +20,7 @@
       </v-col>
       <CUDataTableFilterButton
         v-model="isFilterDialogOpen"
-        :loading="loading"
+        :loading="showLoaders"
       />
     </v-row>
     <CUCollectionTable
@@ -52,6 +52,7 @@ import { TableViewTab } from '@/models/TableView'
 import { AxiosResponse } from 'axios'
 import { RawLocation } from 'vue-router'
 import { EventBus } from '@/utils/eventBus'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -178,5 +179,9 @@ export default class Users extends Vue {
       },
     },
   ]
+
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && this.loading
+  }
 }
 </script>

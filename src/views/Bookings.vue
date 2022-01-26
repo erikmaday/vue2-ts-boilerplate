@@ -19,7 +19,7 @@
         <v-spacer />
         <CUDataTableFilterButton
           v-model="isFilterDialogOpen"
-          :loading="loading"
+          :loading="showLoaders"
         />
       </template>
     </CUCollectionTable>
@@ -82,6 +82,7 @@ import {
 } from '@/utils/enum'
 import { EventBus } from '@/utils/eventBus'
 import { datePredefined, noFutureDatesPredefined } from '@/data/predefined'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -111,6 +112,10 @@ export default class Bookings extends Vue {
       this.currentReservationId = e
       this.accept(e)
     })
+  }
+
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && this.loading
   }
 
   columns: DataTableColumn[] = [

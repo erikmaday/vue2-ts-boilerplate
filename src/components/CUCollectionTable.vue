@@ -10,7 +10,7 @@
       :tabs="tabs"
       :chips="chips"
       :initial-filters="initialFilters"
-      :loading="!initialLoadCompleted"
+      :loading="showLoaders"
       @initial-filters-set="initialFiltersSet = true"
       @update:sorts="$emit('update:sorts', $event)"
       @update:filters="$emit('update:filters', $event)"
@@ -21,9 +21,9 @@
       </template>
     </CUDataTableFilters>
 
-    <CUSkeletonLoaderTableView v-show="!initialLoadCompleted" />
+    <CUSkeletonLoaderTableView v-show="showLoaders" />
     <CUDataTable
-      v-show="initialLoadCompleted"
+      v-show="!showLoaders"
       :actions="actions"
       :options="options"
       :columns="visibleColumns"
@@ -57,6 +57,7 @@ import { sort } from '@/utils/sort'
 import { AxiosResponse } from 'axios'
 import { ActionColumn } from '@/models/ActionColumn'
 import CUSkeletonLoaderTableView from '@/components/CUSkeletonLoaderTableView.vue'
+import app from '@/store/modules/app'
 
 @Component({
   components: { CUDataTable, CUDataTableFilters, CUSkeletonLoaderTableView },
@@ -93,6 +94,10 @@ export default class CUCollectionTable extends Vue {
   options: TableViewParameters = {
     page: 1,
     pageSize: 10,
+  }
+
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && !this.initialLoadCompleted
   }
 
   get areInitialFiltersSet(): boolean {

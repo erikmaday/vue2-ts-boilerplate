@@ -28,6 +28,9 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'h1') {
       return '29px'
     }
+    if (this.type === 'h2') {
+      return '31px'
+    }
     if (this.type === 'h3') {
       return '27px'
     }

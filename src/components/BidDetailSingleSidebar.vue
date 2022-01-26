@@ -1,5 +1,5 @@
 <template>
-  <v-col v-if="bidDetail.getTrip" class="grow padding-r-10 padding-b-0">
+  <v-col class="grow padding-r-10 padding-b-0">
     <BidDetailHeader />
     <BidDetailItinerary class="margin-t-8" />
     <BidDetailTripNumbers class="margin-t-6" />

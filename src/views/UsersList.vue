@@ -28,6 +28,7 @@
       :columns="columns"
       item-key="userId"
       collection="users"
+      :tabs="tabs"
       :fetch-method="usersTableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No users found"
@@ -47,6 +48,7 @@ import user from '@/services/user'
 import { UserDetail } from '@/models/dto'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
+import { TableViewTab } from '@/models/TableView'
 import { AxiosResponse } from 'axios'
 import { RawLocation } from 'vue-router'
 import { EventBus } from '@/utils/eventBus'
@@ -108,6 +110,31 @@ export default class Users extends Vue {
   ]
 
   usersTableView = user.tableView
+
+  tabs: TableViewTab[] = [
+    {
+      column: {
+        _t_id: '89f0a6fd-d229-4200-8ded-d3403d4bbe36',
+        value: 'roles.roleName',
+        filterType: 'contains',
+        text: 'Driver',
+        method: 'and',
+      },
+      value: 'is_driver',
+      default: false,
+    },
+    {
+      column: {
+        _t_id: '9b649492-eb7f-4f87-84c1-167da3175d83',
+        value: '',
+        filterType: '',
+        text: 'All',
+      },
+      value: null,
+      default: true,
+      isShowAll: true,
+    },
+  ]
 
   actions: ActionColumn[] = [
     {

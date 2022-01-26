@@ -3,6 +3,7 @@ import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { Reservation, ReservationDetailStop, Stop } from '@/models/dto'
 import { anyNumberPattern, stateAbbreviationPattern } from './regex'
+import { Markup, MarkupDetail } from '@/models/dto/Markup'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -186,4 +187,17 @@ export const formatReservationPickupDestinationText = (
 ): string => {
   const cities = getReservationPickupDestinationCities(reservation)
   return `${cities.pickup} > ${cities.dropoff}`
+}
+export const formatMarkupStartDateTime = (
+  row: Markup | MarkupDetail
+): string => {
+  if (!row.startDate) return null
+  const datetime = dayjs(row.startDate.split('T')[0])
+  return `${datetime.format('MM/DD/YYYY')}`
+}
+
+export const formatMarkupEndDateTime = (row: Markup | MarkupDetail): string => {
+  if (!row.endDate) return null
+  const datetime = dayjs(row.endDate.split('T')[0])
+  return `${datetime.format('MM/DD/YYYY')}`
 }

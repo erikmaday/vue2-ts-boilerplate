@@ -108,13 +108,6 @@ export default class CUCollectionTable extends Vue {
     return this.columns.filter((column) => !column.hidden)
   }
 
-  @Watch('initialLoadCompleted', { immediate: true })
-  onInitialLoadCompleted(newVal: boolean, oldVal: boolean): void {
-    if (newVal !== oldVal && newVal) {
-      this.$emit('initial-load-completed')
-    }
-  }
-
   mounted(): void {
     this.load()
 
@@ -149,7 +142,10 @@ export default class CUCollectionTable extends Vue {
         return Object.assign({}, item, obj)
       })
       this.loading = false
-      this.initialLoadCompleted = true
+      if (!this.initialLoadCompleted) {
+        this.initialLoadCompleted = true
+        this.$emit('initial-load-completed')
+      }
     })
   }
 }

@@ -13,10 +13,14 @@
       :chips="chips"
       :key="`bookings-list`"
       no-data-text="No bookings found"
+      @initial-load-completed="loading = false"
     >
       <template slot="filter-row">
         <v-spacer />
-        <CUDataTableFilterButton v-model="isFilterDialogOpen" />
+        <CUDataTableFilterButton
+          v-model="isFilterDialogOpen"
+          :loading="loading"
+        />
       </template>
     </CUCollectionTable>
     <CUModal v-model="isDialogOpen">
@@ -95,6 +99,7 @@ export default class Bookings extends Vue {
   isDialogOpen = false
   rejectNote = ''
   currentReservationId = -1
+  loading = true
 
   mounted(): void {
     EventBus.$on('reject-booking', (e) => {

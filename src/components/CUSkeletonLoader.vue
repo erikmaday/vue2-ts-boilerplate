@@ -40,6 +40,15 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'icon') {
       return '24px'
     }
+    if (this.type === 'divider') {
+      return '1px'
+    }
+    if (this.type === 'mobile-table-cell') {
+      return '200px'
+    }
+    if (this.type === 'table-cell' || this.type === 'table-header') {
+      return '18px'
+    }
     return '14px'
   }
 
@@ -52,6 +61,9 @@ export default class CUSkeletonLoader extends Vue {
     }
     if (this.type === 'avatar') {
       return this.computedHeight
+    }
+    if (this.type === 'table-cell' || this.type === 'table-header') {
+      return '88px'
     }
     return '100%'
   }
@@ -78,6 +90,10 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'text-button') {
       classes = `${classes} margin-y-2`
     }
+    if (this.type === 'table-cell' || this.type === 'table-header') {
+      classes = `${classes} border-radius-3`
+    }
+    classes = `${classes} cursor-wait`
     return classes
   }
 }

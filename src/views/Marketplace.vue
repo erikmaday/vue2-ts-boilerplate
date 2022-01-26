@@ -11,10 +11,14 @@
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :key="`marketplace-list`"
       no-data-text="No bids found"
+      @initial-load-completed="loading = false"
     >
       <template slot="filter-row">
         <v-spacer />
-        <CUDataTableFilterButton v-model="isFilterDialogOpen" />
+        <CUDataTableFilterButton
+          v-model="isFilterDialogOpen"
+          :loading="loading"
+        />
       </template>
     </CUCollectionTable>
   </Main>
@@ -32,13 +36,12 @@ import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
-import { Reservation, TableViewTrip } from '@/models/dto'
+import { TableViewTrip } from '@/models/dto'
 import { pluralize } from '@/utils/string'
 import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
 import { datePredefined } from '@/data/predefined'
-import { EventBus } from '@/utils/eventBus'
 
 @Component({
   components: {
@@ -53,6 +56,7 @@ export default class Marketplace extends Vue {
   isFilterDialogOpen = false
   sorts: any = sort()
   filters: any = filter()
+  loading = true
 
   columns: DataTableColumn[] = [
     {

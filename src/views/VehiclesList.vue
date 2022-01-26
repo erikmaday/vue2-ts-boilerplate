@@ -2,12 +2,12 @@
   <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
-        <v-skeleton-loader v-show="loading" type="heading" width="215px" />
+        <CUSkeletonLoader v-show="loading" type="h1" width="100px" />
         <h1 v-show="!loading">Vehicles</h1>
       </v-col>
       <v-spacer />
       <v-col class="shrink">
-        <CUSkeletonLoaderButton v-show="loading" width="88px" />
+        <CUSkeletonLoader v-show="loading" type="button" width="88px" />
         <v-btn
           v-show="!loading"
           primary
@@ -18,10 +18,10 @@
           Add New
         </v-btn>
       </v-col>
-      <v-col v-show="loading" class="shrink">
-        <CUSkeletonLoaderButton width="101px" />
-      </v-col>
-      <CUDataTableFilterButton v-show="!loading" v-model="isFilterDialogOpen" />
+      <CUDataTableFilterButton
+        v-model="isFilterDialogOpen"
+        :loading="loading"
+      />
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -49,7 +49,6 @@ import { Vehicle } from '@/models/dto/Vehicle'
 import { Location } from 'vue-router'
 import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
-import { EventBus } from '@/utils/eventBus'
 
 @Component({
   components: {

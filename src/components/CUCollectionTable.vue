@@ -10,6 +10,7 @@
       :tabs="tabs"
       :chips="chips"
       :initial-filters="initialFilters"
+      :loading="!initialLoadCompleted"
       @initial-filters-set="initialFiltersSet = true"
       @update:sorts="$emit('update:sorts', $event)"
       @update:filters="$emit('update:filters', $event)"

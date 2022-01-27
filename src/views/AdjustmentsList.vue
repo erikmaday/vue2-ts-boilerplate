@@ -43,10 +43,7 @@ import { DataTableColumn } from '@/models/DataTableColumn'
 import { RawLocation } from 'vue-router'
 import { processPredefined } from '@/utils/predefined'
 import { datePredefined } from '@/data/predefined'
-import {
-  formatMarkupStartDateTime,
-  formatMarkupEndDateTime,
-} from '@/utils/string'
+import { formatTimeStampDateTime } from '@/utils/string'
 import { Markup } from '@/models/dto/Markup'
 import { AxiosResponse } from 'axios'
 
@@ -147,7 +144,8 @@ export default class AdjustmentsList extends Vue {
       sortProp: 'startDate',
       type: 'date',
       predefined: processPredefined(datePredefined),
-      computedText: (row: Markup): string => formatMarkupStartDateTime(row),
+      computedText: (row: Markup): string =>
+        formatTimeStampDateTime(row.startDate),
     },
     {
       _t_id: 'de823465-b69f-44a5-96ff-01624126c838',
@@ -159,7 +157,8 @@ export default class AdjustmentsList extends Vue {
       sortProp: 'endDate',
       type: 'date',
       predefined: processPredefined(datePredefined),
-      computedText: (row: Markup): string => formatMarkupEndDateTime(row),
+      computedText: (row: Markup): string =>
+        formatTimeStampDateTime(row.endDate),
     },
     {
       _t_id: 'a46c5350-5c2e-4d34-867b-971ec2ec545e',
@@ -195,7 +194,7 @@ export default class AdjustmentsList extends Vue {
       confirmModalText: 'Are you sure you want to delete this adjustment?',
       confirmModalPrimaryActionText: 'Delete',
       action: async (row: Markup): Promise<AxiosResponse> => {
-        return markup.deleteMarkup(row.markupId)
+        return markup.delete(row.markupId)
       },
     },
     {

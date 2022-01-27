@@ -17,7 +17,7 @@
     <template #title>{{ headerTitle }}</template>
     <template #buttons>
       <v-btn
-        v-show="isModeEdit"
+        v-show="isModeEdit || isModeAdd"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
           'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -64,7 +64,7 @@
         Edit Adjustment
       </v-btn>
       <v-btn
-        v-show="isModeEdit || isModeAdd"
+        v-show="!isModeView"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
           'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -73,7 +73,7 @@
         color="primary"
         @click="submit"
       >
-        {{ isModeAdd ? 'Add Adjustment' : 'Save' }}
+        Save
       </v-btn>
     </template>
     <v-form :disabled="isModeView" ref="form" lazy-validation>
@@ -195,17 +195,10 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn
-          color="primary"
-          outlined
-          small
-          text
-          @click="isDeleteModalOpen = false"
-        >
+        <v-btn color="primary" small text @click="isDeleteModalOpen = false">
           Cancel
         </v-btn>
         <v-btn color="error" small @click="deleteMarkup">Delete</v-btn>
-        <v-spacer />
       </template>
     </CUModal>
   </Detail>
@@ -217,7 +210,6 @@ import { AxiosResponse } from 'axios'
 
 import UsersChangePassword from '@/components/UsersChangePassword.vue'
 
-import { baseUrl } from '@/utils/env'
 import type from '@/services/type'
 import { SupportedVehicleType, VehicleType } from '@/models/dto'
 import Detail from '@/layouts/Detail.vue'
@@ -444,7 +436,7 @@ export default class AdjustmentDetail extends Vue {
 
   async deleteMarkup(): Promise<void> {
     if (!this.currentMarkup?.markupId) return
-    const res = await markup.deleteMarkup(this.currentMarkup.markupId)
+    const res = await markup.delete(this.currentMarkup.markupId)
     if (res.status === 200) {
       this.isDeleteModalOpen = false
       this.$router.push({
@@ -494,14 +486,14 @@ export default class AdjustmentDetail extends Vue {
         this.model.vehicleTypeKey = nvt.key
         this.newRateTypes.map((nrt) => {
           this.model.marketRateTypeKey = nrt
-          markup.addMarkup(this.model as Markup)
+          markup.add(this.model as Markup)
         })
       })
     )
   }
 
   async editExistingMarkup(): Promise<number> {
-    const response = await markup.editMarkup(this.model as Markup)
+    const response = await markup.edit(this.model as Markup)
     const markupResponseData = response.data
     return markupResponseData.markup.markupId
   }

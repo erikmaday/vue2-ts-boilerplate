@@ -1,17 +1,16 @@
 <template>
   <v-menu bottom offset-y>
     <template #activator="{ on }">
-      <label class="font-14" v-if="$attrs.label">{{ $attrs.label }}</label>
       <CUTextField
         readonly
-        hide-details
         :dense="dense"
         placeholder="MM/DD/YYYY"
         v-on="on"
-        :value="value"
+        :value="textFieldDisplayDate"
+        v-bind="$attrs"
       />
     </template>
-    <v-date-picker :value="computedISODate" @input="updateSelectedDate" />
+    <v-date-picker :value="value" @input="$emit('input', $event)" />
   </v-menu>
 </template>
 <script lang="ts">
@@ -33,12 +32,8 @@ export default class CUDatePicker extends Vue {
   })
   dense!: boolean
 
-  get computedISODate(): string {
-    return dayjs(this.value).format('YYYY-MM-DD')
-  }
-
-  updateSelectedDate(e): void {
-    this.$emit('input', dayjs(e).format('MM/DD/YYYY'))
+  get textFieldDisplayDate(): string {
+    return dayjs(this.value).format('MM/DD/YYYY')
   }
 }
 </script>

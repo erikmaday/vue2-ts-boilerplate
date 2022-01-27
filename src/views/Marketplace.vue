@@ -3,10 +3,11 @@
     <CUCollectionTable
       :actions="actions"
       :columns="columns"
-      item-key="vehicleId"
-      collection="vehicles"
+      item-key="tripId"
+      collection="trips"
       :initial-filters="initialFilters"
       :fetch-method="tableView"
+      :supplemental-row-method="supplementalRowMethod"
       :tabs="tabs"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       :key="`marketplace-list`"
@@ -28,17 +29,18 @@ import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import CUDataTableFilterButton from '@/components/CUDataTableFilterButton.vue'
 import MarketplaceListBidPrice from '@/components/MarketplaceListBidPrice.vue'
 import MarketplaceListExpiration from '@/components/MarketplaceListExpiration.vue'
+import MarketplacePickupDestination from '@/components/MarketplacePickupDestination.vue'
 import { ActionColumn } from '@/models/ActionColumn'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
-import { Reservation, TableViewTrip } from '@/models/dto'
+import { Bid, TableViewTrip } from '@/models/dto'
 import { pluralize } from '@/utils/string'
 import { RawLocation } from 'vue-router'
 import trip from '@/services/trip'
 import { TableViewFilter, TableViewTab } from '@/models/TableView'
 import { datePredefined } from '@/data/predefined'
-import { EventBus } from '@/utils/eventBus'
+import auth from '@/store/modules/auth'
 
 @Component({
   components: {
@@ -67,8 +69,8 @@ export default class Marketplace extends Vue {
       _t_id: '755e663f-0126-4f31-a642-94b90dfc81cc',
       text: 'Pickup/Destination',
       value: 'stops[0].address.city',
-      computedText: (row: TableViewTrip): string =>
-        this.formatPickupDestination(row),
+      type: 'slot',
+      component: MarketplacePickupDestination,
     },
     {
       _t_id: 'a40e2a3e-25d7-4f1f-bff0-d0296d7a0d25',
@@ -122,6 +124,24 @@ export default class Marketplace extends Vue {
       text: '',
       value: 'actions',
       type: 'actions',
+    },
+  ]
+
+  actions: ActionColumn[] = [
+    {
+      displayText: 'Details',
+      key: 'details',
+      color: 'primary',
+      icon: '',
+      confirmModal: false,
+      ariaLabel: 'View Booking Details',
+      isDetail: true,
+      detailRoute: (row: TableViewTrip): RawLocation => {
+        return {
+          name: 'bid-detail',
+          params: { id: String(row.quoteId) },
+        }
+      },
     },
   ]
 
@@ -211,12 +231,6 @@ export default class Marketplace extends Vue {
     return datetime.format('MMM D, YYYY\nh:mma z')
   }
 
-  formatPickupDestination(trip: TableViewTrip): string {
-    const firstPickup = trip.stops?.[0]
-    const firstDropoff = trip.stops?.[1] || firstPickup
-    return `${firstPickup.address.city} > ${firstDropoff.address.city}`
-  }
-
   formatVehicles(trip: TableViewTrip): string {
     let string = ''
     for (const vehicle of trip.requiredVehicles) {
@@ -228,22 +242,27 @@ export default class Marketplace extends Vue {
     return string
   }
 
-  actions: ActionColumn[] = [
-    {
-      displayText: 'Details',
-      key: 'details',
-      color: 'primary',
-      icon: '',
-      confirmModal: false,
-      ariaLabel: 'View Booking Details',
-      isDetail: true,
-      detailRoute: (row: TableViewTrip): RawLocation => {
-        return {
-          name: 'bid-detail',
-          params: { id: String(row.quoteId) },
+  async supplementalRowMethod(row: TableViewTrip): Promise<void> {
+    const params = {
+      page: 1,
+      pageSize: -1,
+      sorts: undefined,
+      filters: undefined,
+    }
+    const response = await trip.tableView(params, row.quoteId.toString())
+    const allTrips = response.data.resultList
+
+    let totalBidAmount = 0
+    for (let trip of allTrips) {
+      totalBidAmount = trip.bids.reduce((sum, bid: Bid) => {
+        if (bid.active && bid.companyId === auth.getUser.companyId) {
+          sum += bid.bidAmount
         }
-      },
-    },
-  ]
+        return sum
+      }, totalBidAmount)
+    }
+    row.totalBidAmount = totalBidAmount
+    row.totalTrips = response.data.count
+  }
 }
 </script>

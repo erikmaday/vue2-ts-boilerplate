@@ -6,13 +6,22 @@
       'padding-b-6': $vuetify.breakpoint.xs,
     }"
   >
-    <MarketplaceCard
-      v-for="(trip, tripIndex) in bidDetail.trips"
-      :trip="trip"
-      :key="`${trip.tripId}-${tripIndex}-${bidDetail.getAreAllSoldOut}`"
-      class="margin-b-4 last-of-type:margin-b-0"
-    />
+    <template v-for="(trip, tripIndex) in bidDetail.trips">
+      <MarketplaceCardSkeletonLoader
+        v-if="bidDetail.getShowLoaders"
+        :key="`marketplace-card-skeleton-loader-${trip.tripId}-${tripIndex}`"
+        class="margin-b-4 last-of-type:margin-b-0"
+      />
+      <MarketplaceCard
+        v-else
+        :trip="trip"
+        :key="`${trip.tripId}-${tripIndex}-${bidDetail.getAreAllSoldOut}`"
+        class="margin-b-4 last-of-type:margin-b-0"
+      />
+    </template>
+    <CUSkeletonLoader v-if="bidDetail.getShowLoaders" type="button" />
     <v-btn
+      v-else
       small
       color="primary"
       :disabled="!bidDetail.getIsSubmitEnabled"
@@ -22,8 +31,14 @@
     >
       Submit All Bids
     </v-btn>
+    <CUSkeletonLoader
+      v-if="bidDetail.getShowLoaders"
+      type="text"
+      width="120px"
+      classes="margin-t-6 margin-x-auto"
+    />
     <v-btn
-      v-if="!bidDetail.getAreAllSoldOut"
+      v-else-if="!bidDetail.getAreAllSoldOut"
       text
       small
       color="primary"
@@ -39,10 +54,11 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
+import MarketplaceCardSkeletonLoader from '@/components/MarketplaceCardSkeletonLoader.vue'
 import bidDetail from '@/store/modules/bidDetail'
 import app from '@/store/modules/app'
 
-@Component({ components: { MarketplaceCard } })
+@Component({ components: { MarketplaceCard, MarketplaceCardSkeletonLoader } })
 export default class BidDetailMultiSidebar extends Vue {
   bidDetail = bidDetail
 

@@ -1,12 +1,18 @@
 <template>
   <div>
-    <template v-if="currentBidPrice">
+    <template v-if="bidDetail.getShowLoaders">
+      <CUSkeletonLoader type="detail-text" />
+      <CUSkeletonLoader type="detail-text" classes="margin-b-4 margin-t-2" />
+    </template>
+    <template v-else-if="currentBidPrice">
       <p class="font-14">{{ priceLabel }}: {{ calculatedPrice }}</p>
       <p class="font-14 margin-b-4">
         Actual awarded price would be: {{ awardedPrice }}
       </p>
     </template>
+    <CUSkeletonLoader v-if="bidDetail.getShowLoaders" type="button" />
     <v-btn
+      v-else
       color="primary"
       :text="bidDetail.getIsEditingPrevented"
       :outlined="!bidDetail.getIsEditingPrevented"
@@ -18,6 +24,12 @@
     >
       {{ customBidButtonText }}
     </v-btn>
+    <CUSkeletonLoader
+      v-if="bidDetail.getShowLoaders"
+      type="text"
+      width="120px"
+      classes="margin-t-6 margin-x-auto"
+    />
     <v-btn
       v-if="!isMultiBid && !bidDetail.getIsSoldOut"
       :text="!bidDetail.getIsEditingPrevented"

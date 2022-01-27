@@ -1,5 +1,6 @@
 <template>
-  <CUItinerary v-if="stops">
+  <CUItinerarySkeletonLoader v-if="bidDetail.getShowLoaders" :count="3" />
+  <CUItinerary v-else-if="stops">
     <CUItineraryItem
       v-for="(stop, stopIndex) in stops"
       :key="`stop-${stopIndex}-${stop.stopId}`"
@@ -28,13 +29,16 @@
 import { Component, Vue } from 'vue-property-decorator'
 import CUItinerary from '@/components/CUItinerary.vue'
 import CUItineraryItem from '@/components/CUItineraryItem.vue'
+import CUItinerarySkeletonLoader from '@/components/CUItinerarySkeletonLoader.vue'
 import { Stop } from '@/models/dto'
 import { formatDropoffTime, formatPickupTime } from '@/utils/string'
 import bidDetail from '@/store/modules/bidDetail'
+
 @Component({
-  components: { CUItinerary, CUItineraryItem },
+  components: { CUItinerary, CUItineraryItem, CUItinerarySkeletonLoader },
 })
 export default class BidDetailItinerary extends Vue {
+  bidDetail = bidDetail
   formatDropoffTime = formatDropoffTime
   formatPickupTime = formatPickupTime
 

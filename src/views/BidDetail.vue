@@ -3,7 +3,9 @@
     <template v-slot:sidebar>
       <v-row>
         <v-col class="shrink padding-r-0">
+          <CUSkeletonLoader v-if="bidDetail.getShowLoaders" type="icon" />
           <CUIcon
+            v-else
             color="primary"
             class="margin-t-1 cursor-pointer"
             @click="goBack(false)"
@@ -19,17 +21,16 @@
         <BidDetailChangePriceMessage
           v-else-if="bidDetail.getShowChangePriceMessage"
         />
-        <BidDetailMultiSidebar
-          v-else-if="isModeMulti && !bidDetail.trip && !loading"
-        />
+        <BidDetailMultiSidebar v-else-if="isModeMulti && !bidDetail.trip" />
         <BidDetailSingleSidebar
-          v-else-if="bidDetail.getTrip && !loading"
+          v-else-if="isModeSingle || bidDetail.getTrip"
           :trip="bidDetail.getTrip"
           :is-multi-bid="isModeMulti"
         />
       </v-row>
     </template>
     <template v-slot:map>
+      <CUSkeletonLoader v-if="bidDetail.getShowLoaders" height="100%" />
       <BidDetailMap v-if="mapTrips && !loading" :trips="mapTrips" />
     </template>
   </MapWithSidebar>
@@ -102,32 +103,9 @@ export default class BidDetail extends Vue {
 
   async refresh(): Promise<void> {
     this.loading = true
-    await this.getTrips()
+    await bidDetail.fetchTrips(this.quoteId)
     this.loading = false
   }
-
-  async getTrips(): Promise<void> {
-    try {
-      await bidDetail.fetchTripsListByQuoteId(this.quoteId)
-      const tripsCount = bidDetail.getTrips.length
-      if (tripsCount) {
-        await bidDetail.fetchAllTripDetails()
-        await bidDetail.fetchExistingBids()
-        if (tripsCount === 1) {
-          bidDetail.selectTrip(bidDetail.getTrips[0].tripId)
-        }
-      } else {
-        this.notFound = true
-        return
-      }
-    } catch (e) {
-      this.notFound = true
-      console.error(e)
-      return
-    }
-  }
-
-  // get all existing bids and store them here
 
   goBack(ignoreUnsavedChanges = false): void {
     if (bidDetail.getShowChangePriceMessage) {

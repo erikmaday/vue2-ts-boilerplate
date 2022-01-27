@@ -1,5 +1,6 @@
 <template>
-  <span v-if="formattedBidAmount">{{ formattedBidAmount }}</span>
+  <span v-if="isSoldOut" class="text-error font-medium">Sold Out</span>
+  <span v-else-if="formattedBidAmount">{{ formattedBidAmount }}</span>
   <v-btn v-else-if="!bid" small color="primary" @click="goToBidDetail">
     Bid
   </v-btn>
@@ -27,7 +28,7 @@ export default class MarketplaceListBidPrice extends Vue {
   }
 
   get bidAmount(): number {
-    return this.bid?.bidAmount || null
+    return this.row?.totalBidAmount || null
   }
 
   get formattedBidAmount(): string {

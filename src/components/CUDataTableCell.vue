@@ -1,10 +1,6 @@
 <template>
   <!-- eslint-disable vue/valid-v-slot -->
-  <div
-    :class="
-      isMobile ? 'd-flex flex-column align-start margin-y-1' : ''
-    "
-  >
+  <div :class="isMobile ? 'd-flex flex-column align-start margin-y-1' : ''">
     <h4
       v-if="
         isMobile &&
@@ -20,6 +16,7 @@
       <component
         :is="column.component"
         :row="row"
+        :is-mobile="isMobile"
         :actions="actions"
         v-on="$listeners"
       />

@@ -1,11 +1,26 @@
 <template>
   <v-row>
-    <v-col class="shrink white-space-nowrap padding-r-0 margin-r-0 padding-b-0">
-      <h2>
-        {{ firstPickupCity }}
-        <span class="text-gray-light">></span>
-        {{ firstDropoffCity }}
-      </h2>
+    <v-col class="white-space-nowrap padding-r-0 margin-r-0 padding-b-0">
+      <template v-if="bidDetail.getShowLoaders">
+        <CUSkeletonLoader
+          type="h2"
+          width="40%"
+          classes="d-inline-flex margin-r-2"
+        />
+        <CUSkeletonLoader
+          type="h2"
+          width="20px"
+          classes="d-inline-flex margin-r-2"
+        />
+        <CUSkeletonLoader type="h2" width="40%" classes="d-inline-flex" />
+      </template>
+      <template v-else>
+        <h2>
+          {{ firstPickupCity }}
+          <span class="text-gray-light">></span>
+          {{ firstDropoffCity }}
+        </h2>
+      </template>
     </v-col>
     <v-col class="shrink margin-l-3 padding-l-0 padding-b-0">
       <v-chip v-if="bidDetail.getIsSoldOut" label color="error">
@@ -13,7 +28,12 @@
       </v-chip>
     </v-col>
     <v-col cols="12" class="padding-t-0">
-      <p>{{ formattedStartDateTime }}</p>
+      <CUSkeletonLoader
+        v-if="bidDetail.getShowLoaders"
+        type="text"
+        width="80%"
+      />
+      <p v-else>{{ formattedStartDateTime }}</p>
     </v-col>
   </v-row>
 </template>

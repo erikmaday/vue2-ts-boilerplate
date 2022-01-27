@@ -44,7 +44,12 @@ import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
 
 @Component({
-  components: { Main, CUCollectionTable, CUDataTableFilters, CUDataTableFilterButton },
+  components: {
+    Main,
+    CUCollectionTable,
+    CUDataTableFilters,
+    CUDataTableFilterButton,
+  },
 })
 export default class GaragesList extends Vue {
   isFilterDialogOpen = false

@@ -469,5 +469,4 @@ const buildBidVehicles = (trip: Trip): BidPayloadVehicle[] => {
 
 // register module
 import store from '@/store/index'
-import app from './app'
 export default new BidDetailModule({ store, name: 'bidDetail' })

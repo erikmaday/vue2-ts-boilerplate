@@ -22,6 +22,7 @@
       :columns="columns"
       item-key="markupId"
       collection="markups"
+      mobile-view-on-breakpoint="sm"
       :fetch-method="tableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No adjustments found"

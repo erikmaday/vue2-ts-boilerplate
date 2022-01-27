@@ -1,12 +1,8 @@
 <template>
-  <v-container
-    fluid
-    class="padding-a-0"
-    :class="{ 'fill-height': $vuetify.breakpoint.mdAndUp }"
-  >
-    <v-row no-gutters :class="{ 'fill-height': $vuetify.breakpoint.mdAndUp }">
+  <v-container fluid class="padding-a-0" :class="{ 'fill-height': !isMobile }">
+    <v-row no-gutters :class="{ 'fill-height': !isMobile }">
       <v-col
-        v-if="$vuetify.breakpoint.mdAndUp"
+        v-if="!isMobile"
         key="side-navigation"
         :style="{
           width: `${sidebarWidth}px`,
@@ -28,7 +24,7 @@
             <v-col cols="auto">
               <slot name="top-bar-content" />
             </v-col>
-            <template v-if="$vuetify.breakpoint.smAndDown">
+            <template v-if="isMobile">
               <v-spacer />
               <div class="shrink">
                 <v-menu offset-y>
@@ -69,5 +65,25 @@ export default class MainWithSidebar extends Vue {
 
   @Prop({ default: false })
   disableParentPadding!: boolean
+
+  @Prop({
+    type: String,
+    required: false,
+    default: 'sm',
+  })
+  mobileViewOnBreakpoint!: string
+
+  get isMobile(): boolean {
+    switch (this.mobileViewOnBreakpoint) {
+      case 'xs':
+        return this.$vuetify.breakpoint.xs
+      case 'sm':
+        return this.$vuetify.breakpoint.smAndDown
+      case 'md':
+        return this.$vuetify.breakpoint.mdAndDown
+      default:
+        return false
+    }
+  }
 }
 </script>

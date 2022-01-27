@@ -29,6 +29,7 @@
       :server-items-length="serverItemsLength"
       :no-data-text="noDataText"
       :hide-default-header="$vuetify.breakpoint.xs"
+      :mobile-view-on-breakpoint="mobileViewOnBreakpoint"
       @update:options="load"
       @pagination="options = $event"
       @refresh="load"
@@ -76,6 +77,11 @@ export default class CUCollectionTable extends Vue {
   isFilterDialogOpen: boolean
   @Prop({ type: String, required: false })
   noDataText!: string
+  @Prop({
+    type: String,
+    required: false,
+  })
+  mobileViewOnBreakpoint!: string
 
   items: unknown[] = []
   loading = false

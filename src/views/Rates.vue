@@ -1,5 +1,7 @@
 <template>
-  <MainWithSidebar>
+  <MainWithSidebar
+    :mobile-view-on-breakpoint="mode === 'rates' ? undefined : 'md'"
+  >
     <template #navigation>
       <MainWithSidebarNavigation :links="links" :mode="mode" />
     </template>

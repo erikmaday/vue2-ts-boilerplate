@@ -3,7 +3,9 @@
     <template v-slot:sidebar>
       <v-row>
         <v-col class="shrink padding-r-0">
+          <CUSkeletonLoader v-if="bidDetail.getShowLoaders" type="icon" />
           <CUIcon
+            v-else
             color="primary"
             class="margin-t-1 cursor-pointer"
             @click="goBack(false)"
@@ -16,17 +18,19 @@
           @leave-page="goBack(true)"
           @cancel="showUnsavedChangesWarning = false"
         />
-        <BidDetailMultiSidebar
-          v-else-if="isModeMulti && !bidDetail.trip && !loading"
+        <BidDetailChangePriceMessage
+          v-else-if="bidDetail.getShowChangePriceMessage"
         />
+        <BidDetailMultiSidebar v-else-if="isModeMulti && !bidDetail.trip" />
         <BidDetailSingleSidebar
-          v-else-if="bidDetail.getTrip && !loading"
+          v-else-if="isModeSingle || bidDetail.getTrip"
           :trip="bidDetail.getTrip"
           :is-multi-bid="isModeMulti"
         />
       </v-row>
     </template>
     <template v-slot:map>
+      <CUSkeletonLoader v-if="bidDetail.getShowLoaders" height="100%" />
       <BidDetailMap v-if="mapTrips && !loading" :trips="mapTrips" />
     </template>
   </MapWithSidebar>
@@ -39,6 +43,7 @@ import BidDetailMap from '@/components/BidDetailMap.vue'
 import BidDetailMultiSidebar from '@/components/BidDetailMultiSidebar.vue'
 import BidDetailSingleSidebar from '@/components/BidDetailSingleSidebar.vue'
 import BidDetailUnsavedChanges from '@/components/BidDetailUnsavedChanges.vue'
+import BidDetailChangePriceMessage from '@/components/BidDetailChangePriceMessage.vue'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
 import { Trip } from '@/models/dto'
 import {
@@ -57,6 +62,7 @@ import bidDetail from '@/store/modules/bidDetail'
     BidDetailMultiSidebar,
     BidDetailSingleSidebar,
     BidDetailUnsavedChanges,
+    BidDetailChangePriceMessage,
   },
 })
 export default class BidDetail extends Vue {
@@ -97,35 +103,14 @@ export default class BidDetail extends Vue {
 
   async refresh(): Promise<void> {
     this.loading = true
-    await this.getTrips()
+    await bidDetail.fetchTrips(this.quoteId)
     this.loading = false
   }
 
-  async getTrips(): Promise<void> {
-    try {
-      await bidDetail.fetchTripsListByQuoteId(this.quoteId)
-      const tripsCount = bidDetail.getTrips.length
-      if (tripsCount) {
-        await bidDetail.fetchAllTripDetails()
-        await bidDetail.fetchExistingBids()
-        if (tripsCount === 1) {
-          bidDetail.selectTrip(bidDetail.getTrips[0].tripId)
-        }
-      } else {
-        this.notFound = true
-        return
-      }
-    } catch (e) {
-      this.notFound = true
-      console.error(e)
-      return
-    }
-  }
-
-  // get all existing bids and store them here
-
   goBack(ignoreUnsavedChanges = false): void {
-    if (this.isModeMulti && bidDetail.getTrip) {
+    if (bidDetail.getShowChangePriceMessage) {
+      bidDetail.setIsEnteringBid(false)
+    } else if (this.isModeMulti && bidDetail.getTrip) {
       bidDetail.deselectTrip()
     } else if (
       this.isModeMulti &&

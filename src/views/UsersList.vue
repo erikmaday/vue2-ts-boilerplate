@@ -2,11 +2,14 @@
   <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
-        <h1>Team</h1>
+        <CUSkeletonLoader v-show="showLoaders" type="h1" width="66px" />
+        <h1 v-show="!showLoaders">Team</h1>
       </v-col>
       <v-spacer />
       <v-col class="shrink">
+        <CUSkeletonLoader v-show="showLoaders" type="button" width="88px" />
         <v-btn
+          v-show="!showLoaders"
           primary
           small
           color="primary"
@@ -15,7 +18,10 @@
           Add New
         </v-btn>
       </v-col>
-      <CUDataTableFilterButton v-model="isFilterDialogOpen" />
+      <CUDataTableFilterButton
+        v-model="isFilterDialogOpen"
+        :loading="showLoaders"
+      />
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -26,6 +32,7 @@
       :fetch-method="usersTableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No users found"
+      @initial-load-completed="loading = false"
     />
   </Main>
 </template>
@@ -45,6 +52,7 @@ import { TableViewTab } from '@/models/TableView'
 import { AxiosResponse } from 'axios'
 import { RawLocation } from 'vue-router'
 import { EventBus } from '@/utils/eventBus'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -57,6 +65,7 @@ import { EventBus } from '@/utils/eventBus'
 })
 export default class Users extends Vue {
   isFilterDialogOpen = false
+  loading = true
 
   columns: DataTableColumn[] = [
     {
@@ -170,5 +179,9 @@ export default class Users extends Vue {
       },
     },
   ]
+
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && this.loading
+  }
 }
 </script>

@@ -10,6 +10,7 @@
       :tabs="tabs"
       :chips="chips"
       :initial-filters="initialFilters"
+      :loading="showLoaders"
       @initial-filters-set="initialFiltersSet = true"
       @update:sorts="$emit('update:sorts', $event)"
       @update:filters="$emit('update:filters', $event)"
@@ -19,7 +20,10 @@
         <slot name="filter-row"></slot>
       </template>
     </CUDataTableFilters>
+
+    <CUSkeletonLoaderTableView v-show="showLoaders" />
     <CUDataTable
+      v-show="!showLoaders"
       :actions="actions"
       :options="options"
       :columns="visibleColumns"
@@ -30,15 +34,14 @@
       :no-data-text="noDataText"
       :hide-default-header="$vuetify.breakpoint.xs"
       :mobile-view-on-breakpoint="mobileViewOnBreakpoint"
-      @update:options="load"
-      @pagination="options = $event"
+      @update:options="updateOptions"
       @refresh="load"
       v-on="$listeners"
     />
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import {
@@ -53,9 +56,11 @@ import { filter } from '@/utils/filter'
 import { sort } from '@/utils/sort'
 import { AxiosResponse } from 'axios'
 import { ActionColumn } from '@/models/ActionColumn'
+import CUSkeletonLoaderTableView from '@/components/CUSkeletonLoaderTableView.vue'
+import app from '@/store/modules/app'
 
 @Component({
-  components: { CUDataTable, CUDataTableFilters },
+  components: { CUDataTable, CUDataTableFilters, CUSkeletonLoaderTableView },
 })
 export default class CUCollectionTable extends Vue {
   @Prop({ type: Array, required: false, default: () => [] })
@@ -65,6 +70,7 @@ export default class CUCollectionTable extends Vue {
   actions!: ActionColumn[]
   @Prop({ type: String, required: false }) itemKey!: string
   @Prop(Function) fetchMethod!: any
+  @Prop({ type: Function, required: false }) supplementalRowMethod!: any
   @Prop({ required: false, default: () => filter() }) filters: any
   @Prop({ required: false, default: () => sort() }) sorts: any
   @Prop({ required: false, default: () => [] })
@@ -89,10 +95,15 @@ export default class CUCollectionTable extends Vue {
   debounce: any = null
   filterList: any[] = []
   initialFiltersSet = false
+  initialLoadCompleted = false
 
   options: TableViewParameters = {
     page: 1,
     pageSize: 10,
+  }
+
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && !this.initialLoadCompleted
   }
 
   get areInitialFiltersSet(): boolean {
@@ -132,12 +143,29 @@ export default class CUCollectionTable extends Vue {
 
       const items: unknown[] = data.resultList
 
+      // FOR BETTER SPEED, BUT MORE API CALLS, WE CAN MOVE THE CALLING OF DETAIL FUNCTIONS TO COMPONENTS SLOTTED INTO THE PROPER CELLS
+      // THIS WILL DEFINITELY INCREASE SPEED, BUT ALSO THE NUMBER OF CALLS TO THE BACKEND WILL DOUBLE
+      if (this.supplementalRowMethod) {
+        for (const item of items) {
+          await this.supplementalRowMethod(item)
+        }
+      }
+
       this.items = items.map((item: any) => {
         const obj = { id: item[this.itemKey] }
         return Object.assign({}, item, obj)
       })
       this.loading = false
+      if (!this.initialLoadCompleted) {
+        this.initialLoadCompleted = true
+        this.$emit('initial-load-completed')
+      }
     })
+  }
+
+  updateOptions(event: any): void {
+    this.options = event
+    this.load()
   }
 }
 </script>

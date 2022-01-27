@@ -140,7 +140,7 @@ export default class BookingDetail extends Vue {
   }
 
   get showLoaders(): boolean {
-    return this.loading && app.areLoadersEnabled
+    return this.loading && app.getAreLoadersEnabled
   }
 
   created(): void {

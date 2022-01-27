@@ -139,6 +139,8 @@ export interface TripResult extends ApiResult {
 
 export type TripTableViewResult = TableViewResult<TableViewTrip>
 export interface TableViewTrip {
+  totalTrips?: number
+  totalBidAmount?: number
   bidCount: number
   parentReservationId?: number
   biddingEndDate: string

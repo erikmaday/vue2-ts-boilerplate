@@ -19,41 +19,50 @@ export default class CUSkeletonLoader extends Vue {
     if (this.height) {
       return this.height
     }
-    if (this.type === 'button') {
-      return '40px'
+    switch (this.type) {
+      case 'button':
+        return '40px'
+      case 'text-button':
+        return '24px'
+      case 'h1':
+        return '29px'
+      case 'h2':
+        return '31px'
+      case 'h3':
+        return '27px'
+      case 'text':
+        return '18px'
+      case 'detail-text':
+        return '16px'
+      case 'icon':
+        return '24px'
+      case 'divider':
+        return '1px'
+      case 'mobile-table-cell':
+        return '200px'
+      case 'table-cell':
+      case 'table-header':
+        return '18px'
+      default:
+        return '14px'
     }
-    if (this.type === 'text-button') {
-      return '24px'
-    }
-    if (this.type === 'h1') {
-      return '29px'
-    }
-    if (this.type === 'h3') {
-      return '27px'
-    }
-    if (this.type === 'text') {
-      return '18px'
-    }
-    if (this.type === 'detail-text') {
-      return '16px'
-    }
-    if (this.type === 'icon') {
-      return '24px'
-    }
-    return '14px'
   }
 
   get computedWidth(): string {
     if (this.width) {
       return this.width
     }
-    if (this.type === 'icon') {
-      return '24px'
+    switch (this.type) {
+      case 'icon':
+        return '24px'
+      case 'avatar':
+        return this.computedHeight
+      case 'table-cell':
+      case 'table-header':
+        return '88px'
+      default:
+        return '100%'
     }
-    if (this.type === 'avatar') {
-      return this.computedHeight
-    }
-    return '100%'
   }
 
   get styles(): { [key: string]: string | number } {
@@ -78,6 +87,10 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'text-button') {
       classes = `${classes} margin-y-2`
     }
+    if (this.type === 'table-cell' || this.type === 'table-header') {
+      classes = `${classes} border-radius-3`
+    }
+    classes = `${classes} cursor-wait`
     return classes
   }
 }

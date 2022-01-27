@@ -19,7 +19,7 @@
       v-bind="$attrs"
       :options="options"
       :no-data-text="noDataText"
-      @pagination="$emit('pagination', $event)"
+      :hide-default-footer="isDetailTable"
       @update:options="$emit('update:options', $event)"
     >
       <template v-if="!isMobile" #item="{ item, index }">

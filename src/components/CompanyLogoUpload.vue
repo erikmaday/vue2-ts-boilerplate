@@ -140,9 +140,5 @@ export default class CompanyLogoUpload extends Vue {
     const file = files[0]
     this.$emit('input', file)
   }
-
-  openFileBrowser(): void {
-    console.log(this.$refs.imageInput)
-  }
 }
 </script>

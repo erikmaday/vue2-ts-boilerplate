@@ -1,25 +1,51 @@
 <template>
   <div>
     <div class="row align-center margin-t-0 margin-x-0 margin-b-3">
-      <CUIcon class="margin-r-2" color="gray-mid-light">trip_type</CUIcon>
-      {{ tripType }}
+      <template v-if="bidDetail.getShowLoaders">
+        <CUSkeletonLoader type="icon" classes="d-inline-flex margin-r-2" />
+        <CUSkeletonLoader type="text" width="100px" />
+      </template>
+      <template v-else>
+        <CUIcon class="margin-r-2" color="gray-mid-light">trip_type</CUIcon>
+        {{ tripType }}
+      </template>
     </div>
     <div class="row align-center margin-t-0 margin-x-0 margin-b-3">
-      <CUIcon class="margin-r-2" color="gray-mid-light">directions_bus</CUIcon>
-      <span
-        v-for="(requiredVehicle, requiredVehicleIndex) in requiredVehicles"
-        :key="`required-vehicle-${requiredVehicle.vehicleType}-${requiredVehicleIndex}`"
-      >
-        {{ formattedRequiredVehicle(requiredVehicle) }}
-      </span>
+      <template v-if="bidDetail.getShowLoaders">
+        <CUSkeletonLoader type="icon" classes="d-inline-flex margin-r-2" />
+        <CUSkeletonLoader type="text" width="100px" />
+      </template>
+      <template v-else>
+        <CUIcon class="margin-r-2" color="gray-mid-light">
+          directions_bus
+        </CUIcon>
+        <span
+          v-for="(requiredVehicle, requiredVehicleIndex) in requiredVehicles"
+          :key="`required-vehicle-${requiredVehicle.vehicleType}-${requiredVehicleIndex}`"
+        >
+          {{ formattedRequiredVehicle(requiredVehicle) }}
+        </span>
+      </template>
     </div>
     <div class="row align-center margin-t-0 margin-x-0 margin-b-3">
-      <CUIcon class="text-gray-mid-light margin-r-2">person</CUIcon>
-      {{ formattedRequiredDrivers }}
+      <template v-if="bidDetail.getShowLoaders">
+        <CUSkeletonLoader type="icon" classes="d-inline-flex margin-r-2" />
+        <CUSkeletonLoader type="text" width="100px" />
+      </template>
+      <template v-else>
+        <CUIcon class="text-gray-mid-light margin-r-2">person</CUIcon>
+        {{ formattedRequiredDrivers }}
+      </template>
     </div>
     <div class="row align-center margin-a-0">
-      <CUIcon class="margin-r-2" color="gray-mid-light">ticket</CUIcon>
-      {{ passengerCount }} Passengers
+      <template v-if="bidDetail.getShowLoaders">
+        <CUSkeletonLoader type="icon" classes="d-inline-flex margin-r-2" />
+        <CUSkeletonLoader type="text" width="100px" />
+      </template>
+      <template v-else>
+        <CUIcon class="margin-r-2" color="gray-mid-light">ticket</CUIcon>
+        {{ passengerCount }} Passengers
+      </template>
     </div>
   </div>
 </template>
@@ -32,6 +58,8 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component
 export default class BidDetailTripNumbers extends Vue {
+  bidDetail = bidDetail
+
   get tripType(): string {
     return bidDetail.getTrip?.tripType.label
   }

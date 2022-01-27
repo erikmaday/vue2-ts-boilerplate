@@ -23,6 +23,7 @@ export interface TableViewBid {
   isMarketplace: boolean
   active: boolean
   isConverted: boolean
+  isPricedByPricingEngine: boolean
   providerNotes?: null
   soldOut: boolean
   bidPassengerCount: number

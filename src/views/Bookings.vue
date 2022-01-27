@@ -13,10 +13,14 @@
       :chips="chips"
       :key="`bookings-list`"
       no-data-text="No bookings found"
+      @initial-load-completed="loading = false"
     >
       <template slot="filter-row">
         <v-spacer />
-        <CUDataTableFilterButton v-model="isFilterDialogOpen" />
+        <CUDataTableFilterButton
+          v-model="isFilterDialogOpen"
+          :loading="showLoaders"
+        />
       </template>
     </CUCollectionTable>
     <CUModal v-model="isDialogOpen">
@@ -78,6 +82,7 @@ import {
 } from '@/utils/enum'
 import { EventBus } from '@/utils/eventBus'
 import { datePredefined, noFutureDatesPredefined } from '@/data/predefined'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -95,6 +100,7 @@ export default class Bookings extends Vue {
   isDialogOpen = false
   rejectNote = ''
   currentReservationId = -1
+  loading = true
 
   mounted(): void {
     EventBus.$on('reject-booking', (e) => {
@@ -106,6 +112,10 @@ export default class Bookings extends Vue {
       this.currentReservationId = e
       this.accept(e)
     })
+  }
+
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && this.loading
   }
 
   columns: DataTableColumn[] = [

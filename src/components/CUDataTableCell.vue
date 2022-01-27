@@ -16,6 +16,7 @@
       <component
         :is="column.component"
         :row="row"
+        :is-mobile="isMobile"
         :actions="actions"
         v-on="$listeners"
       />

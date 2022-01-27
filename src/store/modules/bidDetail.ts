@@ -11,6 +11,7 @@ import bid from '@/services/bid'
 import { getExistingBidsByTripId } from '@/utils/bid'
 import { TableViewBid } from '@/models/dto/TableViewBid'
 import auth from './auth'
+import app from './app'
 import deepClone from '@/utils/deepClone'
 
 @Module({ generateMutationSetters: true })
@@ -28,6 +29,7 @@ class BidDetailModule extends VuexModule {
   areAllSoldOut = false
   submitting = false
   isSubmitted = false
+  isEditingPrevented = false
   loading = true
   notFound = false
 
@@ -88,6 +90,14 @@ class BidDetailModule extends VuexModule {
 
   get getSubmitting(): boolean {
     return this.submitting
+  }
+
+  get getIsEditingPrevented(): boolean {
+    return this.isEditingPrevented
+  }
+
+  get getShowChangePriceMessage(): boolean {
+    return this.isEnteringBid && this.isEditingPrevented
   }
 
   get getShowLoaders(): boolean {
@@ -157,6 +167,7 @@ class BidDetailModule extends VuexModule {
       tripIds = this.trips.map((trip) => trip.tripId)
     }
     if (tripIds.length) {
+      let isAutoPriced = false
       const bids: { [tripId: number]: TableViewBid } = {}
       const bidAmounts: { [tripId: number]: number | null } = {}
       for (const tripId of tripIds) {
@@ -166,9 +177,13 @@ class BidDetailModule extends VuexModule {
         if (!bidAmounts[tripId]) {
           this.areBidsComplete = false
         }
+        if (bid?.isPricedByPricingEngine) {
+          isAutoPriced = true
+        }
       }
       this.bidAmounts = bidAmounts
       this.bids = bids
+      this.isEditingPrevented = isAutoPriced && app.getIsBidEditingPrevented
       let allSoldOut = true
       for (const bid of Object.values(bids)) {
         if (!bid?.soldOut) {
@@ -454,5 +469,4 @@ const buildBidVehicles = (trip: Trip): BidPayloadVehicle[] => {
 
 // register module
 import store from '@/store/index'
-import app from './app'
 export default new BidDetailModule({ store, name: 'bidDetail' })

@@ -10,15 +10,19 @@ export default {
   tableView(
     params: TableViewParameters
   ): Promise<AxiosResponse<TableViewResult<Markup>>> {
-    const { sorts, filters, pageSize = 10, page = 1 } = params
-    return httpService.get(
-      `https://${apiBaseUrl()}/tables/markups?${
-        (pageSize ? `pageSize=${pageSize}` : '') +
-        (page ? `&page=${page}` : '') +
-        (sorts ? `&${sorts}` : '') +
-        (filters ? `&${filters}` : '')
-      }`
-    )
+    const { sorts = null, filters = null, pageSize = 10, page = 1 } = params
+
+    let query = `page=${page}&pageSize=${pageSize}`
+    if (sorts) {
+      query += `&${sorts}`
+    }
+    if (filters) {
+      query += `&${filters}`
+    }
+    query = encodeURI(query)
+    const host = apiBaseUrl()
+    const url = `https://${host}/tables/markups?${query}`
+    return httpService.get(url)
   },
   byId(markupId: number): Promise<AxiosResponse<MarkupResult>> {
     return httpService.get(`https://${apiBaseUrl()}/markup/${markupId}`)

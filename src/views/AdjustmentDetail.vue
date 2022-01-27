@@ -135,7 +135,7 @@
         <v-col cols="12" sm="6" class="py-0">
           <CUSelect
             v-model="newRateTypes"
-            :items="rateTypes"
+            :items="marketRateTypes"
             :multiple="true"
             :rules="[(val) => typeValidator(val)]"
             :disabled="!isModeAdd"
@@ -217,6 +217,7 @@ import { Markup, MarkupDetail, MarkupDay } from '@/models/dto/Markup'
 import markup from '@/services/markup'
 import deepClone from '@/utils/deepClone'
 import dayjs from 'dayjs'
+import { MarketRateType } from '@/models/dto/Rate'
 
 @Component({
   components: {
@@ -237,21 +238,7 @@ export default class AdjustmentDetail extends Vue {
   newEndDate: string = dayjs().format('YYYY-MM-DD')
 
   vehicleTypes: VehicleType[] = []
-
-  rateTypes = [
-    {
-      label: 'Hourly',
-      key: 'hourly_rate',
-    },
-    {
-      label: 'Daily',
-      key: 'daily_rate',
-    },
-    {
-      label: 'Mileage',
-      key: 'mileage',
-    },
-  ]
+  marketRateTypes: MarketRateType[] = []
 
   markupDays = [
     {
@@ -298,6 +285,7 @@ export default class AdjustmentDetail extends Vue {
 
   mounted(): void {
     this.setVehicleTypes()
+    this.setMarketRateTypes()
 
     if (this.isModeEdit || this.isModeView) {
       this.getCurrentMarkup()
@@ -353,13 +341,14 @@ export default class AdjustmentDetail extends Vue {
         this.newEndDate = dayjs(
           this.currentMarkup.endDate.split('T')[0]
         ).format('MM/DD/YYYY')
-        this.newRateTypes = this.rateTypes.filter(
+        this.newRateTypes = this.marketRateTypes.filter(
           (rt) => rt.key === this.currentMarkup.marketRateTypeKey
         )
         return
       }
     } catch (e) {
-      console.log(e)
+      // eslint-disable-next-line no-console
+      console.error(e)
       return
     }
   }
@@ -447,6 +436,22 @@ export default class AdjustmentDetail extends Vue {
       response = await type.vehicleTypeTableView({})
       const { data } = response
       this.vehicleTypes = data.resultList
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+      return
+    }
+  }
+
+  async setMarketRateTypes(): Promise<void> {
+    let response: AxiosResponse
+    try {
+      response = await type.marketRateType()
+      const { data } = response
+      this.marketRateTypes = data
+      this.marketRateTypes = this.marketRateTypes.filter((mrt) =>
+        ['daily_rate', 'hourly_rate', 'mileage'].includes(mrt.key)
+      )
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e)

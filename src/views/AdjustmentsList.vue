@@ -10,7 +10,7 @@
           primary
           small
           color="primary"
-          @click="$router.push({ name: 'rates.adjustments.add' })"
+          :to="{ name: 'rates.adjustments.add' }"
         >
           Add New
         </v-btn>

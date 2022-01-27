@@ -290,7 +290,8 @@ export default class GaragesDetail extends Vue {
     if (
       !app.getLastRoute?.name ||
       app.getLastRoute.name === 'garages.edit' ||
-      app.getLastRoute.name === 'garages.add'
+      app.getLastRoute.name === 'garages.add' ||
+      app.getLastRoute.name === 'vehicles.view'
     ) {
       return { name: 'garages' }
     }

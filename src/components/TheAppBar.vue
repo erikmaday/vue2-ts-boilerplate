@@ -63,8 +63,11 @@
           <!-- Double spans allow for precise underlining -->
           <span
             v-else
-            class="h-full d-flex align-center border-b-2 border-t-0 border-x-0 border-transparent border-solid hover:border-black active:border-black"
-            :class="{ 'border-black': item.name === $route.name }"
+            class="h-full d-flex align-center border-b-2 border-t-0 border-x-0 border-solid hover:border-black active:border-black"
+            :class="{
+              'border-black': item.name === $route.name,
+              'border-transparent': item.name !== $route.name,
+            }"
           >
             <span>{{ item.label }}</span>
           </span>

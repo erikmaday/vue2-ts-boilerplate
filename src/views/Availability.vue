@@ -172,7 +172,7 @@ export default class Availability extends Vue {
 
   displayedDrivers: Driver[] = []
   displayedVehicles: Vehicle[] = []
-  datePickerDate: string = dayjs().format('MM/DD/YYYY')
+  datePickerDate: string = dayjs().format('YYYY-MM-DD')
   filters = {
     vehicleTypes: [],
     vehicles: [],
@@ -183,15 +183,11 @@ export default class Availability extends Vue {
   // and sets the currently displayed date on the
   // calendar to this date
   updateDatePickerDate(date: string): void {
-    this.calendarDisplayDate = dayjs(date, 'MM/DD/YYYY')
+    this.calendarDisplayDate = dayjs(date, 'YYYY-MM-DD')
   }
 
   get calendarDisplayDateAsJS(): Date {
     return this.calendarDisplayDate.toDate()
-  }
-
-  get calendarDisplayDateAsLocalizedString(): string {
-    return this.calendarDisplayDate.format('MM/DD/YYYY')
   }
 
   get calendarDisplayDateMonth(): string {

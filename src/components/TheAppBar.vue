@@ -149,6 +149,7 @@ import { navigation } from '@/data/navigation'
 import { NavigationLink } from '@/models/NavigationLink'
 import modules from '@/store/modules'
 import auth from '@/store/modules/auth'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: {
@@ -191,7 +192,8 @@ export default class TheAppBar extends Vue {
   }
 
   isRouteActive(item: NavigationLink): boolean {
-    const route = this.$router.resolve(item)
+    const rawLocation: RawLocation = { name: item.name }
+    const route = this.$router.resolve(rawLocation)
     let path = route.href
     if (path[path.length - 1] === '/') {
       path = path.slice(0, -1)

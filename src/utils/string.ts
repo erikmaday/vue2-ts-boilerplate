@@ -188,18 +188,11 @@ export const formatReservationPickupDestinationText = (
   const cities = getReservationPickupDestinationCities(reservation)
   return `${cities.pickup} > ${cities.dropoff}`
 }
-export const formatMarkupStartDateTime = (
-  row: Markup | MarkupDetail
-): string => {
-  if (!row.startDate) return null
-  const datetime = dayjs(row.startDate.split('T')[0])
-  return `${datetime.format('MM/DD/YYYY')}`
-}
 
-export const formatMarkupEndDateTime = (row: Markup | MarkupDetail): string => {
-  if (!row.endDate) return null
-  const datetime = dayjs(row.endDate.split('T')[0])
-  return `${datetime.format('MM/DD/YYYY')}`
+export const formatTimeStampDateTime = (datetime: string): string => {
+  if (!datetime) return null
+  const date = dayjs(datetime.split('T')[0])
+  return `${date.format('MM/DD/YYYY')}`
 }
 
 const th_val = ['', 'thousand', 'million', 'billion', 'trillion']

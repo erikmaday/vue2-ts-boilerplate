@@ -28,7 +28,7 @@ export default class MarketplaceListBidPrice extends Vue {
   }
 
   get bidAmount(): number {
-    return this.bid?.bidAmount || null
+    return this.row?.totalBidAmount || null
   }
 
   get formattedBidAmount(): string {

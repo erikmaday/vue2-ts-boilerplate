@@ -65,8 +65,8 @@
             v-else
             class="h-full d-flex align-center border-b-2 border-t-0 border-x-0 border-solid hover:border-black active:border-black"
             :class="{
-              'border-black': item.name === $route.name,
-              'border-transparent': item.name !== $route.name,
+              'border-black': isRouteActive(item),
+              'border-transparent': !isRouteActive(item),
             }"
           >
             <span>{{ item.label }}</span>
@@ -188,6 +188,18 @@ export default class TheAppBar extends Vue {
     } else if (item.action) {
       item.action()
     }
+  }
+
+  isRouteActive(item: NavigationLink): boolean {
+    const route = this.$router.resolve(item)
+    let path = route.href
+    if (path[path.length - 1] === '/') {
+      path = path.slice(0, -1)
+    }
+    const matchedRoute = this.$route.matched.find(
+      (route) => route.path === path
+    )
+    return !!matchedRoute
   }
 }
 </script>

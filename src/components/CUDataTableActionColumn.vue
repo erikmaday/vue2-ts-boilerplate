@@ -1,7 +1,7 @@
 <template>
   <div class="align-center d-flex flex-grow-1" :class="{ 'w-full': isMobile }">
     <template v-if="detailAction">
-      <template v-if="!isDetailTable">
+      <template v-if="!isDetailTable || !detailAction.icon">
         <router-link :to="detailRoute" v-if="!isMobile">
           <v-btn text x-small color="primary" class="font-medium font-14">
             Details
@@ -12,7 +12,7 @@
         </router-link>
       </template>
       <template v-else>
-        <v-btn small icon @click="pushDetailRoute">
+        <v-btn small icon :to="detailRoute">
           <CUIcon color="primary">view</CUIcon>
         </v-btn>
       </template>

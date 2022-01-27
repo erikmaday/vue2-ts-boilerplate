@@ -18,15 +18,6 @@
         />
       </div>
     </template>
-    <!-- HANDLE THIS WHEN WE ADD THIS TO THE BOOKINGS TV -->
-    <!-- <template v-else>
-      <div class="d-flex justify-space-between">
-        <h4>Vehicle Assignments</h4>
-        <div class="text-right">
-          <span v-html="vehicleAssignmentMobileBody"></span>
-        </div>
-      </div>
-    </template> -->
   </div>
 </template>
 

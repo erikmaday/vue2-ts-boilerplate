@@ -124,12 +124,6 @@ export default class Marketplace extends Vue {
       component: MarketplaceListBidPrice,
     },
     {
-      _t_id: '47345e11-754c-480b-a415-133569a01347',
-      text: '',
-      value: 'details',
-      type: 'details',
-    },
-    {
       _t_id: '4632622e-6507-4a2b-ab15-d5422afffc0d',
       text: '',
       value: 'actions',

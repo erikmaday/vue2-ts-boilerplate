@@ -10,7 +10,7 @@
       />
       <div
         v-else
-        class="cu-timeline-item__line w-2 h-full position-absolute z-0 top-2 left-one-half background-primary"
+        class="cu-timeline-item__line w-2 h-full position-absolute z-0 top-2 left-one-half background-gray-border"
         style="transform: translateX(-50%)"
       />
       <slot name="icon">

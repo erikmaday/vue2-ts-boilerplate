@@ -256,6 +256,7 @@ export default class RatesList extends Vue {
 
   // Add/Update/Cancel Rate Actions
   cancelUpdate(rowIndex: number): void {
+    EventBus.$emit('refresh')
     this.dataTableItems[rowIndex].isEditable = false
   }
 
@@ -397,8 +398,8 @@ export default class RatesList extends Vue {
         _t_id: '62ed9372-5330-465c-a854-a49d35ec9e4d',
         value: 'marketId',
         filterType: 'eq',
-      }, 
-      value: marketId
+      },
+      value: marketId,
     }
 
     filterUtil.add(parentFilter, marketplaceFilter)

@@ -27,16 +27,16 @@ export default {
   byId(markupId: number): Promise<AxiosResponse<MarkupResult>> {
     return httpService.get(`https://${apiBaseUrl()}/markup/${markupId}`)
   },
-  addMarkup(markup: Markup): Promise<AxiosResponse<MarkupResult>> {
+  add(markup: Markup): Promise<AxiosResponse<MarkupResult>> {
     return httpService.post(`https://${apiBaseUrl()}/markup`, markup)
   },
-  editMarkup(markup: Markup): Promise<AxiosResponse<MarkupResult>> {
+  edit(markup: Markup): Promise<AxiosResponse<MarkupResult>> {
     return httpService.patch(
       `https://${apiBaseUrl()}/markup/${markup.markupId}`,
       markup
     )
   },
-  deleteMarkup(markupId: number): Promise<AxiosResponse> {
+  delete(markupId: number): Promise<AxiosResponse> {
     return httpService.delete(`https://${apiBaseUrl()}/markup/${markupId}`)
   },
 }

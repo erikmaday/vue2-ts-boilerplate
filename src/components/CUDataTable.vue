@@ -4,6 +4,7 @@
     :class="{
       'v-data-table__detail': isDetailTable,
       'v-data-table__editable': isEditableTable,
+      'v-data-table__mobile': isMobile,
     }"
   >
     <v-data-table
@@ -48,10 +49,10 @@
       </template>
       <template v-else #item="{ item, index }">
         <div
-          class="d-flex border-solid border-gray-mid-light padding-a-3 border-radius-8"
+          class="d-flex border-solid border-gray-mid-light padding-a-3 border-radius-8 margin-y-3"
           :class="{
-            'padding-x-3 border-b-1': isDetailTable,
-            'border-x-1 border-y-1 margin-y-3': !isDetailTable,
+            'padding-x-3 border-1': isDetailTable,
+            'border-x-1 border-y-1': !isDetailTable,
             'flex-row flex-wrap': isEditableTable,
             'flex-column': !isEditableTable,
           }"

@@ -78,113 +78,109 @@
     </template>
     <v-form :disabled="isModeView" ref="form" lazy-validation>
       <v-row>
-        <v-col cols="12">
-          <v-row>
-            <v-col cols="12" sm="6" class="py-0">
-              <CUTextField
-                label="Markup Name"
-                placeholder="Weekend Prices"
-                :rules="[(val) => !!val || 'Markup Name is Required']"
-                v-model="currentMarkup.name"
-              />
-            </v-col>
-            <v-col cols="12" sm="6" class="py-0">
-              <CUTextField
-                label="Markup %"
-                placeholder="10"
-                :rules="[(val) => !!val || 'Markup % is Required']"
-                v-model="currentMarkup.markupPercentage"
-              />
-            </v-col>
-          </v-row>
-          <v-row wrap :class="{ 'pb-4': !vehicleTypeError }">
-            <v-col cols="12" class="py-0">
-              <label class="font-14">Vehicle Type</label>
-            </v-col>
-            <v-row
-              wrap
-              class="mx-3"
-              :class="{
-                'border-solid border-2 border-error border-radius-regular background-error-background my-0':
-                  vehicleTypeError,
-                'pt-3': !vehicleTypeError,
-              }"
-            >
-              <v-col
-                v-for="([key, type], vti) in Object.entries(vehicleTypeMap)"
-                :key="`vehicle-type-${key}-${vti}`"
-                cols="6"
-                sm="4"
-              >
-                <v-checkbox
-                  class="padding-a-0 margin-a-0"
-                  :disabled="!isModeAdd"
-                  hide-details
-                  :value="vehicleTypeMap[key].supported"
-                  :label="type.label"
-                  @change="(e) => updateVehicleTypes(Number(key), e || false)"
-                />
-              </v-col>
-            </v-row>
-            <span
-              v-show="vehicleTypeError"
-              class="text-error font-medium font-12 pl-6 mb-2"
-            >
-              At Least One Vehicle Type is Required
-            </span>
-          </v-row>
-          <v-row>
-            <v-col cols="12" sm="6" class="py-0">
-              <CUSelect
-                v-model="newRateTypes"
-                :items="rateTypes"
-                :multiple="true"
-                :rules="[(val) => typeValidator(val)]"
-                :disabled="!isModeAdd"
-                item-text="label"
-                item-value="key"
-                label="Rate Type"
-                placeholder="Select Rate Type"
-              />
-            </v-col>
-            <v-col cols="12" sm="6" class="py-0">
-              <CUSelect
-                v-model="newMarkupDays"
-                :items="markupDays"
-                :multiple="true"
-                :rules="[(val) => typeValidator(val)]"
-                item-text="description"
-                item-value="val"
-                label="Day"
-                placeholder="Select Day"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" sm="6" class="py-0">
-              <CUDatePicker
-                v-model="newStartDate"
-                label="Start Date"
-                class="error"
-                :rules="[
-                  (val) =>
-                    validateDates(val, newEndDate) ||
-                    'Start Date Must Be Before End Date',
-                ]"
-              />
-            </v-col>
-            <v-col cols="12" sm="6" class="py-0">
-              <CUDatePicker
-                v-model="newEndDate"
-                label="End Date"
-                :rules="[
-                  (val) =>
-                    validateDates(newStartDate, val) ||
-                    'End Date Must Be After End Date',
-                ]"
-              />
-            </v-col>
-          </v-row>
+        <v-col cols="12" sm="6" class="py-0">
+          <CUTextField
+            label="Markup Name"
+            placeholder="Weekend Prices"
+            :rules="[(val) => !!val || 'Markup Name is Required']"
+            v-model="currentMarkup.name"
+          />
+        </v-col>
+        <v-col cols="12" sm="6" class="py-0">
+          <CUTextField
+            label="Markup %"
+            placeholder="10"
+            :rules="[(val) => !!val || 'Markup % is Required']"
+            v-model="currentMarkup.markupPercentage"
+          />
+        </v-col>
+      </v-row>
+      <v-row wrap :class="{ 'pb-4': !vehicleTypeError }">
+        <v-col cols="12" class="py-0">
+          <label class="font-14">Vehicle Type</label>
+        </v-col>
+        <v-row
+          wrap
+          class="mx-3"
+          :class="{
+            'border-solid border-2 border-error border-radius-regular background-error-background my-0':
+              vehicleTypeError,
+            'pt-3': !vehicleTypeError,
+          }"
+        >
+          <v-col
+            v-for="([key, type], vti) in Object.entries(vehicleTypeMap)"
+            :key="`vehicle-type-${key}-${vti}`"
+            cols="6"
+            sm="4"
+          >
+            <v-checkbox
+              class="padding-a-0 margin-a-0"
+              :disabled="!isModeAdd"
+              hide-details
+              :value="vehicleTypeMap[key].supported"
+              :label="type.label"
+              @change="(e) => updateVehicleTypes(Number(key), e || false)"
+            />
+          </v-col>
+        </v-row>
+        <span
+          v-show="vehicleTypeError"
+          class="text-error font-medium font-12 pl-6 mb-2"
+        >
+          At Least One Vehicle Type is Required
+        </span>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="6" class="py-0">
+          <CUSelect
+            v-model="newRateTypes"
+            :items="rateTypes"
+            :multiple="true"
+            :rules="[(val) => typeValidator(val)]"
+            :disabled="!isModeAdd"
+            item-text="label"
+            item-value="key"
+            label="Rate Type"
+            placeholder="Select Rate Type"
+          />
+        </v-col>
+        <v-col cols="12" sm="6" class="py-0">
+          <CUSelect
+            v-model="newMarkupDays"
+            :items="markupDays"
+            :multiple="true"
+            :rules="[(val) => typeValidator(val)]"
+            item-text="description"
+            item-value="val"
+            label="Day"
+            placeholder="Select Day"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="6" class="py-0">
+          <CUDatePicker
+            v-model="newStartDate"
+            label="Start Date"
+            class="error"
+            :rules="[
+              (val) =>
+                validateDates(val, newEndDate) ||
+                'Start Date Must Be Before End Date',
+            ]"
+          />
+        </v-col>
+        <v-col cols="12" sm="6" class="py-0">
+          <CUDatePicker
+            v-model="newEndDate"
+            label="End Date"
+            :rules="[
+              (val) =>
+                validateDates(newStartDate, val) ||
+                'End Date Must Be After End Date',
+            ]"
+          />
         </v-col>
       </v-row>
     </v-form>

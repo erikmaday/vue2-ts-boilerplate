@@ -6,9 +6,9 @@
     class="font-medium z-20 border-b border-solid border-gray-border border-x-0 border-t-0 background-white padding-x-2"
   >
     <v-toolbar-title class="margin-r-4">
-      <a @click="$router.push({ name: 'home' })" role="link">
+      <router-link :to="{ name: 'home' }">
         <CharterUPLogo style="width: 108px" />
-      </a>
+      </router-link>
     </v-toolbar-title>
     <template v-if="showAppBarNavigation">
       <template v-if="$vuetify.breakpoint.mdAndUp">

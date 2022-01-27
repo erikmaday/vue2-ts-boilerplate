@@ -49,10 +49,9 @@
       </template>
       <template v-else #item="{ item, index }">
         <div
-          class="d-flex border-solid border-gray-mid-light padding-a-3 border-radius-8 margin-y-3"
+          class="d-flex border-solid border-gray-mid-light padding-a-3 border-radius-8 margin-y-3 border-1"
           :class="{
-            'padding-x-3 border-1': isDetailTable,
-            'border-x-1 border-y-1': !isDetailTable,
+            'padding-x-3': isDetailTable,
             'flex-row flex-wrap': isEditableTable,
             'flex-column': !isEditableTable,
           }"

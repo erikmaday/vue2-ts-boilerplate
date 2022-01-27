@@ -165,17 +165,22 @@ export default class GaragesDetail extends Vue {
   notFound = false
   isNotEmpty = isNotEmpty
   currentGarage: Garage | Record<string, never> = {}
+
   actions: ActionColumn[] = [
     {
       displayText: 'Details',
       key: 'details',
-      icon: 'view',
-      ariaLabel: 'View Vehicle Detail',
+      color: 'primary',
+      icon: '',
+      confirmModal: false,
+      ariaLabel: 'View Vehicle Details',
       isDetail: true,
-      detailRoute: (row): RawLocation => ({
-        name: 'vehicles.view',
-        params: { id: row.vehicleId },
-      }),
+      detailRoute: (row): RawLocation => {
+        return {
+          name: 'vehicles.view',
+          params: { id: String(row.vehicleId) },
+        }
+      },
     },
   ]
 
@@ -192,7 +197,7 @@ export default class GaragesDetail extends Vue {
     },
     {
       _t_id: 'b296e307-906a-49ce-9c91-56ed58d21e62',
-      text: 'Details',
+      text: '',
       value: 'actions',
       type: 'actions',
     },

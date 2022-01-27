@@ -99,10 +99,10 @@ export default class BookingDetailPaymentStatus extends Vue {
   getPaymentLabel(payment: PaymentSummary, paymentIndex: number): string {
     if (paymentIndex === 0) {
       return 'Bid Price'
-    } else if (payment.notes.includes('CharterUP fee')) {
+    } else if (payment.notes.toLowerCase().includes('charterup fee')) {
       return 'CharterUP Fee'
     }
-    return payment.notes
+    return payment.description || payment.notes
   }
 
   currencyFilter = currencyFilter

@@ -1,6 +1,7 @@
 <template>
   <v-col class="shrink">
-    <v-btn color="primary" small @click="isFilterDialogOpen = true">
+    <CUSkeletonLoader v-if="loading" width="101px" type="button" />
+    <v-btn v-else color="primary" small @click="isFilterDialogOpen = true">
       <v-badge
         :content="filterCount"
         :value="filterCount"
@@ -16,12 +17,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue, Model } from 'vue-property-decorator'
+import { Component, Watch, Vue, Model, Prop } from 'vue-property-decorator'
 import { EventBus } from '@/utils/eventBus'
 
 @Component
 export default class CUDataTableFilterButton extends Vue {
   @Model('input') readonly value!: boolean | null
+  @Prop({ required: true }) readonly loading!: boolean
   @Watch('isFilterDialogOpen')
   isFilterDialogOpenChanged(value: boolean): void {
     this.$emit('input', value)

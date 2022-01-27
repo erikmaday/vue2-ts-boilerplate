@@ -2,31 +2,40 @@
   <div>
     <v-row class="align-center margin-b-2">
       <v-col cols="auto">
-        <span
-          v-for="(tab, tabIndex) in tabs"
-          :id="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
-          :key="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
-          class="margin-x-3 padding-y-1 font-14 font-medium text-gray-light border-t-0 border-x-0 border-b-2 border-solid"
-          :class="{
-            'text-primary border-primary': isTabActive(tab),
-            'border-transparent hover:border-gray-light':
-              !isTabActive(tab) && !tab.isLocked,
-            'cursor-pointer': !tab.isLocked,
-            'text-gray-mid-light cursor-default border-transparent':
-              tab.isLocked,
-          }"
-          @click="handleTabClick(tab)"
-        >
-          {{ tab.column.text }}
-          <CUIcon
-            v-if="tab.isLocked"
-            width="14px"
-            height="14px"
-            style="margin-bottom: -2px"
+        <template v-for="(tab, tabIndex) in tabs">
+          <CUSkeletonLoader
+            v-if="loading"
+            type="detail-text"
+            width="80px"
+            :key="`data-table-tab-skeleton-loader-${tabIndex}`"
+            classes="d-inline-flex margin-x-3"
+          />
+          <span
+            v-else
+            :id="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
+            :key="`data-table-tab-${tab.column._t_id}-${tab.column.text}-control-${tabIndex}`"
+            class="margin-x-3 padding-y-1 font-14 font-medium text-gray-light border-t-0 border-x-0 border-b-2 border-solid"
+            :class="{
+              'text-primary border-primary': isTabActive(tab),
+              'border-transparent hover:border-gray-light':
+                !isTabActive(tab) && !tab.isLocked,
+              'cursor-pointer': !tab.isLocked,
+              'text-gray-mid-light cursor-default border-transparent':
+                tab.isLocked,
+            }"
+            @click="handleTabClick(tab)"
           >
-            lock_outlined
-          </CUIcon>
-        </span>
+            {{ tab.column.text }}
+            <CUIcon
+              v-if="tab.isLocked"
+              width="14px"
+              height="14px"
+              style="margin-bottom: -2px"
+            >
+              lock_outlined
+            </CUIcon>
+          </span>
+        </template>
       </v-col>
       <slot name="filter-row" />
     </v-row>
@@ -213,6 +222,7 @@ export default class CUDataTableFilters extends Vue {
   tabs!: TableViewTab[]
   @Prop({ required: false, default: () => [] })
   chips!: TableViewChip[]
+  @Prop({ required: true }) readonly loading!: boolean
 
   @Watch('isOpen')
   isDialogOpenChanged(value: boolean): void {

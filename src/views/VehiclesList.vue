@@ -2,11 +2,14 @@
   <Main>
     <v-row class="padding-b-6">
       <v-col class="shrink">
-        <h1>Vehicles</h1>
+        <CUSkeletonLoader v-show="showLoaders" type="h1" width="100px" />
+        <h1 v-show="!showLoaders">Vehicles</h1>
       </v-col>
       <v-spacer />
       <v-col class="shrink">
+        <CUSkeletonLoader v-show="showLoaders" type="button" width="88px" />
         <v-btn
+          v-show="!showLoaders"
           primary
           small
           color="primary"
@@ -15,7 +18,10 @@
           Add New
         </v-btn>
       </v-col>
-      <CUDataTableFilterButton v-model="isFilterDialogOpen" />
+      <CUDataTableFilterButton
+        v-model="isFilterDialogOpen"
+        :loading="showLoaders"
+      />
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -25,6 +31,7 @@
       :fetch-method="tableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No vehicles found"
+      @initial-load-completed="loading = false"
     />
   </Main>
 </template>
@@ -42,7 +49,7 @@ import { Vehicle } from '@/models/dto/Vehicle'
 import { Location } from 'vue-router'
 import { AxiosResponse } from 'axios'
 import { ApiResult } from '@/models/dto'
-import { EventBus } from '@/utils/eventBus'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -55,7 +62,7 @@ import { EventBus } from '@/utils/eventBus'
 export default class VehiclesList extends Vue {
   tableView = vehicle.tableView
   isFilterDialogOpen = false
-
+  loading = true
   columns: DataTableColumn[] = [
     {
       _t_id: 'c9ba7e34-e446-4b83-9549-905f7771e42d',
@@ -155,5 +162,9 @@ export default class VehiclesList extends Vue {
       },
     },
   ]
+
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && this.loading
+  }
 }
 </script>

@@ -228,11 +228,6 @@ import { MarketRateType } from '@/models/dto/Rate'
   },
 })
 export default class AdjustmentDetail extends Vue {
-  @Inject({ from: 'isInMainWithSidebar', default: false })
-  readonly isInMainWithSidebar: boolean
-  @Provide('isDetailInMainWithSidebar')
-  private isDetailInMainWithSidebar: boolean = this.isInMainWithSidebar
-
   VEHICLE_TYPE_MARKUP_TYPE_ID = 7
   app = app
 

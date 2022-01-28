@@ -41,7 +41,7 @@
       </v-tooltip>
     </template>
     <template v-else>
-      <div class="d-flex flex-column ">
+      <div class="d-flex flex-column">
         <h4>Vehicle Assignments</h4>
         <div class="text-left">
           <span v-html="vehicleAssignmentMobileBody"></span>

@@ -17,7 +17,7 @@
           'padding-l-0': $vuetify.breakpoint.sm,
         }"
       >
-        <h1 class="margin-b-0"><slot name="title" /></h1>
+        <slot name="title" />
       </v-col>
       <v-spacer v-if="$vuetify.breakpoint.mdAndUp" />
       <div
@@ -26,7 +26,7 @@
           'flex-row': $vuetify.breakpoint.smAndUp,
           'justify-center w-full': $vuetify.breakpoint.sm,
           'flex-column flex-column-reverse col-12': $vuetify.breakpoint.xs,
-          'justify-end': $vuetify.breakpoint.mdAndUp,
+          'justify-end align-center': $vuetify.breakpoint.mdAndUp,
         }"
       >
         <slot name="buttons" />

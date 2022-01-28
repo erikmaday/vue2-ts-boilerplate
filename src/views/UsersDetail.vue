@@ -1,7 +1,12 @@
 <template>
   <Detail>
     <template #back>
-      <router-link :to="lastRoute">
+      <CUSkeletonLoader
+        v-if="showLoaders"
+        type="icon"
+        classes="margin-l-1 margin-r-2"
+      />
+      <router-link v-else :to="lastRoute">
         <v-btn
           :icon="$vuetify.breakpoint.mdAndUp"
           :x-small="$vuetify.breakpoint.mdAndUp"
@@ -14,10 +19,22 @@
         </v-btn>
       </router-link>
     </template>
-    <template #title>{{ headerTitle }}</template>
+    <!-- <template #title></template> -->
+    <template #title>
+      <CUSkeletonLoader v-if="showLoaders" type="h1" width="180px" />
+      <h1 v-else class="margin-b-0">{{ headerTitle }}</h1>
+    </template>
     <template #buttons>
+      <CUSkeletonLoader
+        v-if="showLoaders && isModeEdit"
+        :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
+        :width="$vuetify.breakpoint.xs ? '100%' : '48px'"
+        :classes="
+          $vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-8 margin-r-4'
+        "
+      />
       <v-btn
-        v-show="isModeEdit"
+        v-else-if="isModeEdit"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
           'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -30,8 +47,16 @@
       >
         Cancel
       </v-btn>
+      <CUSkeletonLoader
+        v-if="showLoaders && isModeView"
+        :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
+        :width="$vuetify.breakpoint.xs ? '100%' : '47px'"
+        :classes="
+          $vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-8 margin-r-4'
+        "
+      />
       <v-btn
-        v-if="!isModeProfile"
+        v-else-if="!isModeProfile"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
           'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -46,8 +71,14 @@
       >
         Delete
       </v-btn>
+      <CUSkeletonLoader
+        v-if="showLoaders && isModeView"
+        type="button"
+        :width="$vuetify.breakpoint.xs ? '100%' : '159px'"
+        :classes="$vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-4'"
+      />
       <v-btn
-        v-if="!isModeProfile"
+        v-else-if="!isModeProfile"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
           'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -61,8 +92,14 @@
       >
         Change Password
       </v-btn>
+      <CUSkeletonLoader
+        v-if="showLoaders && isModeView"
+        type="button"
+        :width="$vuetify.breakpoint.xs ? '100%' : '100px'"
+        :classes="$vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-4'"
+      />
       <v-btn
-        v-if="!isModeProfile"
+        v-else-if="!isModeProfile"
         v-show="isModeView"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
@@ -97,8 +134,14 @@
       >
         Edit
       </v-btn>
+      <CUSkeletonLoader
+        v-if="showLoaders && isModeEdit"
+        type="button"
+        :width="$vuetify.breakpoint.xs ? '100%' : '71px'"
+        :classes="$vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-4'"
+      />
       <v-btn
-        v-if="!isModeProfile"
+        v-else-if="!isModeProfile"
         v-show="isModeEdit || isModeAdd"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
@@ -139,7 +182,9 @@
             'd-flex justify-center margin-b-5': $vuetify.breakpoint.smAndDown,
           }"
         >
+          <CUSkeletonLoader v-if="showLoaders" type="avatar" height="200px" />
           <UsersDetailUserPhoto
+            v-else
             :photoSrc="userPhoto"
             :mode="mode"
             @upload="uploadUserPhoto"
@@ -148,7 +193,9 @@
         <v-col cols="12" md="8">
           <v-row>
             <v-col cols="12" sm="6" class="py-0">
+              <CUSkeletonLoaderTextField v-if="showLoaders" />
               <CUTextField
+                v-else
                 label="First Name"
                 placeholder="Andrea"
                 :rules="[(val) => !!val || 'First Name is Required']"
@@ -156,7 +203,9 @@
               />
             </v-col>
             <v-col cols="12" sm="6" class="py-0">
+              <CUSkeletonLoaderTextField v-if="showLoaders" />
               <CUTextField
+                v-else
                 label="Last Name"
                 placeholder="Jones"
                 :rules="[(val) => !!val || 'Last Name is Required']"
@@ -166,7 +215,9 @@
           </v-row>
           <v-row>
             <v-col cols="12" sm="6" class="py-0">
+              <CUSkeletonLoaderTextField v-if="showLoaders" />
               <CUTextField
+                v-else
                 label="Email"
                 placeholder="ajones@gmail.com"
                 :rules="[(val) => !!val || 'Email is Required']"
@@ -176,7 +227,9 @@
               />
             </v-col>
             <v-col cols="12" sm="6" class="py-0">
+              <CUSkeletonLoaderTextField v-if="showLoaders" />
               <CUSelect
+                v-else
                 v-model="currentUser.groupId"
                 :disabled="isModeProfile"
                 :items="userGroups"
@@ -190,8 +243,12 @@
           </v-row>
           <v-row>
             <v-col>
+              <CUSkeletonLoaderCheckbox
+                v-if="showLoaders"
+                label-width="178px"
+              />
               <v-checkbox
-                v-if="!isModeProfile"
+                v-else-if="!isModeProfile"
                 v-model="treatAsDriver"
                 label="This user is also a driver"
                 :disabled="currentUser.groupId === DRIVER_GROUP_ID"
@@ -200,7 +257,7 @@
           </v-row>
           <v-expand-transition>
             <UsersDetailDriverInfo
-              v-if="treatAsDriver && !isModeProfile"
+              v-if="!showLoaders && treatAsDriver && !isModeProfile"
               ref="driverInfoForm"
               :parent-driver-model="currentUserAsDriver"
               :vehicle-types="vehicleTypes"
@@ -253,6 +310,8 @@ import { ApiResult, UserDetail, VehicleType } from '@/models/dto'
 import Detail from '@/layouts/Detail.vue'
 import UsersDetailUserPhoto from '@/components/UsersDetailUserPhoto.vue'
 import UsersDetailDriverInfo from '@/components/UsersDetailDriverInfo.vue'
+import CUSkeletonLoaderTextField from '@/components/CUSkeletonLoaderTextField.vue'
+import CUSkeletonLoaderCheckbox from '@/components/CUSkeletonLoaderCheckbox.vue'
 import { UserDetailDriver } from '@/models/dto/UserDetailDriver'
 import app from '@/store/modules/app'
 import { RawLocation } from 'vue-router'
@@ -263,30 +322,27 @@ import { RawLocation } from 'vue-router'
     UsersChangePassword,
     UsersDetailUserPhoto,
     UsersDetailDriverInfo,
+    CUSkeletonLoaderTextField,
+    CUSkeletonLoaderCheckbox,
   },
 })
 export default class UsersDetail extends Vue {
+  app = app
   DRIVER_GROUP_ID = 4
+  currentUser: UserDetail | Record<string, never> = {}
+  currentUserAsDriver: UserDetailDriver | Record<string, never> = {}
   userGroups = userGroups
-
   validationErrors = {
     email: '',
   }
-
-  app = app
-
   vehicleTypes: VehicleType[] = []
-
-  notFound = false
   treatAsDriver = false
-  isChangePasswordOpen = false
   avatarLink = ''
   uploadedPhoto: FormData | undefined = undefined
   isDeleteModalOpen = false
-
-  currentUser: UserDetail | Record<string, never> = {}
-
-  currentUserAsDriver: UserDetailDriver | Record<string, never> = {}
+  isChangePasswordOpen = false
+  loading = true
+  notFound = false
 
   typeValidator(val: any): boolean | string {
     if (!val) return 'Type is required'
@@ -314,9 +370,14 @@ export default class UsersDetail extends Vue {
     return lastRoute
   }
 
+  get showLoaders(): boolean {
+    return this.loading && app.getAreLoadersEnabled
+  }
+
   // Get the user's roles. If we determine that the user is a driver,
   // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2
   async getCurrentUser(): Promise<void> {
+    this.loading = true
     try {
       const userId = this.isModeProfile
         ? auth.getUserId
@@ -340,14 +401,17 @@ export default class UsersDetail extends Vue {
           this.currentUser = userResponseData
           this.currentUserAsDriver = userResponseData as UserDetailDriver
         }
+        this.loading = false
       } else {
         this.notFound = true
+        this.loading = false
         return
       }
     } catch (e) {
       this.notFound = true
       // eslint-disable-next-line no-console
       console.error(e)
+      this.loading = false
       return
     }
   }

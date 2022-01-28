@@ -36,6 +36,8 @@ export default class CUSkeletonLoader extends Vue {
         return '16px'
       case 'icon':
         return '24px'
+      case 'checkbox':
+        return '20px'
       case 'divider':
         return '1px'
       case 'mobile-table-cell':
@@ -43,6 +45,8 @@ export default class CUSkeletonLoader extends Vue {
       case 'table-cell':
       case 'table-header':
         return '18px'
+      case 'text-field':
+        return '50px'
       default:
         return '14px'
     }
@@ -55,6 +59,8 @@ export default class CUSkeletonLoader extends Vue {
     switch (this.type) {
       case 'icon':
         return '24px'
+      case 'checkbox':
+        return '20px'
       case 'avatar':
         return this.computedHeight
       case 'table-cell':
@@ -72,6 +78,9 @@ export default class CUSkeletonLoader extends Vue {
     }
     if (this.type === 'chip') {
       styles['border-radius'] = this.computedHeight
+    }
+    if (this.type === 'checkbox') {
+      styles['margin'] = '2px'
     }
     return styles
   }

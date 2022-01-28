@@ -296,6 +296,13 @@
   }
 
   .v-data-table__detail {
+    &.v-data-table__mobile {
+      .v-data-table {
+        .v-data-table__wrapper {
+          border: none;
+        }
+      }
+    }
     .v-data-table {
       .v-data-table__wrapper {
         border: 1px solid $gray-border;
@@ -457,7 +464,7 @@
     .v-picker__body {
       border-radius: 5px;
     }
-    
+
     .v-picker__title {
       display: none;
     }
@@ -468,12 +475,12 @@
       padding: 2px 8px;
       flex-basis: calc(100% / 7);
       border-right: 1px solid $gray-border;
-  
+
       p {
         margin: 0;
         font-size: 14px;
       }
-  
+
       &--bold {
         margin-left: -1px;
         flex-basis: calc((100% / 7) + 1px);
@@ -499,8 +506,6 @@
     }
   }
 
-  // Wasn't sure whether it's worth adding percentages as helper classes/if 
-  // that would mess with our standards--if so, I'll add them. 
   .margin-x-1-percent {
     margin: 0 1%;
   }

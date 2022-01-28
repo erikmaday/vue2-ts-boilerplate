@@ -11,7 +11,7 @@
           <CUIcon
             :color="arrowColor(hover)"
             :class="{
-              'transparent--text': isFirstPage,
+              'text-transparent': isFirstPage,
             }"
           >
             arrow_left
@@ -39,7 +39,7 @@
           <CUIcon
             :color="arrowColor(hover)"
             :class="{
-              'transparent--text': isLastPage,
+              'text-transparent': isLastPage,
             }"
           >
             arrow_right
@@ -113,7 +113,7 @@ export default class Pagination extends Vue {
   }
 
   get visibleItems(): (string | number)[] {
-    /* 
+    /*
     a modified version of a function implemented in v-pagination from here:
     https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/components/VPagination/VPagination.ts
     */

@@ -31,7 +31,7 @@
       classes="margin-t-6 margin-x-auto"
     />
     <v-btn
-      v-if="!isMultiBid && !bidDetail.getIsSoldOut"
+      v-else-if="!isMultiBid && !bidDetail.getIsSoldOut"
       :text="!bidDetail.getIsEditingPrevented"
       :outlined="bidDetail.getIsEditingPrevented"
       small

@@ -190,12 +190,6 @@ export default class Bookings extends Vue {
       component: BookingsListDriverAssignments,
     },
     {
-      _t_id: 'f1cc4115-9fe5-4b23-ac4b-263cba83b973',
-      text: '',
-      value: 'details',
-      type: 'details',
-    },
-    {
       _t_id: '703bd526-8d2c-4cb0-a8b1-3a526bbdc04d',
       text: '',
       value: 'actions',

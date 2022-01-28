@@ -22,7 +22,7 @@ export default class CUSkeletonLoaderCheckbox extends Vue {
   @Prop({ type: Boolean, required: false, default: false })
   hideDetails: boolean
 
-  get styles(): string {
+  get styles(): Record<string, string | number> {
     let styles = { 'margin-bottom': '22px' }
     if (this.hideDetails) {
       styles['margin-bottom'] = '8px'

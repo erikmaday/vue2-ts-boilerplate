@@ -71,7 +71,7 @@ export default class CUSkeletonLoader extends Vue {
     }
   }
 
-  get styles(): { [key: string]: string | number } {
+  get styles(): Record<string, string | number> {
     const styles = {
       height: this.computedHeight,
       width: this.computedWidth,

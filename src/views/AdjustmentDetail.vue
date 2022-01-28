@@ -505,10 +505,16 @@ export default class AdjustmentDetail extends Vue {
   }
 
   handleCancel(): void {
-    this.$router.push({
-      name: 'rates.adjustments.view',
-      params: { id: this.$route.params.id },
-    })
+    if (this.isModeEdit) {
+      this.$router.push({
+        name: 'rates.adjustments.view',
+        params: { id: this.$route.params.id },
+      })
+    } else if (this.isModeAdd) {
+      this.$router.push({
+        name: 'rates.adjustments',
+      })
+    }
   }
 
   async submit(): Promise<void> {

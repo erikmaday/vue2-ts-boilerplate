@@ -178,7 +178,7 @@
             :rules="[
               (val) =>
                 validateDates(newStartDate, val) ||
-                'End Date Must Be After End Date',
+                'End Date Must Be After Start Date',
             ]"
           />
         </v-col>

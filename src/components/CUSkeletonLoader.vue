@@ -1,5 +1,5 @@
 <template>
-  <div :style="styles" :class="computedClasses" />
+  <div v-bind="$attrs" :style="styles" :class="computedClasses" />
 </template>
 <script lang="ts">
 import deepClone from '@/utils/deepClone'

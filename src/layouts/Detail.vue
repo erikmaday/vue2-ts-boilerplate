@@ -24,7 +24,7 @@
         class="d-flex shrink padding-a-3"
         :class="{
           'flex-row': $vuetify.breakpoint.smAndUp,
-          'justify-center w-full': $vuetify.breakpoint.sm,
+          'justify-center w-full align-center': $vuetify.breakpoint.sm,
           'flex-column flex-column-reverse col-12': $vuetify.breakpoint.xs,
           'justify-end align-center': $vuetify.breakpoint.mdAndUp,
         }"

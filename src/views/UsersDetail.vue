@@ -4,7 +4,12 @@
       <CUSkeletonLoader
         v-if="showLoaders"
         type="icon"
-        classes="margin-l-1 margin-r-2"
+        :width="$vuetify.breakpoint.xs ? '61px' : undefined"
+        class="margin-y-2"
+        :class="{
+          'margin-x-auto': $vuetify.breakpoint.xs,
+          'margin-l-1 margin-r-2': $vuetify.breakpoint.smAndUp,
+        }"
       />
       <router-link v-else :to="lastRoute">
         <v-btn
@@ -20,11 +25,17 @@
       </router-link>
     </template>
     <template #title>
-      <CUSkeletonLoader v-if="showLoaders" type="h1" width="180px" />
+      <CUSkeletonLoader
+        v-if="showLoaders"
+        type="h1"
+        width="180px"
+        :class="{
+          'margin-x-auto': $vuetify.breakpoint.xs,
+        }"
+      />
       <h1 v-else class="margin-b-0">{{ headerTitle }}</h1>
     </template>
     <template #buttons>
-      <v-switch v-model="loading" />
       <CUSkeletonLoader
         v-if="showLoaders && isModeEdit"
         :type="$vuetify.breakpoint.xs ? 'button' : 'text'"

@@ -377,7 +377,6 @@ export default class UsersDetail extends Vue {
   // Get the user's roles. If we determine that the user is a driver,
   // pull user info from the getDriverById endpoint. Otherwise, use getUserByIdV2
   async getCurrentUser(): Promise<void> {
-    this.loading = true
     try {
       const userId = this.isModeProfile
         ? auth.getUserId

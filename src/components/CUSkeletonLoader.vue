@@ -2,7 +2,6 @@
   <div v-bind="$attrs" :style="styles" :class="computedClasses" />
 </template>
 <script lang="ts">
-import deepClone from '@/utils/deepClone'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component({})

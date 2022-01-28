@@ -9,6 +9,7 @@
         <CUDatePicker
           :value="datePickerDate"
           @input="updateDatePickerDate"
+          hide-details
           dense
           readonly
         />

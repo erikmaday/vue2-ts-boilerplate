@@ -155,6 +155,7 @@
                       <CUDatePicker
                         :key="`${controlIndex}-${column._t_id}-${control.text}`"
                         :value="control.value"
+                        hide-details
                         @input="
                           (event) =>
                             handleDatePickerInput(event, column, controlIndex)

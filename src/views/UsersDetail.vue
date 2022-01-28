@@ -19,12 +19,12 @@
         </v-btn>
       </router-link>
     </template>
-    <!-- <template #title></template> -->
     <template #title>
       <CUSkeletonLoader v-if="showLoaders" type="h1" width="180px" />
       <h1 v-else class="margin-b-0">{{ headerTitle }}</h1>
     </template>
     <template #buttons>
+      <v-switch v-model="loading" />
       <CUSkeletonLoader
         v-if="showLoaders && isModeEdit"
         :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
@@ -48,7 +48,7 @@
         Cancel
       </v-btn>
       <CUSkeletonLoader
-        v-if="showLoaders && isModeView"
+        v-if="showLoaders && isModeView && !isModeProfile"
         :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
         :width="$vuetify.breakpoint.xs ? '100%' : '47px'"
         :classes="
@@ -72,7 +72,7 @@
         Delete
       </v-btn>
       <CUSkeletonLoader
-        v-if="showLoaders && isModeView"
+        v-if="showLoaders && isModeView && !isModeProfile"
         type="button"
         :width="$vuetify.breakpoint.xs ? '100%' : '159px'"
         :classes="$vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-4'"
@@ -95,7 +95,9 @@
       <CUSkeletonLoader
         v-if="showLoaders && isModeView"
         type="button"
-        :width="$vuetify.breakpoint.xs ? '100%' : '100px'"
+        :width="
+          $vuetify.breakpoint.xs ? '100%' : !isModeProfile ? '100px' : '71px'
+        "
         :classes="$vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-4'"
       />
       <v-btn
@@ -244,7 +246,7 @@
           <v-row>
             <v-col>
               <CUSkeletonLoaderCheckbox
-                v-if="showLoaders"
+                v-if="showLoaders && !isModeProfile"
                 label-width="178px"
               />
               <v-checkbox
@@ -400,19 +402,15 @@ export default class UsersDetail extends Vue {
           this.currentUser = userResponseData
           this.currentUserAsDriver = userResponseData as UserDetailDriver
         }
-        this.loading = false
       } else {
         this.notFound = true
-        this.loading = false
-        return
       }
     } catch (e) {
       this.notFound = true
       // eslint-disable-next-line no-console
       console.error(e)
-      this.loading = false
-      return
     }
+    this.loading = false
   }
 
   // We store drug expiration dates as a string, instead of

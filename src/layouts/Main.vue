@@ -19,11 +19,11 @@ export default class Main extends Vue {
   readonly isInMainWithSidebar: boolean
 
   get styles(): Record<string, string> {
-    const styles = {
+    let styles = {
       'max-width': `${this.$vuetify.breakpoint.thresholds.md}px`,
     }
     if (this.isInMainWithSidebar) {
-      styles.padding = '6px !important'
+      styles['padding'] = '6px !important'
     }
     return styles
   }

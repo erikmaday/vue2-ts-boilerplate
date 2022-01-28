@@ -201,7 +201,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component, Watch, Inject, Provide } from 'vue-property-decorator'
 import { AxiosResponse } from 'axios'
 
 import UsersChangePassword from '@/components/UsersChangePassword.vue'
@@ -228,6 +228,11 @@ import { MarketRateType } from '@/models/dto/Rate'
   },
 })
 export default class AdjustmentDetail extends Vue {
+  @Inject({ from: 'isInMainWithSidebar', default: false })
+  readonly isInMainWithSidebar: boolean
+  @Provide('isDetailInMainWithSidebar')
+  private isDetailInMainWithSidebar: boolean = this.isInMainWithSidebar
+
   VEHICLE_TYPE_MARKUP_TYPE_ID = 7
   app = app
 

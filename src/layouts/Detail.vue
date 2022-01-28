@@ -37,9 +37,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Inject, Provide } from 'vue-property-decorator'
 import Main from '@/layouts/Main.vue'
 
 @Component({ components: { Main } })
-export default class Detail extends Vue {}
+export default class Detail extends Vue {
+  @Inject({ from: 'isDetailInMainWithSidebar', default: false })
+  readonly isDetailInMainWithSidebar: boolean
+  @Provide('isInMainWithSidebar')
+  private isInMainWithSidebar: boolean = this.isDetailInMainWithSidebar
+}
 </script>

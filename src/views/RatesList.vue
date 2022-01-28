@@ -1,16 +1,18 @@
 <template>
-  <div>
-    <v-row
-      class="padding-x-3 padding-y-4"
-      justify="space-between"
-      align="center"
-    >
-      <h1>Rates</h1>
-      <v-btn color="primary" small @click="displayNewRateRow">Add New</v-btn>
+  <v-col cols="12">
+    <v-row align="center">
+      <v-col class="shrink">
+        <h1>Rates</h1>
+      </v-col>
+      <v-spacer />
+      <v-col class="shrink">
+        <v-btn color="primary" small @click="displayNewRateRow">Add New</v-btn>
+      </v-col>
     </v-row>
     <v-form v-if="dataTableItems" ref="rates-form">
       <CUDataTable
         ref="rates-data-table"
+        class="margin-t-8"
         :columns="columns"
         :items="dataTableItems"
         :actions="actions"
@@ -27,7 +29,7 @@
         @update-editable-select="(e) => updateSelect(e)"
       />
     </v-form>
-  </div>
+  </v-col>
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'

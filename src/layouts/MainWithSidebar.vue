@@ -18,10 +18,10 @@
           :style="{ 'max-width': `${$vuetify.breakpoint.thresholds.md}px` }"
         >
           <v-row align="center">
-            <v-col cols="auto">
+            <v-col v-if="$slots['section-title']" cols="auto">
               <h1><slot name="section-title" /></h1>
             </v-col>
-            <v-col cols="auto">
+            <v-col v-if="$slots['top-bar-content']" cols="auto" class="grow">
               <slot name="top-bar-content" />
             </v-col>
             <template v-if="isMobile">
@@ -50,10 +50,12 @@
 </template>
 
 <script lang="ts">
-import { Prop, Vue, Component } from 'vue-property-decorator'
+import { Prop, Vue, Component, Provide } from 'vue-property-decorator'
 
 @Component
 export default class MainWithSidebar extends Vue {
+  @Provide('isInMainWithSidebar') private isInMainWithSidebar = true
+
   @Prop({ default: 278 })
   sidebarWidth!: number
 

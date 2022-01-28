@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-row class="padding-b-6">
+  <v-col cols="12">
+    <v-row class="align-center">
       <v-col class="shrink">
         <h1>Adjustments</h1>
       </v-col>
@@ -27,7 +27,7 @@
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No adjustments found"
     />
-  </div>
+  </v-col>
 </template>
 
 <script lang="ts">

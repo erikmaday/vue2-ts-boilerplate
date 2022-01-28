@@ -6,8 +6,8 @@
       :key="`stop-skeleton-loader-${stopIndex}`"
     >
       <div class="padding-l-4 padding-b-4">
-        <CUSkeletonLoader type="text" width="200px" classes="margin-y-1" />
-        <CUSkeletonLoader type="text" width="250px" classes="margin-y-1" />
+        <CUSkeletonLoader type="text" width="200px" class="margin-y-1" />
+        <CUSkeletonLoader type="text" width="250px" class="margin-y-1" />
         <CUSkeletonLoader
           v-if="stopIndex > 1 && stopIndex < count"
           type="text"

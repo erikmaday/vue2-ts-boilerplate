@@ -32,7 +32,7 @@
       <v-col cols="12">
         <CUSkeletonLoader
           v-if="showLoaders"
-          classes="border-radius-none"
+          class="border-radius-none"
           height="280px"
         />
         <BookingDetailMap v-else :reservation="reservation" />

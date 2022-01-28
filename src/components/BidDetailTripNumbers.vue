@@ -2,7 +2,7 @@
   <div>
     <div class="row align-center margin-t-0 margin-x-0 margin-b-3">
       <template v-if="bidDetail.getShowLoaders">
-        <CUSkeletonLoader type="icon" classes="d-inline-flex margin-r-2" />
+        <CUSkeletonLoader type="icon" class="d-inline-flex margin-r-2" />
         <CUSkeletonLoader type="text" width="100px" />
       </template>
       <template v-else>
@@ -12,7 +12,7 @@
     </div>
     <div class="row align-center margin-t-0 margin-x-0 margin-b-3">
       <template v-if="bidDetail.getShowLoaders">
-        <CUSkeletonLoader type="icon" classes="d-inline-flex margin-r-2" />
+        <CUSkeletonLoader type="icon" class="d-inline-flex margin-r-2" />
         <CUSkeletonLoader type="text" width="100px" />
       </template>
       <template v-else>
@@ -29,7 +29,7 @@
     </div>
     <div class="row align-center margin-t-0 margin-x-0 margin-b-3">
       <template v-if="bidDetail.getShowLoaders">
-        <CUSkeletonLoader type="icon" classes="d-inline-flex margin-r-2" />
+        <CUSkeletonLoader type="icon" class="d-inline-flex margin-r-2" />
         <CUSkeletonLoader type="text" width="100px" />
       </template>
       <template v-else>
@@ -39,7 +39,7 @@
     </div>
     <div class="row align-center margin-a-0">
       <template v-if="bidDetail.getShowLoaders">
-        <CUSkeletonLoader type="icon" classes="d-inline-flex margin-r-2" />
+        <CUSkeletonLoader type="icon" class="d-inline-flex margin-r-2" />
         <CUSkeletonLoader type="text" width="100px" />
       </template>
       <template v-else>

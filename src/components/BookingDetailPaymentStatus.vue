@@ -9,7 +9,7 @@
         v-if="loading"
         height="25px"
         width="64px"
-        classes="border-radius-2"
+        class="border-radius-2"
       />
       <v-chip
         v-else

@@ -137,7 +137,7 @@
             v-model="newRateTypes"
             :items="marketRateTypes"
             :multiple="true"
-            :rules="[(val) => typeValidator(val)]"
+            :rules="[(val) => isNotEmptyArray(val) || 'Type is required']"
             :disabled="!isModeAdd"
             item-text="label"
             item-value="key"
@@ -150,7 +150,7 @@
             v-model="newMarkupDays"
             :items="markupDays"
             :multiple="true"
-            :rules="[(val) => typeValidator(val)]"
+            :rules="[(val) => isNotEmptyArray(val) || 'Day is required']"
             item-text="description"
             item-value="val"
             label="Day"
@@ -218,6 +218,7 @@ import markup from '@/services/markup'
 import deepClone from '@/utils/deepClone'
 import dayjs from 'dayjs'
 import { MarketRateType } from '@/models/dto/Rate'
+import { isNotEmptyArray } from '@/utils/validators'
 
 @Component({
   components: {
@@ -277,11 +278,7 @@ export default class AdjustmentDetail extends Vue {
   currentMarkup: MarkupDetail | Record<string, never> = {}
   model: any = {}
 
-  typeValidator(val: any): boolean | string {
-    if (!val) return 'Type is required'
-    if (val?.length === 0) return 'Type is required'
-    return true
-  }
+  isNotEmptyArray = isNotEmptyArray
 
   mounted(): void {
     this.setVehicleTypes()

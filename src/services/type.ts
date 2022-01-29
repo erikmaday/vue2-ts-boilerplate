@@ -47,7 +47,7 @@ export default {
   },
   marketRateType(): Promise<AxiosResponse> {
     const host = apiBaseUrl()
-    const url = `https://${host}/types/market-rate-types?`
+    const url = `https://${host}/types/market-rate-types`
 
     return httpService.get(url)
   },

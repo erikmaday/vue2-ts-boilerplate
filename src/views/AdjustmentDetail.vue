@@ -529,8 +529,7 @@ export default class AdjustmentDetail extends Vue {
         name: 'rates.adjustments',
       })
     } else {
-      let markupId: number
-      markupId = await this.editExistingMarkup()
+      const markupId: number = await this.editExistingMarkup()
       this.$router.push({
         name: 'rates.adjustments.view',
         params: { id: String(markupId) },

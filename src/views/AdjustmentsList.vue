@@ -15,7 +15,10 @@
           Add New
         </v-btn>
       </v-col>
-      <CUDataTableFilterButton v-model="isFilterDialogOpen" />
+      <CUDataTableFilterButton
+        v-model="isFilterDialogOpen"
+        :loading="showLoaders"
+      />
     </v-row>
     <CUCollectionTable
       :actions="actions"
@@ -26,6 +29,7 @@
       :fetch-method="tableView"
       :is-filter-dialog-open.sync="isFilterDialogOpen"
       no-data-text="No adjustments found"
+      @initial-load-completed="loading = false"
     />
   </v-col>
 </template>
@@ -46,6 +50,7 @@ import { datePredefined } from '@/data/predefined'
 import { formatTimeStampDateTime } from '@/utils/string'
 import { Markup } from '@/models/dto/Markup'
 import { AxiosResponse } from 'axios'
+import app from '@/store/modules/app'
 
 @Component({
   components: {
@@ -58,6 +63,7 @@ import { AxiosResponse } from 'axios'
 })
 export default class AdjustmentsList extends Vue {
   isFilterDialogOpen = false
+  loading = true
 
   daysMap = {
     1: 'Monday',
@@ -212,5 +218,8 @@ export default class AdjustmentsList extends Vue {
       },
     },
   ]
+  get showLoaders(): boolean {
+    return app.getAreLoadersEnabled && this.loading
+  }
 }
 </script>

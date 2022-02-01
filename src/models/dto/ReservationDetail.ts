@@ -243,3 +243,8 @@ export interface AwardedTo {
   companyId: number
   name: string
 }
+
+export interface ReferralRejectionRequest {
+  notes?: string
+  referralRejectionReasonTypeId: number
+}

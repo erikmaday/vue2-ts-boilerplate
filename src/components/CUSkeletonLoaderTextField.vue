@@ -4,9 +4,9 @@
       v-if="!hideLabel"
       type="detail-text"
       width="70px"
-      classes="margin-y-1"
+      class="margin-y-1"
     />
-    <CUSkeletonLoader type="text-field" :classes="classes" />
+    <CUSkeletonLoader type="text-field" :class="classes" />
   </div>
 </template>
 <script lang="ts">
@@ -20,11 +20,7 @@ export default class CUSkeletonLoaderTextField extends Vue {
   readonly hideLabel: boolean
 
   get classes(): string {
-    let classes = ''
-    if (!this.hideDetails) {
-      classes = `${classes} margin-b-7`
-    }
-    return classes
+    return { 'margin-b-7': !this.hideDetails }
   }
 }
 </script>

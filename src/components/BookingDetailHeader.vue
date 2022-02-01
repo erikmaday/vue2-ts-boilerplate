@@ -68,7 +68,6 @@
         <v-btn color="red" class="white--text" small @click="reject">
           Reject
         </v-btn>
-        <v-spacer />
       </template>
     </CUModal>
   </v-row>
@@ -80,6 +79,7 @@ import {
   RequiredVehicleType,
   VehicleAssignment,
   ReservationDetailStop,
+  ReferralRejectionRequest,
 } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ReferralStatus } from '@/utils/enum'
@@ -96,7 +96,7 @@ export default class BookingDetailHeader extends Vue {
   @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
 
   isDialogOpen = false
-  rejectNote = ''
+  rejectNote = null
 
   referralRejectionReasonTypes: Type[] = []
   newReferralRejectionReason: number = null
@@ -172,7 +172,7 @@ export default class BookingDetailHeader extends Vue {
 
   cancelRejectNote(): void {
     this.newReferralRejectionReason = null
-    this.rejectNote = ''
+    this.rejectNote = null
     const form: any = this.$refs['rejection-form']
     form.reset()
     this.isDialogOpen = false
@@ -199,7 +199,15 @@ export default class BookingDetailHeader extends Vue {
   async reject(): Promise<void> {
     const form: any = this.$refs['rejection-form']
     if (!form.validate()) return
-    await reservation.reject(this.reservation.reservationId, this.rejectNote)
+    const referralRejectionBody: ReferralRejectionRequest = {
+      notes: this.rejectNote,
+      referralRejectionReasonTypeId: this.newReferralRejectionReason,
+    }
+    await reservation.reject(
+      this.reservation.reservationId,
+      referralRejectionBody
+    )
+    this.isDialogOpen = false
     this.$emit('refresh')
   }
 }

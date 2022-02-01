@@ -45,7 +45,6 @@
         <v-btn color="red" class="white--text" small @click="deleteAdjustment">
           Delete
         </v-btn>
-        <v-spacer />
       </template>
     </CUModal>
   </v-col>

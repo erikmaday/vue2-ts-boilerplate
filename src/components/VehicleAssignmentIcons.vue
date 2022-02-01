@@ -14,7 +14,7 @@
           >
             <span
               v-if="showLabel"
-              class="margin-r-5 white-space-pre"
+              class="margin-r-5"
               :class="`text-${labelColor}`"
             >
               <span

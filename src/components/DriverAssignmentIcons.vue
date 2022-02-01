@@ -198,11 +198,9 @@ export default class DriverAssignmentIcons extends Vue {
   }
 
   get unassignedToDisplay(): number {
-    const min = Math.min(
-      MAX_DISPLAY - this.driverAssignmentsToDisplay.length,
-      MAX_DISPLAY
-    )
-    return Math.max(min, 0)
+    const totalAssigned = this.driverAssignments.length
+    const totalUnassigned = this.totalRequiredDrivers - totalAssigned
+    return Math.min(MAX_DISPLAY - totalAssigned, totalUnassigned)
   }
 
   get undisplayedCount(): number {

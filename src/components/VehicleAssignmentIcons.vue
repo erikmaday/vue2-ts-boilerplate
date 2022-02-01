@@ -175,10 +175,9 @@ export default class VehicleAssignmentIcons extends Vue {
   }
 
   get unassignedToDisplay(): number {
-    const displayedAssignedVehicles =
-      this.vehicleAssignmentsToDisplay?.length || 0
-    const min = Math.min(MAX_DISPLAY - displayedAssignedVehicles, MAX_DISPLAY)
-    return Math.max(min, 0)
+    const totalAssigned = this.computedVehicleAssignments.length
+    const totalUnassigned = this.totalRequiredVehicles - totalAssigned
+    return Math.min(MAX_DISPLAY - totalAssigned, totalUnassigned)
   }
 
   get labelColor(): string {

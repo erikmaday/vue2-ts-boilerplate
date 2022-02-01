@@ -135,7 +135,6 @@
         </v-btn>
       </template>
     </template>
-    <v-switch v-model="loading" />
     <v-row>
       <v-col cols="12" md="5">
         <v-form ref="form" v-model="isFormValid">
@@ -188,17 +187,6 @@ export default class VehicleDetail extends Vue {
   vehicleDetail = vehicleDetail
   isFormValid = true
   deleteModalIsOpen = false
-  loading = false
-
-  @Watch('loading')
-  loadingChanged(value: boolean): void {
-    vehicleDetail.setLoading(value)
-  }
-
-  @Watch('vehicleDetail.getShowLoaders')
-  getShowLoadersChanged(value: boolean): void {
-    this.loading = value
-  }
 
   @Watch('$route.name', { immediate: true })
   routeNameChanged(value: string): void {

@@ -146,7 +146,6 @@ class VehicleDetailModule extends VuexModule {
   }
   @Action
   async fetchVehicle(): Promise<void> {
-    this.loading = true
     try {
       if (this.vehicleId) {
         const response = await vehicle.byId(Number(this.vehicleId))
@@ -194,10 +193,6 @@ class VehicleDetailModule extends VuexModule {
   @Action
   setPhotos(vehiclePhotos: VehiclePhotoDTO[]) {
     this.setVehiclePhotos(vehiclePhotos)
-  }
-  @Action
-  setLoading(loading: boolean) {
-    this.loading = loading
   }
   @Action
   goBack(): void {

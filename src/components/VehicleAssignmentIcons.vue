@@ -12,7 +12,7 @@
               'cursor-not-allowed': needsAcceptance,
             }"
           >
-            <span
+            <div
               v-if="showLabel"
               class="margin-r-5"
               :class="`text-${labelColor}`"
@@ -24,7 +24,7 @@
                 {{ formatRequiredVehicle(vehicle) }}
                 <br />
               </span>
-            </span>
+            </div>
             <VehicleAssignmentIcon
               v-for="(vehicle, vehicleIndex) in vehicleAssignmentsToDisplay"
               :vehicle-assignment="vehicle"

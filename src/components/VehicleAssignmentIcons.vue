@@ -37,8 +37,9 @@
               class="margin-l-n3"
             />
             <VehicleAssignmentIcon
-              v-if="moreRequiredCount"
-              :more-required-count="moreRequiredCount"
+              v-if="undisplayedCount"
+              :undisplayed-count="undisplayedCount"
+              :is-fully-assigned="isFullyAssigned"
               class="margin-l-n3"
             />
           </div>
@@ -168,26 +169,15 @@ export default class VehicleAssignmentIcons extends Vue {
     return vehicleAssignments
   }
 
-  get unassignedToDisplay(): number {
-    const displayedAssignedVehicles =
-      this.vehicleAssignmentsToDisplay?.length || 0
-    const min = Math.min(
-      this.totalRequiredVehicles - displayedAssignedVehicles,
-      MAX_DISPLAY
-    )
-    return Math.max(min, 0)
+  get undisplayedCount(): number {
+    const count = this.totalRequiredVehicles - MAX_DISPLAY
+    return Math.max(count, 0)
   }
 
-  get moreRequiredCount(): number {
-    const assignedVehiclesCount = this?.vehicleAssignmentsToDisplay?.length || 0
-    const count =
-      this.totalRequiredVehicles -
-      assignedVehiclesCount -
-      this.unassignedToDisplay
-    if (count > 0) {
-      return count
-    }
-    return 0
+  get unassignedToDisplay(): number {
+    const totalAssigned = this.computedVehicleAssignments.length
+    const totalUnassigned = this.totalRequiredVehicles - totalAssigned
+    return Math.min(MAX_DISPLAY - totalAssigned, totalUnassigned)
   }
 
   get labelColor(): string {

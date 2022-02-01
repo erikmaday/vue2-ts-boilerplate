@@ -2,7 +2,6 @@
   <div v-bind="$attrs" :style="styles" :class="computedClasses" />
 </template>
 <script lang="ts">
-import deepClone from '@/utils/deepClone'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component({})
@@ -10,8 +9,6 @@ export default class CUSkeletonLoader extends Vue {
   @Prop({ type: String, default: '', required: false }) readonly type: string
   @Prop({ type: String, default: '', required: false }) readonly width: string
   @Prop({ type: String, default: '', required: false }) readonly height: string
-  @Prop({ type: String, default: '', required: false })
-  readonly classes: string
   @Prop({ type: Boolean, default: false, required: false })
   readonly multiply: boolean
 
@@ -86,7 +83,7 @@ export default class CUSkeletonLoader extends Vue {
   }
 
   get computedClasses(): string {
-    let classes = deepClone(this.classes)
+    let classes = ''
     if (this.type === 'avatar') {
       classes = `${classes} border-radius-round`
     }

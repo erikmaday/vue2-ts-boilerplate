@@ -40,9 +40,10 @@
         v-if="showLoaders && isModeEdit"
         :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
         :width="$vuetify.breakpoint.xs ? '100%' : '48px'"
-        :classes="
-          $vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-8 margin-r-4'
-        "
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-8 margin-r-4': $vuetify.breakpoint.smAndUp,
+        }"
       />
       <v-btn
         v-else-if="isModeEdit"
@@ -62,9 +63,10 @@
         v-if="showLoaders && isModeView && !isModeProfile"
         :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
         :width="$vuetify.breakpoint.xs ? '100%' : '47px'"
-        :classes="
-          $vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-8 margin-r-4'
-        "
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-8 margin-r-4': $vuetify.breakpoint.smAndUp,
+        }"
       />
       <v-btn
         v-else-if="!isModeProfile"
@@ -86,7 +88,10 @@
         v-if="showLoaders && isModeView && !isModeProfile"
         type="button"
         :width="$vuetify.breakpoint.xs ? '100%' : '159px'"
-        :classes="$vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-4'"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
       />
       <v-btn
         v-else-if="!isModeProfile"
@@ -109,7 +114,10 @@
         :width="
           $vuetify.breakpoint.xs ? '100%' : !isModeProfile ? '100px' : '71px'
         "
-        :classes="$vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-4'"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
       />
       <v-btn
         v-else-if="!isModeProfile"
@@ -151,7 +159,10 @@
         v-if="showLoaders && isModeEdit"
         type="button"
         :width="$vuetify.breakpoint.xs ? '100%' : '71px'"
-        :classes="$vuetify.breakpoint.xs ? 'w-full margin-y-2' : 'margin-l-4'"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
       />
       <v-btn
         v-else-if="!isModeProfile"

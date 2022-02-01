@@ -7,7 +7,7 @@
         v-if="loading"
         type="test"
         width="350px"
-        classes="margin-t-2"
+        class="margin-t-2"
       />
       <p v-else>
         Click support which can be raising a ticket or phone number or email

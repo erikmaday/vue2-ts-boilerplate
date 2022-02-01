@@ -5,7 +5,7 @@
       :key="`pagination-loader-${index}`"
       width="10px"
       height="10px"
-      classes="margin-x-2"
+      class="margin-x-2"
     />
   </div>
 </template>

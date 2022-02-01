@@ -5,14 +5,14 @@
         v-if="loading"
         height="12px"
         width="66%"
-        classes="border-radius-3"
+        class="border-radius-3"
         style="margin-bottom: 6px"
       />
       <span v-else>1/3 Accept or Reject the Job</span>
       <CUSkeletonLoader
         v-if="loading"
         height="8px"
-        classes="border-radius-none"
+        class="border-radius-none"
       />
       <div
         v-else
@@ -28,7 +28,7 @@
         v-if="loading"
         height="12px"
         width="66%"
-        classes="border-radius-3"
+        class="border-radius-3"
         style="margin-bottom: 6px"
       />
       <span v-else>2/3 Assign Drivers and Vehicles</span>
@@ -36,7 +36,7 @@
       <CUSkeletonLoader
         v-if="loading"
         height="8px"
-        classes="border-radius-none"
+        class="border-radius-none"
       />
       <div
         v-else
@@ -52,14 +52,14 @@
         v-if="loading"
         height="12px"
         width="66%"
-        classes="border-radius-3"
+        class="border-radius-3"
         style="margin-bottom: 6px"
       />
       <span v-else>3/3 Driver Tracking via Mobile App</span>
       <CUSkeletonLoader
         v-if="loading"
         height="8px"
-        classes="border-radius-none"
+        class="border-radius-none"
       />
       <div
         v-else

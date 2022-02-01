@@ -8,20 +8,20 @@
         type="text"
         width="47.5%"
         style="margin-right: 5%; margin-top: 2px"
-        classes="d-inline-flex border-radius-root"
+        class="d-inline-flex border-radius-root"
       />
       <CUSkeletonLoader
         type="text"
         width="47.5%"
-        classes="d-inline-flex border-radius-root"
+        class="d-inline-flex border-radius-root"
       />
-      <CUSkeletonLoader type="detail-text" classes="margin-b-3" />
+      <CUSkeletonLoader type="detail-text" class="margin-b-3" />
       <div class="d-flex align-center h-24">
-        <CUSkeletonLoader width="20px" height="20px" classes="margin-r-2" />
+        <CUSkeletonLoader width="20px" height="20px" class="margin-r-2" />
         <CUSkeletonLoader width="50%" type="detail-text" />
       </div>
       <div class="d-flex align-center h-24">
-        <CUSkeletonLoader width="20px" height="20px" classes="margin-r-2" />
+        <CUSkeletonLoader width="20px" height="20px" class="margin-r-2" />
         <CUSkeletonLoader width="33%" type="detail-text" />
       </div>
       <div class="d-flex justify-end">
@@ -29,13 +29,13 @@
           v-if="isInBidDetail"
           height="24px"
           width="33%"
-          classes="d-flex justify-end"
+          class="d-flex justify-end"
         />
         <CUSkeletonLoader
           v-else-if="showActionMessage"
           height="14px"
           width="47.5%"
-          classes="margin-t-2"
+          class="margin-t-2"
         />
       </div>
     </v-card-text>

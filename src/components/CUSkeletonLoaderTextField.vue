@@ -19,7 +19,7 @@ export default class CUSkeletonLoaderTextField extends Vue {
   @Prop({ type: Boolean, required: false, default: false })
   readonly hideLabel: boolean
 
-  get classes(): string {
+  get classes(): Record<string, boolean> {
     return { 'margin-b-7': !this.hideDetails }
   }
 }

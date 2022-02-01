@@ -39,11 +39,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component
 export default class UsersDetailUserPhoto extends Vue {
-  @Prop({
-    type: String,
-    default: '',
-  })
-  photoSrc = ''
+  @Prop({ type: String, default: '' }) readonly photoSrc: string
 
   @Prop({
     type: String,

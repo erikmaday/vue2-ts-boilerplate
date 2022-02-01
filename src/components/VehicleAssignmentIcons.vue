@@ -12,13 +12,19 @@
               'cursor-not-allowed': needsAcceptance,
             }"
           >
-            <span
+            <div
               v-if="showLabel"
               class="margin-r-5"
-              :class="`text-${label.color}`"
+              :class="`text-${labelColor}`"
             >
-              {{ label.text }}
-            </span>
+              <span
+                v-for="(vehicle, vehicleIndex) in computedTrip.vehicles"
+                :key="`vehicle-label-${vehicle.vehicleType.label}-${vehicleIndex}`"
+              >
+                {{ formatRequiredVehicle(vehicle) }}
+                <br />
+              </span>
+            </div>
             <VehicleAssignmentIcon
               v-for="(vehicle, vehicleIndex) in vehicleAssignmentsToDisplay"
               :vehicle-assignment="vehicle"
@@ -66,7 +72,7 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import VehicleAssignmentIcon from '@/components/VehicleAssignmentIcon.vue'
 import TripAssignmentsModal from '@/components/TripAssignmentsModal.vue'
-import { Reservation, Trip } from '@/models/dto'
+import { Reservation, Trip, Vehicle } from '@/models/dto'
 import { VehicleAssignment } from '@/models/dto'
 import { pluralize } from '@/utils/string'
 import { ReferralStatus } from '@/utils/enum'
@@ -175,13 +181,8 @@ export default class VehicleAssignmentIcons extends Vue {
     return Math.max(min, 0)
   }
 
-  get label(): ColoredMessage {
-    const count = this.totalRequiredVehicles
-    const noun = pluralize(this.totalRequiredVehicles, 'Vehicle')
-    return {
-      text: `${count} ${noun}`,
-      color: !this.isFullyAssigned ? 'red' : 'black',
-    }
+  get labelColor(): string {
+    return !this.isFullyAssigned ? 'red' : 'black'
   }
 
   get isFullyAssigned(): boolean {
@@ -232,6 +233,12 @@ export default class VehicleAssignmentIcons extends Vue {
     }
 
     return html
+  }
+
+  formatRequiredVehicle(vehicle: Vehicle): string {
+    const count = vehicle.quantity
+    const noun = pluralize(count, vehicle.vehicleType.label)
+    return `${count} ${noun}`
   }
 }
 </script>

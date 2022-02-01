@@ -47,7 +47,7 @@
           <CUSelect
             v-model="newReferralRejectionReason"
             :items="referralRejectionReasonTypes"
-            :rules="[(val) => !!val || 'Reason is required']"
+            :rules="[(val) => !!val || 'Reason is Required']"
             label="Reason for Rejecting"
             item-text="label"
             item-value="id"

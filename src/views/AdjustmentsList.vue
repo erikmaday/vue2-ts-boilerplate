@@ -21,6 +21,7 @@
       />
     </v-row>
     <CUCollectionTable
+      ref="collection-table"
       :actions="actions"
       :columns="columns"
       item-key="markupId"
@@ -31,6 +32,22 @@
       no-data-text="No adjustments found"
       @initial-load-completed="loading = false"
     />
+    <CUModal v-model="isDeleteDialogOpen">
+      <template #title>Delete Adjustment</template>
+      <template #text>
+        Are you sure you want to delete this adjustment?
+      </template>
+      <template #actions>
+        <v-spacer />
+        <v-btn color="primary" small text @click="cancelDeleteAdjustment">
+          Cancel
+        </v-btn>
+        <v-btn color="red" class="white--text" small @click="deleteAdjustment">
+          Delete
+        </v-btn>
+        <v-spacer />
+      </template>
+    </CUModal>
   </v-col>
 </template>
 
@@ -51,6 +68,7 @@ import { formatTimeStampDateTime } from '@/utils/string'
 import { Markup } from '@/models/dto/Markup'
 import { AxiosResponse } from 'axios'
 import app from '@/store/modules/app'
+import { EventBus } from '@/utils/eventBus'
 
 @Component({
   components: {
@@ -63,7 +81,16 @@ import app from '@/store/modules/app'
 })
 export default class AdjustmentsList extends Vue {
   isFilterDialogOpen = false
+  isDeleteDialogOpen = false
   loading = true
+  currentAdjustmentId = -1
+
+  mounted(): void {
+    EventBus.$on('delete-adjustment', (e) => {
+      this.currentAdjustmentId = e
+      this.isDeleteDialogOpen = true
+    })
+  }
 
   daysMap = {
     1: 'Monday',
@@ -195,12 +222,10 @@ export default class AdjustmentsList extends Vue {
       key: 'delete',
       color: 'error',
       icon: 'trash',
-      confirmModal: true,
+      confirmModal: false,
       ariaLabel: 'Delete Adjustment',
-      confirmModalText: 'Are you sure you want to delete this adjustment?',
-      confirmModalPrimaryActionText: 'Delete',
-      action: async (row: Markup): Promise<AxiosResponse> => {
-        return markup.delete(row.markupId)
+      action: async (row: Markup): Promise<void> => {
+        EventBus.$emit('delete-adjustment', row.markupId)
       },
     },
     {
@@ -220,6 +245,25 @@ export default class AdjustmentsList extends Vue {
   ]
   get showLoaders(): boolean {
     return app.getAreLoadersEnabled && this.loading
+  }
+
+  cancelDeleteAdjustment(): void {
+    this.currentAdjustmentId = -1
+    this.isDeleteDialogOpen = false
+  }
+
+  async deleteAdjustment(): Promise<void> {
+    if (this.currentAdjustmentId === -1) {
+      return
+    }
+    await markup.delete(this.currentAdjustmentId)
+    this.$nextTick(() => {
+      const table: any = this.$refs['collection-table']
+      table.load()
+    })
+
+    this.currentAdjustmentId = -1
+    this.isDeleteDialogOpen = false
   }
 }
 </script>

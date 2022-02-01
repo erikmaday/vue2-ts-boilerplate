@@ -31,8 +31,9 @@
               class="margin-l-n3"
             />
             <DriverAssignmentIcon
-              v-if="moreRequiredCount"
-              :more-required-count="moreRequiredCount"
+              v-if="undisplayedCount"
+              :undisplayed-count="undisplayedCount"
+              :is-fully-assigned="isFullyAssigned"
               class="margin-l-n3"
             />
           </div>
@@ -198,21 +199,15 @@ export default class DriverAssignmentIcons extends Vue {
 
   get unassignedToDisplay(): number {
     const min = Math.min(
-      this.totalRequiredDrivers - this.driverAssignmentsToDisplay.length,
+      MAX_DISPLAY - this.driverAssignmentsToDisplay.length,
       MAX_DISPLAY
     )
     return Math.max(min, 0)
   }
 
-  get moreRequiredCount(): number {
-    const count =
-      this.totalRequiredDrivers -
-      this.driverAssignmentsToDisplay.length -
-      this.unassignedToDisplay
-    if (count > 0) {
-      return count
-    }
-    return 0
+  get undisplayedCount(): number {
+    const count = this.totalRequiredDrivers - MAX_DISPLAY
+    return Math.max(count, 0)
   }
 
   get label(): ColoredMessage {

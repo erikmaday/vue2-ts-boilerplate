@@ -3,14 +3,15 @@
     <template v-if="!!vehicleInformation">
       <v-col cols="12" class="padding-t-0">
         <CUSkeletonLoader
-          v-if="vehicleDetail.getShowLoaders"
+          v-if="showLoaders"
           type="h3"
           width="170px"
+          style="margin-bottom: 1px"
         />
         <h3 v-else>Vehicle Information</h3>
       </v-col>
       <v-col cols="6" class="padding-y-0">
-        <CUSkeletonLoaderTextField v-if="vehicleDetail.getShowLoaders" />
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
           v-else
           v-model="vehicleInformation.vehicleName"
@@ -20,7 +21,7 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
-        <CUSkeletonLoaderTextField v-if="vehicleDetail.getShowLoaders" />
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUSelect
           v-else
           v-model="vehicleInformation.vehicleTypeId"
@@ -33,7 +34,7 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
-        <CUSkeletonLoaderTextField v-if="vehicleDetail.getShowLoaders" />
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
           v-else
           v-model="vehicleInformation.vehicleMake"
@@ -43,7 +44,7 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
-        <CUSkeletonLoaderTextField v-if="vehicleDetail.getShowLoaders" />
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
           v-else
           v-model="vehicleInformation.vehicleModel"
@@ -53,7 +54,7 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
-        <CUSkeletonLoaderTextField v-if="vehicleDetail.getShowLoaders" />
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
           v-else
           v-model="vehicleInformation.vehicleYear"
@@ -63,7 +64,7 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
-        <CUSkeletonLoaderTextField v-if="vehicleDetail.getShowLoaders" />
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
           v-else
           v-model="vehicleInformation.passengerCapacity"
@@ -73,7 +74,7 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
-        <CUSkeletonLoaderTextField v-if="vehicleDetail.getShowLoaders" />
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
           v-else
           v-model="vehicleInformation.vinNumber"
@@ -83,7 +84,7 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
-        <CUSkeletonLoaderTextField v-if="vehicleDetail.getShowLoaders" />
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
           v-else
           v-model="vehicleInformation.licensePlate"
@@ -93,7 +94,7 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
-        <CUSkeletonLoaderTextField v-if="vehicleDetail.getShowLoaders" />
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUSelect
           v-else
           v-model="vehicleInformation.garageId"
@@ -124,7 +125,6 @@ export default class VehicleDetailInformation extends Vue {
   vehicleTypes: VehicleType[] | null = []
   vehicleInformation: VehicleDetailEntity | null = null
   debounce = null
-  vehicleDetail = vehicleDetail
 
   @Watch('vehicleInformation', { deep: true })
   vehicleChanged(value: VehicleDetailEntity): void {
@@ -139,6 +139,10 @@ export default class VehicleDetailInformation extends Vue {
   @Watch('vehicle', { deep: true, immediate: true })
   parentVehicleChanged(value: VehicleDetailEntity): void {
     this.vehicleInformation = value
+  }
+
+  get showLoaders(): boolean {
+    return vehicleDetail.getShowLoaders
   }
 
   get vehicle(): VehicleDetailEntity {

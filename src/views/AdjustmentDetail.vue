@@ -101,10 +101,10 @@
         </v-col>
         <v-row
           wrap
-          class="mx-3"
+          class="mx-3 border-solid border-2 border-radius-regular"
           :class="{
-            'border-solid border-2 border-error border-radius-regular background-error-background my-0':
-              vehicleTypeError,
+            'border-error background-error-background my-0': vehicleTypeError,
+            'border-transparent': !vehicleTypeError,
             'pt-3': !vehicleTypeError,
           }"
         >
@@ -124,11 +124,15 @@
             />
           </v-col>
         </v-row>
-        <span
-          v-show="vehicleTypeError"
-          class="text-error font-medium font-12 pl-6 mb-2"
-        >
-          At Least One Vehicle Type is Required
+        <span class="h-16 pl-6 mb-2">
+          <v-scroll-y-transition>
+            <p
+              v-show="vehicleTypeError"
+              class="text-error font-medium font-12 mt-0"
+            >
+              At Least One Vehicle Type is Required
+            </p>
+          </v-scroll-y-transition>
         </span>
       </v-row>
       <v-row>

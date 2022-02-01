@@ -196,6 +196,10 @@ class VehicleDetailModule extends VuexModule {
     this.setVehiclePhotos(vehiclePhotos)
   }
   @Action
+  setLoading(loading: boolean) {
+    this.loading = loading
+  }
+  @Action
   goBack(): void {
     if (!app.getLastRoute?.name || app.getLastRoute?.name === 'vehicles.edit') {
       router.push({ name: 'vehicles' })

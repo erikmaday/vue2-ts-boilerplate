@@ -5,6 +5,7 @@ import {
   ReservationDetailCommentPayload,
   ApiResult,
   ReservationDetail,
+  ReferralRejectionRequest,
 } from '@/models/dto'
 import { HttpService } from '@/services/common/HttpService'
 import { AxiosResponse } from 'axios'
@@ -53,13 +54,11 @@ export default {
   },
   reject(
     reservationId: number,
-    rejectNote: string
+    body: ReferralRejectionRequest
   ): Promise<AxiosResponse<ApiResult>> {
     const host = apiBaseUrl()
-    let query = `?notes=${rejectNote}`
-    query = encodeURI(query)
-    const url = `https://${host}/reservations/rejectReferral/${reservationId}${query}`
-    return httpService.get(url)
+    const url = `https://${host}/reservations/rejectReferral/${reservationId}`
+    return httpService.post(url, body)
   },
   createAssignment(payload) {
     const url = `https://${apiBaseUrl()}/tripAssignments/createAssignment`

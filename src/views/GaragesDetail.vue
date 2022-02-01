@@ -14,7 +14,9 @@
         </v-btn>
       </router-link>
     </template>
-    <template #title>{{ headerTitle }}</template>
+    <template #title>
+      <h1 class="margin-b-0">{{ headerTitle }}</h1>
+    </template>
     <template #buttons>
       <v-btn
         v-show="isModeView"

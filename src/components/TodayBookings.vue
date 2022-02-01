@@ -11,7 +11,7 @@
         v-if="showCountLoaders"
         type="detail-text"
         width="160px"
-        classes="col col-auto"
+        class="col col-auto"
       />
       <router-link
         v-else
@@ -28,7 +28,7 @@
           width="120px"
           v-for="chipIndex in Object.values(chips).length"
           type="chip"
-          classes="d-inline-flex margin-r-2 cursor-pointer"
+          class="d-inline-flex margin-r-2 cursor-pointer"
           :key="`booking-filter-skeleton-loader-${chipIndex}`"
           style="margin-bottom: 1px"
         />

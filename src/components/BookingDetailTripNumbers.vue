@@ -3,7 +3,7 @@
     <v-col cols="6" md="auto" class="order-1">
       <div class="row align-center margin-a-0 justify-center">
         <div v-if="loading" class="d-inline-flex">
-          <CUSkeletonLoader type="icon" classes="margin-r-2" />
+          <CUSkeletonLoader type="icon" class="margin-r-2" />
           <CUSkeletonLoader height="24px" width="100px" />
         </div>
         <template v-else>
@@ -47,7 +47,7 @@
     <v-col cols="6" md="auto" class="order-2 order-md-4">
       <div class="row align-center margin-a-0 justify-center">
         <div v-if="loading" class="d-inline-flex">
-          <CUSkeletonLoader type="icon" classes="margin-r-2" />
+          <CUSkeletonLoader type="icon" class="margin-r-2" />
           <CUSkeletonLoader height="24px" width="100px" />
         </div>
         <template v-else>

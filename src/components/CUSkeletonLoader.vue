@@ -1,8 +1,7 @@
 <template>
-  <div :style="styles" :class="computedClasses" />
+  <div v-bind="$attrs" :style="styles" :class="computedClasses" />
 </template>
 <script lang="ts">
-import deepClone from '@/utils/deepClone'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component({})
@@ -10,8 +9,6 @@ export default class CUSkeletonLoader extends Vue {
   @Prop({ type: String, default: '', required: false }) readonly type: string
   @Prop({ type: String, default: '', required: false }) readonly width: string
   @Prop({ type: String, default: '', required: false }) readonly height: string
-  @Prop({ type: String, default: '', required: false })
-  readonly classes: string
   @Prop({ type: Boolean, default: false, required: false })
   readonly multiply: boolean
 
@@ -36,6 +33,8 @@ export default class CUSkeletonLoader extends Vue {
         return '16px'
       case 'icon':
         return '24px'
+      case 'checkbox':
+        return '20px'
       case 'divider':
         return '1px'
       case 'mobile-table-cell':
@@ -43,6 +42,8 @@ export default class CUSkeletonLoader extends Vue {
       case 'table-cell':
       case 'table-header':
         return '18px'
+      case 'text-field':
+        return '50px'
       default:
         return '14px'
     }
@@ -55,6 +56,8 @@ export default class CUSkeletonLoader extends Vue {
     switch (this.type) {
       case 'icon':
         return '24px'
+      case 'checkbox':
+        return '20px'
       case 'avatar':
         return this.computedHeight
       case 'table-cell':
@@ -65,7 +68,7 @@ export default class CUSkeletonLoader extends Vue {
     }
   }
 
-  get styles(): { [key: string]: string | number } {
+  get styles(): Record<string, string | number> {
     const styles = {
       height: this.computedHeight,
       width: this.computedWidth,
@@ -73,11 +76,14 @@ export default class CUSkeletonLoader extends Vue {
     if (this.type === 'chip') {
       styles['border-radius'] = this.computedHeight
     }
+    if (this.type === 'checkbox') {
+      styles['margin'] = '2px'
+    }
     return styles
   }
 
   get computedClasses(): string {
-    let classes = deepClone(this.classes)
+    let classes = ''
     if (this.type === 'avatar') {
       classes = `${classes} border-radius-round`
     }

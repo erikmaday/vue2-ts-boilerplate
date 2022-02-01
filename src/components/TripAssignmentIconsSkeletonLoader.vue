@@ -4,7 +4,7 @@
       <div class="d-inline-flex margin-l-3 align-center">
         <CUSkeletonLoader
           v-if="showLabel"
-          classes="margin-r-5"
+          class="margin-r-5"
           width="100px"
           height="20px"
         />
@@ -14,7 +14,7 @@
           height="32px"
           width="32px"
           type="avatar"
-          classes="d-inline-flex margin-l-n3"
+          class="d-inline-flex margin-l-n3"
         />
       </div>
     </template>

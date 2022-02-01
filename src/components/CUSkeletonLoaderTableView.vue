@@ -30,10 +30,10 @@
       <CUSkeletonLoader
         type="detail-text"
         width="64px"
-        classes="margin-l-6 margin-r-8"
+        class="margin-l-6 margin-r-8"
       />
-      <CUSkeletonLoader type="avatar" height="52px" classes="margin-l-2" />
-      <CUSkeletonLoader type="avatar" height="52px" classes="margin-l-2" />
+      <CUSkeletonLoader type="avatar" height="52px" class="margin-l-2" />
+      <CUSkeletonLoader type="avatar" height="52px" class="margin-l-2" />
     </div>
   </div>
   <div v-else>

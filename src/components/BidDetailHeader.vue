@@ -5,14 +5,14 @@
         <CUSkeletonLoader
           type="h2"
           width="40%"
-          classes="d-inline-flex margin-r-2"
+          class="d-inline-flex margin-r-2"
         />
         <CUSkeletonLoader
           type="h2"
           width="20px"
-          classes="d-inline-flex margin-r-2"
+          class="d-inline-flex margin-r-2"
         />
-        <CUSkeletonLoader type="h2" width="40%" classes="d-inline-flex" />
+        <CUSkeletonLoader type="h2" width="40%" class="d-inline-flex" />
       </template>
       <template v-else>
         <h2>

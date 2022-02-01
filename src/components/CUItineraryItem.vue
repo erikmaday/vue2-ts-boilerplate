@@ -5,7 +5,7 @@
         v-if="loading"
         width="2px"
         height="100%"
-        classes="cu-timeline-item__line h-full position-absolute z-0 top-2 left-one-half"
+        class="cu-timeline-item__line h-full position-absolute z-0 top-2 left-one-half"
         style="transform: translateX(-50%)"
       />
       <div

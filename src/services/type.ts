@@ -45,4 +45,11 @@ export default {
 
     return httpService.get(url)
   },
+
+  referralRejectionReason(): Promise<AxiosResponse> {
+    const host = apiBaseUrl()
+    const url = `https://${host}/types/referral-rejection-reason-types`
+
+    return httpService.get(url)
+  },
 }

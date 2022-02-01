@@ -44,11 +44,18 @@
       <template #title>Reject Booking</template>
       <template #text>
         <v-form ref="rejection-form">
+          <CUSelect
+            v-model="newReferralRejectionReason"
+            :items="referralRejectionReasonTypes"
+            :rules="[(val) => !!val || 'Reason is required']"
+            label="Reason for Rejecting"
+            item-text="label"
+            item-value="id"
+            placeholder="Please select a reason for rejecting this booking"
+          />
           <CUTextArea
             v-model="rejectNote"
-            label="Why are you rejecting the booking?"
             placeholder="Add reasons for rejection here."
-            :rules="[(val) => !!val || 'This field is required.']"
             validate-on-blur
           />
         </v-form>
@@ -77,6 +84,10 @@ import {
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ReferralStatus } from '@/utils/enum'
 import reservation from '@/services/reservation'
+import { Type } from '@/models/dto/Type'
+import type from '@/services/type'
+import { AxiosResponse } from 'axios'
+import { isNotEmptyArray } from '@/utils/validators'
 
 @Component
 export default class BookingDetailHeader extends Vue {
@@ -86,6 +97,15 @@ export default class BookingDetailHeader extends Vue {
 
   isDialogOpen = false
   rejectNote = ''
+
+  referralRejectionReasonTypes: Type[] = []
+  newReferralRejectionReason: number = null
+
+  isNotEmptyArray = isNotEmptyArray
+
+  mounted(): void {
+    this.setReferralRejectionReasonTypes()
+  }
 
   get reservationId(): string {
     return this.reservation?.managedId
@@ -151,8 +171,24 @@ export default class BookingDetailHeader extends Vue {
   }
 
   cancelRejectNote(): void {
+    this.newReferralRejectionReason = null
     this.rejectNote = ''
+    const form: any = this.$refs['rejection-form']
+    form.reset()
     this.isDialogOpen = false
+  }
+
+  async setReferralRejectionReasonTypes(): Promise<void> {
+    let response: AxiosResponse
+    try {
+      response = await type.referralRejectionReason()
+      const { data } = response
+      this.referralRejectionReasonTypes = data
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+      return
+    }
   }
 
   async accept(): Promise<void> {

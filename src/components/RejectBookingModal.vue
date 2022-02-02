@@ -22,9 +22,7 @@
     <template #actions>
       <v-spacer />
       <v-btn color="primary" small text @click="cancelRejectNote">Cancel</v-btn>
-      <v-btn color="red" class="white--text" small @click="reject">
-        Reject
-      </v-btn>
+      <v-btn color="red" class="text-white" small @click="reject">Reject</v-btn>
     </template>
   </CUModal>
 </template>

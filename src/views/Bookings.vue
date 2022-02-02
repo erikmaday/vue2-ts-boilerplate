@@ -28,7 +28,7 @@
       <template #text>
         <v-form ref="rejection-form">
           <CUSelect
-            v-model="newReferralRejectionReason"
+            v-model="referralRejectionReasonTypeId"
             :items="referralRejectionReasonTypes"
             :rules="[(val) => !!val || 'Reason is required']"
             label="Reason for Rejecting"
@@ -111,10 +111,10 @@ export default class Bookings extends Vue {
   loading = true
 
   referralRejectionReasonTypes: Type[] = []
-  newReferralRejectionReason: number = null
+  referralRejectionReasonTypeId: number = null
 
   mounted(): void {
-    this.setReferralRejectionReasonTypes()
+    this.getReferralRejectionReasonTypes()
 
     EventBus.$on('reject-booking', (e) => {
       this.currentReservationId = e
@@ -372,7 +372,7 @@ export default class Bookings extends Vue {
     },
   ]
 
-  async setReferralRejectionReasonTypes(): Promise<void> {
+  async getReferralRejectionReasonTypes(): Promise<void> {
     let response: AxiosResponse
     try {
       response = await type.referralRejectionReason()
@@ -386,7 +386,7 @@ export default class Bookings extends Vue {
   }
 
   cancelRejectNote(): void {
-    this.newReferralRejectionReason = null
+    this.referralRejectionReasonTypeId = null
     this.rejectNote = null
     this.isDialogOpen = false
     const form: any = this.$refs['rejection-form']
@@ -411,7 +411,7 @@ export default class Bookings extends Vue {
     if (!form.validate()) return
     const referralRejectionBody: ReferralRejectionRequest = {
       notes: this.rejectNote,
-      referralRejectionReasonTypeId: this.newReferralRejectionReason,
+      referralRejectionReasonTypeId: this.referralRejectionReasonTypeId,
     }
     await reservation.reject(this.currentReservationId, referralRejectionBody)
     this.$nextTick(() => {

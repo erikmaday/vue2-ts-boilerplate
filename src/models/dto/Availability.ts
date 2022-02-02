@@ -1,4 +1,4 @@
-import { ApiResult, Reservation, Vehicle, VehicleAssignment,  } from ".";
+import { ApiResult, Reservation, Vehicle, VehicleAssignment } from '.'
 import { Driver } from './Driver'
 export interface AvailabilityGetRequest {
   startDatetime: string
@@ -11,6 +11,7 @@ export interface AvailabilityGetResponse extends ApiResult {
 
 export interface AvailabilityBlock {
   reservationId: number
+  managedReservationId: string
   vehicleAssignments: VehicleAssignment[]
   startDate: string | Date
   endDate: string | Date
@@ -42,7 +43,7 @@ export interface VehicleKeyRow {
 
 export interface DriverKeyRow {
   rowHeight: number
-  driver: Driver | UnassignedDriver 
+  driver: Driver | UnassignedDriver
   distanceFromTop: number
 }
 

@@ -481,7 +481,7 @@ export default class Availability extends Vue {
         convertReservationToAvailabilityBlock(reservation)
       this.$set(
         this.loadedReservations,
-        availabilityBlock.reservationId,
+        availabilityBlock.managedReservationId,
         deepClone(availabilityBlock)
       )
     }

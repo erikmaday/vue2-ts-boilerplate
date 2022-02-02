@@ -1,18 +1,9 @@
 <template>
   <div class="font-bold">
     <div
-      v-for="(item, index) in links"
+      v-for="(item, index) in links.filter((l) => !l.hide)"
       :key="`sidebar-link-${index}`"
-      class="
-        hover:background-black-5
-        d-flex
-        border-radius-regular
-        align-center
-        padding-a-3
-        transition-duration-50 transition-ease-in transition-all
-        margin-y-1
-        cursor-pointer
-      "
+      class="hover:background-black-5 d-flex border-radius-regular align-center padding-a-3 transition-duration-50 transition-ease-in transition-all margin-y-1 cursor-pointer"
       :class="{
         'background-black-5 text-primary': mode === item.name,
       }"

@@ -178,15 +178,47 @@ export const routes: RouteConfig[] = [
                     /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
                   ),
               },
-              // Commenting out until these components are used in v2
-              // {
-              //   path: 'adjustments',
-              //   name: 'rates.adjustments',
-              //   component: () =>
-              //     import(
-              //       /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
-              //     ),
-              // },
+              {
+                path: 'adjustments',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "company-garages-edit" */ '@/views/Empty.vue'
+                  ),
+                children: [
+                  {
+                    path: '',
+                    name: 'rates.adjustments',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                      ),
+                  },
+                  {
+                    path: 'add',
+                    name: 'rates.adjustments.add',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                      ),
+                  },
+                  {
+                    path: 'view/:id',
+                    name: 'rates.adjustments.view',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                      ),
+                  },
+                  {
+                    path: 'edit/:id',
+                    name: 'rates.adjustments.edit',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "company-garages-edit" */ '@/views/Rates.vue'
+                      ),
+                  },
+                ],
+              },
               // {
               //   path: 'calculator',
               //   name: 'rates.calculator',

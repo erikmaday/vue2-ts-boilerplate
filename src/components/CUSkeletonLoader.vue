@@ -27,6 +27,8 @@ export default class CUSkeletonLoader extends Vue {
         return '31px'
       case 'h3':
         return '27px'
+      case 'h4':
+        return '24px'
       case 'text':
         return '18px'
       case 'detail-text':

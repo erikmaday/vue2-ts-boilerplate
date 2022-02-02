@@ -1,7 +1,17 @@
 <template>
   <Detail>
     <template #back>
-      <router-link :to="lastRoute">
+      <CUSkeletonLoader
+        v-if="showLoaders"
+        type="icon"
+        :width="$vuetify.breakpoint.xs ? '61px' : undefined"
+        class="margin-y-2"
+        :class="{
+          'margin-x-auto': $vuetify.breakpoint.xs,
+          'margin-l-1 margin-r-2': $vuetify.breakpoint.smAndUp,
+        }"
+      />
+      <router-link v-else :to="lastRoute">
         <v-btn
           :icon="$vuetify.breakpoint.mdAndUp"
           :x-small="$vuetify.breakpoint.mdAndUp"
@@ -15,11 +25,28 @@
       </router-link>
     </template>
     <template #title>
-      <h1 class="margin-b-0">{{ headerTitle }}</h1>
+      <CUSkeletonLoader
+        v-if="showLoaders"
+        type="h1"
+        width="180px"
+        :class="{
+          'margin-x-auto': $vuetify.breakpoint.xs,
+        }"
+      />
+      <h1 v-else class="margin-b-0">{{ headerTitle }}</h1>
     </template>
     <template #buttons>
+      <CUSkeletonLoader
+        v-if="showLoaders && isModeView && !isModeProfile"
+        :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
+        :width="$vuetify.breakpoint.xs ? '100%' : '47px'"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-8 margin-r-4': $vuetify.breakpoint.smAndUp,
+        }"
+      />
       <v-btn
-        v-show="isModeView"
+        v-else-if="isModeView"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
           'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -32,8 +59,17 @@
       >
         Delete
       </v-btn>
+      <CUSkeletonLoader
+        v-if="showLoaders && isModeEdit"
+        :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
+        :width="$vuetify.breakpoint.xs ? '100%' : '48px'"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-8 margin-r-4': $vuetify.breakpoint.smAndUp,
+        }"
+      />
       <v-btn
-        v-show="isModeEdit || isModeAdd"
+        v-else-if="isModeEdit || isModeAdd"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
           'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -46,8 +82,17 @@
       >
         Cancel
       </v-btn>
+      <CUSkeletonLoader
+        v-if="showLoaders && isModeView"
+        type="button"
+        :width="$vuetify.breakpoint.xs ? '100%' : '119px'"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+      />
       <v-btn
-        v-show="isModeView"
+        v-else-if="isModeView"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
           'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -64,8 +109,17 @@
       >
         Edit Garage
       </v-btn>
+      <CUSkeletonLoader
+        v-if="showLoaders && isModeEdit"
+        type="button"
+        :width="$vuetify.breakpoint.xs ? '100%' : '71px'"
+        :class="{
+          'w-full margin-y-2': $vuetify.breakpoint.xs,
+          'margin-l-4': $vuetify.breakpoint.smAndUp,
+        }"
+      />
       <v-btn
-        v-show="isModeEdit"
+        v-else-if="isModeEdit"
         :class="{
           'w-full margin-y-2': $vuetify.breakpoint.xs,
           'margin-l-4': $vuetify.breakpoint.smAndUp,
@@ -96,16 +150,28 @@
           :mode="mode"
           :current-garage.sync="currentGarage"
           :garage-id="garageId"
+          :loading="showLoaders"
           @refresh="getCurrentGarage"
         />
         <template
           v-if="!isModeAdd && currentGarage && currentGarage.vehicleDTOs"
         >
-          <div
-            class="border-solid border-gray-mid-light border-x-0 border-t-0 border-b-1 margin-y-6"
-          ></div>
-          <h4 class="margin-b-3">Vehicles In Garage</h4>
+          <v-divider class="margin-t-6 margin-b-8" />
+          <CUSkeletonLoader
+            v-if="showLoaders"
+            type="h4"
+            width="136px"
+            class="margin-b-3"
+          />
+          <h4 v-else class="margin-b-3">Vehicles In Garage</h4>
+          <CUSkeletonLoaderTableView
+            v-if="showLoaders"
+            :columns="columns"
+            :rows="5"
+            hide-pagination
+          />
           <CUDataTable
+            v-else
             :actions="actions"
             :columns="columns"
             :server-items-length="currentGarage.vehicleDTOs.length"
@@ -148,6 +214,7 @@ import { Garage } from '@/models/dto/Garage'
 import Detail from '@/layouts/Detail.vue'
 import GaragesDetailForm from '@/components/GaragesDetailForm.vue'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
+import CUSkeletonLoaderTableView from '@/components/CUSkeletonLoaderTableView.vue'
 import { isNotEmpty } from '@/utils/validators'
 import { ApiResult } from '@/models/dto'
 import { DataTableColumn } from '@/models/DataTableColumn'
@@ -161,10 +228,12 @@ import { RawLocation } from 'vue-router'
     Detail,
     GaragesDetailForm,
     AutocompleteAddress,
+    CUSkeletonLoaderTableView,
   },
 })
 export default class GaragesDetail extends Vue {
   notFound = false
+  loading = true
   isNotEmpty = isNotEmpty
   currentGarage: Garage | Record<string, never> = {}
 
@@ -208,6 +277,10 @@ export default class GaragesDetail extends Vue {
   deleteModalIsOpen = false
   app = app
 
+  get showLoaders(): boolean {
+    return this.loading && app.getAreLoadersEnabled
+  }
+
   get mode(): string {
     switch (this.$route.name) {
       case 'garages.edit':
@@ -249,8 +322,9 @@ export default class GaragesDetail extends Vue {
     return undefined
   }
 
-  mounted(): void {
-    this.getCurrentGarage()
+  async mounted(): Promise<void> {
+    await this.getCurrentGarage()
+    this.loading = false
   }
 
   async getCurrentGarage(): Promise<void> {
@@ -266,12 +340,10 @@ export default class GaragesDetail extends Vue {
         this.currentGarage = data
       } else {
         this.notFound = true
-        return
       }
     } catch (e) {
       this.notFound = true
       console.error(e)
-      return
     }
   }
 

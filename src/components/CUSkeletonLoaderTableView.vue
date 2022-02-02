@@ -25,7 +25,7 @@
       </v-row>
       <CUSkeletonLoader v-if="n !== rows" type="divider" />
     </div>
-    <div class="padding-a-4 d-flex align-center">
+    <div v-if="!hidePagination" class="padding-a-4 d-flex align-center">
       <v-spacer />
       <CUSkeletonLoader
         type="detail-text"
@@ -56,6 +56,8 @@ export default class CUSkeletonLoaderTableView extends Vue {
   columns!: DataTableColumn[]
   @Prop({ type: Number, required: false, default: 10 })
   rows!: number
+  @Prop({ type: Boolean, required: false, default: false })
+  hidePagination!: boolean
 
   get columnCount(): number {
     if (this.columns.length) {

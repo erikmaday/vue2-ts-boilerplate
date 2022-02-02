@@ -26,6 +26,7 @@
     <RejectBookingModal
       v-model="isDialogOpen"
       :reservation-id="currentReservationId"
+      v-on:reject-successful="refreshTable"
     />
   </Main>
 </template>
@@ -42,7 +43,7 @@ import { sort } from '@/utils/sort'
 import { filter } from '@/utils/filter'
 import { processPredefined } from '@/utils/predefined'
 import reservation from '@/services/reservation'
-import { Reservation, ReferralRejectionRequest, Type } from '@/models/dto'
+import { Reservation } from '@/models/dto'
 import {
   currencyFilter,
   formatReservationPickupDestinationText,
@@ -64,8 +65,6 @@ import {
 import { EventBus } from '@/utils/eventBus'
 import { datePredefined, noFutureDatesPredefined } from '@/data/predefined'
 import app from '@/store/modules/app'
-import type from '@/services/type'
-import { AxiosResponse } from 'axios'
 
 @Component({
   components: {
@@ -94,13 +93,6 @@ export default class Bookings extends Vue {
     EventBus.$on('accept-booking', async (e) => {
       this.currentReservationId = e
       this.accept(e)
-    })
-
-    EventBus.$on('reject-successful', (e) => {
-      this.$nextTick(() => {
-        const table: any = this.$refs['collection-table']
-        table.load()
-      })
     })
   }
 
@@ -351,6 +343,13 @@ export default class Bookings extends Vue {
 
   async accept(reservationId: number): Promise<void> {
     await reservation.accept(reservationId)
+    this.$nextTick(() => {
+      const table: any = this.$refs['collection-table']
+      table.load()
+    })
+  }
+
+  refreshTable(): void {
     this.$nextTick(() => {
       const table: any = this.$refs['collection-table']
       table.load()

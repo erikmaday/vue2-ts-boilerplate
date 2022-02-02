@@ -97,7 +97,7 @@ export default class RejectBookingModal extends Vue {
     await reservation.reject(this.reservationId, referralRejectionBody)
     this.isDialogOpen = false
     this.$router.push({ name: 'bookings' })
-    EventBus.$emit('reject-successful')
+    this.$emit('reject-successful')
   }
 }
 </script>

@@ -117,7 +117,7 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn small color="primary" text @click="resetFilters">Reset</v-btn>
+        <v-btn small color="error" text @click="resetFilters">Reset</v-btn>
         <v-btn small color="primary" @click="applyFilters">Filter</v-btn>
       </template>
     </CUModal>

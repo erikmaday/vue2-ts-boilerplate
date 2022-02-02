@@ -177,8 +177,8 @@
       </template>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" small text @click="clear">Clear</v-btn>
-        <v-btn color="primary" small @click="close">Close</v-btn>
+        <v-btn color="error" small text @click="clear">Reset</v-btn>
+        <v-btn color="primary" small @click="close">Filter</v-btn>
       </template>
     </CUModal>
   </div>

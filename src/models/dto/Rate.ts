@@ -1,3 +1,5 @@
+import { Type } from './Type'
+
 export interface Rate {
   companyId: number
   companyName?: string
@@ -70,4 +72,10 @@ export interface UpdateRatePayload {
   marketplace: number
   vehicleTypeKey: string
   vehicleId?: number | null
+}
+
+export interface MarketRateType extends Type {
+  companyId?: number
+  active?: boolean
+  id?: number
 }

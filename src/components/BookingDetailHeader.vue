@@ -5,7 +5,7 @@
         v-if="loading"
         type="detail-text"
         width="80px"
-        classes="margin-y-1"
+        class="margin-y-1"
       />
       <span
         v-else

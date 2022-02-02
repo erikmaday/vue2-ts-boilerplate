@@ -1,27 +1,61 @@
 <template>
   <v-row wrap>
     <v-col cols="12" class="padding-t-0">
-      <h3>Vehicle Images</h3>
+      <CUSkeletonLoader
+        v-if="showLoaders"
+        type="h3"
+        width="132px"
+        style="margin-bottom: 1px"
+      />
+      <h3 v-else>Vehicle Images</h3>
     </v-col>
     <v-col cols="12">
+      <CUSkeletonLoader
+        v-if="showLoaders && !vehicleDetail.getIsModeView"
+        class="margin-y-3"
+        height="80px"
+      />
       <VehicleDetailImageUpload
-        v-if="!vehicleDetail.getIsModeView && activePhotos.length < 6"
+        v-if="
+          !showLoaders &&
+          !vehicleDetail.getIsModeView &&
+          activePhotos.length < 6
+        "
         class="margin-t-3"
         :class="{
           'margin-b-3': activePhotos.length,
         }"
       />
     </v-col>
+    <template v-if="showLoaders">
+      <v-col
+        v-for="photo in 3"
+        :key="`vehicle-photo-skeleton-loader-${photo}`"
+        cols="12"
+        :class="{ 'padding-t-0': photo === 1 }"
+      >
+        <div class="d-flex align-center">
+          <CUSkeletonLoader height="80px" />
+          <CUSkeletonLoader
+            v-if="vehicleDetail.getIsModeEdit"
+            type="icon"
+            class="margin-x-4"
+          />
+        </div>
+      </v-col>
+    </template>
+    <template v-else-if="activePhotos.length">
+      <v-col
+        v-for="(photo, photoIndex) in activePhotos"
+        :key="`vehicle-photo-${photoIndex}-${photo.imagePath}`"
+        cols="12"
+        :class="{ 'padding-t-0': photoIndex === 0 }"
+      >
+        <VehicleDetailImage v-if="photo" :photo="photo" />
+      </v-col>
+    </template>
     <v-col
-      v-for="(photo, photoIndex) in activePhotos"
-      :key="`vehicle-photo-${photoIndex}-${photo.imagePath}`"
-      cols="12"
-      :class="{ 'padding-t-0': photoIndex === 0 }"
-    >
-      <VehicleDetailImage v-if="photo" :photo="photo" />
-    </v-col>
-    <v-col
-      v-if="!activePhotos.length && vehicleDetail.getIsModeView"
+      v-if="!showLoaders && !activePhotos.length && vehicleDetail.getIsModeView"
       cols="12"
       class="padding-t-0"
     >
@@ -40,6 +74,10 @@ import vehicleDetail from '@/store/modules/vehicleDetail'
 @Component({ components: { VehicleDetailImageUpload, VehicleDetailImage } })
 export default class VehicleDetailImages extends Vue {
   vehicleDetail = vehicleDetail
+
+  get showLoaders(): boolean {
+    return vehicleDetail.getShowLoaders
+  }
 
   get vehiclePhotos(): VehiclePhotoDTO[] {
     return vehicleDetail.getVehiclePhotos

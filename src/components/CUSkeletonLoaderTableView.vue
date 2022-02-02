@@ -12,7 +12,7 @@
     </v-row>
     <CUSkeletonLoader type="divider" />
 
-    <div v-for="n in 10" :key="`table-loader-${n}`">
+    <div v-for="n in rows" :key="`table-loader-${n}`">
       <v-row
         class="margin-y-0"
         justify="space-around"
@@ -23,17 +23,17 @@
           <CUSkeletonLoader :key="`cell-${n}`" type="table-cell" />
         </template>
       </v-row>
-      <CUSkeletonLoader v-if="n !== 10" type="divider" />
+      <CUSkeletonLoader v-if="n !== rows" type="divider" />
     </div>
     <div class="padding-a-4 d-flex align-center">
       <v-spacer />
       <CUSkeletonLoader
         type="detail-text"
         width="64px"
-        classes="margin-l-6 margin-r-8"
+        class="margin-l-6 margin-r-8"
       />
-      <CUSkeletonLoader type="avatar" height="52px" classes="margin-l-2" />
-      <CUSkeletonLoader type="avatar" height="52px" classes="margin-l-2" />
+      <CUSkeletonLoader type="avatar" height="52px" class="margin-l-2" />
+      <CUSkeletonLoader type="avatar" height="52px" class="margin-l-2" />
     </div>
   </div>
   <div v-else>
@@ -54,6 +54,8 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 export default class CUSkeletonLoaderTableView extends Vue {
   @Prop({ type: Array, required: false, default: () => [] })
   columns!: DataTableColumn[]
+  @Prop({ type: Number, required: false, default: 10 })
+  rows!: number
 
   get columnCount(): number {
     if (this.columns.length) {

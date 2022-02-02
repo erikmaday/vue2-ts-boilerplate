@@ -2,10 +2,18 @@
   <v-row wrap>
     <template v-if="!!vehicleInformation">
       <v-col cols="12" class="padding-t-0">
-        <h3>Vehicle Information</h3>
+        <CUSkeletonLoader
+          v-if="showLoaders"
+          type="h3"
+          width="170px"
+          style="margin-bottom: 1px"
+        />
+        <h3 v-else>Vehicle Information</h3>
       </v-col>
       <v-col cols="6" class="padding-y-0">
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
+          v-else
           v-model="vehicleInformation.vehicleName"
           :disabled="disabled"
           :rules="[(v) => !!v || 'Vehicle name is required']"
@@ -13,7 +21,9 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUSelect
+          v-else
           v-model="vehicleInformation.vehicleTypeId"
           :disabled="disabled"
           label="Vehicle Type"
@@ -24,7 +34,9 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
+          v-else
           v-model="vehicleInformation.vehicleMake"
           :disabled="disabled"
           :rules="[(v) => !!v || 'Vehicle make is required']"
@@ -32,7 +44,9 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
+          v-else
           v-model="vehicleInformation.vehicleModel"
           :disabled="disabled"
           :rules="[(v) => !!v || 'Vehicle model is required']"
@@ -40,7 +54,9 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
+          v-else
           v-model="vehicleInformation.vehicleYear"
           :disabled="disabled"
           :rules="[(v) => !!v || 'Vehicle year is required']"
@@ -48,7 +64,9 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
+          v-else
           v-model="vehicleInformation.passengerCapacity"
           :disabled="disabled"
           :rules="[(v) => !!v || 'Passenger capacity is required']"
@@ -56,7 +74,9 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
+          v-else
           v-model="vehicleInformation.vinNumber"
           :disabled="disabled"
           :rules="[(v) => !!v || 'VIN # is required']"
@@ -64,7 +84,9 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUTextField
+          v-else
           v-model="vehicleInformation.licensePlate"
           :disabled="disabled"
           :rules="[(v) => !!v || 'License plate is required']"
@@ -72,7 +94,9 @@
         />
       </v-col>
       <v-col cols="6" class="padding-y-0">
+        <CUSkeletonLoaderTextField v-if="showLoaders" />
         <CUSelect
+          v-else
           v-model="vehicleInformation.garageId"
           :disabled="disabled"
           label="Garage"
@@ -93,8 +117,9 @@ import garage from '@/services/garage'
 import type from '@/services/type'
 import vehicleDetail from '@/store/modules/vehicleDetail'
 import { Vue, Component, Watch } from 'vue-property-decorator'
+import CUSkeletonLoaderTextField from '@/components/CUSkeletonLoaderTextField.vue'
 
-@Component
+@Component({ components: { CUSkeletonLoaderTextField } })
 export default class VehicleDetailInformation extends Vue {
   garages: Garage[] | null = []
   vehicleTypes: VehicleType[] | null = []
@@ -114,6 +139,10 @@ export default class VehicleDetailInformation extends Vue {
   @Watch('vehicle', { deep: true, immediate: true })
   parentVehicleChanged(value: VehicleDetailEntity): void {
     this.vehicleInformation = value
+  }
+
+  get showLoaders(): boolean {
+    return vehicleDetail.getShowLoaders
   }
 
   get vehicle(): VehicleDetailEntity {

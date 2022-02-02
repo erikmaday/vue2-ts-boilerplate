@@ -49,6 +49,12 @@ export default {
   referralRejectionReason(): Promise<AxiosResponse> {
     const host = apiBaseUrl()
     const url = `https://${host}/types/referral-rejection-reason-types`
+    return httpService.get(url)
+  },
+
+  marketRateType(): Promise<AxiosResponse> {
+    const host = apiBaseUrl()
+    const url = `https://${host}/types/market-rate-types`
 
     return httpService.get(url)
   },

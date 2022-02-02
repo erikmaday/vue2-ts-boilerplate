@@ -43,7 +43,7 @@
             v-if="loading"
             width="80px"
             type="text"
-            classes="margin-t-3"
+            class="margin-t-3"
           />
           <p v-else class="font-16 font-medium">
             {{ name }}
@@ -52,7 +52,7 @@
             v-if="loading"
             type="text"
             width="110px"
-            classes="margin-t-3"
+            class="margin-t-3"
           />
           <button
             v-else
@@ -71,14 +71,14 @@
             v-if="loading"
             type="text"
             width="80px"
-            classes="margin-t-3"
+            class="margin-t-3"
           />
           <p v-else class="font-16 text-gray-mid-light">Email</p>
           <CUSkeletonLoader
             v-if="loading"
             type="text"
             width="200px"
-            classes="margin-t-3"
+            class="margin-t-3"
           />
           <p v-else class="font-medium">{{ email }}</p>
         </v-col>
@@ -87,14 +87,14 @@
             v-if="loading"
             width="80px"
             type="text"
-            classes="margin-t-3"
+            class="margin-t-3"
           />
           <p v-else class="font-16 text-gray-mid-light">Phone</p>
           <CUSkeletonLoader
             v-if="loading"
             width="150px"
             type="text"
-            classes="margin-t-3"
+            class="margin-t-3"
           />
           <p v-else class="font-medium">{{ phone }}</p>
         </v-col>

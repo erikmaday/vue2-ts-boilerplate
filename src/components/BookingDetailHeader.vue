@@ -40,36 +40,10 @@
         <v-btn small text color="primary" @click="accept">Accept</v-btn>
       </v-col>
     </template>
-    <CUModal v-model="isDialogOpen">
-      <template #title>Reject Booking</template>
-      <template #text>
-        <v-form ref="rejection-form">
-          <CUSelect
-            v-model="referralRejectionReasonTypeId"
-            :items="referralRejectionReasonTypes"
-            :rules="[(val) => !!val || 'Reason is Required']"
-            label="Reason for Rejecting"
-            item-text="label"
-            item-value="id"
-            placeholder="Please select a reason for rejecting this booking"
-          />
-          <CUTextArea
-            v-model="rejectNote"
-            placeholder="Add reasons for rejection here."
-            validate-on-blur
-          />
-        </v-form>
-      </template>
-      <template #actions>
-        <v-spacer />
-        <v-btn color="primary" small text @click="cancelRejectNote">
-          Cancel
-        </v-btn>
-        <v-btn color="red" class="white--text" small @click="reject">
-          Reject
-        </v-btn>
-      </template>
-    </CUModal>
+    <RejectBookingModal
+      v-model="isDialogOpen"
+      :reservation-id="reservation.reservationId"
+    />
   </v-row>
 </template>
 
@@ -79,33 +53,26 @@ import {
   RequiredVehicleType,
   VehicleAssignment,
   ReservationDetailStop,
-  ReferralRejectionRequest,
 } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ReferralStatus } from '@/utils/enum'
 import reservation from '@/services/reservation'
-import { Type } from '@/models/dto/Type'
-import type from '@/services/type'
-import { AxiosResponse } from 'axios'
 import { isNotEmptyArray } from '@/utils/validators'
+import RejectBookingModal from '@/components/RejectBookingModal.vue'
 
-@Component
+@Component({
+  components: {
+    RejectBookingModal,
+  },
+})
 export default class BookingDetailHeader extends Vue {
   @Prop({ required: true }) readonly loading!: boolean
   @Prop({ required: true }) readonly reservation!: ReservationDetail
   @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
 
   isDialogOpen = false
-  rejectNote = null
-
-  referralRejectionReasonTypes: Type[] = []
-  referralRejectionReasonTypeId: number = null
 
   isNotEmptyArray = isNotEmptyArray
-
-  mounted(): void {
-    this.getReferralRejectionReasonTypes()
-  }
 
   get reservationId(): string {
     return this.reservation?.managedId
@@ -170,44 +137,8 @@ export default class BookingDetailHeader extends Vue {
     return this.firstDropoff?.address?.city
   }
 
-  cancelRejectNote(): void {
-    this.referralRejectionReasonTypeId = null
-    this.rejectNote = null
-    const form: any = this.$refs['rejection-form']
-    form.reset()
-    this.isDialogOpen = false
-  }
-
-  async getReferralRejectionReasonTypes(): Promise<void> {
-    let response: AxiosResponse
-    try {
-      response = await type.referralRejectionReason()
-      const { data } = response
-      this.referralRejectionReasonTypes = data
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e)
-      return
-    }
-  }
-
   async accept(): Promise<void> {
     await reservation.accept(this.reservation.reservationId)
-    this.$emit('refresh')
-  }
-
-  async reject(): Promise<void> {
-    const form: any = this.$refs['rejection-form']
-    if (!form.validate()) return
-    const referralRejectionBody: ReferralRejectionRequest = {
-      notes: this.rejectNote,
-      referralRejectionReasonTypeId: this.referralRejectionReasonTypeId,
-    }
-    await reservation.reject(
-      this.reservation.reservationId,
-      referralRejectionBody
-    )
-    this.isDialogOpen = false
     this.$emit('refresh')
   }
 }

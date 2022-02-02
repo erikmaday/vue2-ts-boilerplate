@@ -44,11 +44,18 @@
       <template #title>Reject Booking</template>
       <template #text>
         <v-form ref="rejection-form">
+          <CUSelect
+            v-model="referralRejectionReasonTypeId"
+            :items="referralRejectionReasonTypes"
+            :rules="[(val) => !!val || 'Reason is Required']"
+            label="Reason for Rejecting"
+            item-text="label"
+            item-value="id"
+            placeholder="Please select a reason for rejecting this booking"
+          />
           <CUTextArea
             v-model="rejectNote"
-            label="Why are you rejecting the booking?"
             placeholder="Add reasons for rejection here."
-            :rules="[(val) => !!val || 'This field is required.']"
             validate-on-blur
           />
         </v-form>
@@ -61,7 +68,6 @@
         <v-btn color="red" class="white--text" small @click="reject">
           Reject
         </v-btn>
-        <v-spacer />
       </template>
     </CUModal>
   </v-row>
@@ -73,10 +79,15 @@ import {
   RequiredVehicleType,
   VehicleAssignment,
   ReservationDetailStop,
+  ReferralRejectionRequest,
 } from '@/models/dto'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ReferralStatus } from '@/utils/enum'
 import reservation from '@/services/reservation'
+import { Type } from '@/models/dto/Type'
+import type from '@/services/type'
+import { AxiosResponse } from 'axios'
+import { isNotEmptyArray } from '@/utils/validators'
 
 @Component
 export default class BookingDetailHeader extends Vue {
@@ -85,7 +96,16 @@ export default class BookingDetailHeader extends Vue {
   @Prop({ required: true }) readonly tripAssignments!: VehicleAssignment[]
 
   isDialogOpen = false
-  rejectNote = ''
+  rejectNote = null
+
+  referralRejectionReasonTypes: Type[] = []
+  referralRejectionReasonTypeId: number = null
+
+  isNotEmptyArray = isNotEmptyArray
+
+  mounted(): void {
+    this.getReferralRejectionReasonTypes()
+  }
 
   get reservationId(): string {
     return this.reservation?.managedId
@@ -151,8 +171,24 @@ export default class BookingDetailHeader extends Vue {
   }
 
   cancelRejectNote(): void {
-    this.rejectNote = ''
+    this.referralRejectionReasonTypeId = null
+    this.rejectNote = null
+    const form: any = this.$refs['rejection-form']
+    form.reset()
     this.isDialogOpen = false
+  }
+
+  async getReferralRejectionReasonTypes(): Promise<void> {
+    let response: AxiosResponse
+    try {
+      response = await type.referralRejectionReason()
+      const { data } = response
+      this.referralRejectionReasonTypes = data
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+      return
+    }
   }
 
   async accept(): Promise<void> {
@@ -163,7 +199,15 @@ export default class BookingDetailHeader extends Vue {
   async reject(): Promise<void> {
     const form: any = this.$refs['rejection-form']
     if (!form.validate()) return
-    await reservation.reject(this.reservation.reservationId, this.rejectNote)
+    const referralRejectionBody: ReferralRejectionRequest = {
+      notes: this.rejectNote,
+      referralRejectionReasonTypeId: this.referralRejectionReasonTypeId,
+    }
+    await reservation.reject(
+      this.reservation.reservationId,
+      referralRejectionBody
+    )
+    this.isDialogOpen = false
     this.$emit('refresh')
   }
 }

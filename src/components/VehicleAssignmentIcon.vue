@@ -2,7 +2,8 @@
   <TripAssignmentIcon
     :image-source="image"
     icon-name="directions_bus"
-    :more-required-count="moreRequiredCount"
+    :undisplayed-count="undisplayedCount"
+    :is-fully-assigned="isFullyAssigned"
     :no-image-available="noImageAvailable"
   />
 </template>
@@ -19,7 +20,9 @@ import { baseUrl } from '@/utils/env'
 })
 export default class VehicleAssignmentIcon extends Vue {
   @Prop({ required: false }) readonly vehicleAssignment?: VehicleAssignment
-  @Prop({ required: false, default: 0 }) readonly moreRequiredCount?: number
+  @Prop({ required: false, default: 0 }) readonly undisplayedCount?: number
+  @Prop({ required: false, default: false, type: Boolean })
+  readonly isFullyAssigned: boolean
 
   get image(): string | null {
     const vehicleImageUri = this.vehicleAssignment?.vehicle?.imagePath

@@ -21,7 +21,7 @@
       </template>
     </CUDataTableFilters>
 
-    <CUSkeletonLoaderTableView v-show="showLoaders" />
+    <CUSkeletonLoaderTableView v-show="showLoaders" :columns="visibleColumns" />
     <CUDataTable
       v-show="!showLoaders"
       :actions="actions"
@@ -41,7 +41,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator'
 import CUDataTable from '@/components/CUDataTable.vue'
 import CUDataTableFilters from '@/components/CUDataTableFilters.vue'
 import {

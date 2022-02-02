@@ -9,7 +9,12 @@
       :last-stop="stopIndex === stops.length - 1"
     >
       <div class="padding-l-4 padding-b-4">
-        <p class="font-medium margin-t-0">{{ formatStopAddress(stop) }}</p>
+        <p v-if="stop.address.title" class="font-medium margin-t-0">
+          {{ stop.address.title }}
+        </p>
+        <p class="margin-t-0" :class="{ 'font-medium': !stop.address.title }">
+          {{ formatStopAddress(stop) }}
+        </p>
         <p v-if="stop.dropoffDatetime" class="text-gray-light margin-t-0">
           Estimated arrival:
           {{ formatDropoffTime(stop) }}

@@ -35,7 +35,7 @@
       v-if="bidDetail.getShowLoaders"
       type="text"
       width="120px"
-      classes="margin-t-6 margin-x-auto"
+      class="margin-t-6 margin-x-auto"
     />
     <v-btn
       v-else-if="!bidDetail.getAreAllSoldOut"

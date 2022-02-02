@@ -46,11 +46,6 @@ import BidDetailUnsavedChanges from '@/components/BidDetailUnsavedChanges.vue'
 import BidDetailChangePriceMessage from '@/components/BidDetailChangePriceMessage.vue'
 import MarketplaceCard from '@/components/MarketplaceCard.vue'
 import { Trip } from '@/models/dto'
-import {
-  formatDropoffTime,
-  formatPickupTime,
-  formatStopAddress,
-} from '@/utils/string'
 import app from '@/store/modules/app'
 import bidDetail from '@/store/modules/bidDetail'
 
@@ -69,9 +64,6 @@ export default class BidDetail extends Vue {
   @Provide('isInBidDetail') private isInBidDetail = true
   quoteId: number | null = null
   notFound = false
-  formatStopAddress = formatStopAddress
-  formatDropoffTime = formatDropoffTime
-  formatPickupTime = formatPickupTime
   bidDetail = bidDetail
   loading = false
   showUnsavedChangesWarning = false

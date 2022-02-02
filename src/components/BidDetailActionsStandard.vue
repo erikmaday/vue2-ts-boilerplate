@@ -2,7 +2,7 @@
   <div>
     <template v-if="bidDetail.getShowLoaders">
       <CUSkeletonLoader type="detail-text" />
-      <CUSkeletonLoader type="detail-text" classes="margin-b-4 margin-t-2" />
+      <CUSkeletonLoader type="detail-text" class="margin-b-4 margin-t-2" />
     </template>
     <template v-else-if="currentBidPrice">
       <p class="font-14">{{ priceLabel }}: {{ calculatedPrice }}</p>
@@ -28,10 +28,10 @@
       v-if="bidDetail.getShowLoaders"
       type="text"
       width="120px"
-      classes="margin-t-6 margin-x-auto"
+      class="margin-t-6 margin-x-auto"
     />
     <v-btn
-      v-if="!isMultiBid && !bidDetail.getIsSoldOut"
+      v-else-if="!isMultiBid && !bidDetail.getIsSoldOut"
       :text="!bidDetail.getIsEditingPrevented"
       :outlined="bidDetail.getIsEditingPrevented"
       small

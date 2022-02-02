@@ -8,7 +8,7 @@
             type="detail-text"
             width="80px"
             :key="`data-table-tab-skeleton-loader-${tabIndex}`"
-            classes="d-inline-flex margin-x-3"
+            class="d-inline-flex margin-x-3"
           />
           <span
             v-else

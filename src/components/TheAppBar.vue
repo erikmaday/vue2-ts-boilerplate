@@ -63,8 +63,11 @@
           <!-- Double spans allow for precise underlining -->
           <span
             v-else
-            class="h-full d-flex align-center border-b-2 border-t-0 border-x-0 border-transparent border-solid hover:border-black active:border-black"
-            :class="{ 'border-black': item.name === $route.name }"
+            class="h-full d-flex align-center border-b-2 border-t-0 border-x-0 border-solid hover:border-black active:border-black"
+            :class="{
+              'border-black': isRouteActive(item),
+              'border-transparent': !isRouteActive(item),
+            }"
           >
             <span>{{ item.label }}</span>
           </span>
@@ -146,6 +149,7 @@ import { navigation } from '@/data/navigation'
 import { NavigationLink } from '@/models/NavigationLink'
 import modules from '@/store/modules'
 import auth from '@/store/modules/auth'
+import { RawLocation } from 'vue-router'
 
 @Component({
   components: {
@@ -185,6 +189,19 @@ export default class TheAppBar extends Vue {
     } else if (item.action) {
       item.action()
     }
+  }
+
+  isRouteActive(item: NavigationLink): boolean {
+    const rawLocation: RawLocation = { name: item.name }
+    const route = this.$router.resolve(rawLocation)
+    let path = route.href
+    if (path[path.length - 1] === '/') {
+      path = path.slice(0, -1)
+    }
+    const matchedRoute = this.$route.matched.find(
+      (route) => route.path === path
+    )
+    return !!matchedRoute
   }
 }
 </script>

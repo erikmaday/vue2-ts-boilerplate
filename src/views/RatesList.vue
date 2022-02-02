@@ -1,38 +1,54 @@
 <template>
-  <v-col cols="12">
-    <v-row align="center">
+  <div class="w-full">
+    <v-row
+      class="padding-x-3 padding-y-4"
+      justify="space-between"
+      align="center"
+    >
       <v-col class="shrink">
-        <h1>Rates</h1>
+        <CUSkeletonLoader v-if="showLoaders" type="h1" width="64px" />
+        <h1 v-else class="margin-b-0">Rates</h1>
       </v-col>
-      <v-spacer />
       <v-col class="shrink">
-        <v-btn color="primary" small @click="displayNewRateRow">Add New</v-btn>
+        <CUSkeletonLoader v-if="showLoaders" type="button" width="97px" />
+        <v-btn color="primary" v-else small @click="displayNewRateRow">
+          Add New
+        </v-btn>
       </v-col>
     </v-row>
-    <v-form v-if="dataTableItems" ref="rates-form">
-      <CUDataTable
-        ref="rates-data-table"
-        class="margin-t-8"
-        :columns="columns"
-        :items="dataTableItems"
-        :actions="actions"
-        :options="{}"
-        mobile-view-on-breakpoint="md"
-        :server-items-length="dataTableItems.length"
-        is-editable-table
-        display-actions-on-mobile
-        @cancel-add="closeNewRow"
-        @cancel-update="(e) => cancelUpdate(e)"
-        @add="(e) => addRate(e)"
-        @update="(e) => updateRate(e)"
-        @update-editable-input="(e) => updateInput(e)"
-        @update-editable-select="(e) => updateSelect(e)"
-      />
-    </v-form>
-  </v-col>
+    <v-row>
+      <v-col cols="12">
+        <CUSkeletonLoaderTableView
+          v-if="showLoaders"
+          :columns="columns"
+          :rows="5"
+        />
+        <v-form v-else-if="dataTableItems" ref="rates-form">
+          <CUDataTable
+            ref="rates-data-table"
+            :columns="columns"
+            :items="dataTableItems"
+            :actions="actions"
+            :options="{}"
+            mobile-view-on-breakpoint="md"
+            :server-items-length="dataTableItems.length"
+            is-editable-table
+            display-actions-on-mobile
+            @cancel-add="closeNewRow"
+            @cancel-update="(e) => cancelUpdate(e)"
+            @add="(e) => addRate(e)"
+            @update="(e) => updateRate(e)"
+            @update-editable-input="(e) => updateInput(e)"
+            @update-editable-select="(e) => updateSelect(e)"
+          />
+        </v-form>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
+import CUSkeletonLoaderTableView from '@/components/CUSkeletonLoaderTableView.vue'
 import rate from '@/services/rate'
 import { filter } from '@/utils/filter'
 import {
@@ -59,12 +75,14 @@ import company from '@/services/company'
 import { VehicleType } from '@/models/dto'
 import { DataTableColumn } from '@/models/DataTableColumn'
 import { isNotEmptyInput, isNotNegative } from '@/utils/validators'
+import app from '@/store/modules/app'
 
-@Component({})
+@Component({ components: { CUSkeletonLoaderTableView } })
 export default class RatesList extends Vue {
   companyRates: Rate[] = []
   vehicleTypes = []
   dataTableItems: any[] = []
+  loading = false
   actions: ActionColumn[] = [
     {
       displayText: 'Edit',
@@ -154,8 +172,7 @@ export default class RatesList extends Vue {
 
   mounted(): void {
     EventBus.$on('refresh', this.getCompanyRates)
-    this.getCompanyRates()
-    this.getVehicleTypes()
+    this.load()
   }
 
   @Watch('ratesMap', { deep: true, immediate: true })
@@ -163,6 +180,10 @@ export default class RatesList extends Vue {
     if (newVal != null) {
       this.dataTableItems = deepClone(newVal)
     }
+  }
+
+  get showLoaders(): boolean {
+    return this.loading && app.getAreLoadersEnabled
   }
 
   // Each rate comes back individually, so group rates of
@@ -246,6 +267,13 @@ export default class RatesList extends Vue {
     }
 
     return availableVehicleTypes
+  }
+
+  async load(): Promise<void> {
+    this.loading = true
+    await this.getCompanyRates()
+    await this.getVehicleTypes()
+    this.loading = false
   }
 
   // We need this auxilary function to prevent issues with

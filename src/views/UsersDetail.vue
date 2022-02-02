@@ -514,6 +514,7 @@ export default class UsersDetail extends Vue {
       case 'profile':
         return 'view'
       default:
+        this.loading = false
         return 'add'
     }
   }

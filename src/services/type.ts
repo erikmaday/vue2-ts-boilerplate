@@ -45,4 +45,10 @@ export default {
 
     return httpService.get(url)
   },
+  marketRateType(): Promise<AxiosResponse> {
+    const host = apiBaseUrl()
+    const url = `https://${host}/types/market-rate-types`
+
+    return httpService.get(url)
+  },
 }

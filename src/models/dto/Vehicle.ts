@@ -11,6 +11,7 @@ export type SupportedVehicleType = {
   vehicleTypeId: number
   supported?: boolean
   label?: string
+  key?: string
 }
 
 export interface Vehicle {

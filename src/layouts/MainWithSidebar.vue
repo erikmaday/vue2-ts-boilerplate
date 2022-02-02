@@ -1,12 +1,8 @@
 <template>
-  <v-container
-    fluid
-    class="padding-a-0"
-    :class="{ 'fill-height': $vuetify.breakpoint.mdAndUp }"
-  >
-    <v-row no-gutters :class="{ 'fill-height': $vuetify.breakpoint.mdAndUp }">
+  <v-container fluid class="padding-a-0" :class="{ 'fill-height': !isMobile }">
+    <v-row no-gutters :class="{ 'fill-height': !isMobile }">
       <v-col
-        v-if="$vuetify.breakpoint.mdAndUp"
+        v-if="!isMobile"
         key="side-navigation"
         :style="{
           width: `${sidebarWidth}px`,
@@ -22,13 +18,13 @@
           :style="{ 'max-width': `${$vuetify.breakpoint.thresholds.md}px` }"
         >
           <v-row align="center">
-            <v-col cols="auto">
+            <v-col v-if="$slots['section-title']" cols="auto">
               <h1><slot name="section-title" /></h1>
             </v-col>
-            <v-col cols="auto">
+            <v-col v-if="$slots['top-bar-content']" cols="auto" class="grow">
               <slot name="top-bar-content" />
             </v-col>
-            <template v-if="$vuetify.breakpoint.smAndDown">
+            <template v-if="isMobile">
               <v-spacer />
               <div class="shrink">
                 <v-menu offset-y>
@@ -54,10 +50,12 @@
 </template>
 
 <script lang="ts">
-import { Prop, Vue, Component } from 'vue-property-decorator'
+import { Prop, Vue, Component, Provide } from 'vue-property-decorator'
 
 @Component
 export default class MainWithSidebar extends Vue {
+  @Provide('isInMainWithSidebar') private isInMainWithSidebar = true
+
   @Prop({ default: 278 })
   sidebarWidth!: number
 
@@ -69,5 +67,25 @@ export default class MainWithSidebar extends Vue {
 
   @Prop({ default: false })
   disableParentPadding!: boolean
+
+  @Prop({
+    type: String,
+    required: false,
+    default: 'sm',
+  })
+  mobileViewOnBreakpoint!: string
+
+  get isMobile(): boolean {
+    switch (this.mobileViewOnBreakpoint) {
+      case 'xs':
+        return this.$vuetify.breakpoint.xs
+      case 'sm':
+        return this.$vuetify.breakpoint.smAndDown
+      case 'md':
+        return this.$vuetify.breakpoint.mdAndDown
+      default:
+        return false
+    }
+  }
 }
 </script>

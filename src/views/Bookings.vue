@@ -26,7 +26,7 @@
     <RejectBookingModal
       v-model="isDialogOpen"
       :reservation-id="currentReservationId"
-      v-on:reject-successful="refreshTable"
+      @reject-successful="refreshTable"
     />
   </Main>
 </template>

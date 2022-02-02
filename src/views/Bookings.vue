@@ -23,36 +23,10 @@
         />
       </template>
     </CUCollectionTable>
-    <CUModal v-model="isDialogOpen">
-      <template #title>Reject Booking</template>
-      <template #text>
-        <v-form ref="rejection-form">
-          <CUSelect
-            v-model="referralRejectionReasonTypeId"
-            :items="referralRejectionReasonTypes"
-            :rules="[(val) => !!val || 'Reason is required']"
-            label="Reason for Rejecting"
-            item-text="label"
-            item-value="id"
-            placeholder="Please select a reason for rejecting this booking"
-          />
-          <CUTextArea
-            v-model="rejectNote"
-            placeholder="Add reasons for rejection here."
-            validate-on-blur
-          />
-        </v-form>
-      </template>
-      <template #actions>
-        <v-spacer />
-        <v-btn color="primary" small text @click="cancelRejectNote">
-          Cancel
-        </v-btn>
-        <v-btn color="red" class="white--text" small @click="reject">
-          Reject
-        </v-btn>
-      </template>
-    </CUModal>
+    <RejectBookingModal
+      v-model="isDialogOpen"
+      :reservation-id="currentReservationId"
+    />
   </Main>
 </template>
 
@@ -76,6 +50,7 @@ import {
 import { RawLocation } from 'vue-router'
 import BookingsListVehicleAssignments from '@/components/BookingsListVehicleAssignments.vue'
 import BookingsListDriverAssignments from '@/components/BookingsListDriverAssignments.vue'
+import RejectBookingModal from '@/components/RejectBookingModal.vue'
 import {
   TableViewChip,
   TableViewFilter,
@@ -98,6 +73,7 @@ import { AxiosResponse } from 'axios'
     CUDataTableFilters,
     CUCollectionTable,
     CUDataTableFilterButton,
+    RejectBookingModal,
   },
 })
 export default class Bookings extends Vue {
@@ -106,16 +82,10 @@ export default class Bookings extends Vue {
   filters: any = filter()
   tableView = reservation.tableView
   isDialogOpen = false
-  rejectNote = null
   currentReservationId = -1
   loading = true
 
-  referralRejectionReasonTypes: Type[] = []
-  referralRejectionReasonTypeId: number = null
-
   mounted(): void {
-    this.getReferralRejectionReasonTypes()
-
     EventBus.$on('reject-booking', (e) => {
       this.currentReservationId = e
       this.isDialogOpen = true
@@ -124,6 +94,13 @@ export default class Bookings extends Vue {
     EventBus.$on('accept-booking', async (e) => {
       this.currentReservationId = e
       this.accept(e)
+    })
+
+    EventBus.$on('reject-successful', (e) => {
+      this.$nextTick(() => {
+        const table: any = this.$refs['collection-table']
+        table.load()
+      })
     })
   }
 
@@ -372,54 +349,12 @@ export default class Bookings extends Vue {
     },
   ]
 
-  async getReferralRejectionReasonTypes(): Promise<void> {
-    let response: AxiosResponse
-    try {
-      response = await type.referralRejectionReason()
-      const { data } = response
-      this.referralRejectionReasonTypes = data
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e)
-      return
-    }
-  }
-
-  cancelRejectNote(): void {
-    this.referralRejectionReasonTypeId = null
-    this.rejectNote = null
-    this.isDialogOpen = false
-    const form: any = this.$refs['rejection-form']
-    form.reset()
-  }
-
   async accept(reservationId: number): Promise<void> {
     await reservation.accept(reservationId)
     this.$nextTick(() => {
       const table: any = this.$refs['collection-table']
       table.load()
     })
-  }
-
-  async reject(): Promise<void> {
-    // Row event wasn't passed up properly error
-    if (this.currentReservationId === -1) {
-      return
-    }
-
-    const form: any = this.$refs['rejection-form']
-    if (!form.validate()) return
-    const referralRejectionBody: ReferralRejectionRequest = {
-      notes: this.rejectNote,
-      referralRejectionReasonTypeId: this.referralRejectionReasonTypeId,
-    }
-    await reservation.reject(this.currentReservationId, referralRejectionBody)
-    this.$nextTick(() => {
-      const table: any = this.$refs['collection-table']
-      table.load()
-    })
-
-    this.isDialogOpen = false
   }
 }
 </script>

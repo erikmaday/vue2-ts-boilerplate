@@ -44,6 +44,7 @@ class VehicleDetailModule extends VuexModule {
   vehicle: VehicleDetailEntity = NEW_VEHICLE
   notFound = false
   saving = false
+  loading = true
 
   // getters
   get getRouteName(): string | null {
@@ -75,6 +76,9 @@ class VehicleDetailModule extends VuexModule {
   }
   get getSaving(): boolean {
     return this.saving
+  }
+  get getShowLoaders(): boolean {
+    return this.loading && app.getAreLoadersEnabled
   }
 
   get getLastRoute(): RawLocation {
@@ -149,13 +153,12 @@ class VehicleDetailModule extends VuexModule {
         this.setVehicle(vehicleData)
       } else {
         this.notFound = true
-        return
       }
     } catch (e) {
       this.notFound = true
       console.error(e)
-      return
     }
+    this.loading = false
   }
   @Action
   setRouteName(routeName: string): void {
@@ -240,9 +243,11 @@ class VehicleDetailModule extends VuexModule {
   @Action
   async updateDefaultPhoto(): Promise<void> {
     if (!this.vehicleId) {
-      return 
+      return
     }
-    const defaultPhoto = this.vehicle.vehiclePhotoDTOs.find(p => p.primaryImage)
+    const defaultPhoto = this.vehicle.vehiclePhotoDTOs.find(
+      (p) => p.primaryImage
+    )
 
     // If the defaultPhoto is a photo which still needs to be uploaded
     if (!defaultPhoto || defaultPhoto?.file || !defaultPhoto.active) {
@@ -291,10 +296,12 @@ class VehicleDetailModule extends VuexModule {
   @Action
   async addVehicle(): Promise<void> {
     try {
-      // If there are vehiclePhotoDTOs and no primary image 
-      // is set, set the first photo to be the primary image. 
+      // If there are vehiclePhotoDTOs and no primary image
+      // is set, set the first photo to be the primary image.
       if (this.vehicle.vehiclePhotoDTOs?.length) {
-        if (!this.vehicle.vehiclePhotoDTOs.filter(p => p.primaryImage).length) {
+        if (
+          !this.vehicle.vehiclePhotoDTOs.filter((p) => p.primaryImage).length
+        ) {
           this.vehicle.vehiclePhotoDTOs[0].primaryImage = true
         }
       }

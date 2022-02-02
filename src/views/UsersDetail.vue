@@ -269,6 +269,7 @@
             <v-col>
               <CUSkeletonLoaderCheckbox
                 v-if="showLoaders && !isModeProfile"
+                class="margin-t-4"
                 label-width="178px"
               />
               <v-checkbox

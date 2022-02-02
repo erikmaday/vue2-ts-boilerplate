@@ -1,13 +1,10 @@
 <template>
-  <div
-    class="d-flex align-center margin-t-4 padding-t-1"
-    style="margin-bottom: 22px"
-  >
-    <CUSkeletonLoader type="checkbox" classes="d-inline-flex" />
+  <div class="d-flex align-center padding-t-1">
+    <CUSkeletonLoader type="checkbox" class="d-inline-flex" />
     <CUSkeletonLoader
       type="text"
       :width="labelWidth"
-      classes="d-inline-flex margin-l-2"
+      class="d-inline-flex margin-l-2"
       :styles="styles"
     />
   </div>

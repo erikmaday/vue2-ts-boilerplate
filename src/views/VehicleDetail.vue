@@ -1,7 +1,17 @@
 <template>
   <Detail>
     <template #back>
-      <router-link :to="vehicleDetail.getLastRoute">
+      <CUSkeletonLoader
+        v-if="showLoaders"
+        type="icon"
+        :width="$vuetify.breakpoint.xs ? '61px' : undefined"
+        class="margin-y-2"
+        :class="{
+          'margin-x-auto': $vuetify.breakpoint.xs,
+          'margin-l-1 margin-r-2': $vuetify.breakpoint.smAndUp,
+        }"
+      />
+      <router-link v-else :to="vehicleDetail.getLastRoute">
         <v-btn
           :icon="$vuetify.breakpoint.mdAndUp"
           :x-small="$vuetify.breakpoint.mdAndUp"
@@ -18,67 +28,112 @@
       <h1 class="margin-b-0">{{ headerTitle }}</h1>
     </template>
     <template #buttons>
-      <v-btn
+      <template
         v-if="vehicleDetail.getIsModeAdd || vehicleDetail.getIsModeEdit"
-        color="primary"
-        small
-        :text="$vuetify.breakpoint.mdAndUp"
-        :outlined="$vuetify.breakpoint.smAndDown"
-        :class="{
-          'w-full margin-y-2': $vuetify.breakpoint.xs,
-          'margin-l-4': $vuetify.breakpoint.smAndUp,
-        }"
-        :key="`cancel-button-${vehicleDetail.getSaving}`"
-        :loading="vehicleDetail.getSaving"
-        @click="vehicleDetail.goBack"
       >
-        Cancel
-      </v-btn>
-      <v-btn
-        v-if="vehicleDetail.getIsModeView"
-        color="error"
-        small
-        :text="$vuetify.breakpoint.mdAndUp"
-        :outlined="$vuetify.breakpoint.smAndDown"
-        :class="{
-          'w-full margin-y-2': $vuetify.breakpoint.xs,
-          'margin-l-4': $vuetify.breakpoint.smAndUp,
-        }"
-        :key="`delete-button-${vehicleDetail.getSaving}`"
-        :loading="vehicleDetail.getSaving"
-        @click="deleteModalIsOpen = true"
-      >
-        Delete
-      </v-btn>
-      <v-btn
-        v-if="vehicleDetail.getIsModeView"
-        color="primary"
-        small
-        outlined
-        :class="{
-          'w-full margin-y-2': $vuetify.breakpoint.xs,
-          'margin-l-4': $vuetify.breakpoint.smAndUp,
-        }"
-        :loading="vehicleDetail.getSaving"
-        :key="`edit-action-button-${vehicleDetail.getSaving}`"
-        @click="handleActionClick"
-      >
-        Edit Vehicle
-      </v-btn>
-      <v-btn
-        v-if="!vehicleDetail.getIsModeView"
-        color="primary"
-        small
-        :class="{
-          'w-full margin-y-2': $vuetify.breakpoint.xs,
-          'margin-l-4': $vuetify.breakpoint.smAndUp,
-        }"
-        :loading="vehicleDetail.getSaving"
-        :key="`save-action-button-${vehicleDetail.getSaving}`"
-        @click="handleActionClick"
-      >
-        Save
-      </v-btn>
+        <CUSkeletonLoader
+          v-if="showLoaders"
+          :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
+          :width="$vuetify.breakpoint.xs ? '100%' : '48px'"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-8 margin-r-4': $vuetify.breakpoint.smAndUp,
+          }"
+        />
+        <v-btn
+          v-else
+          color="primary"
+          small
+          :text="$vuetify.breakpoint.mdAndUp"
+          :outlined="$vuetify.breakpoint.smAndDown"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
+          :key="`cancel-button-${vehicleDetail.getSaving}`"
+          :loading="vehicleDetail.getSaving"
+          @click="vehicleDetail.goBack"
+        >
+          Cancel
+        </v-btn>
+      </template>
+      <template v-if="vehicleDetail.getIsModeView">
+        <CUSkeletonLoader
+          v-if="showLoaders"
+          :type="$vuetify.breakpoint.xs ? 'button' : 'text'"
+          :width="$vuetify.breakpoint.xs ? '100%' : '47px'"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-8 margin-r-4': $vuetify.breakpoint.smAndUp,
+          }"
+        />
+        <v-btn
+          v-else-if="vehicleDetail.getIsModeView"
+          color="error"
+          small
+          :text="$vuetify.breakpoint.mdAndUp"
+          :outlined="$vuetify.breakpoint.smAndDown"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
+          :key="`delete-button-${vehicleDetail.getSaving}`"
+          :loading="vehicleDetail.getSaving"
+          @click="deleteModalIsOpen = true"
+        >
+          Delete
+        </v-btn>
+
+        <CUSkeletonLoader
+          v-if="showLoaders"
+          type="button"
+          :width="$vuetify.breakpoint.xs ? '100%' : '118px'"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
+        />
+        <v-btn
+          v-else-if="vehicleDetail.getIsModeView"
+          color="primary"
+          small
+          outlined
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
+          :loading="vehicleDetail.getSaving"
+          :key="`edit-action-button-${vehicleDetail.getSaving}`"
+          @click="handleActionClick"
+        >
+          Edit Vehicle
+        </v-btn>
+      </template>
+      <template v-if="!vehicleDetail.getIsModeView">
+        <CUSkeletonLoader
+          v-if="showLoaders"
+          type="button"
+          :width="$vuetify.breakpoint.xs ? '100%' : '71px'"
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
+        />
+        <v-btn
+          v-else-if="!vehicleDetail.getIsModeView"
+          color="primary"
+          small
+          :class="{
+            'w-full margin-y-2': $vuetify.breakpoint.xs,
+            'margin-l-4': $vuetify.breakpoint.smAndUp,
+          }"
+          :loading="vehicleDetail.getSaving"
+          :key="`save-action-button-${vehicleDetail.getSaving}`"
+          @click="handleActionClick"
+        >
+          Save
+        </v-btn>
+      </template>
     </template>
     <v-row>
       <v-col cols="12" md="5">
@@ -119,8 +174,6 @@ import VehicleDetailImages from '@/components/VehicleDetailImages.vue'
 import vehicleDetail from '@/store/modules/vehicleDetail'
 import vehicle from '@/services/vehicle'
 import { AxiosResponse } from 'axios'
-import app from '@/store/modules/app'
-import { RawLocation } from 'vue-router/types/router'
 
 @Component({
   components: {
@@ -141,6 +194,10 @@ export default class VehicleDetail extends Vue {
     const vehicleId = this.$route.params.id
     vehicleDetail.setVehicleId(vehicleId)
     vehicleDetail.load()
+  }
+
+  get showLoaders(): boolean {
+    return vehicleDetail.getShowLoaders
   }
 
   get headerText(): string {

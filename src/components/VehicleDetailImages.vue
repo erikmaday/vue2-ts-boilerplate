@@ -55,7 +55,7 @@
       </v-col>
     </template>
     <v-col
-      v-if="!activePhotos.length && vehicleDetail.getIsModeView"
+      v-if="!showLoaders && !activePhotos.length && vehicleDetail.getIsModeView"
       cols="12"
       class="padding-t-0"
     >

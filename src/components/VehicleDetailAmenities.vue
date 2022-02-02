@@ -14,12 +14,9 @@
         v-for="amenity in 8"
         cols="6"
         class="padding-y-0"
-        :key="`amenity-skeleton-loader${amenity}`"
+        :key="`amenity-skeleton-loader-${amenity}`"
       >
-        <CUSkeletonLoaderCheckbox
-          hide-details="true"
-          class="margin-t-2 margin-b-0"
-        />
+        <CUSkeletonLoaderCheckbox hide-details class="margin-t-2 margin-b-0" />
       </v-col>
     </template>
     <template v-else>

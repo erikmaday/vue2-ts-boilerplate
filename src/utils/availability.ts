@@ -101,7 +101,8 @@ export const convertReservationToAvailabilityBlock = (
   const driversAreFullyAssigned = reservation.assignedDriverPercentage >= 100
   const vehiclesAreFullyAssigned = reservation.assignedVehiclePercentage >= 100
   const availabilityReservation: AvailabilityBlock = {
-    reservationId: reservation.managedId,
+    reservationId: reservation.reservationId,
+    managedReservationId: reservation.managedId,
     vehicleAssignments: reservation.vehicleAssignments || [],
     startDate,
     endDate,

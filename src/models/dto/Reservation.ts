@@ -33,7 +33,7 @@ export interface Reservation {
   grossProfit: number
   hash: string | null
   managedContractId: string | null
-  managedId: number
+  managedId: string
   marketplaceClientTotal: number | null
   openForBid: boolean
   parentReservationId: number | null

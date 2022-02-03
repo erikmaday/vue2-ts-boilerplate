@@ -1,8 +1,8 @@
 {
-  "name": "charterup-operators",
+  "name": "vue2-ts-boilerplate",
   "version": "0.1.0",
   "private": true,
-  "description": "CharterUP",
+  "description": "Vue2 TS Boilerplate",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

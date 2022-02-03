@@ -1,4 +1,4 @@
-# charterup-operators
+# vue2-ts-boilerplate
 
 ## Project setup
 

@@ -10,27 +10,8 @@ import '@/plugins/gmaps'
 import '@/plugins/dayjs'
 import CUIcon from '@/components/CUIcon.vue'
 import VueTheMask from 'vue-the-mask'
-import CUTextField from '@/components/CUTextField.vue'
-import CUSelect from '@/components/CUSelect.vue'
-import CUModal from '@/components/CUModal.vue'
-import CUTextArea from '@/components/CUTextArea.vue'
-import CUDataTable from '@/components/CUDataTable.vue'
-import CUDatePicker from '@/components/CUDatePicker.vue'
-import CUSkeletonLoaderTableView from '@/components/CUSkeletonLoaderTableView.vue'
-import CUSkeletonLoader from '@/components/CUSkeletonLoader.vue'
-import CUPasswordField from '@/components/CUPasswordField.vue'
 
 Vue.use(VueTheMask)
-Vue.component('CUIcon', CUIcon)
-Vue.component('CUTextField', CUTextField)
-Vue.component('CUTextArea', CUTextArea)
-Vue.component('CUSelect', CUSelect)
-Vue.component('CUModal', CUModal)
-Vue.component('CUDataTable', CUDataTable)
-Vue.component('CUDatePicker', CUDatePicker)
-Vue.component('CUSkeletonLoaderTableView', CUSkeletonLoaderTableView)
-Vue.component('CUSkeletonLoader', CUSkeletonLoader)
-Vue.component('CUPasswordField', CUPasswordField)
 Vue.config.productionTip = false
 
 new Vue({

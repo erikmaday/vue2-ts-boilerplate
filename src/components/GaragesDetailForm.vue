@@ -7,7 +7,9 @@
         class="padding-b-0"
         :class="{ 'margin-t-2': $vuetify.breakpoint.smAndDown }"
       >
+        <CUSkeletonLoaderTextField v-if="loading" />
         <CUTextField
+          v-else
           v-model="model.garageName"
           :rules="[(val) => isNotEmpty(val) || 'Name is Required']"
           label="Name"
@@ -20,7 +22,9 @@
         class="padding-b-0"
         :class="{ 'padding-t-0': $vuetify.breakpoint.smAndDown }"
       >
+        <CUSkeletonLoaderTextField v-if="loading" />
         <AutocompleteAddress
+          v-else
           v-model="model.addressDTO"
           label="Address"
           :error-messages="formErrors.address"
@@ -33,6 +37,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import AutocompleteAddress from '@/components/AutocompleteAddress.vue'
+import CUSkeletonLoaderTextField from '@/components/CUSkeletonLoaderTextField.vue'
 import { isNotEmpty } from '@/utils/validators'
 import { GarageRequest, GarageResult, Garage } from '@/models/dto/Garage'
 import auth from '@/store/modules/auth'
@@ -41,23 +46,13 @@ import { AxiosResponse } from 'axios'
 import deepClone from '@/utils/deepClone'
 
 @Component({
-  components: { AutocompleteAddress },
+  components: { AutocompleteAddress, CUSkeletonLoaderTextField },
 })
 export default class GaragesDetailForm extends Vue {
-  @Prop({
-    required: true,
-  })
-  mode!: string
-
-  @Prop({
-    required: true,
-  })
-  currentGarage!: Garage
-
-  @Prop({
-    required: false,
-  })
-  garageId!: number | undefined
+  @Prop({ required: true }) mode!: string
+  @Prop({ required: true }) currentGarage!: Garage
+  @Prop({ type: Boolean, required: true }) loading!: boolean
+  @Prop({ required: false }) garageId!: number | undefined
 
   model: Partial<Garage> = {}
   formErrors: Record<string, string[]> = {}

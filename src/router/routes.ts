@@ -1,5 +1,4 @@
 import { RouteConfig } from 'vue-router'
-import auth from '@/store/modules/auth'
 
 export const routes: RouteConfig[] = [
   {

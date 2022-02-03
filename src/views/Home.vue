@@ -1,6 +1,6 @@
 <template>
   <div>
-    Vue2 TS Boiler Plate
+    Vue2 TS Boilerplate
     <router-view />
   </div>
 </template>

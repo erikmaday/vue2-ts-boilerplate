@@ -18,8 +18,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-unused-expressions': 'error',
     'no-unused-vars': 'warn',
-    'no-debugger': 'warn',
-    'no-console': 'warn',
     'no-extra-semi': 'off',
     camelcase: 'off',
     'no-prototype-builtins': 'off',

@@ -12,12 +12,16 @@
   },
   "dependencies": {
     "@flatten-js/interval-tree": "^1.0.16",
+    "@tailwindcss/postcss7-compat": "^2.2.17",
+    "autoprefixer": "^9",
     "axios": "^0.24.0",
     "chart.js": "^3.6.2",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.7",
     "deep-pluck-ref": "^1.2.0",
+    "postcss": "^7",
     "simple-object-path": "^1.1.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "uuid": "^8.3.2",
     "v-money": "^0.8.1",
     "vue": "^2.6.11",
@@ -55,6 +59,7 @@
     "sass-loader": "^10.0.0",
     "typescript": "~4.1.5",
     "vue-cli-plugin-i18n": "~2.3.1",
+    "vue-cli-plugin-tailwind": "~2.2.18",
     "vue-template-compiler": "^2.6.11"
   }
 }

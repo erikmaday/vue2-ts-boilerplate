@@ -164,6 +164,9 @@ class VehicleDetailModule extends VuexModule {
   setRouteName(routeName: string): void {
     this.routeName = routeName
     this.isModeAdd = routeName === 'vehicles.add'
+    if (this.isModeAdd) {
+      this.loading = false
+    }
     this.isModeEdit = routeName === 'vehicles.edit'
     this.isModeView = routeName === 'vehicles.view'
   }
